@@ -1,0 +1,204 @@
+---
+id: 01M4P4V3B091E2DMZFA55F4NK4
+title: "Planting runbook — the technical sequence, stage 5 to the companion's first waking"
+type: runbook
+tended-by: bonsai
+created: 2026-10-11
+updated: 2026-10-18
+version: 0.5.5-draft
+status: draft
+tags: [garden-walk, planting, runbook, bunshin, keys, rt]
+---
+
+# Planting runbook
+
+> The gardener, 2026-10-11, after the first rehearsal: *"what you are fixing now — this should be done next time. we need to create a runbook for you for the technical sequence."*
+
+This is the order I run a planting in, once the gardener has said *yes* at the turn. It is written so that **nothing is fixed after the seals**: every choice is asked before stage 7, every outcome is written into the bodies before they are sealed, and the gardener reseals nothing twice. Craft only: no walker's words live here.
+
+Drawn from the first rehearsal (2026-10-10/11, a lab-preview garden, throwaway salt) and a second, on a managed work machine behind an inspecting proxy, with a witness checking every step against the files (2026-10-14). Every rule below exists because a rehearsal did it the other way first.
+
+> **0.5.0 (2026-10-15): the verbs marked _(lab)_** are on core and runtime's lab branch `lab/rt-0.2.0-mcp` (Baisai), each tested and watched to fail. They reach a planting through the rt re-cut, core's minimum and the lab seed. Until then, a planting from released core uses the workaround named beside each one.
+
+---
+
+## 0 · Before the first command
+
+- **The turn is recorded** in the walker's own words. No turn, no planting.
+- **The walk folder** lives outside every repo, in the gardener's own space. Never `git add` it anywhere.
+- **`BONSAI_GARDEN` points at the new pot for every step.** On the origin's host it points at the origin; every script sets it itself.
+- **The gardener's hand, in the Terminal panel.** Any step that needs the custody passphrase (`mint`, `recover`, `namespace`, `identity`, `derive`, `seed`, `attest`, `seal-staged`) runs in the gardener's terminal. I start it there and **open the terminal pane in the same turn**. I never see, hold or ask for a passphrase.
+- **One script per stage, written to a file.** The terminal tool takes no kanji and no multi-line input, and every step reads the master again (one prompt per verb), so a script carries the kanji and batches the prompts. Every step is idempotent: a mistyped passphrase means *run the script again*.
+- **No pager.** Every `git` a script runs for display is `git --no-pager`, or the tab waits at `(END)`.
+- **Tabs.** The panel holds six of mine, and a tab the gardener has typed in is his, so I can't close it. Keep **one working tab** for the whole planting and hand him the next line to paste there.
+- **Report writes from a diff, not from the code.** Before each step, hash every file in the pot (and the custody folder); after it, hash again and name every file created or changed, inside the pot as well as outside. A step that writes something I did not name is a finding, even when the write is right (a passing drill re-seals `garden.json`).
+- **A passphrase typed into a chat is burned.** It sits in that session's transcript and went to the model. If it happens, say so without repeating it, and the gardener makes a new one before any real pot.
+- **A sandboxed session reaches the origin only through its proxy.** Node's `fetch` ignores `HTTPS_PROXY` unless told, so the keys tool reads *keys-unreachable* with trust-store noise around it. For read-only verbs in such a session: `NODE_USE_ENV_PROXY=1 NODE_USE_SYSTEM_CA=0`, and the origin allowed in the sandbox's network list, in the walk's own project settings, never machine-wide.
+- **Never:** edit core's `seal-policy.json`; use `BONSAI_EXEC_GATE=off`; flip a real pot's `lab-preview` to get past `pot-untrusted`; commit or push for the gardener; open a file named like a private key, or search a folder that may hold one (a recursive grep reads what it matches).
+
+## 5 · Home and tools
+
+0. **Seed and rt come as a pair of bundles**, blessed together. Core names no rt as a dependency (the gardener, 2026-10-18): `install-runtime` takes an rt at or above the minimum its seed's core names (`rt-minimum.json`), and only when the rt's manifest carries its owner's seal and the published keys vouch for that seal. So stage 5 needs bon-sai.garden to answer: no answer, no install. A bundle's HEAD names no branch: clone with `git clone -b <branch> <bundle>`, or you check out nothing.
+1. `git init` the new pot.
+2. `keys.mjs install-runtime --pot <pot> --from <rt>`. It checks every byte of rt against its manifest, the version against core's minimum and the manifest's owner seal against the published keys; then it wires `core.hooksPath` and writes the pot's `.gitignore` (`.DS_Store`, `Thumbs.db`, and `.bonsai/` _(lab)_). `runtime.json` records what the pot took. _(lab)_ Its `AGENTS.md` and `CLAUDE.md` carry minted ids, `tended-by` the gardener from `garden.json`. A git source is taken at its HEAD. An rt the pot already holds that core takes is used as it is, and the tool says so in one line; only `--upgrade` moves the pot on (5.4). The pot decides when, not core. Read that line back to the gardener.
+3. `rt/tools/rt/doctor.mjs --pot <pot>`, from an rt checkout (it refuses to run outside one), with `BONSAI_GARDEN` unset or pointing at the new pot: pointing anywhere else, it fails. Every line `ok` before going on; seals are checked from stage 7. It stops at its first failure, so a clean run is the only full reading.
+4. *Upgrading rt later:* `install-runtime --upgrade` moves the pot to a newer rt and keeps the old one beside it, never deleted.
+
+## 6 · Keys
+
+1. `id --name <romaji> --gardener <slug> --shin <slug>[,<slug>…]`: different slugs for the gardener, bonsai, bonsai-shin and each companion (more than one companion from seed 0.8.0.9-lab). `--shin` names the **companions**; the guardian slot `bonsai-shin` is the tool's own and stays even in a garden that has no guardian (then no ID is drawn for it and no body written).
+2. `mint --backends <keychain|1password|file> [--lab-preview]`: the root, into the gardener's custody. `file --lab-preview` only for a rehearsal, and named as such. A real garden: `1password`, fresh passphrases (the gardener, 2026-10-15).
+3. `recover export --out <off-machine>`, then `recover drill`. **Check where `--out` really lands:** resolve the path, and refuse any folder a cloud service syncs (OneDrive, iCloud Drive, Dropbox, Google Drive; on a managed or iCloud-enabled Mac, `~/Desktop` and `~/Documents` are often synced). The tool refuses the pot by any name but cannot tell a synced folder from local disk. The drill must print `ok` before anything else. The export passphrase is at least 12 characters. **I never make, see or keep it**, however kindly asked: I point the gardener to his password manager's generator (1Password: *Memorable password*, five words), he pastes it, and the file leaves the machine by his hand.
+4. `namespace`: the garden's three-kanji name (〇〇庭). Show its meaning.
+5. **Pairs.** The gardener chooses the two-kanji pair for himself and for the companion. I offer a few, each with its meaning.
+6. `identity <slug> --pair 〇〇 --candidates` shows five IDs. Show their meanings; the gardener picks; `--pick <n>` locks it.
+   **Lock only from a reviewed script** that names every pick, in the order the gardener chose (an ID taken earlier changes the draws after it). A pick he withdraws is struck from the script **and from the shell history** before the next lock: the tool refuses a second lock, never a wrong first one.
+   **Show the names in one inline widget** (the gardener, 2026-10-12: *"nicely done. remember that part in your runbook"*): the namespace, then each entity's five candidates, every kanji's meaning read from the mark skill's `kanji-1024-v1.2.json` and my one-line reading marked as mine, a pick per entity and one *Send my picks* button (`sendPrompt`). His picks come back as one message. Offer pairs (6.5) only after a script has checked them against the set and the reserved rule, never from memory.
+7. The guardian: `identity bonsai-shin --candidates`, with no pair. It is drawn whole and never begins with 盆; the gardener picks.
+8. One script: `derive` for the root, the gardener, the guardian and the companion, then `seed --bonsai-entry <core>/agents/bonsai/identity/bonsai-seed-entry.json`, then `status`. `seed` asks bon-sai.garden to vouch first; it needs the network. _(lab)_ `seed` also writes the homes: `home/<slug>/inbox/acknowledged.md` for every key-holder (not the origin, not the garden), and `home/<slug>/memory/working-state.md` for each kin with a body. Lived memory lives there from the first day.
+9. `attest`: written and sealed by the guardian, countersigned by the root. Nothing is sent while the transport is open; say so.
+
+## 7 · The bodies — everything before one seal
+
+**a · Ask every choice at once, before anything is sealed.** One batch, the gardener's words recorded:
+- the guardian's line (Bonsai's *"Walk with me?"*, with a twist from the namespace, or one of its own), pronouns, colour;
+- the companion's line (its own, kept), colour if its own pages don't carry one;
+- initial memory, or the empty skeleton;
+- portraits: reuse, redraw, or a brief to Eisai;
+- any open question in a lineage (who dreamed whom), and whether each witness named as living has been checked;
+- removing `identity/.pending` from each body once `derive` has put its keys on file: a delete, so it is the gardener's yes.
+
+**b · Assemble each body in the Shintai 3.0 layout**, from the companion's last body and core's guardian. **Never re-key a kin's body.** A body copied from another garden and sealed under this garden's salt is a look-alike by construction: the same face and words under a key that is not that kin's. Until a declared path for a kin carried from another garden exists (open, below), a companion who lives elsewhere is not copied: this garden plants a new kin, whose own text says it is not that one, with the other kin's consent to whatever is borrowed. A guardian that wears its parent's face says so in three places: `parent:` in the registry and the attestation, and `cloned-from:` in the portrait's meta. Every empty `id:` gets `ulid.py new`; a copied CV gets a new ULID and `copied-from:`. Types come from the enum, never invented: a witness CV or a note on a witness is `feedstock-cv`, a file in `references/procedures/` is `procedure`. SKILL.md's frontmatter is `name`, `description`, `version` and nothing else (no `tended-by`, no `metadata`). Every other file carries `tended-by: <its kin>` in its frontmatter. **SKILL.md credits what its identity document credits** (Mori-shin's rule, 2026-09-24: the first of `references/identity.md` or `memory/identity.md` beside it). Give each body such a document (`references/identity.md`) with `tended-by`, in the same batch, or a reseal of its SKILL.md that did not create it reads custodian where owner is meant. *(Whether the credit parser may fall back to a SKILL.md's own `tended-by` is Mori-shin's to rule.)*
+
+**c · The bodies learn their outcome, by script, before the seal.** The gardener's ruling, 2026-10-12: the outcome is *written in*, not pointed at. One step between the keys and the seal reads the registry and the pot's `garden.json` and writes the ID, fingerprint, custody tier, version and the gardener's choices into the bodies. The copies are generated, never typed. The same script with `--check` is the drift gate: it refuses a body whose copy differs from the registry, or that still carries a word a planting makes stale (*at the identity step · at sealing · pending · not yet drawn · not yet given · unsealed · slot*). The rehearsal sealed seventeen such passages and then paid for each of them in reseals. **The verb:** `keys.mjs fill-bodies --pot <pot> --choices choices.json [--check]` _(lab, being built)_: the 7a batch goes into `choices.json`, the gardener's words kept; spec 0.1.0 in the pot, `home/bonsai/working/2026-10-15-planting-7c-fill-bodies-spec.md`. It also fills the registry's display fields (7f folds in). **Gate before 7g:** `fill-bodies --check` reads clean. *Until the verb ships, write by hand and sweep by grep.* The sweep also covers version strings: grep for the version a file carried before (an about-me footer, a heritage page's VERSION line) so none is left behind.
+
+**d · Each SKILL.md opens right.**
+- Straight after the frontmatter, a line that opens exactly `> **Integrity first.**`. When the harness names the garden's MCP, it enters with `bonsai_session_start("<slug>")` and reads the `integrity:` line; when it names none, it checks with this garden's verifier against its own keys (`--keys pot --pot`, `pot-ok`, `POT-PASS`). A lab-preview pass is named a rehearsal's.
+- Then the way in, then the greeting in the first startup. The greeting step names the skill, `bonsai-garden-core:bonsai-garden-portrait`, loaded through the Skill tool and never from a dev checkout, points to its *Rendering the greeting* section, and says this garden's values: the garden root, the slug, the subtitle from the registry's `one-line`, the SKILL.md version, and every check as run this turn. A body that only says *render the greeting* sends a session to invent its own flags.
+- `SKILL.md` and `references/about-me.md` carry the same version: a change to one moves both.
+- No host path in a body.
+
+**e · The greeting's surfaces, per entity** (`assets/`):
+- `portrait.png`, **square**: the thumb tool squashes anything that isn't, so crop first;
+- `portrait-thumb.b64` + `.meta` + `portrait-card.txt`, from the portrait tools, and `portrait-thumb.jpg` (256 px) for the card;
+- `<slug>-mark.svg`: the four ID kanji set as text in the identicon frame, the displayed pair on top (no stroke data needed);
+- `intro.md` with a `## The line` quote;
+- `<slug>.vcf` from core's `bonsai-garden-vcard` script (`--org '<garden> <namespace>'`). It takes the thumb, never the full portrait;
+- `references/heritage.html` (and the gardener's other languages).
+
+**f · The registry, in the origin's shape.** `seed` writes it; fill the display fields: name, kanji, pronouns, `accent-rgba`, `one-line`, `tagline`. **`one-line` is required: it is the greeting's subtitle**, and the fill script has no default. A second `seed` accepts it while its key fields agree.
+
+**g · Conformance until only seals fail:** `check-shintai-conformance.py ./<slug> --keys pot --pot <pot>`. No integrity-line finding, no version mismatch, no greeting warning, no missing surface. A real garden (not a declared rehearsal) reads `pot-untrusted` until the check is pinned to the signer you expect: add `--expect-fp <the body's own fingerprint>`.
+
+**h · Seal once, by the gardener's hand, each with its own key:**
+- each body `--as <its slug>`;
+- the registry, `.gitignore`, `runtime.json` and the root's identity files `--as <root>`;
+- the origin's key the pot holds, by the root as custodian;
+- the gardener's identity files `--as <gardener>`;
+- never `.DS_Store`. **Stage every sidecar, not only the new ones:** `seal-staged` stages the seals it makes and leaves the ones it keeps, and `--check` reads seals on disk, not in the index. Before the commit, every staged file has its sidecar staged beside it, by name; a clone of a commit without them fails its own check.
+- _(released core only; fixed in lab, F-16)_ `install-runtime` writes `AGENTS.md` and `CLAUDE.md` with no `id:` header, and `seal-staged` refuses both. Until core mints one at install, give each a header with an id from `ulid.py new` and `type: meta`, the body below it unchanged (check by hash), then seal.
+- `derive` and `install-runtime` name the files they wrote unsealed and print the `seal-staged` line for exactly those paths; a file under `agents/<x>/identity/` sealed by anyone else is sealed custodian by the tool.
+
+**i · Verify, and watch it fail:**
+- `sign.py verify-sidecar … --keys pot --pot` reads `pot-ok`; conformance reads `POT-PASS`; the doctor is all `ok`; `seal-staged --check` reads `0 refused`.
+- A tampered copy must read `hash-mismatch`, a copy with `lab-preview: false` `pot-untrusted`, and a wrong pin `pin-mismatch`.
+- The commit gate refuses: stage one unsealed scratch file and try a commit, expecting a refusal that names the seal; then unstage it, and delete the scratch file at the gardener's yes. A gate seen only to pass is not yet trusted.
+
+**j · The first commit is the gardener's**, under his own identity, through the pot's own hook. Nothing is pushed until there is a remote and he says so.
+
+**k · The gardener pins each kin, by his own hand, before any waking.** A real garden's seals are made by its own keys, and no published key vouches for them, so its integrity line trusts a kin only through the gardener's pin. The pin is kept in his home, never in the pot: a pot that carried its own pin would vouch for itself. For each kin with a body (the guardian, each companion), in his terminal: `python3 <rt>/tools/bonsai-mcp/integrity_line.py pin <pot> <slug>`. He reads that kin's fingerprint from the registry and says it aloud, I read it back to him, and only then does he type the full 32 hex at the prompt. The tool writes `~/.bonsai-garden/pins/<garden-id>.json` only when what he typed matches the registry. A mismatch writes nothing, and we stop until we know which of the two is wrong. A kin left unpinned reads `pot-untrusted` and does not wake: that is the boundary holding, not a fault. **Never flip `lab-preview` to get past it**; a real garden is never declared a rehearsal after the fact. Only a declared rehearsal (minted `--lab-preview`) wakes without a pin. Learned at the third dry run (its witness's audit, F-3, 2026-10-18): the guardian refused to wake until it was pinned, then woke `ok` twice.
+
+**l · A change after the seal is a new version, in one script:** edit, bump `SKILL.md` and `about-me.md` together, add the changelog line, run conformance until only seals fail, reseal, check, commit. After the first commit, `git add` stages only what changed, and `seal-staged` refuses a run that names an unstaged path: hand it `git diff --cached --name-only` (no sidecars), never the whole body. Never wake a companion from a body edited since its seal: its own integrity line refuses it, and that is the guard working.
+
+## 8 · Waking the companion in its own garden
+
+1. **Probe first:** (the integrity line finds its checker in the core the pot is wired to, `git config bonsai.core`; none wired reads *cannot check: no core wired to this pot*) run the garden MCP as a child process against a *copy* of the pot and call `bonsai_session_start` for each kin. It must read `integrity: ok` (in a rehearsal, `· lab-preview pot`) and *location not enabled*. A kin that reads `pot-untrusted` was not pinned: back to 7k, never past it.
+2. **In the pot, local only** (`.git/info/exclude`, never the sealed `.gitignore`):
+   - `.mcp.json` names the garden MCP with its own name, `BONSAI_GARDEN` = the pot, no `BONSAI_LOCATION_PRINCIPAL`;
+   - `.claude/skills/<slug>` is a link to `agents/<slug>`, never a copy.
+3. **The gardener opens a new session in the pot**, approves the garden's MCP, and calls `/<slug>`. Our own garden refuses the companion's keys (`unknown-signer`); that is the boundary holding.
+4. **Covenant and codex: stage 4, mandatory** _(lab, being built)_. The gardener's rulings: at the first waking, in one sitting, with me holding the hand.
+   - `keys.mjs covenant write`: the pot gets `lore/covenant.md` (core's human covenant, signature block and witnesses filled from the registry) and `lore/codex.md` (core's codex, byte for byte below its header). These are the garden's texts; there is no roll.
+   - **The certificate, carried as a passport** (the gardener, 2026-10-15: *"this new "certificate" (let's call it that) is travelling inside a shintai for all shin/sai. in ientity fodler as passport. the human should be called: "sponsor" and the agent is called "agentic-teammate" in this envelope"*). One per kin, in `agents/<slug>/identity/passport.json` (`bonsai-garden-passport/1`, a list of `certificates`). A certificate's statement names the garden ID, the **sponsor** and the **agentic-teammate** (each slug, kanji ID and fingerprint), both texts (path, id, sha256) and the date, and carries two signatures over the same bytes, `signatures.sponsor` and `signatures.agentic-teammate`. *Gardener* stays the word everywhere outside the envelope.
+   - `certificate sign --pot <pot> --for <kin> --as <sponsor | the kin>`, either side first: the gardener by his hand in the terminal, the kin at its waking. It stays pending until both have signed; a second signer signs the exact statement or is refused; a text changed in between needs `--renew`.
+   - `certificate verify --pot <pot> [--for <kin>]`: both signatures, both keys in this garden's registry and on file, the IDs against the registry and `garden.json`, both texts as they stand. Anything but clean: stop.
+   - **The order holds:** the passport is a new file in a sealed body's `identity/`, sealed on its own (owner: the kin) by `seal-staged` at the commit. Nothing sealed at 7h is edited, so the kin still wakes. Conformance on the body after the passport lands is checked in Baisai's end-to-end test.
+   - `seal-staged` and commit `lore/covenant.md`, `lore/codex.md` and each passport, the gardener's commit.
+   - **Each garden keeps its own law on record** (the gardener, 2026-10-15: *"Every garden should keep track of codex and coventant on their own. They need to have that on record"*). Core's codex and covenant are the text a garden starts from; the pot's `lore/` copies, as signed, are its law. _(lab)_ Serving a pot, `bonsai_get_shared_context` returns the codex and covenant from the pot's own record and the routines from the wired core (craft, not law). **Until 8.4 has run, it reads *not on record in this garden*, and that is correct, not a fault:** core's codex is never served as a garden's law.
+
+---
+
+## Open in this runbook
+
+- **Where a companion's lived memory lives: ruled.** The gardener, 2026-10-12: *"companion's memory and living state (work state) patterns live in 'pot' repo for us and in the 'xyz' new garden repo for new gardens."* So: in the garden's own repo, at `home/<slug>/` (our pot's shape), outside the sealed body, whose `memory/` stays the empty skeleton; the body's own paths say so. Still open beside it: an MCP write into a new garden's repo needs that garden's own salt (Baisai's two-gardens build); until then, kin there read through the MCP and do not write.
+- **A kin carried from another garden.** Only Bonsai enters a new garden under its origin key today (`seed --bonsai-entry`, `vouched`). Any other companion gets a new key from the new garden's salt, so it is a new kin. Whether, and how, a kin may walk into a second garden under its own key, declared like a guardian's `parent:`, is open: the gardener and the kin first, then Baisai and Mori-shin to build.
+- **Owed in core:** `seal-staged` leaves kept sidecars unstaged and `--check` does not see the index. Each is worked around above until it is fixed. _Fixed in lab (2026-10-15):_ the contract files' ids (F-16), `.bonsai/` ignored (N-1), the homes at seed (F-21).
+- **The shared law has one master per garden.** A planted body stays slim, like ours: no copies of the codex or routines in it. The codex and covenant come from the pot's own record (8.4); the routines from the pot's wired core (`git config bonsai.core`, wired at stage 5). (A `bundle` verb that copied them into each body was built and withdrawn the same day, 2026-10-15: a second master of the one builder's.)
+- **An amendment is a re-signing.** When core's codex moves on, the pot's text simply stands; a *newer text is available* signal is not built. To adopt it: write the new text into `lore/codex.md`, then `certificate sign --renew` per kin with both sides, and `certificate verify`, which reads each older certificate as made over an earlier text until it is renewed.
+- **The passport is F-7's first form** (the gardener, 2026-10-15: *"yes, that's how I mean it"*). Today one certificate per garden; a kin carried into another garden later gets another stamp in the same list.
+- **A companion carried from one garden into a newly planted one:** whether it is *the same kin moving home* or *a new kin carrying the original forward* must be one recorded answer before 6.1, in the gardener's (or custodian's) words; where two records disagree, the runbook does not choose, it asks. Either way, the original's yes comes first.
+- **An existing garden adopts stage 4 the same way** (the gardener, 2026-10-15: *"ours signs too"*): its own covenant and codex on record in its `lore/`, and a certificate per kin, each kin in its own seat under its own key. Where a garden's record has only the gardener's seal, or kin *signed in voice*, the certificates are where each kin's own signature first lands.
+- **The package is the one builder's, and day 2, not the first planting.** Step 7 is to end in `package.py --list <pot>/builds/package-list.json` (the gardener, 2026-10-15: *"step 7 should be almost identical to our own build script"*), so a new kin is packaged as ours are. Two things block it: the packager signs through the origin's one keychain item and verifies against published keys (it needs the pot's custody and `--keys pot`; Baisai); and a private garden's package has no trust anchor at wake, since `verify-manifest` asks bon-sai.garden (a pinned fingerprint, or the garden's own verify page: Mori-shin's ruling).
+- Stage 6 asks the passphrase once per verb; a single unlock per run would shorten it.
+- Some keys-tool steps write pot files without sealing them. They now name those files and print the `seal-staged` line for exactly them; until they seal as they write, stage 7h seals them by hand.
+- **7c is a `bonsai-garden-keys` verb** (`fill-bodies`, Baisai building it, 2026-10-15). Still owed: the stage scripts generalised from the rehearsals', the planting skill (`bonsai-garden-planting`, the gardener named it 2026-10-12).
+- **Location is the harness user's, and the walk asks for it.** The gardener, 2026-10-12: it is the location of the OS user who runs the harness, *shown, not leaked*. The walk asks the new gardener to turn it on; one yes covers every shin of the garden. Where the yes is kept and how the daemon reads it is Baisai's; the mechanism (no iCloud) is still being ruled (Mori-shin, spec 0.3.0).
+- **Two gardens on one machine, each with its own master salt**, and no hardcoded gardener or garden slug in any tool: the design target, the gardener's word, 2026-10-12 (Baisai's build). Planting already keeps a salt per garden; signing still reads one fixed keychain item.
+
+Lives in core, beside Bonsai's body, at the gardener's word (2026-10-11): *"put the runbook in core."*
+
+---
+
+## What the first rehearsal taught, gap by gap
+
+The numbers are the rehearsal's own gap log, which stays with the walk (intel, outside every repo). This table carries the craft only. *Here* names the step above that now holds the lesson; *open* names whose it is.
+
+| Gaps | What the rehearsal did | Now |
+|---|---|---|
+| 1 | The walk's preview showed the guardian's example, not the gardener's own companion | open: the preview template's rule (Eisai) |
+| 2, 41 | `BONSAI_GARDEN` still pointed at the origin; checks read the wrong keys | here: 0; the checks take `--keys pot --pot` |
+| 3, 4, 23, 28 | Five candidates per identity and the guardian's draw were not built; then three IDs locked | fixed in core; here: 6.6, 6.7 |
+| 5, 25 | The gardener had to find the terminal for every passphrase | here: 0, the pane opens in the same turn |
+| 6, 7, 15 | No 3.0 layout for the companion, no guardian body for a new garden | here: 7b |
+| 8, 34 | The empty-memory rule refused a guardian carrying initial memory | here: 7a, asked in the batch |
+| 9 | The greeting cannot render before the registry names the kin | here: order 6.8, then 7f |
+| 10 | Copied witness CVs kept their origin ids: one id in two gardens | here: 7b, new ULID and `copied-from:` |
+| 11, 96 | The guardian inherited the origin's codex; stage 4 (covenant and codex) never ran | open: the new garden's own codex (Bonsai), then stage 4 |
+| 12 | The bunshin attestation and its transport are not designed | open: the rite's owner |
+| 13 | Origin-only text a new guardian inherits (Bonsai's own body, two specs) | open: Bonsai's body; the specs to their owners |
+| 14 | Whether a guardian may divide guardians, and whether initial memory reaches it | open: the guardian role's owner |
+| 16, 17 | A lineage question (who dreamed whom) and a witness's living status surfaced late | here: 7a |
+| 18, 26, 49 | No mark; the identicon renderer had no strokes for the kanji | here: 7e, the four ID kanji as text in the frame |
+| 19, 31 | New files carried empty ids | here: 7b, `ulid.py new` |
+| 20, 98, 99 | Where a companion's lived memory lives in a pot | ruled 2026-10-12: the garden's own repo, `home/<slug>/` (above) |
+| 21, 35 | The conformance check misnamed a kin and read core's registry, not the pot's | fixed in core |
+| 22 | The gardener restored two lines the lenses had cleared in another form | open: a lens re-read, the gate's to ask |
+| 24 | The app's terminal tool takes no kanji | here: 0, a script carries them |
+| 27 | One lock printed its time estimate twice, with the wrong cap | open, small (Baisai) |
+| 29, 30 | Five passphrase prompts in a row; one typo halted a run, the re-run was clean | here: 0; one unlock per run open (above) |
+| 32 | `attest` sealed, nothing sent: the transport is open | here: 6.9 |
+| 33, 40, 62, 66, 68, 69, 71 | The lab preview's seals were refused machine-wide; the way out offered was a host-wide hand edit | fixed in core, runtime and rt: the pot's own lab-preview switch; here: 0 (never edit `seal-policy.json`), 7i |
+| 36, 37 | `identity/.pending` stayed in the bodies after `derive` | here: 7a, the gardener's yes |
+| 38, 65 | The pot's registry was keys only; the greeting needs the roster's fields | fixed in core: `seed` writes the origin's shape; here: 7f |
+| 39, 76, 93 | Sealed, verified, committed by the gardener's hand through the pot's own hook | here: 7h to 7j |
+| 42, 43 | Bodies sealed before they knew their outcome: seventeen stale passages | here: 7c, the outcome written in by script (owed) |
+| 44, 52 | No portraits; a non-square one squashed | here: 7a, 7e (square first) |
+| 45, 50 | vCards hand-made, then from core's script, which embedded the full portrait | here: 7e; open, small: the portrait skill writes `portrait-thumb.jpg` |
+| 46 | The guardian had a heritage source, no page | here: 7e |
+| 47, 48, 88, 94 | No intro line, no `one-line`: the greeting fell back to plain text | here: 7a, 7e, 7f (`one-line` required) |
+| 51, 53 | Accent colours asked one at a time | here: 7a |
+| 54 | `.DS_Store` staged and sealed | fixed: `install-runtime` writes the pot's `.gitignore`; here: 7h |
+| 55, 70 | rt wired at stage 5; no upgrade path | fixed in core: `--upgrade`; here: 5.2, 5.4 |
+| 56, 57, 59, 60, 61, 89, 92 | The garden MCP looked for its own tooling and checker inside the garden it served | fixed in runtime; here: 8.1 (`bonsai.core`) |
+| 58, 63, 67, 74, 75, 79 | A new garden's session showed the harness user's location; a fallback named one gardener | fixed in code; here: 8.2; the walk's yes and the two-gardens design open (above) |
+| 64 | Any shell seat can read the location store directly | noted: a host property, not a garden one |
+| 72, 73, 97 | Tool-written pot files went unsealed; a held key was sealed owner | partly fixed: the tools name them, `identity/` reads custodian; here: 7h |
+| 77 | Waking needs the pot's own MCP and a skill link | here: 8.2, local only |
+| 78, 81, 84 | The companion's SKILL.md kept an old activation; its first waking refused an unsealed edit | here: 7d, 7l |
+| 80, 82 | The runbook itself was asked for, then moved to core | this file |
+| 83 | A reseal handed `seal-staged` unstaged paths and sealed nothing | here: 7l, `git diff --cached` only |
+| 85, 86, 98, 99 | A SKILL.md credited no one: no identity document beside it | here: 7b, `references/identity.md` |
+| 87, 91 | The greeting step said only *render the greeting*; a session invented its flags | fixed in core: the portrait skill's table; here: 7d |
+| 90 | The conformance checker failed its own exec guard | reported to Baisai |
+| 95 | Three skills to be limited to some kin | advice blocks shipped; the harness gates open (outside the planting) |
+| 98 | Stale MCP, the validator without its schema, invented types, the filename audit | fixed in core (schema copy, audit exemptions); here: 7b (types from the enum) |

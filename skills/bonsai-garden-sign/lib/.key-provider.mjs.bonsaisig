@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M2D29991R6ME7WZTF1A8FBEA",
+  "signer": "mori-shin",
+  "role": "owner",
+  "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
+  "timestamp": "2026-10-16T05:53:04Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/lib/key-provider.mjs",
+  "file-hash": "67551c4228709cb2447c448a6cc4a3442408a0f38bcd9b0bd7551f603e5908ebf04c6eb8fb06cdb39bc8c445d3c30df99e12908144fcab6f46feb9d8861298a5",
+  "signature": "jP2RsNGmwxnAPHOFGtCrW8tMvae9xLGrouUBqtOz3dLabOT3RUUnmyxnlxanBIpBZKrLO9tLwQOiYjruAKW0DQ=="
+}

@@ -1,0 +1,6 @@
+# Private key material — never commit. See references/identity-bundle.md.
+identity/*/ca.key
+identity/*/private.key
+identity/*/cert.pem
+identity/*/chain.pem
+identity/*/ca.crt

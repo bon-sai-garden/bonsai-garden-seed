@@ -1,0 +1,98 @@
+---
+/**
+ * id: 01M48VA815S9KAQHR12BRR9A6S
+ * CrewMember — one member's page body: the agent selector on top, the full card below, then
+ * previous, the whole crew and next. The instance's page passes the slug and its own labels:
+ *
+ *   ---  // src/pages/<route>/[slug].astro
+ *   export function getStaticPaths() { return crewPaths(loadCrew({ config })) }
+ *   const { rings, ringId } = memberRings(member)
+ *   ---
+ *   <Layout ...><CrewShell preview={...} rings={rings}><CrewMember crew={crew} slug={slug} ringId={ringId} /></CrewShell></Layout>
+ */
+import LedRing from './LedRing.astro';
+import AgentSelector from './AgentSelector.astro';
+import { navFor } from '../lib/crew-nav.mjs';
+interface Props {
+  crew: any; slug: string; ringId: number;
+  homeHref?: string; homeLabel?: string; crewLabel?: string; crewKanji?: string; wholeLabel?: string;
+}
+const { crew, slug, ringId, homeHref = '/', homeLabel = '', crewLabel = 'The crew', crewKanji = '', wholeLabel = 'The whole crew' } = Astro.props;
+const { data, members, order, route } = crew;
+const m = members.find((x: any) => x.slug === slug);
+const nav = navFor(order, slug);
+const byslug = Object.fromEntries(members.map((x: any) => [x.slug, x]));
+const prev = byslug[nav.prev];
+const next = byslug[nav.next];
+---
+  <AgentSelector rows={data.rows} members={byslug} route={route} current={slug} label={crewLabel} />
+
+  <p class="tm-eyebrow tm-crumb">
+    {homeLabel && (<><a href={homeHref}>{homeLabel}</a><span aria-hidden="true">›</span></>)}
+    <a href={route}>{crewKanji && <span class="tm-eyebrow-kanji" lang="ja">{crewKanji}</span>} {crewLabel}</a>
+    <span aria-hidden="true">›</span>
+    <span>{m.name}</span>
+    <span class="tm-count">{nav.index + 1} of {nav.total}</span>
+  </p>
+
+  <article class={`tm-card frame-${m.frame}${m.family ? ' is-family' : ''}`} id={m.slug} aria-labelledby={`n-${m.slug}`}>
+    <LedRing m={m} ringId={ringId} size="lg" />
+
+    <div class="tm-who">
+      <p class="tm-kicker">
+        <span class="tm-kanji" lang="ja">{m.kanji}</span>
+        {m.role && <span class="tm-role">{m.role}</span>}
+        {m.pronouns && <span class="tm-pron">{m.pronouns}</span>}
+      </p>
+      <h1 id={`n-${m.slug}`} class="tm-name">{m.name}</h1>
+      {m.intro?.tagline && <p class="tm-tagline">“{m.intro.tagline}”</p>}
+      {m.intro?.role_line && <p class="tm-roleline">{m.intro.role_line}</p>}
+    </div>
+
+    <div class={`tm-intro${m.intro?.draft ? ' is-draft' : ''}${m.intro?.stage === 'in-review' ? ' is-review' : ''}`}>
+      {m.intro ? (
+        <>
+          {m.intro.draft && (
+            <p class="tm-draft"><span>{m.intro.stage === 'in-review' ? 'IN REVIEW' : 'DRAFT'}</span>{m.intro.draft_reasons.join(' · ')}</p>
+          )}
+          {/* the body in order; a quote block is a blockquote, its attribution a quiet cite (the builder escapes both) */}
+          {(m.intro.blocks ?? m.intro.paragraphs.map((p: string) => ({ p }))).map((b: any) => b.quote != null ? (
+            <blockquote class="tm-quote"><p set:html={b.quote} />{b.cite && <cite class="tm-quote-cite" set:html={b.cite} />}</blockquote>
+          ) : <p set:html={b.p} />)}
+          {m.intro.errors && (
+            <section class="tm-errors" aria-labelledby={`e-${m.slug}`}>
+              <h2 id={`e-${m.slug}`}>{m.intro.errors.heading}</h2>
+              {m.intro.errors.paragraphs.map((p: string) => <p set:html={p} />)}
+            </section>
+          )}
+          {m.intro.writer && m.intro.writer !== m.slug && m.intro.writer_name && (
+            <p class="tm-byline">Introduction written by {m.intro.writer_name}.</p>
+          )}
+        </>
+      ) : (
+        <p class="tm-coming">Introduction coming.</p>
+      )}
+    </div>
+
+    <footer class="tm-marks">
+      {m.seal_svg && <div class="tm-seal" set:html={m.seal_svg} />}
+      <dl>
+        <div><dt>name-mark</dt><dd lang="ja">{m.name_mark}</dd></div>
+        {m.signing_mark && <div><dt>signing mark</dt><dd lang="ja">{m.signing_mark}</dd></div>}
+        {m.verify && <div><dt>fingerprint</dt><dd><a class="tm-fp" href={m.verify} title={`Check ${m.name}'s seal on the garden's verify page`}>{m.fp8}</a></dd></div>}
+      </dl>
+    </footer>
+  </article>
+
+  <nav class="tm-pager" aria-label="Previous and next">
+    <a rel="prev" href={`${route}${prev.slug}/`} class="tm-pager-prev">
+      <span class="tm-pager-dir">← previous</span>
+      <span class="tm-pager-name"><span lang="ja">{prev.kanji}</span> {prev.name}</span>
+    </a>
+    <a href={route} class="tm-pager-all">{wholeLabel}</a>
+    <a rel="next" href={`${route}${next.slug}/`} class="tm-pager-next">
+      <span class="tm-pager-dir">next →</span>
+      <span class="tm-pager-name"><span lang="ja">{next.kanji}</span> {next.name}</span>
+    </a>
+  </nav>
+

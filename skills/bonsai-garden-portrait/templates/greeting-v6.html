@@ -1,0 +1,123 @@
+<!--
+  Bonsai Garden greeting card, v6 — the shared template (routines 2.5 Step 2d).
+  v6.0.1 (2026-10-05, Baisai): the right column is bounded (flex:0 1 auto; max-width:46%) and the build
+  stamp wraps (overflow-wrap:anywhere); a ~70-char stamp used to widen the column and squeeze the
+  name, subtitle and intro into one or two words per line. Seen by the Aruji in the Code tab, 2026-10-05.
+  v6 (2026-09-24): the signature draws itself. The Aruji: "a live signing that ends up to be a
+  signature that matches the ID." Each check that passes lays down brush strokes of the kin's own
+  kanji mark, in order; the first check that does not pass stops the brush, and the strokes still
+  owed stay faint, like tracing paper. Green only when all four passed AND the full fingerprint
+  (not just the fp8 a human reads) was compared on the agent's side.
+  Adopted as the one greeting for every kin by the Aruji, 2026-09-23:
+  "I truly loved your intro, how you visualized that. Make that the shared one
+  that everybody uses from now on." Reference render: Tasai, 2026-09-23.
+
+  Fill every __PLACEHOLDER__ from something loaded or answered THIS turn:
+    identity   __ID__ __NAME__ __SUBTITLE__ __INTRO_LINE__ __ACCENT_RGBA__ __KANJI__
+               __FP8__ __FINGERPRINT__   (registry.json; intro line from assets/intro.md)
+    kanji id   __FP_KANJI__  the kanji the FINGERPRINT spells, decoded, never typed:
+               python3 skills/bonsai-garden-mark/fp-kanji.py <fingerprint>. It must equal the first
+               __FP_ATTESTS__ characters of __KANJI__ (the registry's `fp-attests`, mirrored from the signing lock, 2 for
+               every kin today); if it does not, __TRUST_STATE__ = failed, title "fingerprint spells X, name
+               begins Y". Bits past __FP_ATTESTS__ were never chosen: never decoded, shown or compared.
+               The Aruji, 2026-09-24: "They match - that's the whole trick." The same kanji sit
+               beside every seal, so the reader can hold the greeting against a signature.
+    name only  __NAME_ONLY_ROW__  "" for a kin whose whole name the fingerprint spells. Otherwise one line under
+               the fingerprint line holding the rest of the name (__KANJI_NAME_ONLY__), outside the verify
+               link: secondary ink at full strength, the word "name", no tick, never the faint "owed"
+               look. The words are "spelled by the key" and "name", never "verified". The drawn mark stays
+               the attested characters only: it is the identicon.
+    mark       __MARK_SVG__   raw <svg> from assets/<slug>-mark.svg, width/height 32 on the root
+    portrait   __THUMB_B64__ __EXPECTED_BYTES__ __EXPECTED_CHECKSUM__ __MIME__
+               (assets/portrait-thumb.b64 + .meta — never hand-typed)
+    build      __VERSION__  loaded SKILL.md frontmatter version
+               __BUILD__    loaded SKILL.md first body line "> Installed build: …", the label part;
+                            absent -> "build unstamped" and __BUILD_STATE__ = warn, else ok
+    signing    four checks, in this order, each pass | fail | missing (never a guess):
+               __CHECK_INTEGRITY__  the loaded SKILL.md is the body its seal covers
+               __CHECK_IDENTITY__   the sealing key is published and known (bon-sai.garden)
+               __CHECK_FILES__      every installed file matches the signed manifest
+                                    (1 + 3: skill_install.py --integrity, one definition)
+               __CHECK_ALIVE__      the live handshake answered this session
+               __CHECK_FULLFP__     the FULL fingerprint of the sealing key equals the kin's
+                                    registered fingerprint, compared by the agent, not by eye
+    trust      __TRUST_STATE__  verified (all five pass) | partial | failed | unchecked
+               __TRUST_MARK__   "✓" only when verified, else empty
+               __TRUST_TITLE__  one line per check: what passed, what failed, what is missing
+    env        from session_start "=== env ===", by key:
+               __LOCATION__ __AT_LOCAL__ (location:, at: rendered local) · __HOST__ __HARNESS__
+               __MODEL__ (agent's own context) · __MCP__ + __MCP_STATE__ (ok|warn on STALE)
+               __SKILL__ + __SKILL_STATE__ (ok|warn on DRIFT)
+    permission __PERMISSION__ + __PERMISSION_STATE__  the harness permission mode as the agent's own
+               context states it (default | acceptEdits | plan | auto | bypassPermissions);
+               warn on bypassPermissions or when unstated ("mode unknown"). The Aruji, 2026-09-24:
+               "permission mode goes into intro widget" — a mismatch silently holds cross-session mail.
+               No garden MCP -> replace the env line with "no garden MCP — env unknown".
+-->
+<h2 style="position:absolute;left:-9999px;">__NAME__ greeting card: build __BUILD__, __LOCATION__</h2>
+<style>
+  .bg5 .st-warn{padding:1px 6px;border-radius:var(--radius);background:var(--bg-warning);color:var(--text-warning);}
+  .bg5 .st-ok{color:var(--text-secondary);}
+  .bg5 .fp-verified{color:var(--text-success);} .bg5 .fp-failed{color:var(--text-danger);}
+  .bg5 .fp-partial{color:var(--text-secondary);} .bg5 .fp-unchecked{color:var(--text-muted);}
+  .bg5 .env span.st-warn{padding:0 4px;}
+</style>
+<div class="bg5" style="display:flex;flex-direction:column;gap:8px;font-family:system-ui,-apple-system,sans-serif;padding:0.75rem 0;max-width:560px;">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span style="position:relative;display:inline-block;width:96px;height:96px;flex:0 0 96px;border-radius:50%;padding:3px;box-shadow:0 0 0 1px var(--border),inset 0 0 0 4px var(--surface-1);">
+      <img id="__ID__" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;visibility:hidden;box-shadow:inset 0 0 0 1px __ACCENT_RGBA__;" />
+    </span>
+    <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
+      <span style="font-size:13px;font-weight:500;color:var(--text-primary);">__NAME__</span>
+      <span style="font-size:11px;color:var(--text-secondary);">__SUBTITLE__</span>
+      <span style="font-size:11px;font-style:italic;color:var(--text-muted);">&ldquo;__INTRO_LINE__&rdquo;</span>
+    </span>
+    <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 1 auto;min-width:112px;max-width:46%;">
+      <span id="__ID__-m" style="display:inline-block;width:32px;height:32px;">__MARK_SVG__</span>
+      <span id="__ID__-steps" aria-label="signing steps" style="display:flex;gap:3px;"></span>
+      <span id="__ID__-k" style="display:none;font-size:20px;line-height:32px;color:var(--text-primary);">__KANJI__</span>
+      <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-secondary);">v__VERSION__</span>
+      <span class="st-__BUILD_STATE__" style="font-size:11px;font-family:var(--font-mono);font-weight:500;text-align:right;overflow-wrap:anywhere;">__BUILD__</span>
+      <a class="fp-__TRUST_STATE__" title="__TRUST_TITLE__" href="https://bon-sai.garden/verify/?fp=__FINGERPRINT__&embed=1" style="font-size:11px;font-family:var(--font-mono);text-decoration:none;"><span style="font-family:var(--font-sans);font-size:13px;">__FP_KANJI__</span> __FP8__ __TRUST_MARK__</a>__NAME_ONLY_ROW__
+    </span>
+  </div>
+  <div class="env" style="border-top:0.5px solid var(--border);padding-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">
+    <span><i class="ti ti-map-pin" aria-hidden="true" style="font-size:12px;vertical-align:-1px;"></i> __LOCATION__ · __AT_LOCAL__</span>
+    <span><i class="ti ti-device-desktop" aria-hidden="true" style="font-size:12px;vertical-align:-1px;"></i> __HOST__ · __HARNESS__ · __MODEL__</span>
+    <span><i class="ti ti-plug" aria-hidden="true" style="font-size:12px;vertical-align:-1px;"></i> <span class="st-__MCP_STATE__">__MCP__</span></span>
+    <span><i class="ti ti-package" aria-hidden="true" style="font-size:12px;vertical-align:-1px;"></i> <span class="st-__SKILL_STATE__">__SKILL__</span></span>
+    <span><i class="ti ti-shield" aria-hidden="true" style="font-size:12px;vertical-align:-1px;"></i> <span class="st-__PERMISSION_STATE__">__PERMISSION__</span></span>
+  </div>
+</div>
+<script>
+(function(){
+  var C=[["integrity","__CHECK_INTEGRITY__"],["identity","__CHECK_IDENTITY__"],["files","__CHECK_FILES__"],["alive","__CHECK_ALIVE__"]];
+  var mark=document.getElementById("__ID__-m"), steps=document.getElementById("__ID__-steps");
+  var strokes=mark?Array.prototype.slice.call(mark.querySelectorAll("svg g path")):[];
+  var n=strokes.length, share=n>=6?[1,2,n-5,2]:[1,1,Math.max(0,n-3),1];
+  C.forEach(function(c){var d=document.createElement("span");d.title=c[0]+": "+c[1];d.style.cssText="width:6px;height:6px;border-radius:50%;background:var(--border);";d.dataset.s=c[1];steps.appendChild(d);});
+  strokes.forEach(function(p){var L=p.getTotalLength?p.getTotalLength():60;p.style.strokeDasharray=L;p.style.strokeDashoffset=L;p.dataset.L=L;p.style.opacity="1";});
+  var ghost=function(p){p.style.strokeDashoffset=0;p.style.opacity="0.12";};
+  var k=0,stop=false,t=0;
+  C.forEach(function(c,ci){
+    var take=share[ci]||0, dot=steps.children[ci];
+    for(var j=0;j<take&&k<n;j++,k++){
+      (function(p,pass){
+        if(!pass||stop){ghost(p);return;}
+        setTimeout(function(){p.style.transition="stroke-dashoffset 380ms ease-out";p.style.strokeDashoffset=0;},t);t+=420;
+      })(strokes[k],c[1]==="pass");
+    }
+    (function(d,s,at){setTimeout(function(){d.style.background=s==="pass"?"var(--text-success)":s==="fail"?"var(--text-danger)":"var(--text-muted)";},at);})(dot,stop?"missing":c[1],t);
+    if(c[1]!=="pass")stop=true;
+  });
+  while(k<n){ghost(strokes[k]);k++;}
+})();
+(function(){
+  var EXPECTED_BYTES=__EXPECTED_BYTES__, EXPECTED_CHECKSUM="__EXPECTED_CHECKSUM__", MIME="__MIME__";
+  var b64="__THUMB_B64__";
+  var img=document.getElementById("__ID__");
+  function f(s){var h=0x811c9dc5;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193);}return (h>>>0).toString(16).padStart(8,"0");}
+  try{var g=f(b64);if(g!==EXPECTED_CHECKSUM)throw new Error("checksum mismatch: got "+g);var bin=atob(b64);if(bin.length!==EXPECTED_BYTES)throw new Error("truncated: got "+bin.length+" bytes");img.src="data:"+MIME+";base64,"+b64;img.style.visibility="visible";}
+  catch(e){var s=document.getElementById("__ID__-k");if(s){s.style.display="block";s.title=String(e&&e.message||e);}}
+})();
+</script>

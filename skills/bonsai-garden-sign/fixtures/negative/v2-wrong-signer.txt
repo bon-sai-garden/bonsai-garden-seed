@@ -1,0 +1,3 @@
+PLANTED NEGATIVE FIXTURE, seal v2: wrong-signer. Sealed by baisai, the sidecar then relabelled as bonsai, and the bytes then changed.
+Do not re-seal. test-planted-negative.mjs asserts bad-signature (fingerprint is checked before hash).
+changed after sealing - the hash is wrong too, so only fingerprint-first says bad-signature

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP5ZZATK45GEN4R7K59JT",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:24Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/shared-context-digest.md",
+  "file-hash": "bd579690891261be0cfd9c7b1c35355f2621e0eb3aedf70f53b3783d08b6e89055420f771056ab6cf4395d5344e73ffb47b0e2072b2e4911d66baf57cba7b7b7",
+  "signature": "Oua4C1/wgp98k9/K5xJDN47oNZMyBhyYZfxM/hg7NIKBPVYpmfOMmDcLBWZJ5tiRlAPi65uI7qnj/oY3gJgfAw=="
+}

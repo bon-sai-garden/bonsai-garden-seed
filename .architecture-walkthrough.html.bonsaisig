@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42WQPZVW4R8B36MFEKDT",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-07T06:01:27Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "architecture-walkthrough.html",
+  "file-hash": "a9b6fc4198c3d48f5a7226cea03167f38f80fad4ca0d15f80b408081e819ebc29073209b173550a5f9315cab07740c6c278c4a2f5cba6555c41e40dbd12a5979",
+  "signature": "VEYsTFlBIZVfMT0p8fq50wc2Jsv9i4k2yH4v0QiZqNyHg2z8xWFE5cMJoIM2LeYHyY8+iAbo4+Gz86zIjREXBw=="
+}

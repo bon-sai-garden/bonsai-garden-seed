@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGJ",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/sai-operational-lessons.md",
+  "file-hash": "2edb42f403983eff6dcf0d130c46be0b168a8e4daa36a218869294fc04bd8a533368ac4e6a0490118e40fbd567133bc3c4bc30e926a53055f89aa07838000464",
+  "signature": "/9fANOwnsgDGIEu2lc2zst5F/WplFZ6J0Bl+Ocz0ks5V62Enco2Ttr7oxMaLCIVi+ItDRKcTIBQ6QMsWyoLMBA=="
+}

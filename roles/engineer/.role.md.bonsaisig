@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KT3GFR7XAXW31VGRMSYBKQFM",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:44Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/engineer/role.md",
+  "file-hash": "eb037664ea1c315b6b874dfc3ccd7fc4459bdd6b161ef05695693c0dcb2fb4ca4f9fdcb41e0a9b779d07f91ecf75030e8bbe8b9c89225b53f4523983ca0c6706",
+  "signature": "uGmiyHh1t3NPikEMzDYih9ZvwHQu6lGenYDbP6fFri2UWdch4yEv5gk9WuWdd/o8WVTve7Pixnf4Lob+ZyYtCQ=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48JVMV8VXM40HGD5A3HW35F",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-06T17:59:46Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/04-imagine-them.html",
+  "file-hash": "d56df11929e45f79c857a2d5486b24a3c3e63eced68bacfc9639e6414bbc3162199c750d08bdee7ced0e59ebb6415bd48fefa8d8ca4516ed9320e5efc4baa06c",
+  "signature": "/3OV/qrwYlWmXZGljOt6/P+mw7ujKsXIIcPyMY25eZy7o75RGRXBVqxQF3Yp/sYeLz7fnUJUAugpKyzvkYzeAg=="
+}

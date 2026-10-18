@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGT",
+  "signer": "zensai",
+  "role": "owner",
+  "fingerprint": "03801f1b5238186f88b4bd8853d629c4",
+  "timestamp": "2026-10-16T14:33:10Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/why-seed.md",
+  "file-hash": "c013652ff857767be4f9a419baba172cfe047128eae2ad69aa768b103f8f34c0c6171ee5b7f9963f6cabf518378b24530dddec6ed81469f7c37ce592ac405031",
+  "signature": "NRWWHH41s4vCLFFkp9gMr2jpGmBpSFpp1KUNUldJZT9SxMJoNsWdAyAmvhoCk56D2297aeljT4qarDpIehhyBQ=="
+}

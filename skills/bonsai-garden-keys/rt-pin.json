@@ -1,0 +1,12 @@
+{
+  "format": "bonsai-garden-rt-pin/1",
+  "name": "bonsai-garden-rt",
+  "version": "0.8.3",
+  "upstream": {
+    "repo": "bonsai-garden-runtime",
+    "commit": "5b4b0eb00b6c3103abc46fbb7a35ab4d382eb2c5"
+  },
+  "rt-commit": null,
+  "manifest-sha256": "985c756d88315bc816c21ea09418119ce2a2376a942ba6ea329b9aab62653191",
+  "_what": "Not read by this core (2026-10-18: core takes an rt by rt-minimum.json, a minimum version and its owner's seal, never by a hash). Kept only because rt 0.8.3 and older read it: their garden MCP's exec gate refuses to start without it (tools/bonsai-mcp/signer.py, core_gate), and their doctor notes it. It goes, on the gardener's word, once no such rt serves a garden on this host (the Studio's own MCP runs rt 0.8.3 until rt 0.8.4 is cut and installed)."
+}

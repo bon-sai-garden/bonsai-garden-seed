@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4AFY7G9MRDDYWZ8NXGV2ZST",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T15:04:15Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/test-reserved-marks-mutants.mjs",
+  "file-hash": "b9e16d1f412fff00f5cfceeb93846608871a9e0727fbb5d7974f10c87c01e523f2540495d1c23d2682d4448f50149c899897e57e9cf34d5a1d2261024095c456",
+  "signature": "N93LKMROSjki9eGh+Ya09eEnhww1fAp1JryyqL6atacLWT8iTbujW/fqQ0E4EKlsetXxaCoWBE3subq0jrnuBQ=="
+}

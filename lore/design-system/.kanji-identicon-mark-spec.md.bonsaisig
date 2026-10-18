@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KT6QCMB7YRBFBMF4M9QW9DZP",
+  "signer": "eisai",
+  "role": "owner",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-16T14:35:31Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/design-system/kanji-identicon-mark-spec.md",
+  "file-hash": "fff911e27fcbc0ba311ea29f95dce2a93388521b2aa275b5213bbe39765ee4421e2bfc3177b28f245be17be81d269c63a1282e9b0b2c764cf8ea3df74b9e76ea",
+  "signature": "giVq91woUfYyPkWek3PymW10AJhgjA587460HAqa94TTAg1JAmvQHe21qxuFftzimug17at7qrBiUfYhR5fZCQ=="
+}

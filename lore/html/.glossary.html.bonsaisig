@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42ZPHG8N84VBAVP8GZ3B",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T18:03:02Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/html/glossary.html",
+  "file-hash": "cc4277dd6d2ee4404f7beb88f5f9b4665312d0a1a2e9693b3b54315a293dc4ac4956f2f77ccc0a999ac23807ca2f1b808271be04e5c6bdfc4afb6f94f5cc4b65",
+  "signature": "RkO4ZL57d5bOLEG4gLa8vltOZI2sQFSSrBV4n/eZqo05JWFGkVgOtC5H6qEmPZ0l60nC+MWkdrrueGAmerblDQ=="
+}

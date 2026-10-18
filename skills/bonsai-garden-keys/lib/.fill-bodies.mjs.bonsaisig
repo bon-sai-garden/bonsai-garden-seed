@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4Z27XFGZ0DF36A46J6JP3X3",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T15:04:12Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/lib/fill-bodies.mjs",
+  "file-hash": "e2248cebf6ac1a95ebe6cf7b53367e111176c67da0e86746fac503c911d8d2c7af4f870c5b89d3303bb9ac6024504b3e4f052edde47a00e517529f48c2aafa24",
+  "signature": "2YR7wDdLjMPzXCrRcjbvSltwZVd9OqkwOuZWXUwBtRRFcp30D4KB4f1vkmZ1OZ/xBygY+8OwwVPkhOBxHMStDg=="
+}

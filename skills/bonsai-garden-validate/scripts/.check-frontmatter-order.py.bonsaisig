@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3953H806YXBBV5ZHQQZGS97",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:02:42Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-validate/scripts/check-frontmatter-order.py",
+  "file-hash": "5ff0df25a032fb900637f140d8c8ca022915bccbfb331f1ef56f31c385a4be4540edc31402054dc75ad694d6a335484718450c12a53572f5b38b420608b3ea8c",
+  "signature": "9qFoQdbjqtbp/rn2g4aP1mNiKI6QWcV1B6j65b+2gwHjuDCJ9K6Lbaax2cncfPjPDRHk4wziYNgfKfjUlDSaBQ=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M2D3H8SEXV142WESTEBZV2J3",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T14:28:54Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/skill-template.md",
+  "file-hash": "64b9a22fef7f62f54262f3f26569cba0c9a61001d8afab75381fc8eb5caa0ec562fa70d06f63a11908947fc205cd36337533e7a6eb82ea3dcebba9685698cec9",
+  "signature": "WPSpltEYo9J8Gx44wb9mMxSm+kLksKk1vLuHJJBk5bz1DcCoHp9Y5xwpdLvV+6lmJwTTkZLetqEK7f1G+8w3Cw=="
+}

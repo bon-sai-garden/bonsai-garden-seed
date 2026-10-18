@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVH1",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-09-26T21:31:28Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/memory/strategic-context.md",
+  "file-hash": "f87cba03550516219849a3900fe59db88f194fda66e7534d54bab55cf44ad163fd3d35b04686727fda5a0fa3306a3a30ce400e79f4be508cba097dacef7da9de",
+  "signature": "IpCkWBV13l+y8zdFsSL6x3x88gwZ+IXgzwMRc2fmUfzEEytrYziCpSll3UuCnH5Cbe5BiSJBGJkuGgsATG6BBQ=="
+}

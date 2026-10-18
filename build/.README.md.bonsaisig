@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M57VZERDR35MGFA966FFJCS4",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-18T20:41:08Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "build/README.md",
+  "file-hash": "aa9a2d3e90d796613e506ad02295ed66f4807cef60544920aa804b838b13526099564370c903c33f26384ebdd0b46652279906f09ae905bad1f2dd4afb117f83",
+  "signature": "RwZRJCM1NyEhH2bDBSaDMLll2DL3tT5xG0BNRHcFX6yzxeMCYQJrvgu/NZ7L7k1JbgbKwUCyRQ5jfYG+RUBKCw=="
+}

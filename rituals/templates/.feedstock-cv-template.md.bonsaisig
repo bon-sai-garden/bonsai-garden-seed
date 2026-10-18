@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP5ZZATK45GEN4R7K59JS",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:56Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/templates/feedstock-cv-template.md",
+  "file-hash": "39ed468f33ad8aa2122f1277402f32070338b10055099c91d401149dd80552c0b43a90c12c6b3826ad31f186a7649354ababa457f4dcda2b92c1c8039bdfef7c",
+  "signature": "qd26zOk6RIJN/T+3lW949gvPyTlJE84fSOyKCBszvKMImbA5ZURK1XocApzQgeJntZakCOBkx2X1eNy+YyPBCQ=="
+}

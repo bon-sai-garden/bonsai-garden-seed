@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4AF5TH1TGDX3W0A1F0YGZJJ",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:34Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/test-sidecar-name-flip.mjs",
+  "file-hash": "aac13a95d0be84b4f52c7b5b6a5bf769c56689aaa61f8a3e457496c4e5b838f9894b318072833bc19989392b285314ac12359095daaa9ca517548251decce82b",
+  "signature": "+Nxgl2Nl537J2L+jDAjFz+QmO0GLHiLd2Qw1nrWhaTjGD09PMWPBGgbZgIkeaKZPWb9ZEMxAoyF0LulDsC4JCQ=="
+}

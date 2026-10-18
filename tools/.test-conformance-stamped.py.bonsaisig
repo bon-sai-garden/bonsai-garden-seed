@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4WE7FJYBFS6MN19H1X3AGYA",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T15:28:35Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/test-conformance-stamped.py",
+  "file-hash": "58068ba0e5674a1cc0abf1903f5de19d50a65dfe458fc760e6ad27ad1416e3d214a975be4474bc359a2a0077924bd42731d017d7e59820e5638e97a244ebac92",
+  "signature": "17H3phqnau5ZRvUxFBgP+gJ2t44hq3C42NhuD8zw9IOXIJSdIGlspaZgD2EIKJPHHk3myqRfUwbCB9iyLQLKBQ=="
+}

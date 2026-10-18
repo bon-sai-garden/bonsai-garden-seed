@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M46052KWK8PY6KMJVRYZY436",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:02:22Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-core-plugin/scripts/test_finder_parity.py",
+  "file-hash": "f6b5ffa656a3bd8535e0ff6b34380378869bb7443158398a2d6e7c6c84630e502027826fdf50f2e12568d7d0d7b38410352c6d381160dbb9a2cd33da1ba1bd66",
+  "signature": "QXR04h46jMcKGuqv2Vw790MubOmQYiUdm+TZXELsWdhUjK73OEhNJjBJh+XyS/jvdmIAl7QqLGza8GLmqmA+Dw=="
+}

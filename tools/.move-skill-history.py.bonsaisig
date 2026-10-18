@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4T6Q90PE74P82ZB4VCEZAMG",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:30:20Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/move-skill-history.py",
+  "file-hash": "3f7df52c844c38935c781782d90c1fd927dc487dd5b80ae64f5f49ac342348ff8beb25097d22d2efbc3cc2273589b732d043f14afaaf5bd545bd65703a283df0",
+  "signature": "Rd3setrZL+DkyPgDs+rZ4BmHBIbhJ1I1ch7QGyLszqs590FE2l80e/g3E+DC97B0IJbtpFiVuWLa8icJhCgQDw=="
+}

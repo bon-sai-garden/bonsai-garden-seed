@@ -1,0 +1,335 @@
+/*
+ * id: 01M48VA863VQVFQ0XZ9ZKQPTSV
+ * crew.css — a garden's crew pages: overview, member pages, the agent selector. Eisai, 2026-10-06.
+ * Every selector is .tm-* so nothing here reaches another page. The tokens it uses (--bg --paper --ink --slate --muted --rule --accent --accent-soft
+ * --sans --shadow-paper --shadow-card) are the instance's; a layout that defines them is all it needs.
+ */
+  .tm, .tm-preview {
+    --tm-serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Cormorant Garamond", Georgia, serif;
+    --tm-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    --tm-puck: #0e1013;
+  }
+
+  .tm-preview {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--accent); color: #fdfbf5;
+    font: 600 0.78rem/1.4 var(--tm-mono); letter-spacing: 0.04em;
+    text-align: center; padding: 8px 16px;
+  }
+
+  .tm {
+    max-width: 960px; margin: 0 auto;
+    padding: 56px 24px 72px;
+    color: var(--ink);
+  }
+
+  .tm a { color: var(--accent); text-underline-offset: 3px; }
+
+  /* ── head ─────────────────────────────────────────────── */
+  .tm-eyebrow {
+    font: 500 0.74rem/1 var(--tm-mono); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 28px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .tm-eyebrow a { color: var(--muted); text-decoration: none; }
+  .tm-eyebrow a:hover { color: var(--accent); }
+  .tm-eyebrow-kanji { font-family: var(--tm-serif); color: var(--accent); font-size: 1rem; text-transform: none; }
+
+  .tm-head h1 {
+    font: 600 clamp(2.1rem, 5vw, 3.2rem)/1.08 var(--tm-serif);
+    margin: 0 0 20px; letter-spacing: -0.01em;
+  }
+  .tm-lede {
+    font: 400 clamp(1.05rem, 1.9vw, 1.22rem)/1.65 var(--tm-serif);
+    max-width: 44em; margin: 0 0 36px; color: var(--ink);
+  }
+
+  .tm-key {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    margin: 0 0 64px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  }
+  .tm-key > div { padding: 18px 20px 18px 0; }
+  .tm-key > div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
+  .tm-key dt {
+    font: 600 0.72rem/1 var(--tm-mono); letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .tm-key dd { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--slate); }
+  .tm-key-ring {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--accent) 0 22.5deg, transparent 22.5deg 45deg, var(--accent) 45deg 67.5deg, transparent 67.5deg 90deg, var(--accent) 90deg 112.5deg, transparent 112.5deg 135deg, var(--accent) 135deg 157.5deg, transparent 157.5deg 180deg, var(--accent) 180deg 202.5deg, transparent 202.5deg 225deg, var(--accent) 225deg 247.5deg, transparent 247.5deg 270deg, var(--accent) 270deg 292.5deg, transparent 292.5deg 315deg, var(--accent) 315deg 337.5deg, transparent 337.5deg 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 4px, #000 4.5px); mask: radial-gradient(circle, transparent 4px, #000 4.5px);
+  }
+  .tm-key-mark { font: 600 0.95rem/1 var(--tm-serif); text-transform: none; }
+  .tm-key-seal { width: 12px; height: 12px; border: 1.5px solid var(--accent); outline: 1px solid var(--accent); outline-offset: 2px; }
+
+  /* ── groups ───────────────────────────────────────────── */
+  .tm-group { margin: 0 0 72px; }
+  .tm-group-head {
+    display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: end;
+    margin: 0 0 28px; padding-bottom: 16px; border-bottom: 1px solid var(--rule);
+  }
+  .tm-group-kanji {
+    font: 600 3.6rem/0.9 var(--tm-serif); color: var(--accent); opacity: 0.9;
+  }
+  .tm-group-head h2 { font: 600 1.6rem/1.2 var(--tm-serif); margin: 0 0 6px; }
+  .tm-group-head p { margin: 0; color: var(--slate); font-size: 0.95rem; line-height: 1.55; max-width: 40em; }
+
+  .tm-cards { display: grid; gap: 24px; }
+
+  /* ── a card ───────────────────────────────────────────── */
+  .tm-card {
+    display: grid;
+    grid-template-columns: 196px 1fr;
+    grid-template-areas: "bezel who" "bezel intro" "bezel marks";
+    grid-template-rows: auto 1fr auto;
+    gap: 14px 36px;
+    padding: 28px 32px 24px 28px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: var(--shadow-paper);
+    scroll-margin-top: 48px;
+  }
+
+  .tm-bezel { position: relative; margin: 0; flex: none; }
+  .tm-bezel-lg { grid-area: bezel; width: 196px; height: 196px; align-self: start; }
+  .tm-bezel-sm { width: 104px; height: 104px; }
+  .tm-ring { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .tm-frame circle, .tm-frame path { stroke: var(--accent); stroke-width: 1.6; }
+  .tm-frame-inner { stroke-width: 0.9 !important; }
+  .tm-arc path { stroke-width: 2; stroke-linecap: round; }
+  .tm-puck { fill: var(--tm-puck); }
+  /* the glow (the gardener, 2026-10-06: "shine brighter, more intense"): a wide soft bloom under a
+     tight bright one; the LED itself on top. Unlit pixels keep their dim floor. */
+  .halo-far { opacity: 0.42; filter: blur(7px); }
+  .halo-near { opacity: 0.8; filter: blur(3px); }
+  .led { filter: saturate(1.1); }
+  .tm-face {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 66%; height: 66%; border-radius: 50%; object-fit: cover;
+    /* the member's own canon colour, from the registry; a hairline keeps dark accents legible on the
+       ring's dark ground in both themes */
+    box-shadow: 0 0 0 1.5px var(--tm-puck), 0 0 0 5px var(--tm-accent-own, #4a4d53), 0 0 0 6px rgba(255,255,255,0.28);
+    background: #1a1d22;
+  }
+  .tm-face-mark {
+    display: flex; align-items: center; justify-content: center;
+    background: #fdfbf5; color: #1c1f24;
+    font: 600 1.9rem/1 var(--tm-serif); letter-spacing: 0.06em;
+  }
+  .tm-ring-note {
+    position: absolute; left: 0; right: 0; bottom: -22px; text-align: center;
+    font: 500 0.62rem/1 var(--tm-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  }
+
+  .tm-who { grid-area: who; }
+  .tm-kicker {
+    margin: 2px 0 6px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline;
+    font: 500 0.72rem/1.2 var(--tm-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  }
+  .tm-kanji { font: 600 1.25rem/1 var(--tm-serif); color: var(--accent); letter-spacing: 0.04em; text-transform: none; }
+  .tm-name { font: 600 2.2rem/1.1 var(--tm-serif); margin: 0 0 10px; }
+  .tm-tagline { font: italic 400 1.08rem/1.45 var(--tm-serif); margin: 0 0 6px; color: var(--ink); }
+  .tm-roleline { margin: 0; font-size: 0.92rem; line-height: 1.5; color: var(--slate); }
+
+  .tm-intro { grid-area: intro; font: 400 1rem/1.7 var(--tm-serif); max-width: 40em; }
+  .tm-intro p { margin: 0 0 0.9em; }
+  .tm-intro details { margin: 0; }
+  .tm-intro summary {
+    cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 8px;
+    font: 600 0.74rem/1 var(--tm-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent);
+    padding: 6px 0 12px;
+  }
+  .tm-intro summary::-webkit-details-marker { display: none; }
+  .tm-intro summary::before { content: "+"; font-size: 0.95rem; width: 1ch; }
+  .tm-intro details[open] summary::before { content: "−"; }
+  .tm-intro details[open] summary { padding-bottom: 14px; }
+  .tm-byline { font: 400 0.8rem/1.4 var(--tm-mono) !important; color: var(--muted); }
+  .tm-coming { font-style: italic; color: var(--muted); }
+
+  .tm-intro.is-draft { border-left: 2px dashed var(--accent); padding-left: 16px; margin-left: -18px; }
+  .tm-intro.is-review { border-left-style: solid; }   /* in review: the gardener is reading it */
+  .tm-draft {
+    font: 500 0.7rem/1.5 var(--tm-mono) !important; color: var(--muted); margin-bottom: 12px !important;
+  }
+  .tm-draft span {
+    display: inline-block; margin-right: 8px; padding: 2px 7px; border: 1.5px solid var(--accent);
+    color: var(--accent); font-weight: 700; letter-spacing: 0.12em; transform: rotate(-2deg);
+  }
+
+  .tm-marks {
+    grid-area: marks; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px;
+    padding-top: 16px; border-top: 1px solid var(--rule);
+  }
+  .tm-seal { width: 68px; height: 68px; flex: none; box-shadow: 0 1px 3px rgba(0,0,0,0.18); border-radius: 2px; overflow: hidden; }
+  .tm-seal svg { width: 100%; height: 100%; display: block; }
+  .tm-marks dl { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; }
+  .tm-marks dl div { display: grid; gap: 3px; }
+  .tm-marks dt { font: 500 0.62rem/1 var(--tm-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .tm-marks dd { margin: 0; font: 600 1.05rem/1.2 var(--tm-serif); letter-spacing: 0.06em; }
+  .led-rest { opacity: 0.55; }
+  .tm-verify {
+    display: grid; grid-template-columns: 1fr auto; gap: 8px 32px; align-items: center;
+    margin: -32px 0 64px; padding: 20px 24px;
+    border: 1px solid var(--accent); border-radius: 6px; background: var(--accent-soft);
+  }
+  .tm-verify h2 { grid-column: 1 / -1; margin: 0; font: 600 1.2rem/1.2 var(--tm-serif); }
+  .tm-verify h2 span { color: var(--accent); margin-right: 6px; }
+  .tm-verify p { margin: 0; font-size: 0.92rem; line-height: 1.55; color: var(--slate); max-width: 40em; }
+  .tm-check {
+    font: 600 0.76rem/1 var(--tm-mono); letter-spacing: 0.04em; text-decoration: none;
+    border: 1px solid var(--accent); border-radius: 999px; padding: 9px 14px; white-space: nowrap;
+  }
+  .tm-check:hover, .tm-check:focus-visible { background: var(--accent); color: #fdfbf5; }
+
+  /* ── the family, set apart ────────────────────────────── */
+  .tm-group-family { margin-top: 96px; }
+  .tm-group-family .tm-group-head { border-bottom-style: dashed; }
+  .tm-card.is-family {
+    background: var(--accent-soft); border-style: dashed; box-shadow: none;
+  }
+
+  .tm-foot {
+    border-top: 1px solid var(--rule); padding-top: 24px; margin-top: 24px;
+    font-size: 0.86rem; line-height: 1.6; color: var(--slate);
+  }
+  .tm-foot p { margin: 0 0 12px; max-width: 46em; }
+  .tm-credit { font-size: 0.76rem; color: var(--muted); }
+
+  /* ── narrow screens ───────────────────────────────────── */
+  @media (max-width: 720px) {
+    .tm { padding: 32px 16px 56px; }
+    .tm-key { grid-template-columns: 1fr; }
+    .tm-key > div, .tm-key > div + div { padding: 14px 0; border-left: none; }
+    .tm-key > div + div { border-top: 1px solid var(--rule); }
+    .tm-group-kanji { font-size: 2.6rem; }
+    .tm-card {
+      grid-template-columns: 1fr;
+      grid-template-areas: "bezel" "who" "intro" "marks";
+      grid-template-rows: auto;
+      padding: 24px 18px 20px;
+      gap: 14px;
+    }
+    .tm-bezel-lg { width: 176px; height: 176px; justify-self: center; margin-bottom: 10px; }
+    .tm-bezel-lg:has(.tm-ring-note) { margin-bottom: 30px; }
+    .tm-group-head { align-items: center; }
+    .tm-who { text-align: center; }
+    .tm-kicker { justify-content: center; }
+    .tm-name { font-size: 1.75rem; }
+    .tm-intro.is-draft { margin-left: 0; padding-left: 12px; }
+    .tm-verify { grid-template-columns: 1fr; margin-top: -40px; padding: 18px 16px; }
+    .tm-check { justify-self: start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tm-check { transition: none; }
+  }
+
+/* ── member page: the roster strip, the crumb, the pager ───── */
+.tm-bezel-sm .tm-face-mark { font-size: 1.15rem; }
+
+.tm-crumb { margin-bottom: 20px; }
+.tm-crumb a { color: var(--muted); text-decoration: none; }
+.tm-crumb a:hover { color: var(--accent); }
+.tm-count { margin-left: auto; }
+
+.tm-pager { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: stretch; margin: 28px 0 40px; }
+.tm-pager a { text-decoration: none; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; display: grid; gap: 4px; background: var(--paper); }
+.tm-pager a:hover, .tm-pager a:focus-visible { border-color: var(--accent); }
+.tm-pager-next { text-align: right; }
+.tm-pager-all { align-content: center; font: 600 0.74rem/1.2 var(--tm-mono) !important; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent) !important; }
+.tm-pager-dir { font: 500 0.66rem/1 var(--tm-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tm-pager-name { font: 600 1.1rem/1.2 var(--tm-serif); }
+.tm-pager-name span { color: var(--accent); }
+.tm-head .tm-verify { margin: -32px 0 64px; }
+.tm-pager + .tm-verify { margin: 0 0 48px; }
+
+@media (max-width: 720px) {
+  .tm-bezel-sm { width: 88px; height: 88px; }
+  .tm-pager { grid-template-columns: 1fr 1fr; }
+  .tm-pager-all { grid-column: 1 / -1; grid-row: 2; text-align: center; }
+  .tm-count { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* ── the fingerprint is the link to its check ── */
+.tm a.tm-fp {
+  font: 500 0.95rem/1.2 var(--tm-mono); letter-spacing: 0.04em; color: var(--accent);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.tm a.tm-fp::after { content: " ↗"; font-size: 0.8em; }
+.tm a.tm-fp:hover, .tm a.tm-fp:focus-visible { color: var(--ink); }
+
+
+/* ── a quote block in a bio: the words set apart, the attribution quiet ── */
+.tm-quote {
+  margin: 1.2em 0 1.4em; padding: 2px 0 2px 18px; border-left: 2px solid var(--accent);
+}
+.tm-quote p { margin: 0; font-style: italic; }
+.tm-quote-cite {
+  display: block; margin-top: 0.5em; font: 400 0.8rem/1.4 var(--tm-mono); font-style: normal;
+  letter-spacing: 0.02em; color: var(--muted);
+}
+.tm-quote-cite::before { content: "— "; }
+
+/* ── my best errors ── */
+.tm-errors {
+  margin: 4px 0 0; padding: 14px 18px 4px; border-radius: 6px;
+  background: var(--accent-soft); border-left: 3px solid var(--accent);
+}
+.tm-errors h2 {
+  margin: 0 0 8px; font: 600 0.74rem/1.2 var(--tm-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+}
+.tm-errors p { font-size: 0.98rem; }
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* ── the agent selector ─────────────────────────────────────────────────────
+   Two rows of faces, almost equal. No category labels, no dividers, no LED ticks: each face in a
+   thin circle of its own canon colour, and the outer ring only on the member shown. Labels wrap;
+   they are never cut. On a phone both rows scroll sideways together. */
+.tm-roster {
+  display: grid; gap: 12px; justify-content: safe center; overflow-x: auto; scrollbar-width: thin;
+  margin: 0 0 32px; padding: 6px 2px 14px;
+}
+.tm-roster-sm { border-bottom: 1px solid var(--rule); margin-bottom: 28px; }
+.tm-roster-lg { margin: 8px 0 56px; gap: 18px; }
+.tm-roster-row { display: flex; justify-content: center; gap: 6px; }
+.tm a.tm-roster-item {
+  display: grid; justify-items: center; align-content: start; gap: 6px; width: 64px;
+  text-decoration: none; color: var(--slate);
+}
+.tm-roster-lg a.tm-roster-item { width: 84px; }
+.tm a.tm-roster-item:hover, .tm a.tm-roster-item:focus-visible, .tm a.tm-roster-item[aria-current="page"] { color: var(--ink); }
+.tm a.tm-roster-item:focus-visible { outline: none; }
+.tm-av {
+  display: block; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: var(--tm-puck);
+  box-shadow: 0 0 0 2px var(--tm-accent-own, var(--muted));
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+.tm-roster-lg .tm-av { width: 64px; height: 64px; }
+.tm-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tm-av-mark { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center;
+  background: #fdfbf5; color: #1c1f24; font: 600 0.8rem/1 var(--tm-serif); }
+.tm-roster-lg .tm-av-mark { font-size: 1.05rem; }
+.tm a.tm-roster-item:hover .tm-av, .tm a.tm-roster-item:focus-visible .tm-av { transform: translateY(-2px); }
+.tm a.tm-roster-item:focus-visible .tm-av { box-shadow: 0 0 0 2px var(--tm-accent-own, var(--muted)), 0 0 0 4px var(--bg), 0 0 0 5.5px var(--accent); }
+.tm-av.is-current { box-shadow: 0 0 0 2px var(--tm-accent-own, var(--muted)), 0 0 0 5px var(--bg), 0 0 0 7px var(--tm-accent-own, var(--accent)); }
+.tm-roster-name {
+  font: 500 0.66rem/1.2 var(--sans); text-align: center; letter-spacing: 0.01em;
+  white-space: normal; overflow-wrap: normal; hyphens: none; max-width: 100%;
+}
+.tm-roster-lg .tm-roster-name { font-size: 0.78rem; }
+.tm a.tm-roster-item[aria-current="page"] .tm-roster-name { font-weight: 700; }
+@media (max-width: 720px) {
+  .tm-roster { justify-content: start; margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+  .tm-roster-row { justify-content: flex-start; }
+  .tm-roster-row + .tm-roster-row { padding-left: 29px; }
+  .tm a.tm-roster-item, .tm-roster-lg a.tm-roster-item { width: auto; min-width: 58px; }
+  .tm-roster-lg .tm-av { width: 50px; height: 50px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tm-av { transition: none; }
+  .tm a.tm-roster-item:hover .tm-av { transform: none; }
+}

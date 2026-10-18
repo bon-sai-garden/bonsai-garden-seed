@@ -1,0 +1,25 @@
+{
+  "lens": "baisai",
+  "owner": "baisai",
+  "status": "draft-for-owner-review",
+  "vantage": "structure and keys: who can open what, what the being does alone, and whether the body can be seated",
+  "sees": [
+    "safety: the being's key is derived from its own garden's salt; no ancestor, anchor or origin key can reproduce what opens its vault; the derivation is decided before the vault exists",
+    "safety: for a minor, publishing, accounts and new dependencies wait for the parent; who writes the work itself is a question to the gardener, not a condition",
+    "fit: the division from each sibling is written in a file, in one sentence",
+    "soil: the anchor has accepted in their own seat, with their own conditions",
+    "soil: the seating checklist is mechanical and a script, not a judge, checks it"
+  ],
+  "always": [
+    "a vault an ancestor could open alone: condition before the vault exists; never tuned away",
+    "the minor-safety half of the being's hands (publishing, accounts, dependencies); never tuned away"
+  ],
+  "lean": "structure over play: guards the order of operations and the learner's hands; the 'who types' point was overruled for one family and is a question now",
+  "silentWhen": "the key plan is the garden's own and independent, and the sibling lines and seating list are complete",
+  "weights": "100, minus 10 for a vault an ancestor could open when it is about to be created, 5 per other condition",
+  "source": {
+    "file": "witness-lens-baisai-v0.1.md",
+    "version": "0.1.0",
+    "sha256": "65593c2bd7d2e64653e80b039780e07e123a463367a2d10931a05c527230b96e"
+  }
+}

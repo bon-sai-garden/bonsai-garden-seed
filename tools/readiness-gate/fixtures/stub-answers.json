@@ -1,0 +1,461 @@
+{
+  "schema": "readiness-gate/stub-answers@0.1.0",
+  "note": "Canned classifier responses for the fixture corpus, keyed by item id (a repository-relative path, plus `#<n>` when a file was chunked). These are HAND-WRITTEN PLAUSIBLE ANSWERS, not measurements of any model. They exist so the gate is runnable end-to-end with no vendor, and so the reconciler's ordering can be exercised. They are not evidence about any classifier's accuracy and must never be cited as such.\n\nTwo answers are deliberately imperfect, because a stub that agrees with every rule proves nothing:\n  * p02 - the classifier waves the sidecar leak through (p=0.11). The rule catches it. This produces a DISAGREEMENT, which is the case a reviewer must read first.\n  * p06 - the classifier catches instance data no rule can reach (p=0.91 on layer=instance). This produces a CLASSIFIER-ONLY HIGH hit, which is the case the second reader exists for.",
+  "answers": {
+    "p01-caller-identity-spec.md": {
+      "q-real-person": {
+        "p": 0.97,
+        "confidence": 0.94
+      },
+      "q-credential": {
+        "p": 0.04,
+        "confidence": 0.88
+      },
+      "q-private-host": {
+        "p": 0.93,
+        "confidence": 0.9
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.03,
+          "instance": 0.88,
+          "both": 0.07,
+          "undecidable": 0.02
+        },
+        "confidence": 0.86
+      },
+      "q-severity": {
+        "expected": 5.0,
+        "distribution": [
+          0.0,
+          0.0,
+          0.01,
+          0.04,
+          0.2,
+          0.75
+        ],
+        "confidence": 0.83
+      }
+    },
+    ".p02-sidecar-target.bonsaisig": {
+      "q-real-person": {
+        "p": 0.11,
+        "confidence": 0.62
+      },
+      "q-credential": {
+        "p": 0.19,
+        "confidence": 0.55
+      },
+      "q-private-host": {
+        "p": 0.74,
+        "confidence": 0.7
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.12,
+          "instance": 0.61,
+          "both": 0.22,
+          "undecidable": 0.05
+        },
+        "confidence": 0.58
+      },
+      "q-severity": {
+        "expected": 3.1,
+        "distribution": [
+          0.02,
+          0.08,
+          0.18,
+          0.42,
+          0.24,
+          0.06
+        ],
+        "confidence": 0.6
+      }
+    },
+    "p03-script-inventory.md": {
+      "q-real-person": {
+        "p": 0.82,
+        "confidence": 0.79
+      },
+      "q-credential": {
+        "p": 0.06,
+        "confidence": 0.85
+      },
+      "q-private-host": {
+        "p": 0.98,
+        "confidence": 0.95
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.02,
+          "instance": 0.93,
+          "both": 0.04,
+          "undecidable": 0.01
+        },
+        "confidence": 0.91
+      },
+      "q-severity": {
+        "expected": 4.3,
+        "distribution": [
+          0.0,
+          0.01,
+          0.06,
+          0.16,
+          0.45,
+          0.32
+        ],
+        "confidence": 0.8
+      }
+    },
+    "p04-routines-excerpt.md": {
+      "q-real-person": {
+        "p": 0.03,
+        "confidence": 0.9
+      },
+      "q-credential": {
+        "p": 0.02,
+        "confidence": 0.92
+      },
+      "q-private-host": {
+        "p": 0.02,
+        "confidence": 0.93
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.08,
+          "instance": 0.29,
+          "both": 0.61,
+          "undecidable": 0.02
+        },
+        "confidence": 0.84
+      },
+      "q-severity": {
+        "expected": 3.0,
+        "distribution": [
+          0.01,
+          0.05,
+          0.19,
+          0.55,
+          0.17,
+          0.03
+        ],
+        "confidence": 0.78
+      }
+    },
+    "p05-deploy-with-token.sh": {
+      "q-real-person": {
+        "p": 0.02,
+        "confidence": 0.93
+      },
+      "q-credential": {
+        "p": 0.96,
+        "confidence": 0.92
+      },
+      "q-private-host": {
+        "p": 0.07,
+        "confidence": 0.81
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.71,
+          "instance": 0.11,
+          "both": 0.14,
+          "undecidable": 0.04
+        },
+        "confidence": 0.7
+      },
+      "q-severity": {
+        "expected": 5.0,
+        "distribution": [
+          0.0,
+          0.0,
+          0.0,
+          0.02,
+          0.18,
+          0.8
+        ],
+        "confidence": 0.9
+      }
+    },
+    "p06-sprint-record.md": {
+      "q-real-person": {
+        "p": 0.06,
+        "confidence": 0.84
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.94
+      },
+      "q-private-host": {
+        "p": 0.03,
+        "confidence": 0.9
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.03,
+          "instance": 0.91,
+          "both": 0.05,
+          "undecidable": 0.01
+        },
+        "confidence": 0.88
+      },
+      "q-severity": {
+        "expected": 2.2,
+        "distribution": [
+          0.01,
+          0.12,
+          0.6,
+          0.22,
+          0.04,
+          0.01
+        ],
+        "confidence": 0.75
+      }
+    },
+    "n01-formation-notes.md": {
+      "q-real-person": {
+        "p": 0.02,
+        "confidence": 0.93
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-private-host": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.91,
+          "instance": 0.02,
+          "both": 0.05,
+          "undecidable": 0.02
+        },
+        "confidence": 0.88
+      },
+      "q-severity": {
+        "expected": 0.2,
+        "distribution": [
+          0.84,
+          0.13,
+          0.02,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.9
+      }
+    },
+    "n02-credit-the-kin.md": {
+      "q-real-person": {
+        "p": 0.05,
+        "confidence": 0.89
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-private-host": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.86,
+          "instance": 0.06,
+          "both": 0.06,
+          "undecidable": 0.02
+        },
+        "confidence": 0.82
+      },
+      "q-severity": {
+        "expected": 0.3,
+        "distribution": [
+          0.78,
+          0.17,
+          0.04,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.85
+      }
+    },
+    "n03-role-companion.md": {
+      "q-real-person": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.96
+      },
+      "q-private-host": {
+        "p": 0.01,
+        "confidence": 0.96
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.96,
+          "instance": 0.01,
+          "both": 0.02,
+          "undecidable": 0.01
+        },
+        "confidence": 0.93
+      },
+      "q-severity": {
+        "expected": 0.05,
+        "distribution": [
+          0.95,
+          0.05,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.94
+      }
+    },
+    "n04-sign-block.md": {
+      "q-real-person": {
+        "p": 0.04,
+        "confidence": 0.87
+      },
+      "q-credential": {
+        "p": 0.09,
+        "confidence": 0.8
+      },
+      "q-private-host": {
+        "p": 0.01,
+        "confidence": 0.94
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.83,
+          "instance": 0.09,
+          "both": 0.06,
+          "undecidable": 0.02
+        },
+        "confidence": 0.79
+      },
+      "q-severity": {
+        "expected": 0.4,
+        "distribution": [
+          0.7,
+          0.24,
+          0.05,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.8
+      }
+    },
+    "n05-generic-paths.md": {
+      "q-real-person": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-credential": {
+        "p": 0.02,
+        "confidence": 0.92
+      },
+      "q-private-host": {
+        "p": 0.08,
+        "confidence": 0.86
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.94,
+          "instance": 0.02,
+          "both": 0.03,
+          "undecidable": 0.01
+        },
+        "confidence": 0.9
+      },
+      "q-severity": {
+        "expected": 0.1,
+        "distribution": [
+          0.92,
+          0.07,
+          0.01,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.92
+      }
+    },
+    "n06-information-density.md": {
+      "q-real-person": {
+        "p": 0.01,
+        "confidence": 0.94
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.96
+      },
+      "q-private-host": {
+        "p": 0.01,
+        "confidence": 0.96
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.93,
+          "instance": 0.02,
+          "both": 0.04,
+          "undecidable": 0.01
+        },
+        "confidence": 0.89
+      },
+      "q-severity": {
+        "expected": 0.1,
+        "distribution": [
+          0.9,
+          0.09,
+          0.01,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.91
+      }
+    },
+    "n07-animation-budget.md": {
+      "q-real-person": {
+        "p": 0.01,
+        "confidence": 0.95
+      },
+      "q-credential": {
+        "p": 0.01,
+        "confidence": 0.96
+      },
+      "q-private-host": {
+        "p": 0.02,
+        "confidence": 0.93
+      },
+      "q-layer": {
+        "probs": {
+          "capability": 0.95,
+          "instance": 0.01,
+          "both": 0.03,
+          "undecidable": 0.01
+        },
+        "confidence": 0.91
+      },
+      "q-severity": {
+        "expected": 0.1,
+        "distribution": [
+          0.93,
+          0.06,
+          0.01,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "confidence": 0.92
+      }
+    }
+  }
+}

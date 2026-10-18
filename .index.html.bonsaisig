@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42XT8NG4661JBR8ZY8X8",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-14T10:21:24Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "index.html",
+  "file-hash": "25bdaa9403c68066ce96b440d3349f6407f9ff1073acb398b8ba424b0dbcdb7ad671b08d217373f4c2528407e267cf565f3a35757bc9fb2dc4c55884f5d3358d",
+  "signature": "CjMSLz7WHEuGf33p3Q2JPCryhHdCo9FCLwgy4k3h3of3Tm1wTETA0plqDs3xfyFueeKdnUzuDRD7w8eRWvzCCA=="
+}

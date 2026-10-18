@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M2D2NAFWEWFVEY7RM96BG7AA",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:40Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/specs/spec-canonical-shintai-structure.md",
+  "file-hash": "71eec562804e92b092d44f41b973da2ba20e6814ac4cbc7f72b2d7b0dc327ccc8d9263efeecec672a2a1299cbc4d402579bebaf5fcfd2fa95e74667ca86ce2d8",
+  "signature": "FhXy6tVNLmq6BBSSlrqKoJnG4BVxdRonDZRXYI/PMCBWIcEoZPJOxYrUG8DNV3rzq22OkiXzmK2G7KVaS//pAA=="
+}

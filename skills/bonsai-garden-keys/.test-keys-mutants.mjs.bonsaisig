@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M49AB833SHNZY2A3X2QX1Z3Q",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:57:11Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/test-keys-mutants.mjs",
+  "file-hash": "25859b82b0e9cac5c253f6b150216b48848a268e974492433b31523920d7aa39ed2fadd32351e12f73cb40507e4c7339f00851fa44d7727d9e5291325256f466",
+  "signature": "o5uBYbG1P+FiUclRqH6eNeiGMHJLZJoAiIaSsOGzbdtx5SovMIKFngQ7vOQGjNc2wheMZKmnb7aolbcXtqbkBA=="
+}

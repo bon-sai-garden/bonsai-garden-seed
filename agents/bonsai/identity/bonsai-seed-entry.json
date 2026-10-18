@@ -1,0 +1,9 @@
+{
+  "format": "bonsai-garden-seed-entry/1",
+  "slug": "bonsai",
+  "kanji": "盆才守神",
+  "public-key": "7WffG8kJYLSBJBhMqvjGXLWUKE5ROOHm5NaCQ31/XUM=",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "fp-attests": 2,
+  "source": "derived from agents/bonsai/identity/bonsai-public-key.bin and bonsai-fingerprint.txt; the origin garden's published key, checkable at https://bon-sai.garden/verify"
+}

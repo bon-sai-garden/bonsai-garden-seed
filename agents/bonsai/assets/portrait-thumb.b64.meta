@@ -1,0 +1,20 @@
+{
+  "agent": "bonsai",
+  "generated": "2026-09-12",
+  "generator": "tools/portraits/make-portrait-thumbs.py",
+  "source": "agents/bonsai/assets/portrait.png",
+  "source_px": [
+    512,
+    512
+  ],
+  "px": 144,
+  "format": "webp",
+  "mime": "image/webp",
+  "quality": 65,
+  "bytes": 2920,
+  "b64_chars": 3896,
+  "sha256": "3db6f25f172d44dcd16f909cc227c89e6d227bf8cbc1156aae124d0c98bbe022",
+  "checksum_fnv1a32": "3aea829b",
+  "metadata_stripped": true,
+  "note": "Greeting widget MUST verify BOTH before render: (1) decoded length == bytes, (2) fnv1a32(received base64 string) == checksum_fnv1a32. (1) alone only catches truncation; (2) catches same-length substitution too. On failure, do not show a raw decode error \u2014 degrade to the kanji/initials glyph, then the plain-text ASCII card. See routines.md Routine 2.5."
+}

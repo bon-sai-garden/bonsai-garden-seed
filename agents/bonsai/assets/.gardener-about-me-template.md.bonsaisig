@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48BAJVWBDG0Y1ZPDSMPTFGF",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-06T16:11:43Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/gardener-about-me-template.md",
+  "file-hash": "cb5611c41931d09065461e884c34e7bf9690ca87a5faa38da91bb792b19e7bd03501f80cbb1217c5853eb03233f5f7f0f6698591aea8f886635d93d702a24e89",
+  "signature": "/lVlNagrcO7jxcMmmowZDm2pif+jy8zgBiKqgql4jwrQ5d4PGOz11itBugagvLf+JNBcCPYpoG9rqi7r08a5CQ=="
+}

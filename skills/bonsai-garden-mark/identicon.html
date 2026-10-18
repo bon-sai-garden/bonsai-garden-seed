@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanji Identicons</title>
+<style>
+  :root {
+    --paper:   #faf7f2;
+    --ink:     #1a1a1a;
+    --subtle:  #6b6259;
+    --muted:   #a59a8a;
+    --accent:  #b8624c;
+    --divider: #e8e0d4;
+    --cell-bg: #fffdf9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+  }
+  .kanji-font {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", "Songti SC", serif;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  header .lede {
+    color: var(--subtle);
+    font-size: 15px;
+    margin: 0 0 28px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 28px;
+  }
+  .tab {
+    padding: 10px 18px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--subtle);
+    font: inherit;
+    font-size: 14px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+    font-weight: 500;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Forward tab */
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  input[type="text"], textarea {
+    flex: 1;
+    padding: 10px 14px;
+    font: inherit;
+    font-size: 15px;
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    background: var(--cell-bg);
+    color: var(--ink);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  button.primary {
+    padding: 10px 18px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  button.primary:hover { background: #000; }
+  button.primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .pair-display {
+    text-align: center;
+    padding: 56px 16px;
+    border: 1px solid var(--divider);
+    border-radius: 8px;
+    background: var(--cell-bg);
+    margin-bottom: 24px;
+  }
+  .pair-kanji {
+    font-size: 144px;
+    line-height: 1;
+    letter-spacing: 16px;
+    color: var(--ink);
+  }
+  .pair-third {
+    font-size: 56px;
+    line-height: 1;
+    color: var(--muted);
+    margin-top: 12px;
+    letter-spacing: 8px;
+  }
+  .pair-third .label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-family: -apple-system, sans-serif;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--subtle);
+    padding: 16px 0;
+    border-top: 1px solid var(--divider);
+  }
+  .meta-row {
+    display: flex;
+    gap: 16px;
+    padding: 4px 0;
+  }
+  .meta-label {
+    width: 90px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .meta-val { word-break: break-all; }
+  .meta-val.mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+
+  /* Vanity tab */
+  .vanity-pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .picker-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .picker-current {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    background: var(--cell-bg);
+    margin-bottom: 6px;
+  }
+  .picker-current .ch {
+    font-size: 42px;
+    line-height: 1;
+  }
+  .picker-current .idx {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+  }
+  .picker-current .meaning {
+    font-size: 13px;
+    color: var(--subtle);
+    margin-left: auto;
+    text-align: right;
+  }
+  .picker-input { width: 100%; }
+
+  .vanity-status {
+    font-size: 13px;
+    color: var(--subtle);
+    margin: 12px 0;
+    font-family: ui-monospace, monospace;
+    min-height: 20px;
+  }
+  .vanity-result {
+    padding: 16px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: #fff;
+    margin-top: 16px;
+    display: none;
+  }
+  .vanity-result.shown { display: block; }
+  .vanity-result .salt-line {
+    font-family: ui-monospace, monospace;
+    font-size: 14px;
+    background: var(--cell-bg);
+    padding: 10px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--divider);
+    word-break: break-all;
+    margin-top: 8px;
+  }
+
+  /* Browser tab */
+  .browser-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .browser-filters input { flex: 1; min-width: 200px; }
+  .browser-filters select {
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 14px;
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    background: var(--cell-bg);
+    color: var(--ink);
+  }
+  .browser-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 4px;
+  }
+  .kanji-cell {
+    padding: 10px 6px;
+    text-align: center;
+    border: 1px solid var(--divider);
+    border-radius: 4px;
+    background: var(--cell-bg);
+    cursor: pointer;
+    transition: all 0.08s;
+  }
+  .kanji-cell:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .kanji-cell .ch {
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .kanji-cell .idx {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: ui-monospace, monospace;
+  }
+  .browser-detail {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    background: var(--cell-bg);
+    display: none;
+  }
+  .browser-detail.shown { display: flex; gap: 20px; align-items: center; }
+  .browser-detail .big-ch { font-size: 96px; line-height: 1; }
+  .browser-detail .info { font-size: 14px; }
+  .browser-detail .info dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+  .browser-detail .info dd { margin: 2px 0 0; }
+  .browser-count {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: ui-monospace, monospace;
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--divider);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--subtle); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p style="background:#fff3cd;border:2px solid #b8624c;color:#1c1f24;padding:.75rem 1rem;margin:0 0 1rem;font-weight:600;border-radius:4px">
+    ⚠ ARCHIVED LAB PAGE — v1.0 vocabulary. The kanji set embedded below is
+    <code>kanji-1024-v1.0</code> (2026-05-26). The <strong>canonical</strong> set has been
+    <code>kanji-1024-v1.2.json</code> since 2026-09-12 and lives in
+    <code>bonsai-garden-core/skills/bonsai-garden-mark/</code>. Glyphs rendered on this page are
+    <strong>not</strong> the garden's marks — read them from the signed registry, never from here.
+    Banner added by Mori-shin 2026-09-16; re-basing this page on v1.2 (and its companion
+    <code>verify.mjs</code>, which asserts <code>data.version === 1</code> and still points at a
+    retired sandbox path) is open work.
+  </p>
+  <h1>Kanji Identicons</h1>
+  <p class="lede">Map any input to a pair of kanji. SHA-256 → 30 bits → three 10-bit indices into a curated 1,024-character set.</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="forward">Forward</button>
+  <button class="tab" data-tab="vanity">Vanity search</button>
+  <button class="tab" data-tab="browser">Set browser</button>
+</nav>
+
+<!-- FORWARD ─────────────────────────────────────────────────────────── -->
+<section class="panel active" data-panel="forward">
+  <div class="input-row">
+    <input type="text" id="fwd-input" placeholder="Paste any string, hex, or public key" value="hello">
+    <button class="primary" id="fwd-go">Hash</button>
+  </div>
+  <div class="pair-display">
+    <div class="pair-kanji kanji-font" id="fwd-pair">— —</div>
+    <div class="pair-third">
+      <span class="label">third kanji (forward-compatible — not displayed by default)</span>
+      <span class="kanji-font" id="fwd-third">—</span>
+    </div>
+  </div>
+  <div class="meta">
+    <div class="meta-row"><span class="meta-label">SHA-256</span><span class="meta-val mono" id="fwd-hash">—</span></div>
+    <div class="meta-row"><span class="meta-label">Indices</span><span class="meta-val mono" id="fwd-indices">—</span></div>
+    <div class="meta-row"><span class="meta-label">Meanings</span><span class="meta-val" id="fwd-meanings">—</span></div>
+    <div class="meta-row"><span class="meta-label">Grades</span><span class="meta-val" id="fwd-grades">—</span></div>
+  </div>
+</section>
+
+<!-- VANITY ──────────────────────────────────────────────────────────── -->
+<section class="panel" data-panel="vanity">
+  <p style="color: var(--subtle); font-size: 14px; margin: 0 0 20px;">
+    Pick a kanji pair you want. The search brute-forces a salt that hashes to it. Average ~1M tries.
+  </p>
+  <div class="vanity-pickers">
+    <div>
+      <div class="picker-label">First kanji (A)</div>
+      <div class="picker-current">
+        <span class="ch kanji-font" id="van-a-ch">—</span>
+        <span class="idx" id="van-a-idx">—</span>
+        <span class="meaning" id="van-a-meaning">—</span>
+      </div>
+      <input type="number" min="0" max="1023" id="van-a-input" class="picker-input" placeholder="index 0-1023" value="0">
+    </div>
+    <div>
+      <div class="picker-label">Second kanji (B)</div>
+      <div class="picker-current">
+        <span class="ch kanji-font" id="van-b-ch">—</span>
+        <span class="idx" id="van-b-idx">—</span>
+        <span class="meaning" id="van-b-meaning">—</span>
+      </div>
+      <input type="number" min="0" max="1023" id="van-b-input" class="picker-input" placeholder="index 0-1023" value="1">
+    </div>
+  </div>
+  <div class="input-row" style="margin-bottom: 8px;">
+    <input type="text" id="van-base" placeholder="base prefix (optional)" value="me@example.com">
+    <button class="primary" id="van-go">Search</button>
+    <button class="primary" id="van-stop" style="background: var(--subtle); display: none;">Stop</button>
+  </div>
+  <div class="vanity-status" id="van-status"></div>
+  <div class="vanity-result" id="van-result">
+    <div style="font-size: 13px; color: var(--subtle); margin-bottom: 8px;">Found a salt that produces your pair:</div>
+    <div class="salt-line" id="van-salt">—</div>
+    <div style="font-size: 12px; color: var(--muted); margin-top: 8px;" id="van-stats">—</div>
+  </div>
+</section>
+
+<!-- BROWSER ─────────────────────────────────────────────────────────── -->
+<section class="panel" data-panel="browser">
+  <div class="browser-filters">
+    <input type="text" id="br-search" placeholder="Filter by meaning, kanji, or index">
+    <select id="br-grade">
+      <option value="">All grades</option>
+      <option value="g1">Grade 1 (most familiar)</option>
+      <option value="g2">Grade 2</option>
+      <option value="g3">Grade 3</option>
+      <option value="g4">Grade 4</option>
+      <option value="g5">Grade 5</option>
+      <option value="g6">Grade 6</option>
+      <option value="jōyō">Jōyō (secondary)</option>
+    </select>
+    <select id="br-strokes">
+      <option value="">All strokes</option>
+      <option value="4">4 strokes</option>
+      <option value="5">5 strokes</option>
+      <option value="6">6 strokes</option>
+      <option value="7">7 strokes</option>
+      <option value="8">8 strokes</option>
+      <option value="9">9 strokes</option>
+      <option value="10">10 strokes</option>
+      <option value="11">11 strokes</option>
+      <option value="12">12 strokes</option>
+      <option value="13">13 strokes</option>
+      <option value="14">14 strokes</option>
+    </select>
+  </div>
+  <div class="browser-count" id="br-count">—</div>
+  <div class="browser-detail" id="br-detail">
+    <div class="big-ch kanji-font" id="br-detail-ch">—</div>
+    <dl class="info">
+      <dt>Index</dt><dd id="br-detail-idx">—</dd>
+      <dt>Strokes</dt><dd id="br-detail-strokes">—</dd>
+      <dt>Grade</dt><dd id="br-detail-grade">—</dd>
+      <dt>Meanings</dt><dd id="br-detail-meanings">—</dd>
+    </dl>
+  </div>
+  <div class="browser-grid" id="br-grid"></div>
+</section>
+
+<footer>
+  v1 · 1024-character set · SHA-256 · 30-bit slice (10/10/10) · Forward-compatible with 3-kanji mode
+</footer>
+
+</div>
+
+<script type="application/json" id="kanji-data">{"version":1,"size":1024,"source":"KANJIDIC2 / Jōyō 2010 via jamdict-data","filter_rules":{"stroke_window":[4,14],"negative_meaning_terms":266,"confusable_clusters":11,"sort":"grade ascending, then source order"},"kanji":[{"index":0,"char":"才","strokes":3,"grade":"g2","meanings":["genius","years old","cubic shaku"]},{"index":1,"char":"多","strokes":6,"grade":"g2","meanings":["many","frequent","much"]},{"index":2,"char":"園","strokes":13,"grade":"g2","meanings":["park","garden","yard","farm"]},{"index":3,"char":"主","strokes":5,"grade":"g3","meanings":["lord","chief","master","main thing","principal"]},{"index":4,"char":"身","strokes":7,"grade":"g3","meanings":["somebody","person","one's station in life"]},{"index":5,"char":"筆","strokes":12,"grade":"g3","meanings":["writing brush","writing","painting brush","handwriting"]},{"index":6,"char":"士","strokes":3,"grade":"g4","meanings":["gentleman","scholar","samurai","samurai radical (no. 33)"]},{"index":7,"char":"富","strokes":12,"grade":"g5","meanings":["wealth","enrich","abundant"]},{"index":8,"char":"映","strokes":9,"grade":"g6","meanings":["reflect","reflection","projection"]},{"index":9,"char":"盆","strokes":9,"grade":"jōyō","meanings":["basin","lantern festival","tray"]},{"index":10,"char":"栽","strokes":10,"grade":"jōyō","meanings":["plantation","planting"]},{"index":11,"char":"培","strokes":11,"grade":"jōyō","meanings":["cultivate","foster"]},{"index":12,"char":"慈","strokes":13,"grade":"jōyō","meanings":["mercy"]},{"index":13,"char":"禅","strokes":13,"grade":"jōyō","meanings":["Zen","silent meditation"]},{"index":14,"char":"円","strokes":4,"grade":"g1","meanings":["circle","yen","round"]},{"index":15,"char":"王","strokes":4,"grade":"g1","meanings":["king","rule","magnate"]},{"index":16,"char":"火","strokes":4,"grade":"g1","meanings":["fire"]},{"index":17,"char":"月","strokes":4,"grade":"g1","meanings":["month","moon"]},{"index":18,"char":"五","strokes":4,"grade":"g1","meanings":["five"]},{"index":19,"char":"手","strokes":4,"grade":"g1","meanings":["hand"]},{"index":20,"char":"水","strokes":4,"grade":"g1","meanings":["water"]},{"index":21,"char":"中","strokes":4,"grade":"g1","meanings":["in","inside","middle","mean","center"]},{"index":22,"char":"天","strokes":4,"grade":"g1","meanings":["heavens","sky","imperial"]},{"index":23,"char":"日","strokes":4,"grade":"g1","meanings":["day","sun","Japan","counter for days"]},{"index":24,"char":"文","strokes":4,"grade":"g1","meanings":["sentence","literature","style","art","decoration"]},{"index":25,"char":"木","strokes":4,"grade":"g1","meanings":["tree","wood"]},{"index":26,"char":"六","strokes":4,"grade":"g1","meanings":["six"]},{"index":27,"char":"右","strokes":5,"grade":"g1","meanings":["right"]},{"index":28,"char":"玉","strokes":5,"grade":"g1","meanings":["jewel","ball"]},{"index":29,"char":"左","strokes":5,"grade":"g1","meanings":["left"]},{"index":30,"char":"四","strokes":5,"grade":"g1","meanings":["four"]},{"index":31,"char":"出","strokes":5,"grade":"g1","meanings":["exit","leave","go out","come out","put out"]},{"index":32,"char":"正","strokes":5,"grade":"g1","meanings":["correct","justice","righteous","10**40"]},{"index":33,"char":"生","strokes":5,"grade":"g1","meanings":["life","genuine","birth"]},{"index":34,"char":"石","strokes":5,"grade":"g1","meanings":["stone"]},{"index":35,"char":"田","strokes":5,"grade":"g1","meanings":["rice field","rice paddy"]},{"index":36,"char":"白","strokes":5,"grade":"g1","meanings":["white"]},{"index":37,"char":"本","strokes":5,"grade":"g1","meanings":["book","present","main","origin","true"]},{"index":38,"char":"目","strokes":5,"grade":"g1","meanings":["eye","class","look","insight","experience"]},{"index":39,"char":"立","strokes":5,"grade":"g1","meanings":["stand up","rise","set up","erect"]},{"index":40,"char":"気","strokes":6,"grade":"g1","meanings":["spirit","mind","air","atmosphere","mood"]},{"index":41,"char":"休","strokes":6,"grade":"g1","meanings":["rest","day off","retire","sleep"]},{"index":42,"char":"糸","strokes":6,"grade":"g1","meanings":["thread"]},{"index":43,"char":"字","strokes":6,"grade":"g1","meanings":["character","letter","word","section of village"]},{"index":44,"char":"耳","strokes":6,"grade":"g1","meanings":["ear"]},{"index":45,"char":"先","strokes":6,"grade":"g1","meanings":["before","ahead","previous","future","precedence"]},{"index":46,"char":"早","strokes":6,"grade":"g1","meanings":["early","fast"]},{"index":47,"char":"竹","strokes":6,"grade":"g1","meanings":["bamboo"]},{"index":48,"char":"虫","strokes":6,"grade":"g1","meanings":["insect","bug","temper"]},{"index":49,"char":"年","strokes":6,"grade":"g1","meanings":["year","counter for years"]},{"index":50,"char":"百","strokes":6,"grade":"g1","meanings":["hundred"]},{"index":51,"char":"名","strokes":6,"grade":"g1","meanings":["name","noted","distinguished","reputation"]},{"index":52,"char":"花","strokes":7,"grade":"g1","meanings":["flower"]},{"index":53,"char":"貝","strokes":7,"grade":"g1","meanings":["shellfish"]},{"index":54,"char":"見","strokes":7,"grade":"g1","meanings":["see","hopes","chances","idea","opinion"]},{"index":55,"char":"車","strokes":7,"grade":"g1","meanings":["car"]},{"index":56,"char":"赤","strokes":7,"grade":"g1","meanings":["red"]},{"index":57,"char":"足","strokes":7,"grade":"g1","meanings":["leg","foot","be sufficient","counter for pairs of footwear"]},{"index":58,"char":"村","strokes":7,"grade":"g1","meanings":["village","town"]},{"index":59,"char":"男","strokes":7,"grade":"g1","meanings":["male"]},{"index":60,"char":"町","strokes":7,"grade":"g1","meanings":["town","village","block","street"]},{"index":61,"char":"雨","strokes":8,"grade":"g1","meanings":["rain"]},{"index":62,"char":"学","strokes":8,"grade":"g1","meanings":["study","learning","science"]},{"index":63,"char":"金","strokes":8,"grade":"g1","meanings":["gold"]},{"index":64,"char":"青","strokes":8,"grade":"g1","meanings":["blue","green"]},{"index":65,"char":"林","strokes":8,"grade":"g1","meanings":["grove","forest"]},{"index":66,"char":"音","strokes":9,"grade":"g1","meanings":["sound","noise"]},{"index":67,"char":"草","strokes":9,"grade":"g1","meanings":["grass","weeds","herbs","pasture","write"]},{"index":68,"char":"校","strokes":10,"grade":"g1","meanings":["exam","school","printing","proof","correction"]},{"index":69,"char":"森","strokes":12,"grade":"g1","meanings":["forest","woods"]},{"index":70,"char":"引","strokes":4,"grade":"g2","meanings":["pull","tug","jerk","admit","install"]},{"index":71,"char":"牛","strokes":4,"grade":"g2","meanings":["cow"]},{"index":72,"char":"元","strokes":4,"grade":"g2","meanings":["beginning","former time","origin"]},{"index":73,"char":"戸","strokes":4,"grade":"g2","meanings":["door","counter for houses","door radical (no. 63)"]},{"index":74,"char":"公","strokes":4,"grade":"g2","meanings":["public","prince","official","governmental"]},{"index":75,"char":"今","strokes":4,"grade":"g2","meanings":["now"]},{"index":76,"char":"止","strokes":4,"grade":"g2","meanings":["stop","halt"]},{"index":77,"char":"少","strokes":4,"grade":"g2","meanings":["few","little"]},{"index":78,"char":"心","strokes":4,"grade":"g2","meanings":["heart","mind","spirit","heart radical (no. 61)"]},{"index":79,"char":"切","strokes":4,"grade":"g2","meanings":["cut","cutoff","be sharp"]},{"index":80,"char":"内","strokes":4,"grade":"g2","meanings":["inside","within","between","among","house"]},{"index":81,"char":"父","strokes":4,"grade":"g2","meanings":["father"]},{"index":82,"char":"分","strokes":4,"grade":"g2","meanings":["part","minute of time","segment","share","degree"]},{"index":83,"char":"方","strokes":4,"grade":"g2","meanings":["direction","person","alternative"]},{"index":84,"char":"毛","strokes":4,"grade":"g2","meanings":["fur","hair","feather","down"]},{"index":85,"char":"友","strokes":4,"grade":"g2","meanings":["friend"]},{"index":86,"char":"外","strokes":5,"grade":"g2","meanings":["outside"]},{"index":87,"char":"兄","strokes":5,"grade":"g2","meanings":["elder brother","big brother"]},{"index":88,"char":"古","strokes":5,"grade":"g2","meanings":["old"]},{"index":89,"char":"広","strokes":5,"grade":"g2","meanings":["wide","broad","spacious"]},{"index":90,"char":"市","strokes":5,"grade":"g2","meanings":["market","city","town"]},{"index":91,"char":"台","strokes":5,"grade":"g2","meanings":["pedestal","a stand","counter for machines and vehicles"]},{"index":92,"char":"冬","strokes":5,"grade":"g2","meanings":["winter"]},{"index":93,"char":"半","strokes":5,"grade":"g2","meanings":["half","middle","odd number","semi-","part-"]},{"index":94,"char":"母","strokes":5,"grade":"g2","meanings":["mother"]},{"index":95,"char":"北","strokes":5,"grade":"g2","meanings":["north"]},{"index":96,"char":"用","strokes":5,"grade":"g2","meanings":["utilize","business","service","use","employ"]},{"index":97,"char":"羽","strokes":6,"grade":"g2","meanings":["feathers","counter for birds, rabbits"]},{"index":98,"char":"会","strokes":6,"grade":"g2","meanings":["meeting","meet","party","association","interview"]},{"index":99,"char":"回","strokes":6,"grade":"g2","meanings":["-times","round","game","revolve","counter for occurrences"]},{"index":100,"char":"交","strokes":6,"grade":"g2","meanings":["mingle","mixing","association","coming & going"]},{"index":101,"char":"光","strokes":6,"grade":"g2","meanings":["ray","light"]},{"index":102,"char":"考","strokes":6,"grade":"g2","meanings":["consider","think over"]},{"index":103,"char":"行","strokes":6,"grade":"g2","meanings":["going","journey","carry out","conduct","act"]},{"index":104,"char":"合","strokes":6,"grade":"g2","meanings":["fit","suit","join","0.1"]},{"index":105,"char":"寺","strokes":6,"grade":"g2","meanings":["Buddhist temple"]},{"index":106,"char":"自","strokes":6,"grade":"g2","meanings":["oneself"]},{"index":107,"char":"色","strokes":6,"grade":"g2","meanings":["color"]},{"index":108,"char":"西","strokes":6,"grade":"g2","meanings":["west","Spain"]},{"index":109,"char":"地","strokes":6,"grade":"g2","meanings":["ground","earth"]},{"index":110,"char":"池","strokes":6,"grade":"g2","meanings":["pond","cistern","pool","reservoir"]},{"index":111,"char":"当","strokes":6,"grade":"g2","meanings":["hit","right","appropriate","himself"]},{"index":112,"char":"同","strokes":6,"grade":"g2","meanings":["same","agree","equal"]},{"index":113,"char":"肉","strokes":6,"grade":"g2","meanings":["meat"]},{"index":114,"char":"米","strokes":6,"grade":"g2","meanings":["rice","USA","metre"]},{"index":115,"char":"毎","strokes":6,"grade":"g2","meanings":["every"]},{"index":116,"char":"何","strokes":7,"grade":"g2","meanings":["what"]},{"index":117,"char":"角","strokes":7,"grade":"g2","meanings":["angle","corner","square","horn","antlers"]},{"index":118,"char":"汽","strokes":7,"grade":"g2","meanings":["vapor","steam"]},{"index":119,"char":"近","strokes":7,"grade":"g2","meanings":["near","early","akin","tantamount"]},{"index":120,"char":"形","strokes":7,"grade":"g2","meanings":["shape","form","style"]},{"index":121,"char":"言","strokes":7,"grade":"g2","meanings":["say","word"]},{"index":122,"char":"作","strokes":7,"grade":"g2","meanings":["make","production","prepare","build"]},{"index":123,"char":"社","strokes":7,"grade":"g2","meanings":["company","firm","office","association","shrine"]},{"index":124,"char":"図","strokes":7,"grade":"g2","meanings":["map","drawing","plan","extraordinary","audacious"]},{"index":125,"char":"声","strokes":7,"grade":"g2","meanings":["voice"]},{"index":126,"char":"走","strokes":7,"grade":"g2","meanings":["run"]},{"index":127,"char":"体","strokes":7,"grade":"g2","meanings":["body","substance","object","reality","counter for images"]},{"index":128,"char":"谷","strokes":7,"grade":"g2","meanings":["valley"]},{"index":129,"char":"弟","strokes":7,"grade":"g2","meanings":["younger brother","faithful service to elders"]},{"index":130,"char":"売","strokes":7,"grade":"g2","meanings":["sell"]},{"index":131,"char":"麦","strokes":7,"grade":"g2","meanings":["barley","wheat"]},{"index":132,"char":"来","strokes":7,"grade":"g2","meanings":["come","due","next","cause","become"]},{"index":133,"char":"里","strokes":7,"grade":"g2","meanings":["ri","village","parent's home","league"]},{"index":134,"char":"画","strokes":8,"grade":"g2","meanings":["brush-stroke","picture"]},{"index":135,"char":"岩","strokes":8,"grade":"g2","meanings":["boulder","rock","cliff"]},{"index":136,"char":"京","strokes":8,"grade":"g2","meanings":["capital","10**16"]},{"index":137,"char":"国","strokes":8,"grade":"g2","meanings":["country"]},{"index":138,"char":"姉","strokes":8,"grade":"g2","meanings":["elder sister"]},{"index":139,"char":"知","strokes":8,"grade":"g2","meanings":["know","wisdom"]},{"index":140,"char":"長","strokes":8,"grade":"g2","meanings":["long","leader","superior","senior"]},{"index":141,"char":"直","strokes":8,"grade":"g2","meanings":["straightaway","honesty","frankness","fix","repair"]},{"index":142,"char":"店","strokes":8,"grade":"g2","meanings":["store","shop"]},{"index":143,"char":"東","strokes":8,"grade":"g2","meanings":["east"]},{"index":144,"char":"歩","strokes":8,"grade":"g2","meanings":["walk","counter for steps"]},{"index":145,"char":"妹","strokes":8,"grade":"g2","meanings":["younger sister"]},{"index":146,"char":"明","strokes":8,"grade":"g2","meanings":["bright","light"]},{"index":147,"char":"夜","strokes":8,"grade":"g2","meanings":["night","evening"]},{"index":148,"char":"科","strokes":9,"grade":"g2","meanings":["department","course","section"]},{"index":149,"char":"海","strokes":9,"grade":"g2","meanings":["sea","ocean"]},{"index":150,"char":"活","strokes":9,"grade":"g2","meanings":["lively","resuscitation","being helped","living"]},{"index":151,"char":"計","strokes":9,"grade":"g2","meanings":["plot","plan","scheme","measure"]},{"index":152,"char":"後","strokes":9,"grade":"g2","meanings":["behind","back","later"]},{"index":153,"char":"思","strokes":9,"grade":"g2","meanings":["think"]},{"index":154,"char":"室","strokes":9,"grade":"g2","meanings":["room","apartment","chamber","greenhouse","cellar"]},{"index":155,"char":"首","strokes":9,"grade":"g2","meanings":["neck","counter for songs and poems"]},{"index":156,"char":"秋","strokes":9,"grade":"g2","meanings":["autumn"]},{"index":157,"char":"春","strokes":9,"grade":"g2","meanings":["springtime","spring (season)"]},{"index":158,"char":"食","strokes":9,"grade":"g2","meanings":["eat","food"]},{"index":159,"char":"星","strokes":9,"grade":"g2","meanings":["star","spot","dot","mark"]},{"index":160,"char":"前","strokes":9,"grade":"g2","meanings":["in front","before"]},{"index":161,"char":"茶","strokes":9,"grade":"g2","meanings":["tea"]},{"index":162,"char":"昼","strokes":9,"grade":"g2","meanings":["daytime","noon"]},{"index":163,"char":"点","strokes":9,"grade":"g2","meanings":["spot","point","mark","speck","decimal point"]},{"index":164,"char":"南","strokes":9,"grade":"g2","meanings":["south"]},{"index":165,"char":"風","strokes":9,"grade":"g2","meanings":["wind","air","style","manner"]},{"index":166,"char":"夏","strokes":10,"grade":"g2","meanings":["summer"]},{"index":167,"char":"家","strokes":10,"grade":"g2","meanings":["house","home","family","professional","expert"]},{"index":168,"char":"帰","strokes":10,"grade":"g2","meanings":["homecoming","arrive at","lead to","result in"]},{"index":169,"char":"記","strokes":10,"grade":"g2","meanings":["scribe","account","narrative"]},{"index":170,"char":"原","strokes":10,"grade":"g2","meanings":["meadow","original","primitive","field","plain"]},{"index":171,"char":"高","strokes":10,"grade":"g2","meanings":["tall","high","expensive"]},{"index":172,"char":"紙","strokes":10,"grade":"g2","meanings":["paper"]},{"index":173,"char":"時","strokes":10,"grade":"g2","meanings":["time","hour"]},{"index":174,"char":"弱","strokes":10,"grade":"g2","meanings":["weak","frail"]},{"index":175,"char":"書","strokes":10,"grade":"g2","meanings":["write"]},{"index":176,"char":"通","strokes":10,"grade":"g2","meanings":["traffic","pass through","avenue","commute","counter for letters, notes, documents, etc."]},{"index":177,"char":"馬","strokes":10,"grade":"g2","meanings":["horse"]},{"index":178,"char":"黄","strokes":11,"grade":"g2","meanings":["yellow"]},{"index":179,"char":"魚","strokes":11,"grade":"g2","meanings":["fish"]},{"index":180,"char":"強","strokes":11,"grade":"g2","meanings":["strong"]},{"index":181,"char":"教","strokes":11,"grade":"g2","meanings":["teach","faith","doctrine"]},{"index":182,"char":"黒","strokes":11,"grade":"g2","meanings":["black"]},{"index":183,"char":"細","strokes":11,"grade":"g2","meanings":["dainty","get thin","taper","slender","narrow"]},{"index":184,"char":"週","strokes":11,"grade":"g2","meanings":["week"]},{"index":185,"char":"雪","strokes":11,"grade":"g2","meanings":["snow"]},{"index":186,"char":"船","strokes":11,"grade":"g2","meanings":["ship","boat"]},{"index":187,"char":"組","strokes":11,"grade":"g2","meanings":["association","braid","plait","construct","assemble"]},{"index":188,"char":"鳥","strokes":11,"grade":"g2","meanings":["bird","chicken"]},{"index":189,"char":"野","strokes":11,"grade":"g2","meanings":["plains","field","rustic","civilian life"]},{"index":190,"char":"理","strokes":11,"grade":"g2","meanings":["logic","arrangement","reason","justice","truth"]},{"index":191,"char":"雲","strokes":12,"grade":"g2","meanings":["cloud"]},{"index":192,"char":"絵","strokes":12,"grade":"g2","meanings":["picture","drawing","painting","sketch"]},{"index":193,"char":"間","strokes":12,"grade":"g2","meanings":["interval","space"]},{"index":194,"char":"場","strokes":12,"grade":"g2","meanings":["location","place"]},{"index":195,"char":"晴","strokes":12,"grade":"g2","meanings":["clear up"]},{"index":196,"char":"朝","strokes":12,"grade":"g2","meanings":["morning","dynasty","regime","epoch","period"]},{"index":197,"char":"答","strokes":12,"grade":"g2","meanings":["solution","answer"]},{"index":198,"char":"道","strokes":12,"grade":"g2","meanings":["road-way","street","district","journey","course"]},{"index":199,"char":"買","strokes":12,"grade":"g2","meanings":["buy"]},{"index":200,"char":"番","strokes":12,"grade":"g2","meanings":["turn","number in a series"]},{"index":201,"char":"遠","strokes":13,"grade":"g2","meanings":["distant","far"]},{"index":202,"char":"楽","strokes":13,"grade":"g2","meanings":["music","comfort","ease"]},{"index":203,"char":"新","strokes":13,"grade":"g2","meanings":["new"]},{"index":204,"char":"数","strokes":13,"grade":"g2","meanings":["number","strength","fate","law","figures"]},{"index":205,"char":"電","strokes":13,"grade":"g2","meanings":["electricity"]},{"index":206,"char":"話","strokes":13,"grade":"g2","meanings":["tale","talk"]},{"index":207,"char":"歌","strokes":14,"grade":"g2","meanings":["song","sing"]},{"index":208,"char":"語","strokes":14,"grade":"g2","meanings":["word","speech","language"]},{"index":209,"char":"算","strokes":14,"grade":"g2","meanings":["calculate","divining","number","abacus","probability"]},{"index":210,"char":"読","strokes":14,"grade":"g2","meanings":["read"]},{"index":211,"char":"聞","strokes":14,"grade":"g2","meanings":["hear","ask","listen"]},{"index":212,"char":"化","strokes":4,"grade":"g3","meanings":["change","take the form of","influence","enchant","delude"]},{"index":213,"char":"区","strokes":4,"grade":"g3","meanings":["ward","district"]},{"index":214,"char":"反","strokes":4,"grade":"g3","meanings":["anti-"]},{"index":215,"char":"予","strokes":4,"grade":"g3","meanings":["beforehand","previous","myself","I"]},{"index":216,"char":"央","strokes":5,"grade":"g3","meanings":["center","middle"]},{"index":217,"char":"去","strokes":5,"grade":"g3","meanings":["gone","past","quit","leave","elapse"]},{"index":218,"char":"号","strokes":5,"grade":"g3","meanings":["nickname","number","item","title","pseudonym"]},{"index":219,"char":"皿","strokes":5,"grade":"g3","meanings":["dish","a helping","plate"]},{"index":220,"char":"仕","strokes":5,"grade":"g3","meanings":["attend","doing","official","serve"]},{"index":221,"char":"写","strokes":5,"grade":"g3","meanings":["copy","be photographed","describe"]},{"index":222,"char":"申","strokes":5,"grade":"g3","meanings":["have the honor to","sign of the monkey","3-5PM","ninth sign of Chinese zodiac"]},{"index":223,"char":"世","strokes":5,"grade":"g3","meanings":["generation","world","society","public"]},{"index":224,"char":"他","strokes":5,"grade":"g3","meanings":["other","another","the others"]},{"index":225,"char":"代","strokes":5,"grade":"g3","meanings":["substitute","change","convert","replace","period"]},{"index":226,"char":"皮","strokes":5,"grade":"g3","meanings":["pelt","skin","hide","leather","skin radical (no. 107)"]},{"index":227,"char":"氷","strokes":5,"grade":"g3","meanings":["icicle","ice","hail","freeze","congeal"]},{"index":228,"char":"平","strokes":5,"grade":"g3","meanings":["even","flat","peace"]},{"index":229,"char":"由","strokes":5,"grade":"g3","meanings":["wherefore","a reason"]},{"index":230,"char":"礼","strokes":5,"grade":"g3","meanings":["salute","bow","ceremony","thanks","remuneration"]},{"index":231,"char":"安","strokes":6,"grade":"g3","meanings":["relax","cheap","low","quiet","rested"]},{"index":232,"char":"曲","strokes":6,"grade":"g3","meanings":["bend","music","melody","composition","pleasure"]},{"index":233,"char":"向","strokes":6,"grade":"g3","meanings":["yonder","facing","beyond","confront","defy"]},{"index":234,"char":"次","strokes":6,"grade":"g3","meanings":["next","order","sequence"]},{"index":235,"char":"式","strokes":6,"grade":"g3","meanings":["style","ceremony","rite","function","method"]},{"index":236,"char":"守","strokes":6,"grade":"g3","meanings":["guard","protect","defend","obey"]},{"index":237,"char":"州","strokes":6,"grade":"g3","meanings":["state","province"]},{"index":238,"char":"全","strokes":6,"grade":"g3","meanings":["whole","entire","all","complete","fulfill"]},{"index":239,"char":"有","strokes":6,"grade":"g3","meanings":["possess","have","exist","happen","occur"]},{"index":240,"char":"羊","strokes":6,"grade":"g3","meanings":["sheep"]},{"index":241,"char":"両","strokes":6,"grade":"g3","meanings":["both","old Japanese coin","counter for carriages (e.g., in a train)","two"]},{"index":242,"char":"列","strokes":6,"grade":"g3","meanings":["file","row","rank","tier","column"]},{"index":243,"char":"医","strokes":7,"grade":"g3","meanings":["doctor","medicine"]},{"index":244,"char":"究","strokes":7,"grade":"g3","meanings":["research","study"]},{"index":245,"char":"局","strokes":7,"grade":"g3","meanings":["bureau","board","office","affair","conclusion"]},{"index":246,"char":"君","strokes":7,"grade":"g3","meanings":["mister","you","ruler","male name suffix"]},{"index":247,"char":"決","strokes":7,"grade":"g3","meanings":["decide","fix","agree upon","appoint"]},{"index":248,"char":"坂","strokes":7,"grade":"g3","meanings":["slope","incline","hill"]},{"index":249,"char":"住","strokes":7,"grade":"g3","meanings":["dwell","reside","live","inhabit"]},{"index":250,"char":"助","strokes":7,"grade":"g3","meanings":["help","rescue","assist"]},{"index":251,"char":"対","strokes":7,"grade":"g3","meanings":["vis-a-vis","opposite","even","equal","versus"]},{"index":252,"char":"投","strokes":7,"grade":"g3","meanings":["throw","discard","abandon","launch into","join"]},{"index":253,"char":"豆","strokes":7,"grade":"g3","meanings":["beans","pea","midget"]},{"index":254,"char":"返","strokes":7,"grade":"g3","meanings":["return","answer","fade","repay"]},{"index":255,"char":"委","strokes":8,"grade":"g3","meanings":["committee","entrust to","leave to","devote","discard"]},{"index":256,"char":"育","strokes":8,"grade":"g3","meanings":["bring up","grow up","raise","rear"]},{"index":257,"char":"泳","strokes":8,"grade":"g3","meanings":["swim"]},{"index":258,"char":"岸","strokes":8,"grade":"g3","meanings":["beach"]},{"index":259,"char":"具","strokes":8,"grade":"g3","meanings":["tool","utensil","means","possess","ingredients"]},{"index":260,"char":"幸","strokes":8,"grade":"g3","meanings":["happiness","blessing","fortune"]},{"index":261,"char":"使","strokes":8,"grade":"g3","meanings":["use","send on a mission","order","messenger","envoy"]},{"index":262,"char":"始","strokes":8,"grade":"g3","meanings":["commence","begin"]},{"index":263,"char":"事","strokes":8,"grade":"g3","meanings":["matter","thing","fact","business","reason"]},{"index":264,"char":"実","strokes":8,"grade":"g3","meanings":["reality","truth","seed","fruit","nut"]},{"index":265,"char":"者","strokes":8,"grade":"g3","meanings":["someone","person"]},{"index":266,"char":"取","strokes":8,"grade":"g3","meanings":["take","fetch","take up"]},{"index":267,"char":"受","strokes":8,"grade":"g3","meanings":["accept","undergo","answer (phone)","take","get"]},{"index":268,"char":"所","strokes":8,"grade":"g3","meanings":["place","extent"]},{"index":269,"char":"昔","strokes":8,"grade":"g3","meanings":["once upon a time","antiquity","old times"]},{"index":270,"char":"定","strokes":8,"grade":"g3","meanings":["determine","fix","establish","decide"]},{"index":271,"char":"波","strokes":8,"grade":"g3","meanings":["waves","billows","Poland"]},{"index":272,"char":"板","strokes":8,"grade":"g3","meanings":["plank","board","plate","stage"]},{"index":273,"char":"表","strokes":8,"grade":"g3","meanings":["surface","table","chart","diagram"]},{"index":274,"char":"服","strokes":8,"grade":"g3","meanings":["clothing","admit","obey","discharge"]},{"index":275,"char":"物","strokes":8,"grade":"g3","meanings":["thing","object","matter"]},{"index":276,"char":"放","strokes":8,"grade":"g3","meanings":["set free","release","fire","shoot","emit"]},{"index":277,"char":"味","strokes":8,"grade":"g3","meanings":["flavor","taste"]},{"index":278,"char":"命","strokes":8,"grade":"g3","meanings":["fate","command","decree","destiny","life"]},{"index":279,"char":"油","strokes":8,"grade":"g3","meanings":["oil","fat"]},{"index":280,"char":"和","strokes":8,"grade":"g3","meanings":["harmony","Japanese style","peace","soften","Japan"]},{"index":281,"char":"屋","strokes":9,"grade":"g3","meanings":["roof","house","shop","dealer","seller"]},{"index":282,"char":"界","strokes":9,"grade":"g3","meanings":["world","boundary"]},{"index":283,"char":"客","strokes":9,"grade":"g3","meanings":["guest","visitor","customer","client"]},{"index":284,"char":"急","strokes":9,"grade":"g3","meanings":["hurry","emergency","sudden","steep"]},{"index":285,"char":"級","strokes":9,"grade":"g3","meanings":["class","rank","grade"]},{"index":286,"char":"係","strokes":9,"grade":"g3","meanings":["person in charge","connection","duty","concern oneself"]},{"index":287,"char":"研","strokes":9,"grade":"g3","meanings":["polish","study of","sharpen"]},{"index":288,"char":"県","strokes":9,"grade":"g3","meanings":["prefecture"]},{"index":289,"char":"指","strokes":9,"grade":"g3","meanings":["finger","point to","indicate","put into","play (chess)"]},{"index":290,"char":"持","strokes":9,"grade":"g3","meanings":["hold","have"]},{"index":291,"char":"拾","strokes":9,"grade":"g3","meanings":["pick up","gather","find","go on foot","ten"]},{"index":292,"char":"重","strokes":9,"grade":"g3","meanings":["heavy","important","esteem","respect","heap up"]},{"index":293,"char":"昭","strokes":9,"grade":"g3","meanings":["shining","bright"]},{"index":294,"char":"乗","strokes":9,"grade":"g3","meanings":["ride","power","multiplication","record","counter for vehicles"]},{"index":295,"char":"神","strokes":9,"grade":"g3","meanings":["gods","mind","soul"]},{"index":296,"char":"相","strokes":9,"grade":"g3","meanings":["inter-","mutual","together","each other","minister of state"]},{"index":297,"char":"送","strokes":9,"grade":"g3","meanings":["escort","send"]},{"index":298,"char":"待","strokes":9,"grade":"g3","meanings":["wait","depend on"]},{"index":299,"char":"炭","strokes":9,"grade":"g3","meanings":["charcoal","coal"]},{"index":300,"char":"柱","strokes":9,"grade":"g3","meanings":["pillar","post","cylinder","support"]},{"index":301,"char":"追","strokes":9,"grade":"g3","meanings":["chase","drive away","follow","pursue","meanwhile"]},{"index":302,"char":"度","strokes":9,"grade":"g3","meanings":["degrees","occurrence","time","counter for occurrences","consider"]},{"index":303,"char":"畑","strokes":9,"grade":"g3","meanings":["farm","field","garden","one's specialty","(kokuji)"]},{"index":304,"char":"発","strokes":9,"grade":"g3","meanings":["departure","discharge","publish","emit","start from"]},{"index":305,"char":"美","strokes":9,"grade":"g3","meanings":["beauty","beautiful"]},{"index":306,"char":"秒","strokes":9,"grade":"g3","meanings":["second (1/60 minute)"]},{"index":307,"char":"品","strokes":9,"grade":"g3","meanings":["goods","refinement","dignity","article","counter for meal courses"]},{"index":308,"char":"面","strokes":9,"grade":"g3","meanings":["mask","face","features","surface"]},{"index":309,"char":"洋","strokes":9,"grade":"g3","meanings":["ocean","sea","foreign","Western style"]},{"index":310,"char":"員","strokes":10,"grade":"g3","meanings":["employee","member","number","the one in charge"]},{"index":311,"char":"院","strokes":10,"grade":"g3","meanings":["Inst.","institution","temple","mansion","school"]},{"index":312,"char":"起","strokes":10,"grade":"g3","meanings":["rouse","wake up","get up"]},{"index":313,"char":"宮","strokes":10,"grade":"g3","meanings":["Shinto shrine","constellations","palace","princess"]},{"index":314,"char":"庫","strokes":10,"grade":"g3","meanings":["warehouse","storehouse"]},{"index":315,"char":"根","strokes":10,"grade":"g3","meanings":["root","radical","head (pimple)"]},{"index":316,"char":"酒","strokes":10,"grade":"g3","meanings":["sake","alcohol"]},{"index":317,"char":"消","strokes":10,"grade":"g3","meanings":["extinguish","blow out","turn off","neutralize","cancel"]},{"index":318,"char":"真","strokes":10,"grade":"g3","meanings":["true","reality","Buddhist sect"]},{"index":319,"char":"息","strokes":10,"grade":"g3","meanings":["breath","respiration","son","interest (on money)"]},{"index":320,"char":"速","strokes":10,"grade":"g3","meanings":["quick","fast"]},{"index":321,"char":"庭","strokes":10,"grade":"g3","meanings":["courtyard","garden","yard"]},{"index":322,"char":"島","strokes":10,"grade":"g3","meanings":["island"]},{"index":323,"char":"配","strokes":10,"grade":"g3","meanings":["distribute","spouse","exile","rationing"]},{"index":324,"char":"倍","strokes":10,"grade":"g3","meanings":["double","twice","times","fold"]},{"index":325,"char":"勉","strokes":10,"grade":"g3","meanings":["exertion","endeavour","encourage","strive","make effort"]},{"index":326,"char":"流","strokes":10,"grade":"g3","meanings":["current","a sink","flow","forfeit"]},{"index":327,"char":"旅","strokes":10,"grade":"g3","meanings":["trip","travel"]},{"index":328,"char":"球","strokes":11,"grade":"g3","meanings":["ball","sphere"]},{"index":329,"char":"祭","strokes":11,"grade":"g3","meanings":["ritual","offer prayers","celebrate","deify","enshrine"]},{"index":330,"char":"終","strokes":11,"grade":"g3","meanings":["end","finish"]},{"index":331,"char":"習","strokes":11,"grade":"g3","meanings":["learn"]},{"index":332,"char":"商","strokes":11,"grade":"g3","meanings":["make a deal","selling","dealing in","merchant"]},{"index":333,"char":"章","strokes":11,"grade":"g3","meanings":["badge","chapter","composition","poem","design"]},{"index":334,"char":"深","strokes":11,"grade":"g3","meanings":["deep","heighten","intensify","strengthen"]},{"index":335,"char":"進","strokes":11,"grade":"g3","meanings":["advance","proceed","progress","promote"]},{"index":336,"char":"族","strokes":11,"grade":"g3","meanings":["tribe","family"]},{"index":337,"char":"第","strokes":11,"grade":"g3","meanings":["No.","residence"]},{"index":338,"char":"帳","strokes":11,"grade":"g3","meanings":["notebook","account book","album","curtain","veil"]},{"index":339,"char":"笛","strokes":11,"grade":"g3","meanings":["flute","clarinet","pipe","whistle","bagpipe"]},{"index":340,"char":"転","strokes":11,"grade":"g3","meanings":["revolve","turn around","change"]},{"index":341,"char":"都","strokes":11,"grade":"g3","meanings":["metropolis","capital","all","everything"]},{"index":342,"char":"動","strokes":11,"grade":"g3","meanings":["move","motion","change","confusion","shift"]},{"index":343,"char":"部","strokes":11,"grade":"g3","meanings":["section","bureau","dept","class","copy"]},{"index":344,"char":"問","strokes":11,"grade":"g3","meanings":["question","ask","problem"]},{"index":345,"char":"飲","strokes":12,"grade":"g3","meanings":["drink","smoke","take"]},{"index":346,"char":"運","strokes":12,"grade":"g3","meanings":["carry","luck","destiny","fate","lot"]},{"index":347,"char":"温","strokes":12,"grade":"g3","meanings":["warm"]},{"index":348,"char":"開","strokes":12,"grade":"g3","meanings":["open","unfold","unseal"]},{"index":349,"char":"階","strokes":12,"grade":"g3","meanings":["storey","stair","counter for storeys of a building"]},{"index":350,"char":"寒","strokes":12,"grade":"g3","meanings":["cold"]},{"index":351,"char":"期","strokes":12,"grade":"g3","meanings":["period","time","date","term"]},{"index":352,"char":"軽","strokes":12,"grade":"g3","meanings":["lightly","trifling","unimportant"]},{"index":353,"char":"湖","strokes":12,"grade":"g3","meanings":["lake"]},{"index":354,"char":"港","strokes":12,"grade":"g3","meanings":["harbor"]},{"index":355,"char":"歯","strokes":12,"grade":"g3","meanings":["tooth","cog"]},{"index":356,"char":"集","strokes":12,"grade":"g3","meanings":["gather","meet","congregate","swarm","flock"]},{"index":357,"char":"暑","strokes":12,"grade":"g3","meanings":["sultry","hot","summer heat"]},{"index":358,"char":"勝","strokes":12,"grade":"g3","meanings":["victory","win","prevail","excel"]},{"index":359,"char":"植","strokes":12,"grade":"g3","meanings":["plant"]},{"index":360,"char":"短","strokes":12,"grade":"g3","meanings":["short","brevity","fault","defect","weak point"]},{"index":361,"char":"着","strokes":12,"grade":"g3","meanings":["don","arrive","wear","counter for suits of clothing"]},{"index":362,"char":"登","strokes":12,"grade":"g3","meanings":["ascend","climb up"]},{"index":363,"char":"湯","strokes":12,"grade":"g3","meanings":["hot water","bath","hot spring"]},{"index":364,"char":"等","strokes":12,"grade":"g3","meanings":["etc.","and so forth","class (first)","quality","equal"]},{"index":365,"char":"童","strokes":12,"grade":"g3","meanings":["juvenile","child"]},{"index":366,"char":"遊","strokes":12,"grade":"g3","meanings":["play"]},{"index":367,"char":"陽","strokes":12,"grade":"g3","meanings":["sunshine","yang principle","positive","male","heaven"]},{"index":368,"char":"落","strokes":12,"grade":"g3","meanings":["fall","drop","come down","village","hamlet"]},{"index":369,"char":"暗","strokes":13,"grade":"g3","meanings":["darkness","disappear","shade","informal","grow dark"]},{"index":370,"char":"意","strokes":13,"grade":"g3","meanings":["idea","mind","heart","taste","thought"]},{"index":371,"char":"感","strokes":13,"grade":"g3","meanings":["emotion","feeling","sensation"]},{"index":372,"char":"漢","strokes":13,"grade":"g3","meanings":["Sino-","China"]},{"index":373,"char":"業","strokes":13,"grade":"g3","meanings":["business","vocation","arts","performance"]},{"index":374,"char":"詩","strokes":13,"grade":"g3","meanings":["poem","poetry"]},{"index":375,"char":"想","strokes":13,"grade":"g3","meanings":["concept","think","idea","thought"]},{"index":376,"char":"鉄","strokes":13,"grade":"g3","meanings":["iron"]},{"index":377,"char":"農","strokes":13,"grade":"g3","meanings":["agriculture","farmers"]},{"index":378,"char":"福","strokes":13,"grade":"g3","meanings":["blessing","fortune","luck","wealth"]},{"index":379,"char":"路","strokes":13,"grade":"g3","meanings":["path","route","road","distance"]},{"index":380,"char":"駅","strokes":14,"grade":"g3","meanings":["station"]},{"index":381,"char":"銀","strokes":14,"grade":"g3","meanings":["silver"]},{"index":382,"char":"鼻","strokes":14,"grade":"g3","meanings":["nose","snout"]},{"index":383,"char":"様","strokes":14,"grade":"g3","meanings":["Esq.","way","manner","situation","polite suffix"]},{"index":384,"char":"緑","strokes":14,"grade":"g3","meanings":["green"]},{"index":385,"char":"練","strokes":14,"grade":"g3","meanings":["practice","gloss","train","drill","polish"]},{"index":386,"char":"井","strokes":4,"grade":"g4","meanings":["well","well crib","town","community"]},{"index":387,"char":"欠","strokes":4,"grade":"g4","meanings":["lack","gap","fail","yawning radical (no. 76)"]},{"index":388,"char":"氏","strokes":4,"grade":"g4","meanings":["family name","surname","clan"]},{"index":389,"char":"夫","strokes":4,"grade":"g4","meanings":["husband","man"]},{"index":390,"char":"以","strokes":5,"grade":"g4","meanings":["by means of","because","in view of","compared with"]},{"index":391,"char":"加","strokes":5,"grade":"g4","meanings":["add","addition","increase","join","include"]},{"index":392,"char":"功","strokes":5,"grade":"g4","meanings":["achievement","merits","success","honor","credit"]},{"index":393,"char":"札","strokes":5,"grade":"g4","meanings":["tag","paper money","counter for bonds","placard","bid"]},{"index":394,"char":"司","strokes":5,"grade":"g4","meanings":["director","official","govt office","rule","administer"]},{"index":395,"char":"史","strokes":5,"grade":"g4","meanings":["history","chronicle"]},{"index":396,"char":"必","strokes":5,"grade":"g4","meanings":["invariably","certain","inevitable"]},{"index":397,"char":"付","strokes":5,"grade":"g4","meanings":["adhere","attach","refer to","append"]},{"index":398,"char":"辺","strokes":5,"grade":"g4","meanings":["environs","boundary","border","vicinity"]},{"index":399,"char":"包","strokes":5,"grade":"g4","meanings":["wrap","pack up","cover","conceal"]},{"index":400,"char":"末","strokes":5,"grade":"g4","meanings":["end","close","tip","powder","posterity"]},{"index":401,"char":"民","strokes":5,"grade":"g4","meanings":["people","nation","subjects"]},{"index":402,"char":"令","strokes":5,"grade":"g4","meanings":["orders","laws","command","decree","good"]},{"index":403,"char":"衣","strokes":6,"grade":"g4","meanings":["garment","clothes","dressing"]},{"index":404,"char":"印","strokes":6,"grade":"g4","meanings":["stamp","seal","mark","imprint","symbol"]},{"index":405,"char":"各","strokes":6,"grade":"g4","meanings":["each","every","either"]},{"index":406,"char":"共","strokes":6,"grade":"g4","meanings":["together","both","neither","all","and"]},{"index":407,"char":"好","strokes":6,"grade":"g4","meanings":["fond","pleasing","like something"]},{"index":408,"char":"成","strokes":6,"grade":"g4","meanings":["turn into","become","get","grow","elapse"]},{"index":409,"char":"仲","strokes":6,"grade":"g4","meanings":["go-between","relationship"]},{"index":410,"char":"伝","strokes":6,"grade":"g4","meanings":["transmit","go along","walk along","follow","report"]},{"index":411,"char":"灯","strokes":6,"grade":"g4","meanings":["lamp","a light","light","counter for lights"]},{"index":412,"char":"老","strokes":6,"grade":"g4","meanings":["old man","old age","grow old"]},{"index":413,"char":"位","strokes":7,"grade":"g4","meanings":["rank","grade","throne","crown","about"]},{"index":414,"char":"囲","strokes":7,"grade":"g4","meanings":["surround","besiege","store","paling","enclosure"]},{"index":415,"char":"沖","strokes":7,"grade":"g4","meanings":["open sea","offing","rise high into sky"]},{"index":416,"char":"改","strokes":7,"grade":"g4","meanings":["reformation","change","modify","mend","renew"]},{"index":417,"char":"完","strokes":7,"grade":"g4","meanings":["perfect","completion","end"]},{"index":418,"char":"岐","strokes":7,"grade":"g4","meanings":["branch off","fork in road","scene","arena","theater"]},{"index":419,"char":"希","strokes":7,"grade":"g4","meanings":["hope","beg","request","pray","beseech"]},{"index":420,"char":"求","strokes":7,"grade":"g4","meanings":["request","want","wish for","require","demand"]},{"index":421,"char":"芸","strokes":7,"grade":"g4","meanings":["technique","art","craft","performance","acting"]},{"index":422,"char":"告","strokes":7,"grade":"g4","meanings":["revelation","tell","inform","announce"]},{"index":423,"char":"佐","strokes":7,"grade":"g4","meanings":["assistant","help"]},{"index":424,"char":"材","strokes":7,"grade":"g4","meanings":["lumber","log","timber","wood","materials"]},{"index":425,"char":"阪","strokes":7,"grade":"g4","meanings":["heights","slope"]},{"index":426,"char":"児","strokes":7,"grade":"g4","meanings":["newborn babe","child","young of animals"]},{"index":427,"char":"初","strokes":7,"grade":"g4","meanings":["first time","beginning"]},{"index":428,"char":"臣","strokes":7,"grade":"g4","meanings":["retainer","subject"]},{"index":429,"char":"折","strokes":7,"grade":"g4","meanings":["fold","break","fracture","bend","yield"]},{"index":430,"char":"束","strokes":7,"grade":"g4","meanings":["bundle","sheaf","ream","tie in bundles","govern"]},{"index":431,"char":"低","strokes":7,"grade":"g4","meanings":["lower","short","humble"]},{"index":432,"char":"努","strokes":7,"grade":"g4","meanings":["toil","diligent","as much as possible"]},{"index":433,"char":"兵","strokes":7,"grade":"g4","meanings":["soldier","private","troops","army","warfare"]},{"index":434,"char":"別","strokes":7,"grade":"g4","meanings":["separate","branch off","diverge","fork","another"]},{"index":435,"char":"利","strokes":7,"grade":"g4","meanings":["profit","advantage","benefit"]},{"index":436,"char":"良","strokes":7,"grade":"g4","meanings":["good","pleasing","skilled"]},{"index":437,"char":"冷","strokes":7,"grade":"g4","meanings":["cool","cold (beer, person)","chill"]},{"index":438,"char":"労","strokes":7,"grade":"g4","meanings":["labor","thank for","reward for","toil","trouble"]},{"index":439,"char":"英","strokes":8,"grade":"g4","meanings":["England","English","hero","outstanding","calyx"]},{"index":440,"char":"岡","strokes":8,"grade":"g4","meanings":["mount","hill","knoll"]},{"index":441,"char":"果","strokes":8,"grade":"g4","meanings":["fruit","reward","carry out","achieve","complete"]},{"index":442,"char":"季","strokes":8,"grade":"g4","meanings":["seasons"]},{"index":443,"char":"協","strokes":8,"grade":"g4","meanings":["co-","cooperation"]},{"index":444,"char":"径","strokes":8,"grade":"g4","meanings":["diameter","path","method"]},{"index":445,"char":"固","strokes":8,"grade":"g4","meanings":["harden","set","clot","curdle"]},{"index":446,"char":"刷","strokes":8,"grade":"g4","meanings":["printing","print","brush"]},{"index":447,"char":"治","strokes":8,"grade":"g4","meanings":["reign","be at peace","calm down","subdue","quell"]},{"index":448,"char":"周","strokes":8,"grade":"g4","meanings":["circumference","circuit","lap"]},{"index":449,"char":"松","strokes":8,"grade":"g4","meanings":["pine tree"]},{"index":450,"char":"底","strokes":8,"grade":"g4","meanings":["bottom","sole","depth","bottom price","base"]},{"index":451,"char":"的","strokes":8,"grade":"g4","meanings":["bull's eye","mark","target","object","adjective ending"]},{"index":452,"char":"典","strokes":8,"grade":"g4","meanings":["code","ceremony","law","rule"]},{"index":453,"char":"奈","strokes":8,"grade":"g4","meanings":["Nara","what?"]},{"index":454,"char":"念","strokes":8,"grade":"g4","meanings":["wish","sense","idea","thought","feeling"]},{"index":455,"char":"府","strokes":8,"grade":"g4","meanings":["borough","urban prefecture","govt office","representative body","storehouse"]},{"index":456,"char":"阜","strokes":8,"grade":"g4","meanings":["hill","mound","left village radical (no. 170)"]},{"index":457,"char":"法","strokes":8,"grade":"g4","meanings":["method","law","rule","principle","model"]},{"index":458,"char":"牧","strokes":8,"grade":"g4","meanings":["breed","care for","shepherd","feed","pasture"]},{"index":459,"char":"例","strokes":8,"grade":"g4","meanings":["example","custom","usage","precedent"]},{"index":460,"char":"胃","strokes":9,"grade":"g4","meanings":["stomach","paunch","crop","craw"]},{"index":461,"char":"茨","strokes":9,"grade":"g4","meanings":["briar","thorn"]},{"index":462,"char":"栄","strokes":9,"grade":"g4","meanings":["flourish","prosperity","honor","glory","splendor"]},{"index":463,"char":"紀","strokes":9,"grade":"g4","meanings":["chronicle","account","narrative","history","annals"]},{"index":464,"char":"型","strokes":9,"grade":"g4","meanings":["mould","type","model"]},{"index":465,"char":"建","strokes":9,"grade":"g4","meanings":["build"]},{"index":466,"char":"香","strokes":9,"grade":"g4","meanings":["incense","smell","perfume"]},{"index":467,"char":"昨","strokes":9,"grade":"g4","meanings":["yesterday","previous"]},{"index":468,"char":"祝","strokes":9,"grade":"g4","meanings":["celebrate","congratulate"]},{"index":469,"char":"省","strokes":9,"grade":"g4","meanings":["focus","government ministry","conserve"]},{"index":470,"char":"信","strokes":9,"grade":"g4","meanings":["faith","truth","fidelity","trust"]},{"index":471,"char":"単","strokes":9,"grade":"g4","meanings":["simple","one","single","merely"]},{"index":472,"char":"栃","strokes":9,"grade":"g4","meanings":["horse chestnut","(kokuji)"]},{"index":473,"char":"飛","strokes":9,"grade":"g4","meanings":["fly","skip (pages)","scatter"]},{"index":474,"char":"変","strokes":9,"grade":"g4","meanings":["unusual","change","strange"]},{"index":475,"char":"約","strokes":9,"grade":"g4","meanings":["promise","approximately","shrink"]},{"index":476,"char":"勇","strokes":9,"grade":"g4","meanings":["courage","cheer up","be in high spirits","bravery","heroism"]},{"index":477,"char":"要","strokes":9,"grade":"g4","meanings":["need","main point","essence","pivot","key to"]},{"index":478,"char":"挙","strokes":10,"grade":"g4","meanings":["raise","plan","project","behavior","actions"]},{"index":479,"char":"訓","strokes":10,"grade":"g4","meanings":["instruction","Japanese character reading","explanation","read"]},{"index":480,"char":"郡","strokes":10,"grade":"g4","meanings":["county","district"]},{"index":481,"char":"候","strokes":10,"grade":"g4","meanings":["climate","season","weather","wait for","expect"]},{"index":482,"char":"航","strokes":10,"grade":"g4","meanings":["navigate","sail","cruise","fly"]},{"index":483,"char":"差","strokes":10,"grade":"g4","meanings":["distinction","difference","variation","discrepancy","margin"]},{"index":484,"char":"残","strokes":10,"grade":"g4","meanings":["remainder","leftover","balance"]},{"index":485,"char":"借","strokes":10,"grade":"g4","meanings":["borrow","rent"]},{"index":486,"char":"笑","strokes":10,"grade":"g4","meanings":["laugh"]},{"index":487,"char":"席","strokes":10,"grade":"g4","meanings":["seat","mat","occasion","place"]},{"index":488,"char":"倉","strokes":10,"grade":"g4","meanings":["godown","warehouse","storehouse","cellar","treasury"]},{"index":489,"char":"孫","strokes":10,"grade":"g4","meanings":["grandchild","descendants"]},{"index":490,"char":"帯","strokes":10,"grade":"g4","meanings":["sash","belt","obi","zone","region"]},{"index":491,"char":"特","strokes":10,"grade":"g4","meanings":["special"]},{"index":492,"char":"梅","strokes":10,"grade":"g4","meanings":["plum"]},{"index":493,"char":"粉","strokes":10,"grade":"g4","meanings":["flour","powder","dust"]},{"index":494,"char":"脈","strokes":10,"grade":"g4","meanings":["vein","pulse","hope"]},{"index":495,"char":"浴","strokes":10,"grade":"g4","meanings":["bathe","be favored with","bask in"]},{"index":496,"char":"料","strokes":10,"grade":"g4","meanings":["fee","materials"]},{"index":497,"char":"連","strokes":10,"grade":"g4","meanings":["take along","lead","join","connect","party"]},{"index":498,"char":"貨","strokes":11,"grade":"g4","meanings":["freight","goods","property"]},{"index":499,"char":"械","strokes":11,"grade":"g4","meanings":["contraption","fetter","machine","instrument"]},{"index":500,"char":"救","strokes":11,"grade":"g4","meanings":["salvation","save","help","rescue","reclaim"]},{"index":501,"char":"健","strokes":11,"grade":"g4","meanings":["healthy","health","strength","persistence"]},{"index":502,"char":"康","strokes":11,"grade":"g4","meanings":["ease","peace"]},{"index":503,"char":"菜","strokes":11,"grade":"g4","meanings":["vegetable","side dish","greens"]},{"index":504,"char":"崎","strokes":11,"grade":"g4","meanings":["promontory","cape","spit"]},{"index":505,"char":"埼","strokes":11,"grade":"g4","meanings":["cape","spit","promontory"]},{"index":506,"char":"産","strokes":11,"grade":"g4","meanings":["products","bear","give birth","yield","childbirth"]},{"index":507,"char":"鹿","strokes":11,"grade":"g4","meanings":["deer"]},{"index":508,"char":"唱","strokes":11,"grade":"g4","meanings":["chant","recite","call upon","yell"]},{"index":509,"char":"清","strokes":11,"grade":"g4","meanings":["pure","purify","cleanse","exorcise","Manchu dynasty"]},{"index":510,"char":"巣","strokes":11,"grade":"g4","meanings":["nest","rookery","hive","cobweb","den"]},{"index":511,"char":"停","strokes":11,"grade":"g4","meanings":["halt","stopping"]},{"index":512,"char":"堂","strokes":11,"grade":"g4","meanings":["public chamber","hall"]},{"index":513,"char":"得","strokes":11,"grade":"g4","meanings":["gain","get","find","earn","acquire"]},{"index":514,"char":"票","strokes":11,"grade":"g4","meanings":["ballot","label","ticket","sign"]},{"index":515,"char":"副","strokes":11,"grade":"g4","meanings":["vice-","assistant","aide","duplicate","copy"]},{"index":516,"char":"望","strokes":11,"grade":"g4","meanings":["ambition","full moon","hope","desire","aspire to"]},{"index":517,"char":"梨","strokes":11,"grade":"g4","meanings":["pear tree"]},{"index":518,"char":"陸","strokes":11,"grade":"g4","meanings":["land","six"]},{"index":519,"char":"街","strokes":12,"grade":"g4","meanings":["boulevard","street","town"]},{"index":520,"char":"覚","strokes":12,"grade":"g4","meanings":["memorize","learn","remember","awake","sober up"]},{"index":521,"char":"喜","strokes":12,"grade":"g4","meanings":["rejoice","take pleasure in"]},{"index":522,"char":"給","strokes":12,"grade":"g4","meanings":["salary","wage","gift","allow","grant"]},{"index":523,"char":"極","strokes":12,"grade":"g4","meanings":["poles","settlement","conclusion","end","highest rank"]},{"index":524,"char":"景","strokes":12,"grade":"g4","meanings":["scenery","view"]},{"index":525,"char":"結","strokes":12,"grade":"g4","meanings":["tie","bind","contract","join","organize"]},{"index":526,"char":"最","strokes":12,"grade":"g4","meanings":["utmost","most","extreme"]},{"index":527,"char":"散","strokes":12,"grade":"g4","meanings":["scatter","disperse","spend","squander"]},{"index":528,"char":"滋","strokes":12,"grade":"g4","meanings":["nourishing","more & more","be luxuriant","planting","turbidity"]},{"index":529,"char":"順","strokes":12,"grade":"g4","meanings":["obey","order","turn","right","docility"]},{"index":530,"char":"焼","strokes":12,"grade":"g4","meanings":["bake","burning"]},{"index":531,"char":"象","strokes":12,"grade":"g4","meanings":["elephant","pattern after","imitate","image","shape"]},{"index":532,"char":"然","strokes":12,"grade":"g4","meanings":["sort of thing","so","if so","in that case","well"]},{"index":533,"char":"隊","strokes":12,"grade":"g4","meanings":["regiment","party","company","squad"]},{"index":534,"char":"達","strokes":12,"grade":"g4","meanings":["accomplished","reach","arrive","attain"]},{"index":535,"char":"貯","strokes":12,"grade":"g4","meanings":["savings","store","lay in","keep","wear mustache"]},{"index":536,"char":"博","strokes":12,"grade":"g4","meanings":["Dr.","command","esteem","win acclaim","Ph.D."]},{"index":537,"char":"飯","strokes":12,"grade":"g4","meanings":["meal","boiled rice"]},{"index":538,"char":"費","strokes":12,"grade":"g4","meanings":["expense","cost","spend","consume","waste"]},{"index":539,"char":"媛","strokes":12,"grade":"g4","meanings":["beautiful woman","princess"]},{"index":540,"char":"満","strokes":12,"grade":"g4","meanings":["full","fullness","enough","satisfy"]},{"index":541,"char":"無","strokes":12,"grade":"g4","meanings":["nothingness","none","ain't","nothing","nil"]},{"index":542,"char":"量","strokes":12,"grade":"g4","meanings":["quantity","measure","weight","amount","consider"]},{"index":543,"char":"愛","strokes":13,"grade":"g4","meanings":["love","affection","favourite"]},{"index":544,"char":"塩","strokes":13,"grade":"g4","meanings":["salt"]},{"index":545,"char":"試","strokes":13,"grade":"g4","meanings":["test","try","attempt","experiment","ordeal"]},{"index":546,"char":"辞","strokes":13,"grade":"g4","meanings":["resign","word","term","expression"]},{"index":547,"char":"照","strokes":13,"grade":"g4","meanings":["illuminate","shine","compare","bashful"]},{"index":548,"char":"節","strokes":13,"grade":"g4","meanings":["node","season","period","occasion","verse"]},{"index":549,"char":"続","strokes":13,"grade":"g4","meanings":["continue","series","sequel"]},{"index":550,"char":"置","strokes":13,"grade":"g4","meanings":["placement","put","set","deposit","leave behind"]},{"index":551,"char":"働","strokes":13,"grade":"g4","meanings":["work","(kokuji)"]},{"index":552,"char":"管","strokes":14,"grade":"g4","meanings":["pipe","tube","wind instrument","drunken talk","control"]},{"index":553,"char":"関","strokes":14,"grade":"g4","meanings":["connection","barrier","gateway","involve","concerning"]},{"index":554,"char":"旗","strokes":14,"grade":"g4","meanings":["national flag","banner","standard"]},{"index":555,"char":"漁","strokes":14,"grade":"g4","meanings":["fishing","fishery"]},{"index":556,"char":"熊","strokes":14,"grade":"g4","meanings":["bear"]},{"index":557,"char":"察","strokes":14,"grade":"g4","meanings":["guess","presume","surmise","judge","understand"]},{"index":558,"char":"種","strokes":14,"grade":"g4","meanings":["species","kind","class","variety","seed"]},{"index":559,"char":"静","strokes":14,"grade":"g4","meanings":["quiet"]},{"index":560,"char":"説","strokes":14,"grade":"g4","meanings":["opinion","theory","explanation","rumor"]},{"index":561,"char":"歴","strokes":14,"grade":"g4","meanings":["curriculum","continuation","passage of time"]},{"index":562,"char":"支","strokes":4,"grade":"g5","meanings":["branch","support","sustain","branch radical (no. 65)"]},{"index":563,"char":"比","strokes":4,"grade":"g5","meanings":["compare","race","ratio","Philippines"]},{"index":564,"char":"永","strokes":5,"grade":"g5","meanings":["eternity","long","lengthy"]},{"index":565,"char":"可","strokes":5,"grade":"g5","meanings":["can","passable","mustn't","should not","do not"]},{"index":566,"char":"刊","strokes":5,"grade":"g5","meanings":["publish","carve","engrave"]},{"index":567,"char":"旧","strokes":5,"grade":"g5","meanings":["old times","old things","old friend","former","ex-"]},{"index":568,"char":"句","strokes":5,"grade":"g5","meanings":["phrase","clause","sentence","passage","paragraph"]},{"index":569,"char":"示","strokes":5,"grade":"g5","meanings":["show","indicate","point out","express","display"]},{"index":570,"char":"布","strokes":5,"grade":"g5","meanings":["linen","cloth","spread","distribute"]},{"index":571,"char":"因","strokes":6,"grade":"g5","meanings":["cause","factor","be associated with","depend on","be limited to"]},{"index":572,"char":"仮","strokes":6,"grade":"g5","meanings":["sham","temporary","interim","assumed (name)","informal"]},{"index":573,"char":"件","strokes":6,"grade":"g5","meanings":["affair","case","matter","item"]},{"index":574,"char":"再","strokes":6,"grade":"g5","meanings":["again","twice","second time"]},{"index":575,"char":"在","strokes":6,"grade":"g5","meanings":["exist","outskirts","suburbs","located in"]},{"index":576,"char":"舌","strokes":6,"grade":"g5","meanings":["tongue","reed","clapper"]},{"index":577,"char":"団","strokes":6,"grade":"g5","meanings":["group","association"]},{"index":578,"char":"任","strokes":6,"grade":"g5","meanings":["responsibility","duty","term","entrust to","appoint"]},{"index":579,"char":"応","strokes":7,"grade":"g5","meanings":["apply","answer","yes","OK","reply"]},{"index":580,"char":"快","strokes":7,"grade":"g5","meanings":["cheerful","pleasant","agreeable","comfortable"]},{"index":581,"char":"技","strokes":7,"grade":"g5","meanings":["skill","art","craft","ability","feat"]},{"index":582,"char":"均","strokes":7,"grade":"g5","meanings":["level","average"]},{"index":583,"char":"志","strokes":7,"grade":"g5","meanings":["intention","plan","resolve","aspire","motive"]},{"index":584,"char":"似","strokes":7,"grade":"g5","meanings":["becoming","resemble","counterfeit","imitate","suitable"]},{"index":585,"char":"序","strokes":7,"grade":"g5","meanings":["preface","beginning","order","precedence","occasion"]},{"index":586,"char":"条","strokes":7,"grade":"g5","meanings":["article","clause","counter for articles, clauses, paragraphs, etc.","twig","item"]},{"index":587,"char":"状","strokes":7,"grade":"g5","meanings":["status quo","conditions","circumstances","form","appearance"]},{"index":588,"char":"判","strokes":7,"grade":"g5","meanings":["judgement","signature","stamp","seal"]},{"index":589,"char":"防","strokes":7,"grade":"g5","meanings":["ward off","defend","protect","resist"]},{"index":590,"char":"余","strokes":7,"grade":"g5","meanings":["too much","myself","surplus","other","remainder"]},{"index":591,"char":"易","strokes":8,"grade":"g5","meanings":["easy","ready to","simple","fortune-telling","divination"]},{"index":592,"char":"往","strokes":8,"grade":"g5","meanings":["journey","travel","chase away","let go","going"]},{"index":593,"char":"価","strokes":8,"grade":"g5","meanings":["value","price"]},{"index":594,"char":"河","strokes":8,"grade":"g5","meanings":["river"]},{"index":595,"char":"居","strokes":8,"grade":"g5","meanings":["reside","to be","exist","live with"]},{"index":596,"char":"券","strokes":8,"grade":"g5","meanings":["ticket"]},{"index":597,"char":"効","strokes":8,"grade":"g5","meanings":["merit","efficacy","efficiency","benefit"]},{"index":598,"char":"妻","strokes":8,"grade":"g5","meanings":["wife","spouse"]},{"index":599,"char":"枝","strokes":8,"grade":"g5","meanings":["bough","branch","twig","limb","counter for branches"]},{"index":600,"char":"舎","strokes":8,"grade":"g5","meanings":["cottage","inn","hut","house","mansion"]},{"index":601,"char":"述","strokes":8,"grade":"g5","meanings":["mention","state","speak","relate"]},{"index":602,"char":"承","strokes":8,"grade":"g5","meanings":["acquiesce","hear","listen to","be informed","receive"]},{"index":603,"char":"招","strokes":8,"grade":"g5","meanings":["beckon","invite","summon","engage"]},{"index":604,"char":"制","strokes":8,"grade":"g5","meanings":["system","law","rule"]},{"index":605,"char":"性","strokes":8,"grade":"g5","meanings":["sex","gender","nature"]},{"index":606,"char":"版","strokes":8,"grade":"g5","meanings":["printing block","printing plate","edition","impression","label"]},{"index":607,"char":"肥","strokes":8,"grade":"g5","meanings":["fertilizer","get fat","fertile","manure","pamper"]},{"index":608,"char":"武","strokes":8,"grade":"g5","meanings":["warrior","military","chivalry","arms"]},{"index":609,"char":"限","strokes":9,"grade":"g5","meanings":["limit","restrict","to best of ability"]},{"index":610,"char":"故","strokes":9,"grade":"g5","meanings":["happenstance","especially","intentionally","reason","cause"]},{"index":611,"char":"査","strokes":9,"grade":"g5","meanings":["investigate"]},{"index":612,"char":"政","strokes":9,"grade":"g5","meanings":["politics","government"]},{"index":613,"char":"祖","strokes":9,"grade":"g5","meanings":["ancestor","pioneer","founder"]},{"index":614,"char":"則","strokes":9,"grade":"g5","meanings":["rule","follow","based on","model after"]},{"index":615,"char":"退","strokes":9,"grade":"g5","meanings":["retreat","withdraw","retire","resign","repel"]},{"index":616,"char":"独","strokes":9,"grade":"g5","meanings":["single","alone","spontaneously","Germany"]},{"index":617,"char":"保","strokes":9,"grade":"g5","meanings":["protect","guarantee","keep","preserve","sustain"]},{"index":618,"char":"迷","strokes":9,"grade":"g5","meanings":["astray","be perplexed","in doubt","lost","err"]},{"index":619,"char":"益","strokes":10,"grade":"g5","meanings":["benefit","gain","profit","advantage"]},{"index":620,"char":"恩","strokes":10,"grade":"g5","meanings":["grace","kindness","goodness","favor","mercy"]},{"index":621,"char":"格","strokes":10,"grade":"g5","meanings":["status","rank","capacity","character","case (law, grammar)"]},{"index":622,"char":"個","strokes":10,"grade":"g5","meanings":["individual","counter for articles"]},{"index":623,"char":"耕","strokes":10,"grade":"g5","meanings":["till","plow","cultivate"]},{"index":624,"char":"財","strokes":10,"grade":"g5","meanings":["property","money","wealth","assets"]},{"index":625,"char":"桜","strokes":10,"grade":"g5","meanings":["cherry"]},{"index":626,"char":"修","strokes":10,"grade":"g5","meanings":["discipline","conduct oneself well","study","master"]},{"index":627,"char":"造","strokes":10,"grade":"g5","meanings":["create","make","structure","physique"]},{"index":628,"char":"能","strokes":10,"grade":"g5","meanings":["ability","talent","skill","capacity"]},{"index":629,"char":"俵","strokes":10,"grade":"g5","meanings":["bag","bale","sack","counter for bags"]},{"index":630,"char":"容","strokes":10,"grade":"g5","meanings":["contain","form","looks"]},{"index":631,"char":"留","strokes":10,"grade":"g5","meanings":["detain","fasten","halt","stop"]},{"index":632,"char":"移","strokes":11,"grade":"g5","meanings":["shift","move","change","drift","catch (cold, fire)"]},{"index":633,"char":"液","strokes":11,"grade":"g5","meanings":["fluid","liquid","juice","sap","secretion"]},{"index":634,"char":"眼","strokes":11,"grade":"g5","meanings":["eyeball"]},{"index":635,"char":"基","strokes":11,"grade":"g5","meanings":["fundamentals","radical (chem)","counter for machines","foundation"]},{"index":636,"char":"寄","strokes":11,"grade":"g5","meanings":["draw near","stop in","bring near","gather","collect"]},{"index":637,"char":"規","strokes":11,"grade":"g5","meanings":["standard","measure"]},{"index":638,"char":"許","strokes":11,"grade":"g5","meanings":["permit","approve"]},{"index":639,"char":"経","strokes":11,"grade":"g5","meanings":["sutra","longitude","pass thru","expire","warp"]},{"index":640,"char":"険","strokes":11,"grade":"g5","meanings":["precipitous","inaccessible place","impregnable position","steep place","sharp eyes"]},{"index":641,"char":"現","strokes":11,"grade":"g5","meanings":["present","existing","actual"]},{"index":642,"char":"混","strokes":11,"grade":"g5","meanings":["mix","blend","confuse"]},{"index":643,"char":"採","strokes":11,"grade":"g5","meanings":["pick","take","fetch","take up"]},{"index":644,"char":"授","strokes":11,"grade":"g5","meanings":["impart","instruct","grant","confer"]},{"index":645,"char":"術","strokes":11,"grade":"g5","meanings":["art","technique","skill","means","trick"]},{"index":646,"char":"常","strokes":11,"grade":"g5","meanings":["usual","ordinary","normal","common","regular"]},{"index":647,"char":"情","strokes":11,"grade":"g5","meanings":["feelings","emotion","passion","sympathy","circumstances"]},{"index":648,"char":"接","strokes":11,"grade":"g5","meanings":["touch","contact","adjoin","piece together"]},{"index":649,"char":"設","strokes":11,"grade":"g5","meanings":["establishment","provision","prepare"]},{"index":650,"char":"断","strokes":11,"grade":"g5","meanings":["severance","decline","refuse","apologize","warn"]},{"index":651,"char":"張","strokes":11,"grade":"g5","meanings":["lengthen","counter for bows & stringed instruments","stretch","spread","put up (tent)"]},{"index":652,"char":"貧","strokes":11,"grade":"g5","meanings":["poverty","poor"]},{"index":653,"char":"婦","strokes":11,"grade":"g5","meanings":["lady","woman","wife","bride"]},{"index":654,"char":"務","strokes":11,"grade":"g5","meanings":["task","duties"]},{"index":655,"char":"営","strokes":12,"grade":"g5","meanings":["occupation","camp","perform","build","conduct (business)"]},{"index":656,"char":"過","strokes":12,"grade":"g5","meanings":["overdo","exceed","go beyond","error"]},{"index":657,"char":"賀","strokes":12,"grade":"g5","meanings":["congratulations","joy"]},{"index":658,"char":"検","strokes":12,"grade":"g5","meanings":["examination","investigate"]},{"index":659,"char":"減","strokes":12,"grade":"g5","meanings":["dwindle","decrease","reduce","decline","curtail"]},{"index":660,"char":"証","strokes":12,"grade":"g5","meanings":["evidence","proof","certificate"]},{"index":661,"char":"税","strokes":12,"grade":"g5","meanings":["tax","duty"]},{"index":662,"char":"絶","strokes":12,"grade":"g5","meanings":["discontinue","sever","cut off","abstain","interrupt"]},{"index":663,"char":"測","strokes":12,"grade":"g5","meanings":["fathom","plan","scheme","measure"]},{"index":664,"char":"属","strokes":12,"grade":"g5","meanings":["belong","genus","subordinate official","affiliated"]},{"index":665,"char":"貸","strokes":12,"grade":"g5","meanings":["lend"]},{"index":666,"char":"提","strokes":12,"grade":"g5","meanings":["propose","take along","carry in hand"]},{"index":667,"char":"程","strokes":12,"grade":"g5","meanings":["extent","degree","law","formula","distance"]},{"index":668,"char":"統","strokes":12,"grade":"g5","meanings":["overall","relationship","ruling","governing"]},{"index":669,"char":"備","strokes":12,"grade":"g5","meanings":["equip","provision","preparation"]},{"index":670,"char":"評","strokes":12,"grade":"g5","meanings":["evaluate","criticism","comment"]},{"index":671,"char":"復","strokes":12,"grade":"g5","meanings":["restore","return to","revert","resume"]},{"index":672,"char":"報","strokes":12,"grade":"g5","meanings":["report","news","reward","retribution"]},{"index":673,"char":"貿","strokes":12,"grade":"g5","meanings":["trade","exchange"]},{"index":674,"char":"解","strokes":13,"grade":"g5","meanings":["unravel","notes","key","explanation","understanding"]},{"index":675,"char":"幹","strokes":13,"grade":"g5","meanings":["tree trunk","main part","talent","capability"]},{"index":676,"char":"義","strokes":13,"grade":"g5","meanings":["righteousness","justice","morality","honor","loyalty"]},{"index":677,"char":"禁","strokes":13,"grade":"g5","meanings":["prohibition","ban","forbid"]},{"index":678,"char":"群","strokes":13,"grade":"g5","meanings":["flock","group","crowd","herd","swarm"]},{"index":679,"char":"鉱","strokes":13,"grade":"g5","meanings":["mineral","ore"]},{"index":680,"char":"資","strokes":13,"grade":"g5","meanings":["assets","resources","capital","funds","data"]},{"index":681,"char":"飼","strokes":13,"grade":"g5","meanings":["domesticate","raise","keep","feed"]},{"index":682,"char":"準","strokes":13,"grade":"g5","meanings":["semi-","correspond to","proportionate to","conform","imitate"]},{"index":683,"char":"勢","strokes":13,"grade":"g5","meanings":["forces","energy","military strength"]},{"index":684,"char":"豊","strokes":13,"grade":"g5","meanings":["bountiful","excellent","rich"]},{"index":685,"char":"夢","strokes":13,"grade":"g5","meanings":["dream","vision","illusion"]},{"index":686,"char":"預","strokes":13,"grade":"g5","meanings":["deposit","custody","leave with","entrust to"]},{"index":687,"char":"演","strokes":14,"grade":"g5","meanings":["performance","act","play","render","stage"]},{"index":688,"char":"慣","strokes":14,"grade":"g5","meanings":["accustomed","get used to","become experienced"]},{"index":689,"char":"境","strokes":14,"grade":"g5","meanings":["boundary","border","region"]},{"index":690,"char":"構","strokes":14,"grade":"g5","meanings":["posture","build","pretend"]},{"index":691,"char":"際","strokes":14,"grade":"g5","meanings":["occasion","side","edge","verge","dangerous"]},{"index":692,"char":"雑","strokes":14,"grade":"g5","meanings":["miscellaneous"]},{"index":693,"char":"酸","strokes":14,"grade":"g5","meanings":["acid","bitterness","sour","tart"]},{"index":694,"char":"製","strokes":14,"grade":"g5","meanings":["made in...","manufacture"]},{"index":695,"char":"銭","strokes":14,"grade":"g5","meanings":["coin",".01 yen","money"]},{"index":696,"char":"総","strokes":14,"grade":"g5","meanings":["general","whole","all","full","total"]},{"index":697,"char":"像","strokes":14,"grade":"g5","meanings":["statue","picture","image","figure","portrait"]},{"index":698,"char":"増","strokes":14,"grade":"g5","meanings":["increase","add","augment","gain","promote"]},{"index":699,"char":"態","strokes":14,"grade":"g5","meanings":["attitude","condition","figure","appearance","voice (of verbs)"]},{"index":700,"char":"適","strokes":14,"grade":"g5","meanings":["suitable","occasional","rare","qualified","capable"]},{"index":701,"char":"銅","strokes":14,"grade":"g5","meanings":["copper"]},{"index":702,"char":"徳","strokes":14,"grade":"g5","meanings":["benevolence","virtue","goodness","commanding respect"]},{"index":703,"char":"複","strokes":14,"grade":"g5","meanings":["duplicate","double","compound","multiple"]},{"index":704,"char":"綿","strokes":14,"grade":"g5","meanings":["cotton"]},{"index":705,"char":"領","strokes":14,"grade":"g5","meanings":["jurisdiction","dominion","territory","fief","reign"]},{"index":706,"char":"尺","strokes":4,"grade":"g6","meanings":["shaku","Japanese foot","measure","scale","rule"]},{"index":707,"char":"収","strokes":4,"grade":"g6","meanings":["income","obtain","reap","pay","supply"]},{"index":708,"char":"仁","strokes":4,"grade":"g6","meanings":["humanity","virtue","benevolence","charity","man"]},{"index":709,"char":"片","strokes":4,"grade":"g6","meanings":["one-sided","leaf","sheet","right-side kata radical (no. 91)"]},{"index":710,"char":"穴","strokes":5,"grade":"g6","meanings":["hole","aperture","slit","cave","den"]},{"index":711,"char":"冊","strokes":5,"grade":"g6","meanings":["tome","counter for books","volume"]},{"index":712,"char":"庁","strokes":5,"grade":"g6","meanings":["government office"]},{"index":713,"char":"幼","strokes":5,"grade":"g6","meanings":["infancy","childhood"]},{"index":714,"char":"宇","strokes":6,"grade":"g6","meanings":["eaves","roof","house","heaven"]},{"index":715,"char":"灰","strokes":6,"grade":"g6","meanings":["ashes","puckery juice","cremate"]},{"index":716,"char":"机","strokes":6,"grade":"g6","meanings":["desk","table"]},{"index":717,"char":"吸","strokes":6,"grade":"g6","meanings":["suck","imbibe","inhale","sip"]},{"index":718,"char":"后","strokes":6,"grade":"g6","meanings":["empress","queen","after","behind","back"]},{"index":719,"char":"至","strokes":6,"grade":"g6","meanings":["climax","arrive","proceed","reach","attain"]},{"index":720,"char":"存","strokes":6,"grade":"g6","meanings":["exist","suppose","be aware of","believe","feel"]},{"index":721,"char":"宅","strokes":6,"grade":"g6","meanings":["home","house","residence","our house","my husband"]},{"index":722,"char":"我","strokes":7,"grade":"g6","meanings":["ego","I","selfish","our","oneself"]},{"index":723,"char":"系","strokes":7,"grade":"g6","meanings":["lineage","system"]},{"index":724,"char":"孝","strokes":7,"grade":"g6","meanings":["filial piety","child's respect"]},{"index":725,"char":"私","strokes":7,"grade":"g6","meanings":["private","I","me"]},{"index":726,"char":"否","strokes":7,"grade":"g6","meanings":["negate","no","noes","refuse","decline"]},{"index":727,"char":"忘","strokes":7,"grade":"g6","meanings":["forget"]},{"index":728,"char":"卵","strokes":7,"grade":"g6","meanings":["egg","ovum","spawn","roe"]},{"index":729,"char":"延","strokes":8,"grade":"g6","meanings":["prolong","stretching"]},{"index":730,"char":"沿","strokes":8,"grade":"g6","meanings":["run alongside","follow along","run along","lie along"]},{"index":731,"char":"拡","strokes":8,"grade":"g6","meanings":["broaden","extend","expand","enlarge"]},{"index":732,"char":"供","strokes":8,"grade":"g6","meanings":["submit","offer","present","serve (meal)","accompany"]},{"index":733,"char":"呼","strokes":8,"grade":"g6","meanings":["call","call out to","invite"]},{"index":734,"char":"刻","strokes":8,"grade":"g6","meanings":["engrave","cut fine","chop","hash","mince"]},{"index":735,"char":"若","strokes":8,"grade":"g6","meanings":["young","if","perhaps","possibly","low number"]},{"index":736,"char":"宗","strokes":8,"grade":"g6","meanings":["religion","sect","denomination","main point","origin"]},{"index":737,"char":"垂","strokes":8,"grade":"g6","meanings":["droop","suspend","hang","slouch"]},{"index":738,"char":"担","strokes":8,"grade":"g6","meanings":["shouldering","carry","raise","bear"]},{"index":739,"char":"宙","strokes":8,"grade":"g6","meanings":["mid-air","air","space","sky","memorization"]},{"index":740,"char":"忠","strokes":8,"grade":"g6","meanings":["loyalty","fidelity","faithfulness"]},{"index":741,"char":"届","strokes":8,"grade":"g6","meanings":["deliver","reach","arrive","report","notify"]},{"index":742,"char":"拝","strokes":8,"grade":"g6","meanings":["worship","adore","pray to"]},{"index":743,"char":"並","strokes":8,"grade":"g6","meanings":["row","and","besides","as well as","line up"]},{"index":744,"char":"宝","strokes":8,"grade":"g6","meanings":["treasure","wealth","valuables"]},{"index":745,"char":"枚","strokes":8,"grade":"g6","meanings":["sheet of...","counter for flat thin objects or sheets"]},{"index":746,"char":"革","strokes":9,"grade":"g6","meanings":["leather","skin","reform","become serious"]},{"index":747,"char":"巻","strokes":9,"grade":"g6","meanings":["scroll","volume","book","part","roll up"]},{"index":748,"char":"看","strokes":9,"grade":"g6","meanings":["watch over","see"]},{"index":749,"char":"皇","strokes":9,"grade":"g6","meanings":["emperor"]},{"index":750,"char":"紅","strokes":9,"grade":"g6","meanings":["crimson","deep red"]},{"index":751,"char":"砂","strokes":9,"grade":"g6","meanings":["sand"]},{"index":752,"char":"姿","strokes":9,"grade":"g6","meanings":["figure","form","shape"]},{"index":753,"char":"城","strokes":9,"grade":"g6","meanings":["castle"]},{"index":754,"char":"宣","strokes":9,"grade":"g6","meanings":["proclaim","say","announce"]},{"index":755,"char":"専","strokes":9,"grade":"g6","meanings":["specialty","exclusive","mainly","solely"]},{"index":756,"char":"泉","strokes":9,"grade":"g6","meanings":["spring","fountain"]},{"index":757,"char":"洗","strokes":9,"grade":"g6","meanings":["wash","inquire into","probe"]},{"index":758,"char":"染","strokes":9,"grade":"g6","meanings":["dye","color","paint","stain","print"]},{"index":759,"char":"奏","strokes":9,"grade":"g6","meanings":["play music","speak to a ruler","complete"]},{"index":760,"char":"段","strokes":9,"grade":"g6","meanings":["grade","steps","stairs"]},{"index":761,"char":"派","strokes":9,"grade":"g6","meanings":["faction","group","party","clique","sect"]},{"index":762,"char":"背","strokes":9,"grade":"g6","meanings":["stature","height","back","behind","disobey"]},{"index":763,"char":"肺","strokes":9,"grade":"g6","meanings":["lungs"]},{"index":764,"char":"律","strokes":9,"grade":"g6","meanings":["rhythm","law","regulation","gauge","control"]},{"index":765,"char":"株","strokes":10,"grade":"g6","meanings":["stocks","stump","shares","stock","counter for small plants"]},{"index":766,"char":"降","strokes":10,"grade":"g6","meanings":["descend","precipitate","fall","surrender"]},{"index":767,"char":"座","strokes":10,"grade":"g6","meanings":["squat","seat","cushion","gathering","sit"]},{"index":768,"char":"蚕","strokes":10,"grade":"g6","meanings":["silkworm"]},{"index":769,"char":"射","strokes":10,"grade":"g6","meanings":["shoot","shine into","onto","archery"]},{"index":770,"char":"従","strokes":10,"grade":"g6","meanings":["accompany","obey","submit to","comply","follow"]},{"index":771,"char":"純","strokes":10,"grade":"g6","meanings":["genuine","purity","innocence","net (profit)"]},{"index":772,"char":"除","strokes":10,"grade":"g6","meanings":["exclude","division (x/3)","remove","abolish","cancel"]},{"index":773,"char":"将","strokes":10,"grade":"g6","meanings":["leader","commander","general","admiral","or"]},{"index":774,"char":"針","strokes":10,"grade":"g6","meanings":["needle","pin","staple","stinger"]},{"index":775,"char":"値","strokes":10,"grade":"g6","meanings":["price","cost","value"]},{"index":776,"char":"展","strokes":10,"grade":"g6","meanings":["unfold","expand"]},{"index":777,"char":"党","strokes":10,"grade":"g6","meanings":["party","faction","clique"]},{"index":778,"char":"納","strokes":10,"grade":"g6","meanings":["settlement","obtain","reap","pay","supply"]},{"index":779,"char":"俳","strokes":10,"grade":"g6","meanings":["haiku","actor"]},{"index":780,"char":"班","strokes":10,"grade":"g6","meanings":["squad","corps","unit","group"]},{"index":781,"char":"秘","strokes":10,"grade":"g6","meanings":["secret","conceal"]},{"index":782,"char":"陛","strokes":10,"grade":"g6","meanings":["highness","steps (of throne)"]},{"index":783,"char":"朗","strokes":10,"grade":"g6","meanings":["melodious","clear","bright","serene","cheerful"]},{"index":784,"char":"異","strokes":11,"grade":"g6","meanings":["uncommon","different","queerness","strangeness","wonderful"]},{"index":785,"char":"域","strokes":11,"grade":"g6","meanings":["range","region","limits","stage","level"]},{"index":786,"char":"郷","strokes":11,"grade":"g6","meanings":["home town","village","native place","district"]},{"index":787,"char":"済","strokes":11,"grade":"g6","meanings":["settle (debt, etc.)","relieve (burden)","finish","come to an end","excusable"]},{"index":788,"char":"視","strokes":11,"grade":"g6","meanings":["inspection","regard as","see","look at"]},{"index":789,"char":"推","strokes":11,"grade":"g6","meanings":["conjecture","infer","guess","suppose","support"]},{"index":790,"char":"盛","strokes":11,"grade":"g6","meanings":["boom","prosper","copulate"]},{"index":791,"char":"窓","strokes":11,"grade":"g6","meanings":["window","pane"]},{"index":792,"char":"探","strokes":11,"grade":"g6","meanings":["grope","search","look for"]},{"index":793,"char":"著","strokes":11,"grade":"g6","meanings":["renowned","publish","write","remarkable","phenomenal"]},{"index":794,"char":"頂","strokes":11,"grade":"g6","meanings":["place on the head","receive","top of head","top","summit"]},{"index":795,"char":"脳","strokes":11,"grade":"g6","meanings":["brain","memory"]},{"index":796,"char":"閉","strokes":11,"grade":"g6","meanings":["closed","shut"]},{"index":797,"char":"訪","strokes":11,"grade":"g6","meanings":["call on","visit","look up","offer sympathy"]},{"index":798,"char":"密","strokes":11,"grade":"g6","meanings":["secrecy","density (pop)","minuteness","carefulness"]},{"index":799,"char":"訳","strokes":11,"grade":"g6","meanings":["translate","reason","circumstance","case"]},{"index":800,"char":"郵","strokes":11,"grade":"g6","meanings":["mail","stagecoach stop"]},{"index":801,"char":"欲","strokes":11,"grade":"g6","meanings":["longing","covetousness","greed","passion","desire"]},{"index":802,"char":"翌","strokes":11,"grade":"g6","meanings":["the following","next"]},{"index":803,"char":"割","strokes":12,"grade":"g6","meanings":["proportion","comparatively","divide","cut","separate"]},{"index":804,"char":"揮","strokes":12,"grade":"g6","meanings":["brandish","wave","wag","swing","shake"]},{"index":805,"char":"貴","strokes":12,"grade":"g6","meanings":["precious","value","prize","esteem","honor"]},{"index":806,"char":"勤","strokes":12,"grade":"g6","meanings":["diligence","become employed","serve"]},{"index":807,"char":"筋","strokes":12,"grade":"g6","meanings":["muscle","sinew","tendon","fiber","plot"]},{"index":808,"char":"敬","strokes":12,"grade":"g6","meanings":["awe","respect","honor","revere"]},{"index":809,"char":"裁","strokes":12,"grade":"g6","meanings":["tailor","judge","decision","cut out (pattern)"]},{"index":810,"char":"策","strokes":12,"grade":"g6","meanings":["scheme","plan","policy","step","means"]},{"index":811,"char":"詞","strokes":12,"grade":"g6","meanings":["part of speech","words","poetry"]},{"index":812,"char":"就","strokes":12,"grade":"g6","meanings":["concerning","settle","take position","depart","study"]},{"index":813,"char":"衆","strokes":12,"grade":"g6","meanings":["masses","great numbers","multitude","populace"]},{"index":814,"char":"善","strokes":12,"grade":"g6","meanings":["virtuous","good","goodness"]},{"index":815,"char":"装","strokes":12,"grade":"g6","meanings":["attire","dress","pretend","disguise","profess"]},{"index":816,"char":"尊","strokes":12,"grade":"g6","meanings":["revered","valuable","precious","noble","exalted"]},{"index":817,"char":"晩","strokes":12,"grade":"g6","meanings":["nightfall","night"]},{"index":818,"char":"補","strokes":12,"grade":"g6","meanings":["supplement","supply","make good","offset","compensate"]},{"index":819,"char":"棒","strokes":12,"grade":"g6","meanings":["rod","stick","cane","pole","club"]},{"index":820,"char":"絹","strokes":13,"grade":"g6","meanings":["silk"]},{"index":821,"char":"源","strokes":13,"grade":"g6","meanings":["source","origin"]},{"index":822,"char":"署","strokes":13,"grade":"g6","meanings":["signature","govt office","police station"]},{"index":823,"char":"蒸","strokes":13,"grade":"g6","meanings":["steam","heat","sultry","foment","get musty"]},{"index":824,"char":"聖","strokes":13,"grade":"g6","meanings":["holy","saint","sage","master","priest"]},{"index":825,"char":"誠","strokes":13,"grade":"g6","meanings":["sincerity","admonish","warn","prohibit","truth"]},{"index":826,"char":"暖","strokes":13,"grade":"g6","meanings":["warmth"]},{"index":827,"char":"賃","strokes":13,"grade":"g6","meanings":["fare","fee","hire","rent","wages"]},{"index":828,"char":"腹","strokes":13,"grade":"g6","meanings":["abdomen","belly","stomach"]},{"index":829,"char":"幕","strokes":13,"grade":"g6","meanings":["curtain","bunting","act of play"]},{"index":830,"char":"盟","strokes":13,"grade":"g6","meanings":["alliance","oath"]},{"index":831,"char":"裏","strokes":13,"grade":"g6","meanings":["back","amidst","in","reverse","inside"]},{"index":832,"char":"閣","strokes":14,"grade":"g6","meanings":["tower","tall building","palace"]},{"index":833,"char":"疑","strokes":14,"grade":"g6","meanings":["doubt","distrust","be suspicious","question"]},{"index":834,"char":"誤","strokes":14,"grade":"g6","meanings":["mistake","err","do wrong","mislead"]},{"index":835,"char":"穀","strokes":14,"grade":"g6","meanings":["cereals","grain"]},{"index":836,"char":"誌","strokes":14,"grade":"g6","meanings":["document","records"]},{"index":837,"char":"磁","strokes":14,"grade":"g6","meanings":["magnet","porcelain"]},{"index":838,"char":"層","strokes":14,"grade":"g6","meanings":["stratum","social class","layer","story","floor"]},{"index":839,"char":"認","strokes":14,"grade":"g6","meanings":["acknowledge","witness","discern","recognize","appreciate"]},{"index":840,"char":"暮","strokes":14,"grade":"g6","meanings":["evening","twilight","season's end","livelihood","make a living"]},{"index":841,"char":"模","strokes":14,"grade":"g6","meanings":["imitation","copy","mock"]},{"index":842,"char":"介","strokes":4,"grade":"jōyō","meanings":["jammed in","shellfish","mediate","concern oneself with"]},{"index":843,"char":"刈","strokes":4,"grade":"jōyō","meanings":["reap","cut","clip","trim","prune"]},{"index":844,"char":"斤","strokes":4,"grade":"jōyō","meanings":["axe","1.32 lb","catty","counter for loaves of bread","axe radical (no. 69)"]},{"index":845,"char":"幻","strokes":4,"grade":"jōyō","meanings":["phantasm","vision","dream","illusion","apparition"]},{"index":846,"char":"互","strokes":4,"grade":"jōyō","meanings":["mutually","reciprocally","together"]},{"index":847,"char":"孔","strokes":4,"grade":"jōyō","meanings":["cavity","hole","slit","very","great"]},{"index":848,"char":"升","strokes":4,"grade":"jōyō","meanings":["measuring box","1.8 liter"]},{"index":849,"char":"冗","strokes":4,"grade":"jōyō","meanings":["superfluous","uselessness"]},{"index":850,"char":"双","strokes":4,"grade":"jōyō","meanings":["pair","set","comparison","counter for pairs"]},{"index":851,"char":"丹","strokes":4,"grade":"jōyō","meanings":["rust-colored","red","red lead","pills","sincerity"]},{"index":852,"char":"爪","strokes":4,"grade":"jōyō","meanings":["claw","nail","talon"]},{"index":853,"char":"斗","strokes":4,"grade":"jōyō","meanings":["Big Dipper","ten sho (vol)","sake dipper","dots and cross radical (no. 68)"]},{"index":854,"char":"屯","strokes":4,"grade":"jōyō","meanings":["barracks","police station","camp","ton"]},{"index":855,"char":"匂","strokes":4,"grade":"jōyō","meanings":["fragrant","stink","glow","insinuate","(kokuji)"]},{"index":856,"char":"匹","strokes":4,"grade":"jōyō","meanings":["equal","head","counter for small animals","roll of cloth"]},{"index":857,"char":"乏","strokes":4,"grade":"jōyō","meanings":["destitution","scarce","limited"]},{"index":858,"char":"凹","strokes":5,"grade":"jōyō","meanings":["concave","hollow","sunken"]},{"index":859,"char":"牙","strokes":5,"grade":"jōyō","meanings":["tusk","fang","tusk radical (no. 92)"]},{"index":860,"char":"且","strokes":5,"grade":"jōyō","meanings":["moreover","also","furthermore"]},{"index":861,"char":"瓦","strokes":5,"grade":"jōyō","meanings":["tile","gram"]},{"index":862,"char":"甘","strokes":5,"grade":"jōyō","meanings":["sweet","coax","pamper","be content","sugary"]},{"index":863,"char":"丘","strokes":5,"grade":"jōyō","meanings":["hill","knoll"]},{"index":864,"char":"巨","strokes":5,"grade":"jōyō","meanings":["gigantic","big","large","great"]},{"index":865,"char":"玄","strokes":5,"grade":"jōyō","meanings":["mysterious","occultness","black","deep","profound"]},{"index":866,"char":"巧","strokes":5,"grade":"jōyō","meanings":["adroit","skilled","ingenuity"]},{"index":867,"char":"甲","strokes":5,"grade":"jōyō","meanings":["armor","high (voice)","A grade","first class","former"]},{"index":868,"char":"込","strokes":5,"grade":"jōyō","meanings":["crowded","mixture","in bulk","included","(kokuji)"]},{"index":869,"char":"汁","strokes":5,"grade":"jōyō","meanings":["soup","juice","broth","sap","gravy"]},{"index":870,"char":"召","strokes":5,"grade":"jōyō","meanings":["seduce","call","send for","wear","put on"]},{"index":871,"char":"尻","strokes":5,"grade":"jōyō","meanings":["buttocks","hips","butt","rear"]},{"index":872,"char":"斥","strokes":5,"grade":"jōyō","meanings":["reject","retreat","recede","withdraw","repel"]},{"index":873,"char":"仙","strokes":5,"grade":"jōyō","meanings":["hermit","wizard","cent"]},{"index":874,"char":"占","strokes":5,"grade":"jōyō","meanings":["fortune-telling","divining","forecasting","occupy","hold"]},{"index":875,"char":"旦","strokes":5,"grade":"jōyō","meanings":["daybreak","dawn","morning"]},{"index":876,"char":"凸","strokes":5,"grade":"jōyō","meanings":["convex","beetle brow","uneven"]},{"index":877,"char":"尼","strokes":5,"grade":"jōyō","meanings":["nun"]},{"index":878,"char":"氾","strokes":5,"grade":"jōyō","meanings":["spread out","wide"]},{"index":879,"char":"払","strokes":5,"grade":"jōyō","meanings":["pay","clear out","prune","banish","dispose of"]},{"index":880,"char":"丙","strokes":5,"grade":"jōyō","meanings":["third class","3rd","3rd calendar sign"]},{"index":881,"char":"丼","strokes":5,"grade":"jōyō","meanings":["bowl","bowl of food"]},{"index":882,"char":"扱","strokes":6,"grade":"jōyō","meanings":["handle","entertain","thresh","strip"]},{"index":883,"char":"芋","strokes":6,"grade":"jōyō","meanings":["potato"]},{"index":884,"char":"臼","strokes":6,"grade":"jōyō","meanings":["mortar"]},{"index":885,"char":"汗","strokes":6,"grade":"jōyō","meanings":["sweat","perspire"]},{"index":886,"char":"缶","strokes":6,"grade":"jōyō","meanings":["tin can","container","jar radical (no. 121)"]},{"index":887,"char":"企","strokes":6,"grade":"jōyō","meanings":["undertake","scheme","design","attempt","plan"]},{"index":888,"char":"伎","strokes":6,"grade":"jōyō","meanings":["deed","skill"]},{"index":889,"char":"吉","strokes":6,"grade":"jōyō","meanings":["good luck","joy","congratulations"]},{"index":890,"char":"叫","strokes":6,"grade":"jōyō","meanings":["shout","exclaim","yell"]},{"index":891,"char":"仰","strokes":6,"grade":"jōyō","meanings":["face-up","look up","depend","seek","respect"]},{"index":892,"char":"刑","strokes":6,"grade":"jōyō","meanings":["punish","penalty","sentence","punishment"]},{"index":893,"char":"江","strokes":6,"grade":"jōyō","meanings":["creek","inlet","bay"]},{"index":894,"char":"旨","strokes":6,"grade":"jōyō","meanings":["delicious","relish","show a liking for","purport","will"]},{"index":895,"char":"芝","strokes":6,"grade":"jōyō","meanings":["turf","lawn"]},{"index":896,"char":"舟","strokes":6,"grade":"jōyō","meanings":["boat","ship"]},{"index":897,"char":"充","strokes":6,"grade":"jōyō","meanings":["allot","fill"]},{"index":898,"char":"旬","strokes":6,"grade":"jōyō","meanings":["decameron","ten-day period","season (for specific products)"]},{"index":899,"char":"巡","strokes":6,"grade":"jōyō","meanings":["patrol","go around","circumference"]},{"index":900,"char":"匠","strokes":6,"grade":"jōyō","meanings":["artisan","workman","carpenter"]},{"index":901,"char":"尽","strokes":6,"grade":"jōyō","meanings":["exhaust","use up","run out of","deplete","befriend"]},{"index":902,"char":"迅","strokes":6,"grade":"jōyō","meanings":["swift","fast"]},{"index":903,"char":"壮","strokes":6,"grade":"jōyō","meanings":["robust","manhood","prosperity"]},{"index":904,"char":"弐","strokes":6,"grade":"jōyō","meanings":["II","two","second"]},{"index":905,"char":"如","strokes":6,"grade":"jōyō","meanings":["likeness","like","such as","as if","better"]},{"index":906,"char":"肌","strokes":6,"grade":"jōyō","meanings":["texture","skin","body","grain"]},{"index":907,"char":"帆","strokes":6,"grade":"jōyō","meanings":["sail"]},{"index":908,"char":"汎","strokes":6,"grade":"jōyō","meanings":["pan-"]},{"index":909,"char":"妃","strokes":6,"grade":"jōyō","meanings":["queen","princess"]},{"index":910,"char":"伏","strokes":6,"grade":"jōyō","meanings":["prostrated","bend down","bow","cover","lay (pipes)"]},{"index":911,"char":"忙","strokes":6,"grade":"jōyō","meanings":["busy","occupied","restless"]},{"index":912,"char":"朴","strokes":6,"grade":"jōyō","meanings":["crude","simple","plain","docile"]},{"index":913,"char":"妄","strokes":6,"grade":"jōyō","meanings":["delusion","unnecessarily","without authority","reckless"]},{"index":914,"char":"吏","strokes":6,"grade":"jōyō","meanings":["officer","an official"]},{"index":915,"char":"亜","strokes":7,"grade":"jōyō","meanings":["Asia","rank next","come after","-ous"]},{"index":916,"char":"壱","strokes":7,"grade":"jōyō","meanings":["one (in documents)"]},{"index":917,"char":"戒","strokes":7,"grade":"jōyō","meanings":["commandment"]},{"index":918,"char":"肝","strokes":7,"grade":"jōyō","meanings":["liver","pluck","nerve","chutzpah"]},{"index":919,"char":"含","strokes":7,"grade":"jōyō","meanings":["contain","include","hold in the mouth","bear in mind","understand"]},{"index":920,"char":"却","strokes":7,"grade":"jōyō","meanings":["instead","on the contrary","rather","step back","withdraw"]},{"index":921,"char":"狂","strokes":7,"grade":"jōyō","meanings":["lunatic","insane","crazy","confuse"]},{"index":922,"char":"吟","strokes":7,"grade":"jōyō","meanings":["versify","singing","recital"]},{"index":923,"char":"串","strokes":7,"grade":"jōyō","meanings":["spit","skewer"]},{"index":924,"char":"迎","strokes":7,"grade":"jōyō","meanings":["welcome","meet","greet"]},{"index":925,"char":"呉","strokes":7,"grade":"jōyō","meanings":["give","do something for","kingdom of Wu"]},{"index":926,"char":"坑","strokes":7,"grade":"jōyō","meanings":["pit","hole"]},{"index":927,"char":"抗","strokes":7,"grade":"jōyō","meanings":["confront","resist","defy","oppose"]},{"index":928,"char":"更","strokes":7,"grade":"jōyō","meanings":["grow late","night watch","sit up late","of course","renew"]},{"index":929,"char":"克","strokes":7,"grade":"jōyō","meanings":["overcome","kindly","skillfully"]},{"index":930,"char":"沙","strokes":7,"grade":"jōyō","meanings":["sand"]},{"index":931,"char":"伺","strokes":7,"grade":"jōyō","meanings":["pay respects","visit","ask","inquire","question"]},{"index":932,"char":"寿","strokes":7,"grade":"jōyō","meanings":["longevity","congratulations","one's natural life"]},{"index":933,"char":"秀","strokes":7,"grade":"jōyō","meanings":["excel","excellence","beauty","surpass"]},{"index":934,"char":"床","strokes":7,"grade":"jōyō","meanings":["bed","counter for beds","floor","padding","tatami"]},{"index":935,"char":"抄","strokes":7,"grade":"jōyō","meanings":["extract","selection","summary","copy","spread thin"]},{"index":936,"char":"肖","strokes":7,"grade":"jōyō","meanings":["resemblance"]},{"index":937,"char":"伸","strokes":7,"grade":"jōyō","meanings":["expand","stretch","extend","lengthen","increase"]},{"index":938,"char":"芯","strokes":7,"grade":"jōyō","meanings":["wick"]},{"index":939,"char":"辛","strokes":7,"grade":"jōyō","meanings":["spicy","bitter","hot","acrid"]},{"index":940,"char":"吹","strokes":7,"grade":"jōyō","meanings":["blow","breathe","puff","emit","smoke"]},{"index":941,"char":"杉","strokes":7,"grade":"jōyō","meanings":["cedar","cryptomeria"]},{"index":942,"char":"即","strokes":7,"grade":"jōyō","meanings":["instant","namely","as is","conform","agree"]},{"index":943,"char":"汰","strokes":7,"grade":"jōyō","meanings":["washing","sieving","filtering","weeding out","luxury"]},{"index":944,"char":"妥","strokes":7,"grade":"jōyō","meanings":["gentle","peace","depravity"]},{"index":945,"char":"択","strokes":7,"grade":"jōyō","meanings":["choose","select","elect","prefer"]},{"index":946,"char":"但","strokes":7,"grade":"jōyō","meanings":["however","but"]},{"index":947,"char":"沈","strokes":7,"grade":"jōyō","meanings":["sink","be submerged","subside","be depressed","aloes"]},{"index":948,"char":"呈","strokes":7,"grade":"jōyō","meanings":["display","offer","present","send","exhibit"]},{"index":949,"char":"廷","strokes":7,"grade":"jōyō","meanings":["courts","imperial court","government office"]},{"index":950,"char":"那","strokes":7,"grade":"jōyō","meanings":["what?"]},{"index":951,"char":"忍","strokes":7,"grade":"jōyō","meanings":["endure","bear","put up with","conceal","secrete"]},{"index":952,"char":"把","strokes":7,"grade":"jōyō","meanings":["grasp","faggot","bunch","counter for bundles"]},{"index":953,"char":"伯","strokes":7,"grade":"jōyō","meanings":["chief","count","earl","uncle","Brazil"]},{"index":954,"char":"抜","strokes":7,"grade":"jōyō","meanings":["slip out","extract","pull out","pilfer","quote"]},{"index":955,"char":"伴","strokes":7,"grade":"jōyō","meanings":["consort","accompany","bring with","companion"]},{"index":956,"char":"尾","strokes":7,"grade":"jōyō","meanings":["tail","end","counter for fish","lower slope of mountain"]},{"index":957,"char":"肘","strokes":7,"grade":"jōyō","meanings":["elbow","arm"]},{"index":958,"char":"扶","strokes":7,"grade":"jōyō","meanings":["aid","help","assist"]},{"index":959,"char":"芳","strokes":7,"grade":"jōyō","meanings":["perfume","balmy","favorable","fragrant"]},{"index":960,"char":"邦","strokes":7,"grade":"jōyō","meanings":["home country","country","Japan"]},{"index":961,"char":"坊","strokes":7,"grade":"jōyō","meanings":["boy","priest's residence","priest"]},{"index":962,"char":"妨","strokes":7,"grade":"jōyō","meanings":["disturb","prevent","hamper","obstruct"]},{"index":963,"char":"妙","strokes":7,"grade":"jōyō","meanings":["exquisite","strange","queer","mystery","miracle"]},{"index":964,"char":"戻","strokes":7,"grade":"jōyō","meanings":["re-","return","revert","resume","restore"]},{"index":965,"char":"冶","strokes":7,"grade":"jōyō","meanings":["melting","smelting"]},{"index":966,"char":"抑","strokes":7,"grade":"jōyō","meanings":["repress","well","now","in the first place","push"]},{"index":967,"char":"沃","strokes":7,"grade":"jōyō","meanings":["fertility"]},{"index":968,"char":"励","strokes":7,"grade":"jōyō","meanings":["encourage","be diligent","inspire"]},{"index":969,"char":"呂","strokes":7,"grade":"jōyō","meanings":["spine","backbone"]},{"index":970,"char":"弄","strokes":7,"grade":"jōyō","meanings":["play with","tamper","trifle with"]},{"index":971,"char":"宛","strokes":8,"grade":"jōyō","meanings":["address","just like","fortunately"]},{"index":972,"char":"依","strokes":8,"grade":"jōyō","meanings":["reliant","depend on","consequently","therefore","due to"]},{"index":973,"char":"炎","strokes":8,"grade":"jōyō","meanings":["inflammation","flame","blaze"]},{"index":974,"char":"押","strokes":8,"grade":"jōyō","meanings":["push","stop","check","subdue","attach"]},{"index":975,"char":"旺","strokes":8,"grade":"jōyō","meanings":["flourishing","successful","beautiful","vigorous"]},{"index":976,"char":"欧","strokes":8,"grade":"jōyō","meanings":["Europe"]},{"index":977,"char":"佳","strokes":8,"grade":"jōyō","meanings":["excellent","beautiful","good","pleasing","skilled"]},{"index":978,"char":"怪","strokes":8,"grade":"jōyō","meanings":["suspicious","mystery","apparition"]},{"index":979,"char":"岳","strokes":8,"grade":"jōyō","meanings":["point","peak","mountain"]},{"index":980,"char":"玩","strokes":8,"grade":"jōyō","meanings":["play","take pleasure in","trifle with","make sport of"]},{"index":981,"char":"奇","strokes":8,"grade":"jōyō","meanings":["strange","strangeness","curiosity"]},{"index":982,"char":"祈","strokes":8,"grade":"jōyō","meanings":["pray","wish"]},{"index":983,"char":"宜","strokes":8,"grade":"jōyō","meanings":["best regards","good"]},{"index":984,"char":"拒","strokes":8,"grade":"jōyō","meanings":["repel","refuse","reject","decline"]},{"index":985,"char":"拠","strokes":8,"grade":"jōyō","meanings":["foothold","based on","follow","therefore"]},{"index":986,"char":"享","strokes":8,"grade":"jōyō","meanings":["enjoy","receive","undergo","answer (phone)","take"]},{"index":987,"char":"況","strokes":8,"grade":"jōyō","meanings":["condition","situation"]},{"index":988,"char":"屈","strokes":8,"grade":"jōyō","meanings":["yield","bend","flinch","submit"]},{"index":989,"char":"茎","strokes":8,"grade":"jōyō","meanings":["stalk","stem"]},{"index":990,"char":"肩","strokes":8,"grade":"jōyō","meanings":["shoulder"]},{"index":991,"char":"弦","strokes":8,"grade":"jōyō","meanings":["bowstring","chord","hypotenuse"]},{"index":992,"char":"股","strokes":8,"grade":"jōyō","meanings":["thigh","crotch"]},{"index":993,"char":"虎","strokes":8,"grade":"jōyō","meanings":["tiger","drunkard"]},{"index":994,"char":"肯","strokes":8,"grade":"jōyō","meanings":["agreement","consent","comply with"]},{"index":995,"char":"昆","strokes":8,"grade":"jōyō","meanings":["descendants","elder brother","insect"]},{"index":996,"char":"采","strokes":8,"grade":"jōyō","meanings":["dice","form","appearance","take","gather"]},{"index":997,"char":"祉","strokes":8,"grade":"jōyō","meanings":["welfare","happiness"]},{"index":998,"char":"肢","strokes":8,"grade":"jōyō","meanings":["limb","arms & legs"]},{"index":999,"char":"侍","strokes":8,"grade":"jōyō","meanings":["waiter","samurai","wait upon","serve"]},{"index":1000,"char":"叔","strokes":8,"grade":"jōyō","meanings":["uncle","youth"]},{"index":1001,"char":"尚","strokes":8,"grade":"jōyō","meanings":["esteem","furthermore","still","yet"]},{"index":1002,"char":"昇","strokes":8,"grade":"jōyō","meanings":["rise up"]},{"index":1003,"char":"炊","strokes":8,"grade":"jōyō","meanings":["cook","boil"]},{"index":1004,"char":"枢","strokes":8,"grade":"jōyō","meanings":["hinge","pivot","door"]},{"index":1005,"char":"姓","strokes":8,"grade":"jōyō","meanings":["surname"]},{"index":1006,"char":"斉","strokes":8,"grade":"jōyō","meanings":["adjusted","alike","equal","similar variety of"]},{"index":1007,"char":"拙","strokes":8,"grade":"jōyō","meanings":["bungling","clumsy","unskillful"]},{"index":1008,"char":"狙","strokes":8,"grade":"jōyō","meanings":["aim at","sight","shadow","stalk"]},{"index":1009,"char":"阻","strokes":8,"grade":"jōyō","meanings":["thwart","separate from","prevent","obstruct","deter"]},{"index":1010,"char":"卓","strokes":8,"grade":"jōyō","meanings":["eminent","table","desk","high"]},{"index":1011,"char":"拓","strokes":8,"grade":"jōyō","meanings":["clear (the land)","open","break up (land)"]},{"index":1012,"char":"抽","strokes":8,"grade":"jōyō","meanings":["pluck","pull","extract","excel"]},{"index":1013,"char":"坪","strokes":8,"grade":"jōyō","meanings":["two-mat area","approx. thirty-six sq ft"]},{"index":1014,"char":"抵","strokes":8,"grade":"jōyō","meanings":["resist","reach","touch"]},{"index":1015,"char":"邸","strokes":8,"grade":"jōyō","meanings":["residence","mansion"]},{"index":1016,"char":"泥","strokes":8,"grade":"jōyō","meanings":["mud","mire","adhere to","be attached to"]},{"index":1017,"char":"迭","strokes":8,"grade":"jōyō","meanings":["transfer","alternation"]},{"index":1018,"char":"到","strokes":8,"grade":"jōyō","meanings":["arrival","proceed","reach","attain","result in"]},{"index":1019,"char":"杯","strokes":8,"grade":"jōyō","meanings":["counter for cupfuls","wine glass","glass","toast"]},{"index":1020,"char":"泊","strokes":8,"grade":"jōyō","meanings":["overnight stay","put up at","ride at anchor"]},{"index":1021,"char":"迫","strokes":8,"grade":"jōyō","meanings":["urge","force","imminent","spur on"]},{"index":1022,"char":"彼","strokes":8,"grade":"jōyō","meanings":["he","that","the"]},{"index":1023,"char":"披","strokes":8,"grade":"jōyō","meanings":["expose","open"]}]}</script>
+<script type="module">
+// ─── Engine (mirrors engine.js, inlined for single-file distribution) ─────
+const SET_SIZE = 1024, BITS_PER_KANJI = 10;
+
+function inputToBytes(input) {
+  if (input instanceof Uint8Array) return input;
+  const trimmed = input.trim();
+  const hex = (trimmed.startsWith("0x") || trimmed.startsWith("0X")) ? trimmed.slice(2) : trimmed;
+  if (hex.length >= 2 && hex.length % 2 === 0 && /^[0-9a-fA-F]+$/.test(hex)) {
+    const out = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
+    return out;
+  }
+  return new TextEncoder().encode(input);
+}
+async function sha256(bytes) {
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
+}
+function toHex(bytes) {
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function readBits(bytes, start, n) {
+  let v = 0;
+  for (let i = 0; i < n; i++) {
+    const bit = start + i;
+    v = (v << 1) | ((bytes[bit >> 3] >> (7 - (bit & 7))) & 1);
+  }
+  return v;
+}
+function slice(digest) {
+  return [
+    readBits(digest, 0, BITS_PER_KANJI),
+    readBits(digest, BITS_PER_KANJI, BITS_PER_KANJI),
+    readBits(digest, 2 * BITS_PER_KANJI, BITS_PER_KANJI),
+  ];
+}
+async function identicon(input, set) {
+  const bytes = inputToBytes(input);
+  const digest = await sha256(bytes);
+  const [a, b, c] = slice(digest);
+  return { indices: [a, b, c], kanji: [set[a], set[b], set[c]], hashHex: toHex(digest) };
+}
+
+// ─── Load the curated 1,024-set ────────────────────────────────────────────
+const KANJI_SET = JSON.parse(document.getElementById("kanji-data").textContent);
+const SET = KANJI_SET.kanji;
+console.log(`Loaded ${SET.length} kanji, version ${KANJI_SET.version}`);
+
+// ─── Tabs ──────────────────────────────────────────────────────────────────
+document.querySelectorAll(".tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b === btn));
+    const target = btn.dataset.tab;
+    document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.dataset.panel === target));
+  });
+});
+
+// ─── FORWARD tab ───────────────────────────────────────────────────────────
+const fwdInput = document.getElementById("fwd-input");
+const fwdGo = document.getElementById("fwd-go");
+async function runForward() {
+  const r = await identicon(fwdInput.value, SET);
+  document.getElementById("fwd-pair").textContent = r.kanji[0].char + " " + r.kanji[1].char;
+  document.getElementById("fwd-third").textContent = r.kanji[2].char;
+  document.getElementById("fwd-hash").textContent = r.hashHex;
+  document.getElementById("fwd-indices").textContent =
+    `A=${r.indices[0]}  B=${r.indices[1]}  C=${r.indices[2]}`;
+  document.getElementById("fwd-meanings").textContent =
+    `${r.kanji[0].meanings.slice(0,2).join(", ")}  ·  ${r.kanji[1].meanings.slice(0,2).join(", ")}`;
+  document.getElementById("fwd-grades").textContent =
+    `${r.kanji[0].grade}  ·  ${r.kanji[1].grade}  ·  ${r.kanji[2].grade}`;
+}
+fwdGo.addEventListener("click", runForward);
+fwdInput.addEventListener("keydown", e => { if (e.key === "Enter") runForward(); });
+runForward();
+
+// ─── VANITY tab ────────────────────────────────────────────────────────────
+function setPickerDisplay(side, idx) {
+  const k = SET[idx];
+  document.getElementById(`van-${side}-ch`).textContent = k.char;
+  document.getElementById(`van-${side}-idx`).textContent = `#${idx}`;
+  document.getElementById(`van-${side}-meaning`).textContent = k.meanings.slice(0, 2).join(", ");
+}
+function bindPicker(side) {
+  const input = document.getElementById(`van-${side}-input`);
+  input.addEventListener("input", () => {
+    let v = parseInt(input.value, 10);
+    if (!Number.isFinite(v)) v = 0;
+    v = Math.max(0, Math.min(1023, v));
+    setPickerDisplay(side, v);
+  });
+  setPickerDisplay(side, parseInt(input.value, 10) || 0);
+}
+bindPicker("a");
+bindPicker("b");
+
+let vanityRunning = false;
+let vanityCancel = false;
+const vanGo = document.getElementById("van-go");
+const vanStop = document.getElementById("van-stop");
+const vanStatus = document.getElementById("van-status");
+const vanResult = document.getElementById("van-result");
+
+vanStop.addEventListener("click", () => { vanityCancel = true; });
+
+vanGo.addEventListener("click", async () => {
+  if (vanityRunning) return;
+  const targetA = Math.max(0, Math.min(1023, parseInt(document.getElementById("van-a-input").value, 10) || 0));
+  const targetB = Math.max(0, Math.min(1023, parseInt(document.getElementById("van-b-input").value, 10) || 0));
+  const base = document.getElementById("van-base").value || "";
+  vanResult.classList.remove("shown");
+  vanityRunning = true;
+  vanityCancel = false;
+  vanGo.disabled = true;
+  vanStop.style.display = "inline-block";
+
+  const enc = new TextEncoder();
+  const baseBytes = enc.encode(base + "#");
+  const t0 = performance.now();
+  let found = null;
+  for (let n = 0; n < 10_000_000 && !vanityCancel; n++) {
+    const nonce = n.toString();
+    const nonceBytes = enc.encode(nonce);
+    const combined = new Uint8Array(baseBytes.length + nonceBytes.length);
+    combined.set(baseBytes, 0);
+    combined.set(nonceBytes, baseBytes.length);
+    const digest = await sha256(combined);
+    const [a, b] = slice(digest);
+    if (a === targetA && b === targetB) {
+      const c = readBits(digest, 20, 10);
+      found = { salt: base + "#" + nonce, attempts: n + 1, hashHex: toHex(digest), indices: [a, b, c] };
+      break;
+    }
+    if ((n + 1) % 5000 === 0) {
+      const elapsed = (performance.now() - t0) / 1000;
+      const rate = (n + 1) / elapsed;
+      vanStatus.textContent = `searching… ${(n + 1).toLocaleString()} attempts (${Math.round(rate).toLocaleString()}/sec, avg ${Math.round(1_000_000 / rate)}s expected)`;
+      await new Promise(r => setTimeout(r, 0));
+    }
+  }
+  const t1 = performance.now();
+  if (found) {
+    vanStatus.textContent = `found in ${found.attempts.toLocaleString()} attempts, ${((t1 - t0) / 1000).toFixed(1)}s`;
+    document.getElementById("van-salt").textContent = found.salt;
+    document.getElementById("van-stats").textContent =
+      `SHA-256: ${found.hashHex}    third kanji: ${SET[found.indices[2]].char} (index ${found.indices[2]})`;
+    vanResult.classList.add("shown");
+  } else if (vanityCancel) {
+    vanStatus.textContent = `stopped`;
+  } else {
+    vanStatus.textContent = `not found in 10M attempts (unlikely — check inputs)`;
+  }
+  vanityRunning = false;
+  vanGo.disabled = false;
+  vanStop.style.display = "none";
+});
+
+// ─── BROWSER tab ───────────────────────────────────────────────────────────
+const brSearch = document.getElementById("br-search");
+const brGrade = document.getElementById("br-grade");
+const brStrokes = document.getElementById("br-strokes");
+const brGrid = document.getElementById("br-grid");
+const brCount = document.getElementById("br-count");
+const brDetail = document.getElementById("br-detail");
+
+function renderBrowser() {
+  const q = brSearch.value.trim().toLowerCase();
+  const grade = brGrade.value;
+  const strokes = brStrokes.value ? parseInt(brStrokes.value, 10) : null;
+  const matches = SET.filter(k => {
+    if (grade && k.grade !== grade) return false;
+    if (strokes !== null && k.strokes !== strokes) return false;
+    if (q) {
+      const hay = (k.char + " " + k.index + " " + k.meanings.join(" ")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  brCount.textContent = `${matches.length} of ${SET.length}`;
+  const html = matches.map(k =>
+    `<div class="kanji-cell" data-idx="${k.index}">
+      <div class="ch kanji-font">${k.char}</div>
+      <div class="idx">#${k.index}</div>
+    </div>`
+  ).join("");
+  brGrid.innerHTML = html;
+}
+brSearch.addEventListener("input", renderBrowser);
+brGrade.addEventListener("change", renderBrowser);
+brStrokes.addEventListener("change", renderBrowser);
+brGrid.addEventListener("click", e => {
+  const cell = e.target.closest(".kanji-cell");
+  if (!cell) return;
+  const k = SET[parseInt(cell.dataset.idx, 10)];
+  document.getElementById("br-detail-ch").textContent = k.char;
+  document.getElementById("br-detail-idx").textContent = `#${k.index} (binary ${k.index.toString(2).padStart(10, "0")})`;
+  document.getElementById("br-detail-strokes").textContent = k.strokes;
+  document.getElementById("br-detail-grade").textContent = k.grade;
+  document.getElementById("br-detail-meanings").textContent = k.meanings.join(", ");
+  brDetail.classList.add("shown");
+});
+renderBrowser();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!--
+  ---
+  id: 01M3FRRQA59QBBSN5GW8XWSMKE
+  title: ledger.html — Eisai's render template for the ledger skill's data schema
+  type: template
+  tended-by: eisai
+  created: 2026-09-26
+  updated: 2026-09-26
+  ---
+  Eisai's design, replacing the placeholder Tasai shipped with the skill (core
+  1b0fd32). Same data slots — SKILL.md's schema — and nothing here reads a
+  garden's own slugs, prices or seat roster; the day/seat/model tables are
+  computed in the browser from one JSON blob embedded below, itself built
+  from data.json by ledger.py's own {{ dotted.path }} substitution.
+
+  `ledger.py render` needs no change to serve this: render_template() is
+  pure string substitution with no loop syntax (see scripts/ledger.py) — a
+  table with an unknown number of rows has to loop somewhere, and doing it
+  client-side, once, off one embedded blob, is cheaper than teaching the
+  substitution engine to loop. Every scalar placed inside the JSON blob is
+  wrapped in its own quotes in this source, because a null slot resolves to
+  an empty string, not the JSON token `null` — quoting keeps the blob valid
+  JSON either way, and the page's own JS turns an empty string back into
+  null before it touches a number.
+
+  No plan-window/budget gauges: this skill's schema carries no live quota
+  data (that is bonsai-garden-tokens' job, a different capability, still
+  unlinked from this one — see SKILL.md's own open items). A pot that wants
+  budgets alongside this page adds its own card; this template doesn't guess.
+
+  The four measures' icons are plain placeholders, each marked below — swap
+  them once the Aruji picks from the candidate sheet. Nothing else about the
+  layout depends on which icon lands there.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Ledger</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#EEF0E7; --raised:#F8F9F3; --sunken:#E4E7DC;
+    --ink:#23261F; --soft:#555B50; --faint:#7E8378;
+    --hair:rgba(35,38,31,0.14); --hair2:rgba(35,38,31,0.24);
+    --shu:#A6402E; --bamboo:#56713F; --clay:#A8752E; --ai:#2F5364;
+    --shu-s:rgba(166,64,46,0.12); --bamboo-s:rgba(86,113,63,0.14);
+    --clay-s:rgba(168,117,46,0.14); --ai-s:rgba(47,83,100,0.11);
+    --disp:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+    --body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#16181A; --raised:#1E2123; --sunken:#121415;
+    --ink:#E7E7DE; --soft:#AEB3A7; --faint:#80857A;
+    --hair:rgba(231,231,222,0.13); --hair2:rgba(231,231,222,0.22);
+    --shu:#DE7A62; --bamboo:#98B977; --clay:#D8A660; --ai:#86AEC2;
+    --shu-s:rgba(222,122,98,0.16); --bamboo-s:rgba(152,185,119,0.16);
+    --clay-s:rgba(216,166,96,0.16); --ai-s:rgba(134,174,194,0.14);
+  }}
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#16181A; --raised:#1E2123; --sunken:#121415;
+    --ink:#E7E7DE; --soft:#AEB3A7; --faint:#80857A;
+    --hair:rgba(231,231,222,0.13); --hair2:rgba(231,231,222,0.22);
+    --shu:#DE7A62; --bamboo:#98B977; --clay:#D8A660; --ai:#86AEC2;
+    --shu-s:rgba(222,122,98,0.16); --bamboo-s:rgba(152,185,119,0.16);
+    --clay-s:rgba(216,166,96,0.16); --ai-s:rgba(134,174,194,0.14);
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.55;margin:0;padding:1.5rem 1.25rem 3rem}
+  .wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:1.6rem}
+  a{color:var(--ai)}
+  :focus-visible{outline:2px solid var(--ai);outline-offset:2px}
+
+  header{display:flex;flex-direction:column;gap:.35rem}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+  h1{font-family:var(--disp);font-weight:600;font-size:clamp(28px,4vw,38px);line-height:1.15;margin:0;text-wrap:balance}
+  h2{font-family:var(--disp);font-weight:600;font-size:21px;line-height:1.25;margin:0;text-wrap:balance}
+  .lede{color:var(--soft);font-size:16px;margin:0;max-width:66ch}
+  .stamp{font-family:var(--mono);font-size:12.5px;color:var(--faint)}
+  .note{color:var(--soft);font-size:14px;margin:0;max-width:70ch}
+  .card{background:var(--raised);border:1px solid var(--hair);border-radius:8px;padding:1.25rem 1.3rem}
+  .card-head{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem}
+
+  .measures{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+  @media (max-width:820px){.measures{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:480px){.measures{grid-template-columns:1fr}}
+  .m{background:var(--raised);border:1px solid var(--hair);border-radius:8px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.4rem;--mc:var(--ink)}
+  .m-top{display:flex;align-items:center;gap:.6rem}
+  .m-ic{width:24px;height:24px;flex:none;color:var(--mc)}
+  .m-ic svg{display:block;width:100%;height:100%}
+  .m-name{font-family:var(--mono);font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--soft)}
+  .m-val{font-family:var(--mono);font-weight:600;font-size:clamp(25px,2.6vw,30px);line-height:1.05;letter-spacing:-.015em;color:var(--mc);font-variant-numeric:tabular-nums}
+  .m-val small{font-size:.5em;font-weight:500;color:var(--soft);letter-spacing:0;margin-left:.15em}
+  .m-sub{font-size:13.5px;color:var(--soft);line-height:1.45}
+  .m-sub b{color:var(--ink);font-weight:600}
+  .m-none{font-size:.55em;font-weight:500;color:var(--faint);font-style:italic;font-family:var(--body)}
+
+  .chart-box{overflow-x:auto}
+  .chart-box svg{display:block;width:100%;height:auto;min-width:420px}
+  .ax{font-family:var(--mono);font-size:12px;fill:var(--faint)}
+  .axl{font-family:var(--mono);font-size:12.5px;fill:var(--soft)}
+  .bv{font-family:var(--mono);font-size:13px;font-weight:600;fill:var(--ink)}
+  .grid{stroke:var(--hair);stroke-width:1}
+
+  details.more{margin:0}
+  details.more>summary{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.35rem;padding:.15rem 0}
+  details.more>summary::-webkit-details-marker{display:none}
+  details.more>summary::before{content:"+";font-weight:600;color:var(--clay);width:.8em}
+  details.more[open]>summary::before{content:"\2212"}
+  details.more>summary:hover{color:var(--soft)}
+  details.more .more-body{display:flex;flex-direction:column;gap:.5rem;margin-top:.45rem}
+
+  .rows{display:flex;flex-direction:column;gap:.7rem}
+  .row{display:grid;grid-template-columns:34px minmax(84px,150px) minmax(0,1fr) 92px;gap:.75rem;align-items:center;--rc:var(--ai)}
+  @media (max-width:560px){.row{grid-template-columns:30px minmax(0,1fr) 78px} .row .bar{grid-column:1 / -1}}
+  .chip{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:16px;color:var(--raised);background:var(--rc);line-height:1;flex:none}
+  .who{font-size:15px;font-weight:600;line-height:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar{height:12px;border-radius:6px;background:var(--hair);overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:6px;background:var(--rc)}
+  .num{font-family:var(--mono);font-size:14px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .num small{display:block;font-size:12px;color:var(--faint)}
+
+  .tbl{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:340px}
+  th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);text-align:left;font-weight:500;padding:.35rem .5rem .45rem 0;border-bottom:1px solid var(--hair2)}
+  td{padding:.55rem .5rem .55rem 0;border-bottom:1px solid var(--hair);vertical-align:top}
+  td.r,th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+
+  .method p{margin:0 0 .7rem;font-size:14px;color:var(--soft);max-width:74ch}
+  .method p:last-child{margin-bottom:0}
+  .method b{color:var(--ink)}
+  .label{border:1px solid color-mix(in srgb,var(--clay) 45%,transparent);background:var(--clay-s);border-radius:6px;padding:.85rem 1rem;font-size:13.5px;color:var(--soft);margin-top:.9rem}
+  .label b{color:var(--clay);font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:.3rem}
+  code{font-family:var(--mono);font-size:.9em;background:var(--sunken);padding:0 .3em;border-radius:3px}
+  .empty{color:var(--faint);font-style:italic;font-size:14px;margin:0}
+
+  footer{border-top:1px solid var(--hair);padding-top:1rem;font-family:var(--mono);font-size:12px;color:var(--faint);display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Bonsai Garden &middot; bonsai-garden-ledger</div>
+    <h1>Token Ledger</h1>
+    <p class="lede">What a stretch of work spent, from the harness's own record. Every reply from an AI teammate is made of <b>tokens</b>, small chunks of text a little shorter than a word, and reading and writing them is what costs money and electricity.</p>
+    <div class="stamp">harness <code>{{ harness }}</code> &middot; since <code>{{ since }}</code> &middot; generated <code>{{ generated_at }}</code> &middot; {{ transcripts }} transcripts scanned, {{ skipped }} skipped</div>
+  </header>
+
+  <!-- ================= FOUR MEASURES ================= -->
+  <section class="measures" aria-label="The four headline measures">
+    <div class="m" style="--mc:var(--ai)">
+      <div class="m-top">
+        <!-- ICON PLACEHOLDER — tokens. Swap for the Aruji's pick. -->
+        <span class="m-ic" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="6" width="9" height="9" rx="1.5"/><rect x="18" y="6" width="9" height="9" rx="1.5"/><rect x="5" y="19" width="9" height="9" rx="1.5"/><rect x="18" y="19" width="9" height="9" rx="1.5" fill="currentColor" fill-opacity=".25"/></svg></span>
+        <span class="m-name">Tokens</span>
+      </div>
+      <div class="m-val" id="m-tokens">&hellip;</div>
+      <div class="m-sub" id="m-tokens-sub">&nbsp;</div>
+    </div>
+    <div class="m" style="--mc:var(--shu)">
+      <div class="m-top">
+        <!-- ICON PLACEHOLDER — list price. Swap for the Aruji's pick. -->
+        <span class="m-ic" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="16" cy="9" rx="9" ry="3.5"/><path d="M7 9v5c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5V9"/><path d="M7 14v5c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5v-5"/><path d="M7 19v4c0 1.9 4 3.5 9 3.5s9-1.6 9-3.5v-4"/></svg></span>
+        <span class="m-name">List price</span>
+      </div>
+      <div class="m-val" id="m-price">&hellip;</div>
+      <div class="m-sub">what this usage would cost at published rates &mdash; an estimate, never a bill.</div>
+    </div>
+    <div class="m" style="--mc:var(--bamboo)">
+      <div class="m-top">
+        <!-- ICON PLACEHOLDER — footprint. Swap for the Aruji's pick. -->
+        <span class="m-ic" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 28V14"/><path d="M16 17c-5 0-9-3.5-9-9 5 0 9 3.5 9 9z"/><path d="M16 21c5 0 9-3.5 9-9-5 0-9 3.5-9 9z" fill="currentColor" fill-opacity=".22"/></svg></span>
+        <span class="m-name">Footprint</span>
+      </div>
+      <div class="m-val" id="m-co2">&hellip;</div>
+      <div class="m-sub">from newly worked tokens only &mdash; cache re-reads are left out, so this is a floor.</div>
+    </div>
+    <div class="m" style="--mc:var(--clay)">
+      <div class="m-top">
+        <!-- ICON PLACEHOLDER — distance. Swap for the Aruji's pick. -->
+        <span class="m-ic" aria-hidden="true"><svg viewBox="0 0 48 32" fill="none" stroke="currentColor"><path d="M5 22.5h2.3a3.2 3.2 0 0 0 6.2 0h13a3.2 3.2 0 0 0 6.2 0H35a2 2 0 0 0 2-2.3l-.6-3.4a2 2 0 0 0-1.1-1.4L30 13.3a2 2 0 0 0-.9-.2H16.6a2 2 0 0 0-1.3.5l-4.6 4-4.7.7A2 2 0 0 0 4 20.3v1.2a1 1 0 0 0 1 1z" stroke-width="2" stroke-linejoin="round"/><circle cx="13.5" cy="22.5" r="2.6" stroke-width="2"/><circle cx="32.5" cy="22.5" r="2.6" stroke-width="2"/></svg></span>
+        <span class="m-name">Distance</span>
+      </div>
+      <div class="m-val" id="m-km">&hellip;</div>
+      <div class="m-sub">the same footprint as driving a small petrol car that far.</div>
+    </div>
+  </section>
+
+  <!-- ================= DAYS ================= -->
+  <section class="card">
+    <div class="card-head"><h2>Day by day</h2><p class="note">Newly worked tokens per day.</p></div>
+    <div class="chart-box" id="chart-box"><p class="empty">No days recorded yet.</p></div>
+  </section>
+
+  <!-- ================= SEATS ================= -->
+  <section class="card">
+    <div class="card-head"><h2>By seat</h2><p class="note">Newly worked tokens by the seat of work whose session carried them. A session with no matching rule stays <code>unattributed</code>, never guessed.</p></div>
+    <div class="rows" id="seat-rows"><p class="empty">No seats recorded yet.</p></div>
+  </section>
+
+  <!-- ================= MODELS ================= -->
+  <section class="card">
+    <div class="card-head"><h2>By model</h2><p class="note">Which model did the work &mdash; the biggest single lever on cost.</p></div>
+    <div class="tbl" id="model-table"><p class="empty">No models recorded yet.</p></div>
+  </section>
+
+  <!-- ================= METHOD ================= -->
+  <section class="card method">
+    <details class="more"><summary style="font-family:var(--disp);font-size:19px;text-transform:none;letter-spacing:0;color:var(--ink)">How these numbers are made, and how far to trust them</summary><div class="more-body" style="margin-top:.8rem">
+    <p><b>Tokens are exact.</b> Every session keeps its own record of each model call's usage; this skill's fetch stage adds them up, each call counted once, deduplicated by message and request id &mdash; a resumed or re-synced session re-writing earlier lines does not double the total.</p>
+    <p><b>Newly worked</b> (<code>fresh</code>) means input plus cache writes plus output: the work that was newly computed. <b>Cache reads</b> are kept apart, because re-reading already-cached context costs far less per token, and are never folded into <code>fresh</code>.</p>
+    <p><b>List price</b> is <code>null</code> unless a price table was supplied to the fetch stage &mdash; no model name or rate is built into this skill. Cache writes are costed at 1.25&times; the input rate and cache reads at 0.1&times;, Anthropic's own published cache-pricing multipliers.</p>
+    <p><b>Footprint and distance</b> are <code>null</code> unless a CO&#8322;/km-per-fresh-token factor was supplied, applied to <code>fresh</code> tokens only. The factor itself is the caller's own reasoned figure, not something this skill asserts.</p>
+    <div class="label"><b>Read this before repeating any number here</b>Tokens are exact. List price, footprint and distance are only as good as the table and factors a caller chose to supply &mdash; treat them as estimates, never a bill.</div>
+    </div></details>
+  </section>
+
+  <footer>
+    <span>generated {{ generated_at }} &middot; harness {{ harness }} &middot; since {{ since }}</span>
+    <span>rendered by bonsai-garden-core's ledger skill</span>
+  </footer>
+</div>
+
+<script id="ledger-data" type="application/json">
+{
+  "totals": {{totals}},
+  "day": {{day}},
+  "model": {{model}},
+  "seat": {{seat}},
+  "price_list_equivalent_usd": "{{price_list_equivalent_usd}}",
+  "distance_km_fresh": "{{distance_km_fresh}}",
+  "co2_kg_fresh": "{{co2_kg_fresh}}"
+}
+</script>
+<script>
+(function(){
+  var data = JSON.parse(document.getElementById('ledger-data').textContent);
+  var num = function(s){ return (s === '' || s == null) ? null : Number(s); };
+  var accents = ['var(--ai)', 'var(--shu)', 'var(--bamboo)', 'var(--clay)'];
+
+  function fmtM(n){
+    var m = n / 1e6;
+    return m >= 100 ? m.toFixed(0) : m >= 10 ? m.toFixed(1) : m.toFixed(2);
+  }
+  function esc(s){ var d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+
+  // ---- four measures ----
+  var totals = data.totals || {};
+  document.getElementById('m-tokens').innerHTML = totals.fresh != null
+    ? fmtM(totals.fresh) + '<small>M</small>'
+    : '<span class="m-none">not calculated</span>';
+  document.getElementById('m-tokens-sub').innerHTML = totals.calls != null
+    ? totals.calls.toLocaleString() + ' model calls' + (totals.cache_read ? ', plus ' + fmtM(totals.cache_read) + 'M re-read from cache' : '')
+    : '&nbsp;';
+
+  var price = num(data.price_list_equivalent_usd);
+  document.getElementById('m-price').innerHTML = price != null
+    ? '$' + price.toLocaleString(undefined, {maximumFractionDigits: 2})
+    : '<span class="m-none">not calculated</span>';
+
+  var co2 = num(data.co2_kg_fresh);
+  document.getElementById('m-co2').innerHTML = co2 != null
+    ? (co2 >= 10 ? co2.toFixed(0) : co2.toFixed(1)) + '<small>kg CO&#8322;</small>'
+    : '<span class="m-none">not calculated</span>';
+
+  // distance_km_fresh is shaped differently from the other two: ledger.py
+  // gives it as a LIST (one entry per --km-per-m-fresh factor supplied, so
+  // its own length varies), never a bare number, while price/co2 are always
+  // a single float or null. The blob quotes it like every other nullable
+  // slot (an empty string for null), so here it's parsed a second time —
+  // the quoted text is itself valid JSON, an array like "[56.46, 119.77]".
+  var kmRaw = data.distance_km_fresh;
+  var kmList = null;
+  if (kmRaw) { try { kmList = JSON.parse(kmRaw); } catch (e) { kmList = null; } }
+  var kmFmt = function(n){ return n >= 100 ? n.toFixed(0) : n.toFixed(1); };
+  document.getElementById('m-km').innerHTML = (kmList && kmList.length)
+    ? kmFmt(kmList[0]) + '<small>km</small>' + (kmList.length > 1 ? '<div class="m-sub" style="margin-top:.1rem">range ' + kmFmt(Math.min.apply(null, kmList)) + '&ndash;' + kmFmt(Math.max.apply(null, kmList)) + ' km</div>' : '')
+    : '<span class="m-none">not calculated</span>';
+
+  // ---- day chart ----
+  var days = Object.keys(data.day || {}).sort();
+  if (days.length) {
+    var vals = days.map(function(d){ return data.day[d].fresh || 0; });
+    var max = Math.max.apply(null, vals) || 1;
+    var W = Math.max(420, days.length * 86 + 80), H = 220, top = 20, bottom = 44, plotH = H - top - bottom;
+    var barW = Math.min(64, (W - 80) / days.length - 16);
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Newly worked tokens per day">';
+    [0, .25, .5, .75, 1].forEach(function(f){
+      var y = top + plotH * (1 - f);
+      svg += '<line class="grid" x1="56" y1="' + y + '" x2="' + W + '" y2="' + y + '"/>' +
+        '<text class="ax" x="46" y="' + (y + 4) + '" text-anchor="end">' + (f === 0 ? '0' : fmtM(max * f) + 'M') + '</text>';
+    });
+    days.forEach(function(d, i){
+      var v = vals[i], h = plotH * (v / max), x = 70 + i * (barW + 16), y = top + plotH - h;
+      svg += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + Math.max(h, 1) + '" rx="3" fill="var(--ai)"/>';
+      svg += '<text class="bv" x="' + (x + barW / 2) + '" y="' + (y - 6) + '" text-anchor="middle">' + fmtM(v) + '</text>';
+      svg += '<text class="axl" x="' + (x + barW / 2) + '" y="' + (H - 14) + '" text-anchor="middle">' + esc(d.slice(5)) + '</text>';
+    });
+    svg += '</svg>';
+    document.getElementById('chart-box').innerHTML = svg;
+  }
+
+  // ---- by seat ----
+  var seats = Object.entries(data.seat || {}).sort(function(a, b){ return (b[1].fresh || 0) - (a[1].fresh || 0); });
+  if (seats.length) {
+    var seatMax = Math.max.apply(null, seats.map(function(s){ return s[1].fresh || 0; })) || 1;
+    var seatTotal = seats.reduce(function(n, s){ return n + (s[1].fresh || 0); }, 0) || 1;
+    document.getElementById('seat-rows').innerHTML = seats.map(function(s, i){
+      var name = s[0], v = s[1].fresh || 0, pct = (100 * v / seatTotal).toFixed(1);
+      var initial = name === 'unattributed' ? '?' : esc(name.charAt(0).toUpperCase());
+      return '<div class="row" style="--rc:' + accents[i % accents.length] + '"><span class="chip" aria-hidden="true">' + initial + '</span>' +
+        '<span class="who">' + esc(name) + '</span>' +
+        '<span class="bar"><i style="width:' + (100 * v / seatMax) + '%"></i></span>' +
+        '<span class="num">' + fmtM(v) + 'M<small>' + pct + '%</small></span></div>';
+    }).join('');
+  }
+
+  // ---- by model ----
+  var models = Object.entries(data.model || {}).sort(function(a, b){ return (b[1].fresh || 0) - (a[1].fresh || 0); });
+  if (models.length) {
+    var modelTotal = models.reduce(function(n, m){ return n + (m[1].fresh || 0); }, 0) || 1;
+    var rows = models.map(function(m){
+      var name = m[0], v = m[1].fresh || 0, pct = (100 * v / modelTotal).toFixed(1);
+      return '<tr><td>' + esc(name) + '</td><td class="r">' + fmtM(v) + 'M</td><td class="r">' + pct + '%</td></tr>';
+    }).join('');
+    document.getElementById('model-table').innerHTML = '<table><tr><th>model</th><th class="r">newly worked</th><th class="r">share</th></tr>' + rows + '</table>';
+  }
+})();
+</script>
+</body>
+</html>

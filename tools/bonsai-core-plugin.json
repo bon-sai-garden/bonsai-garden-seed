@@ -1,0 +1,4 @@
+{
+  "status": "moved",
+  "tombstone": "This was the plugin.json of tools/build-bonsai-core-plugin.sh (a tombstone since the one builder, 2026-09-24). The core plugin's plugin.json is skills/bonsai-garden-core-plugin/assets/plugin_manifest.json, and the plugin itself is the configuration skills/bonsai-garden-core-plugin/assets/core-plugin.json of the one builder, scripts/package.py."
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43JCFHJK0EN9WA532GCS",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:07:51Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/engine-smoke.mjs",
+  "file-hash": "ac56b22f1236b3ddc393334bd8b29b8a25c25a860b7e4c38e8eb8f29235142d0c87f9463e471bae2d3b1c7164a83a916e800e458476ff69144536624aa95c8f0",
+  "signature": "GDe6MoWypJZmHj6rqU4crZOYQQe8P8Tjqzy1EYSZqq6A2vk3ua5t4B+yzkNXmNf7FwyPXLGrYC4uiJsRVymWDw=="
+}

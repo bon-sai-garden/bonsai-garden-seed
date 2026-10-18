@@ -1,0 +1,40 @@
+# Ruff: the one lint and format configuration for every Python file in this repository.
+# Core's copy is the master; core's tools/lint.mjs pins ruff 0.17.0 (run through uvx: a dev tool, nothing ships with
+# it) and refuses a repository whose copy differs.
+# The gardener, 2026-10-15: "the best possible code base. No redundancy, perfectly linted."
+
+# Python 3.9: the scripts run as `#!/usr/bin/env python3`, and on the garden's macOS hosts that is the system 3.9.6.
+# A 3.10 target let pyupgrade write `X | None` into annotations that 3.9 evaluates at definition time, and fail. A
+# project that pins a newer interpreter (runtime's MCP, run by uv) says so in its own config, extending this one.
+target-version = "py39"
+line-length = 120
+extend-exclude = ["**/node_modules", "**/.venv"]
+
+[format]
+quote-style = "preserve"        # the code's own quoting stands; the formatter does not churn it
+docstring-code-format = false
+
+[lint]
+select = [
+  "E", "W",     # pycodestyle
+  "F",          # pyflakes: unused names, undefined names, the real bugs
+  "I",          # import order
+  "B",          # bugbear: likely bugs and design problems
+  "UP",         # pyupgrade, to the target version
+  "SIM",        # simplifications
+  "C4",         # comprehensions
+  "PIE",        # unnecessary code
+  "S",          # bandit: security
+  "RUF",        # ruff's own correctness rules
+  "FA102",      # a PEP 604/585 annotation without `from __future__ import annotations` fails on the 3.9 target
+]
+ignore = [
+  "E501",       # line length is the formatter's; a long string literal or URL is not a lint
+  "S603",       # subprocess without shell: the tools call git/node/uv by argv list, by design
+  "S607",       # partial executable path: git, node and uv are found on PATH, by design
+  "S404",       # importing subprocess is not a finding
+]
+
+[lint.per-file-ignores]
+"**/test*.py" = ["S101", "S108"]       # tests assert, and use scratch under the temp dir
+"**/repro-*.py" = ["S101", "S108"]

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS440WTYBV3X1FJS9M50BZ",
+  "signer": "fuji-shin",
+  "role": "owner",
+  "fingerprint": "02005daa83f430ae21122e42cea925a0",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/readiness-gate/identity-profile.example.json",
+  "file-hash": "819e99a9e69fc10cee9038c39dd4d0ecd4615559e214ae283f8f8e36eb7f598e53bb2cc87fd98aa2b5e4d2a47750d6b36a1829d8336f37e4b5542afbb93908d9",
+  "signature": "tINJOmpPKKUqNpWs08o9pBOS1QonF5wb4foJsjvpqGxgOwEFSURbfx8XetAZzfETN2svzxIv0atadSDw8/mWDA=="
+}

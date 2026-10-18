@@ -1,0 +1,89 @@
+---
+/**
+ * id: 01M4EC5010J5YSPKGM29D16CBY
+ * RingPlayer — the one script that plays the LED rings on a page (Eisai, 2026-10-06; lifted out of CrewShell
+ * 2026-10-08 so a page that is not a crew page can show a member's ring too: the gardener, "blog should also feature
+ * images like lore ... canonical portrait with matching greeting LED"). Every LedRing with ringId >= 0 on the page is
+ * played from `rings` (memberRings). The script only animates lights; without it the first frame stands still.
+ * Use it once per page.
+ *
+ * Rings that arrive later (a member's card set into a door after the page has loaded: the gardener, 2026-10-08,
+ * "renders their agent card as a right door slideout") play through the same engine, which the script leaves on the
+ * page as window.tmRings:
+ *
+ *   window.tmRings.mount(rootEl, rings)   play every [data-ring] inside rootEl, its index read into `rings`
+ *                                          (the JSON of the page the card came from); a ring already playing is skipped
+ *   window.tmRings.unmount(rootEl)         stop and forget every ring inside rootEl
+ *
+ * Without `rings` the component brings only the engine (and the stylesheet), for a page that shows no ring of its own
+ * but may be handed one. A second copy on a page finds the engine there and mounts nothing twice.
+ */
+import '../crew.css';
+interface Props { rings?: any[]; }
+const { rings } = Astro.props;
+---
+{rings && <script type="application/json" id="tm-rings" set:html={JSON.stringify(rings)} />}
+<script is:inline>
+    (function () {
+      var api = window.tmRings;
+      if (!api) {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var all = [];
+        var find = function (el) { for (var i = 0; i < all.length; i++) if (all[i].el === el) return all[i]; return null; };
+        function paint(r, k) {
+          var f = r.d.frames[k];
+          for (var p = 0; p < 16; p++) {
+            var c = r.d.palette[f[p]];
+            r.leds[p].setAttribute('fill', c);
+          }
+          for (var h = 0; h < r.halos.length; h++) {
+            var at = r.halos[h].getAttribute('data-p');
+            var gi = f[at === null ? h % 16 : +at];
+            r.halos[h].setAttribute('fill', r.d.glow ? r.d.glow[gi] : r.d.palette[gi]);   // only lit pixels bloom
+          }
+        }
+        function start(r) {
+          if (r.t || reduce.matches || document.hidden || !r.d) return;
+          r.t = setInterval(function () { r.i = (r.i + 1) % r.d.frames.length; paint(r, r.i); }, r.d.frame_ms);
+        }
+        function stop(r) { if (r.t) clearInterval(r.t); r.t = null; }
+        function still(r) { stop(r); r.i = 0; if (r.d) paint(r, 0); }
+        var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            var r = find(e.target);
+            if (!r) return;
+            r.on = e.isIntersecting; r.on ? start(r) : stop(r);
+          });
+        }, { rootMargin: '120px' }) : null;
+        api = window.tmRings = {
+          mount: function (root, data) {
+            data = data || [];
+            var n = 0;
+            Array.prototype.forEach.call((root || document).querySelectorAll('[data-ring]'), function (fig) {
+              if (find(fig)) return;
+              var r = { el: fig, d: data[+fig.getAttribute('data-ring')], leds: fig.querySelectorAll('.led'),
+                        halos: fig.querySelectorAll('.halo'), i: 0, t: null, on: false };
+              all.push(r); n++;
+              if (io) io.observe(fig); else { r.on = true; start(r); }
+            });
+            return n;
+          },
+          unmount: function (root) {
+            all = all.filter(function (r) {
+              if (!(root || document).contains(r.el)) return true;
+              stop(r); if (io) io.unobserve(r.el);
+              return false;
+            });
+          }
+        };
+        var onReduce = function () { all.forEach(function (r) { reduce.matches ? still(r) : (r.on && start(r)); }); };
+        reduce.addEventListener ? reduce.addEventListener('change', onReduce) : reduce.addListener(onReduce);
+        document.addEventListener('visibilitychange', function () {
+          all.forEach(function (r) { document.hidden ? stop(r) : (r.on && start(r)); });
+        });
+      }
+      var el = document.getElementById('tm-rings');
+      if (!el) return;
+      api.mount(document, JSON.parse(el.textContent || '[]'));
+    })();
+</script>

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M51MDXNNV7NA3C9GZ0H34ZPQ",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:31Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/test-check-no-ticket-ids.py",
+  "file-hash": "45a1a9b450614cb85e2981b05c587a170c3b23f405eca5b2abb3f1f865f97a89f0e73e9b47033b1607f09a669ae684c7dca73536ab2adab8da0e7409baf29718",
+  "signature": "ZWyTOcZ4rvQyLevCyiT5VB6RJGBlEW5h/ibfaMasVZsbBoM1AgO7iGhwgf0u1Jli65e35Dp8GFZ4Ooukcsg0Dw=="
+}

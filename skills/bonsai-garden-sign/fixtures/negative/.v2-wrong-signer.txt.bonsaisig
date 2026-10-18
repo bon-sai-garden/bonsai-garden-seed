@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M39XJ6FH091ZNQZ6JK8VJPQP",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-09-24T14:36:55Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/fixtures/negative/v2-wrong-signer.txt",
+  "file-hash": "dc5ece9182253d6c6b10dce2995eda4f8a32b2973241aa72222df6eb2695db6fb910b3cf773917186e8d1edfccc25b88121d2f5067c51e1b12417f11e00baecb",
+  "signature": "eF3GiqAv2MEitY4uX8meDIkgDrnZzkpdRnumktudBn+sHyGjvx2e/nUPmn4qknu4E9I5joJtyvaCMkIIytsHDQ=="
+}

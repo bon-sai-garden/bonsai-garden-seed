@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42WV1G8CETZBJDJ4S13M",
+  "signer": "eisai",
+  "role": "owner",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "bonsai-garden-logo.svg",
+  "file-hash": "bda94786de1b9ea832fc810be21480d970a9cd46aaa36b9c01e2f0c0ed9b6f751905ce2b9e8100da4e035eb26ca895133133b4d008c68c6136fb0f0835226b52",
+  "signature": "dZ74YJiPbJe9CkyGUDB4w/yGa3IX/gDp/GL0jvl9iXoQ/lFVgOoKGd+gGvy0Zqw2moq+zfMdY0OAW/AWL6MPAg=="
+}

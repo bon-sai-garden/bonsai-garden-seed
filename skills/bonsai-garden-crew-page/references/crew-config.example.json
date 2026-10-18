@@ -1,0 +1,40 @@
+{
+  "$note": "An example instance config for build_crew_data.py. Paths are relative to this file's folder unless absolute. Every value here is a placeholder.",
+  "garden_root": "../../my-garden",
+  "resolver": {
+    "module": "../../my-garden/tools/router.py",
+    "class": "Router",
+    "registry": "../../my-garden/routing.json"
+  },
+  "members": "members.json",
+  "portrait_out": "../app/public/crew/portraits",
+  "portrait_url": "/crew/portraits/",
+  "portrait_manifest": "crew-portraits.json",
+  "route": "/crew/",
+  "verify_url": "https://example.invalid/verify/?fp=",
+  "paths": {
+    "registry": "agents/registry.json",
+    "rings": "agents/ring-signatures.json",
+    "public_hashes": "keyring/public-hashes.json",
+    "tokens_css": "design/tokens.css",
+    "intro": "{path}/references/public-introduction.md",
+    "portraits": [
+      "{path}/assets/portrait-512.png",
+      "{path}/assets/portrait.png"
+    ]
+  },
+  "seal_verifier": [
+    "python3",
+    "{garden}/tools/verify-seal.py"
+  ],
+  "seal_renderer": [
+    "python3",
+    "{garden}/tools/render-seal.py"
+  ],
+  "forbidden_portrait_parts": [
+    "/public/private-images/"
+  ],
+  "forbidden_html_parts": [
+    "src=\"/private-images/"
+  ]
+}

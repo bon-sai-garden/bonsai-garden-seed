@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4WQ2KSE701JQ6K3HVEJN6A9",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-14T08:06:51Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/references/pot-agents.md",
+  "file-hash": "5520bd185fa581d9084f2128c731cbcd26db47bc1cf5fc82b7ad5ede4e8c7a85dfcc43226df96cc8045dd917c959b3e3f4252a66604a6e324e2470bd03c6dd8b",
+  "signature": "JLhVwnDzYPKj/MkuybH8KSazaL6Oj9uQclNghi2vy68rv+1L4tHz7zb6gD+LVV99V9E4h6QdaO+7gzAbmOBcAg=="
+}

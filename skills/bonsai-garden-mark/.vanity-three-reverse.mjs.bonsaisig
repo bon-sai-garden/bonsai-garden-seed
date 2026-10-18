@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43MN07Z00ED27XQ0708Y",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:38Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/vanity-three-reverse.mjs",
+  "file-hash": "501d406e723b59581cdbc98615e66dfc24453db131ed079d65568b2e707640d64b4d8d985ae983ba4f59727e5a892a0b2004f07a6c57db84a9d32cf47c75534f",
+  "signature": "xwi52YLba6zbiku09R82l2w2qDaHa6dvfjfUAFmsP2qLbcaKvfbV49l7w3useZDQ/gXX71ekPMbJ2Ybbd8mIAA=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3546V6433R4CE7Z34HPNHQE",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:43Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/specs/spec-publication-readiness-gate.md",
+  "file-hash": "fc0c680f64a4a442c369cd33e1331bfcc7d2975e57bdde475083698758b2ac0f15e1b26a4c3708ce6f982e4036f81fdf4d6169e11486954b086692577d184456",
+  "signature": "juo7iyxFT/4UD+2V73ltbKAK69uqk4YKVdHwVATDubUPV4psp89vQCl6aTM1nXGOeeFwLSJJyMqLrWQdFtWUBw=="
+}

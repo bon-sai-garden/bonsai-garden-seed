@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M39XJ6944JSB6SDM9P0QZMZC",
+  "signer": "bonsai",
+  "role": "custodian",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-09-24T14:36:55Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/fixtures/negative/v2-stale-hash.txt",
+  "file-hash": "c123e48237050937c2cde8f5306d94cf6cc30e1a96a00f742afa08ad30f46b4a7f43143e9034f0d4f85b719e5aca305eec5bf8b7de5191c3c4ea26cdba4d4dc9",
+  "signature": "gp+TbaAiH+rziodi2wwe4r7j4N162ATdCgIP+C1FOqYo/CHMAvAHT+bp7GxPsvtCoZ95+v98NSKbYB3JcZuLBQ=="
+}

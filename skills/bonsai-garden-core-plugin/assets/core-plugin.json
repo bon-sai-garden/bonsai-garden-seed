@@ -1,0 +1,85 @@
+{
+  "_meta": {
+    "id": "01M39MJ8TPEKGJ6M0S11HKB3DS",
+    "title": "The core plugin — Bonsai's carrier, as a configuration of the one builder",
+    "type": "package-config",
+    "tended-by": "baisai",
+    "created": "2026-09-24",
+    "updated": "2026-10-18",
+    "note": "A variation is configuration, not a second logic. scripts/package.py reads this when a package list names it; every path is written <root>:<path>, and the list must define the root `core`. Which garden packages it, for whom and when is the list's business, never this file's. 2026-10-05: bonsai-garden-ledger added; it had been in core since 0.2.0 and in no plugin (Baisai, found at the first two-plugin install). 2026-10-13: the planting has to run from an install alone (Bonsai's list): the walk pages (HTML, JS, CSS and pages.json; not the sources or notes), the planting runbook, the keys skill, tools/ulid.py and the conformance checker beside the skills they find by relative path. The lens gate waits for the owners' seals; nothing from runtime ships. 2026-10-18: Bonsai's guardian role (core roles/guardian/role.md, his activation step 5) ships inside his unit at the same address, roles/guardian/, with its seal: an installed package stays self-contained, and a standalone Bonsai has no core to read it from (Baisai, found by the clean-folder wake check of the 1c10d0a build). Later 2026-10-18: references/lore narrowed to the five lore documents his SKILL.md names, under the app's 200-file limit (Baisai, Tasai's ask on the gardener's word)."
+  },
+  "name": "bonsai-garden-core",
+  "owner": "baisai",
+  "root": "core",
+  "plugin-json": "core:skills/bonsai-garden-core-plugin/assets/plugin_manifest.json",
+  "files": {
+    "shared/logo.svg": "core:bonsai-garden-logo.svg",
+    "tools/ulid.py": "core:tools/ulid.py",
+    "tools/check-shintai-conformance.py": "core:tools/check-shintai-conformance.py",
+    "tools/verify-many.mjs": "core:tools/verify-many.mjs"
+  },
+  "bodies": [
+    {
+      "slug": "bonsai",
+      "bundle": {
+        "files": {
+          "assets/codex.md": null,
+          "assets/routines.md": null
+        }
+      },
+      "bundle-why": "Bonsai's assets/codex.md is his own Guardian Edition and assets/routines.md his own session sequences (the standalone walk): his documents, not copies of core's shared ones, so a garden's list-wide bundle never replaces them (Baisai, 2026-10-02).",
+      "root": "core",
+      "markless": "Bonsai's mark is not yet drawn (his SKILL.md: bonsai-mark.svg, not yet drawn); the greeting's kanji fallback shows",
+      "initial-memory": [
+        "memory/identity.md",
+        "memory/working-state.md",
+        "memory/strategic-context.md"
+      ],
+      "include": {
+        "references/lore/cosmology.md": "core:lore/cosmology.md",
+        "references/lore/invitation-rite.md": "core:lore/invitation-rite.md",
+        "references/lore/human-covenant.md": "core:lore/human-covenant.md",
+        "references/lore/sayings.md": "core:lore/sayings.md",
+        "references/lore/north-star.md": "core:lore/north-star.md",
+        "assets/garden-walk": [
+          "core:agents/bonsai/assets/garden-walk/*.html",
+          "core:agents/bonsai/assets/garden-walk/*.js",
+          "core:agents/bonsai/assets/garden-walk/*.css",
+          "core:agents/bonsai/assets/garden-walk/pages*.json"
+        ],
+        "references/procedures": "core:agents/bonsai/references/procedures/*.md",
+        "roles/guardian": "core:roles/guardian/*.md"
+      },
+      "include-why": "references/lore carries the lore Bonsai's own SKILL.md names in its reference material (core lore/: cosmology, invitation-rite, human-covenant, sayings, north-star), not the whole library: the Claude app refuses a skill of more than 200 files, and lore/*.md made his unit 210 (the gardener, 2026-10-18 ~18:50). His codex is his own assets/codex.md, so lore/the-codex.md stays out.",
+      "initial-memory-why": "Bonsai, 2026-09-26: core now carries his initial state (core b5d2b93): working-state holds WS-001 the Garden Walk and WS-002 the first stranger with no garden particulars, strategic-context is an empty seed; the lived record lives in the pot. So his real initial memory ships instead of the builder's skeleton. (Until then, 2026-09-24: identity only, because working-state and strategic-context still held this garden's forming-ritual particulars.)"
+    }
+  ],
+  "skills": [
+    "core:skills/bonsai-garden-core-plugin",
+    "core:skills/bonsai-garden-mark",
+    {
+      "skill": "core:skills/bonsai-garden-keys",
+      "exclude": [
+        "test-*",
+        "fixtures"
+      ],
+      "why": "the suites and their planted fixtures are development material; the verbs, lib and references ship (the walk and a planting run from an install alone)"
+    },
+    "core:skills/bonsai-garden-portrait",
+    {
+      "skill": "core:skills/bonsai-garden-sign",
+      "exclude": [
+        "fixtures",
+        "test-*"
+      ],
+      "why": "the planted negative fixtures and the tests that use them are Mori-shin's development material; the fixtures carry seals that are broken on purpose"
+    },
+    "core:skills/bonsai-garden-strategic-context",
+    "core:skills/bonsai-garden-tokens",
+    "core:skills/bonsai-garden-transcript",
+    "core:skills/bonsai-garden-validate",
+    "core:skills/bonsai-garden-vcard",
+    "core:skills/bonsai-garden-ledger"
+  ],
+  "max-bytes": 41943040
+}

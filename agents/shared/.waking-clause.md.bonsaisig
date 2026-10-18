@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGM",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:39Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/waking-clause.md",
+  "file-hash": "5d3219893d2cd57f0f259b7fd69504b2832a97d2d6f6b20838a110337a245323ca7be94d8fabdb90b91c3a75071691e7fddf6109046068eae23f4e31ab104e69",
+  "signature": "JTJ+9Vv4nUEtybNvPMiQWxSf91QwLGxD2IEPAm4lt1DHs3QJTziKFICsO7SxhKpFh9ZLVuC5Zd1xCSaAlP4lDA=="
+}

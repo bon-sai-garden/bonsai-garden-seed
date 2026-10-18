@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43NR2DA9Z8FPWV6ZC4AN",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T17:59:28Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/scripts/make-canonical-portrait.py",
+  "file-hash": "185cc3d533f21f90877803d3d1ef0d077ed5ed96590308ec704f536073bb9d90015ff25c8bb83b9bd45e25b6e2330ed2c4cc3102be194cae06802c54e7711ad4",
+  "signature": "oaqadgCNp9rAam6NZym1XIQEJJ41gujQqEi2PGuWYS4GEm9qkdEFdvy0DcrR1M+bKZFwfaMn2VZ5iE8L7WskDg=="
+}

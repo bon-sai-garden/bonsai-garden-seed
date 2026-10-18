@@ -1,0 +1,41 @@
+<div class="w-split">
+  <div class="w-voice">
+    {{who}}
+    <p class="eyebrow w-step">Seventh, the two promises</p>
+    <p class="say">Last: two promises.</p>
+    <p class="say">One is yours and one is your guardian's. They are sealed together, at the same moment, so neither is first.</p>
+    <p class="aside"><b>Your garden begins with its guardian.</b> It has no history yet, and that is yours to write. I don't take the welcome as mine.</p>
+  </div>
+
+  <div class="w-side">
+    <section class="read" aria-labelledby="read-h">
+      <p class="eyebrow" id="read-h" style="margin-bottom:8px">Before you sign, I read back what you told me must never happen</p>
+      <p class="quote">The names of the students.<cite>You said · what must never leave · <span class="tag">Example</span></cite></p>
+    </section>
+
+    <section class="card card-stage" aria-labelledby="seal-h" data-seals>
+      <h2 id="seal-h" class="sr">The two seals</h2>
+      <div class="seals">
+        <div class="sealbox">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring" cx="60" cy="60" r="52"/><text class="glyph" x="60" y="76" text-anchor="middle" lang="ja">印</text></svg>
+          <span class="who">Your promise</span>
+          <span class="whom">Signed by you.</span>
+        </div>
+        <div class="sealbox">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring" cx="60" cy="60" r="52"/><text class="glyph" x="60" y="76" text-anchor="middle" lang="ja">印</text></svg>
+          <span class="who">Your guardian's promise</span>
+          <span class="whom">Signed by them, on their first day.</span>
+        </div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:20px">
+        <button class="btn" id="sealbtn" type="button">Seal them together</button>
+      </div>
+      <p id="sealed-note" class="notice ok" style="margin-top:16px" hidden><span><b>Both sealed, at the same moment.</b> Your garden has its guardian.</span></p>
+    </section>
+
+    <div class="nav">
+      <a class="btn ghost" href="@prev">Back</a>
+      <span class="row"><span class="stay">Your hand signs. I only hold the page.</span><a class="btn" href="@next">Continue</a></span>
+    </div>
+  </div>
+</div>

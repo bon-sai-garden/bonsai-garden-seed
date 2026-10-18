@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3FRFGGNZD4PFZ6AXRVBEQT2",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-15T19:42:34Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-ledger/scripts/test_ledger.py",
+  "file-hash": "dd4eea06ee299487c48af2777a75c3d4ec8eada44ba4bab5a7b69c824656027cd9b92da47233c38dd25f8ecd5f199278f9d684aea042209b65dd2547d7803102",
+  "signature": "v8/L7WkaIquoJf4ww1u5GMR31XQm2qHOy4nIoTnyvkYvuemWPCK5KZoq1ZlMivz4mYEe5tbEEG1PXlfV3RetAQ=="
+}

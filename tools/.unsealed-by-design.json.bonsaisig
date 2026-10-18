@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M52JZ9KW7ZDAP6MKSM00VJ8R",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:33Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/unsealed-by-design.json",
+  "file-hash": "cb2e85f77e699e6581e565b0e9ecae954cd8d05497a2e5b34f6eacccdf9a87f28ac145724902fbe0202e76e079072ce1510a356101703fc81cd2df786dd53af5",
+  "signature": "qhkCKIqTueuDMr4deB5q1h2+lo+PVfkeqqepm1EOEvgcHfTVfPrtRcrY5N+fUmXnyvvcnqRxv4pSE0pUH8ywBA=="
+}

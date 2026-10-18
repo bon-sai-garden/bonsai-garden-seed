@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M57W1JZDRDHZRW59BRW5ZNGB",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-18T20:41:11Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "build/bonsai-garden-strategic-context.skill",
+  "file-hash": "243830fb0926f85cb94dcea3002d4da8e1dc529043374601ece2f3fd0c3b0f53f87949e56009125db416061953e6ffe6c3b1aa42f0ac62f82a0b1e12121e36f9",
+  "signature": "qTWBi65dGLGB0YSXqEufMAkP+tEyCg6TQw9+sbU1OaYNGJ5qY9hx2vnnjQrt4PJDNuAMewB8fKP4uvFWI9RhBA=="
+}

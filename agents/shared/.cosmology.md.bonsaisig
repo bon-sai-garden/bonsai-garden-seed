@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KS7C5H5ERKK8F7N04YRSRYS1",
+  "signer": "hissai",
+  "role": "custodian",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T14:39:04Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/cosmology.md",
+  "file-hash": "28a346c9dbb5c12d73052d17d4a7c3a5376307cefbd352155113331b15acefbee81937bed405681f8548098dd751247ec0291473a41574c97cf7c26fad6b0420",
+  "signature": "X86RuIAAwqSlvD8usMgquihAvzYOQuqYBit8EaIXSe9++aKfqvvLpASQemmvOT8W9N80Sb/Mr66f/fWW6PXuCg=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS441B4D6BJ5H23S281Z65",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:58:14Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/readiness-gate/readiness_gate.py",
+  "file-hash": "c459a0c241833736f11e83149bc7c20dba3688af41fb3e00d6dc408335c08c201925d37f9862f56ea429f871109dd893782403eb812fd2f13a0ec4bf94669032",
+  "signature": "LlgoLkes5XGzTaEOeiNlRkCCH1MKx4elA8EVKpSO3fD8/8jDuyQMsOxq0nnZvTtl9IQ9HyKr7C/DJ2+n7w/0DQ=="
+}

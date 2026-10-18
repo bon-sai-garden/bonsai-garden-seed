@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3V3N7QS0Z6NM2ARXNTYAD3T",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-01T06:50:32Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/bonsai-garden-kin/eisai.png",
+  "file-hash": "fd8b76764b50d4cfc67a93c58c2ab83df3845f0b9882cf404b585bb6930fef5e0724d2eb957c4db25c4938fe62106ea736ef25f7c0edff50b06f33a33de24b39",
+  "signature": "wBcuY/pGmbUAQve1z4HZhGZOTDdqYT9Kk4gfc1Ec4VCSgArkSrqP45wEsCTsUKLB+1c3pYB22nyfcU5uYb3hCg=="
+}

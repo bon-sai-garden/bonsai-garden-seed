@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4RPD77V88P3F0DYCJD0CDX5",
+  "signer": "triu",
+  "role": "owner",
+  "fingerprint": "00005570e6445e9cfcc5c215746e8f1d",
+  "timestamp": "2026-10-16T14:34:33Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/gesture-listener-system-prompt.md",
+  "file-hash": "3a3c84ed6e050498de8727f405544a35a670292cc65680ad1f3531fbef503d02cdc383e7decb68c5f40a945c520003aef5f7a74041b34175dd31a35e7e4b728a",
+  "signature": "33d9ubzcOAvCwKu1qBQkmKqLFThUZq0MV3PG9ZiqsO0QfWuL8fvZD3iqXYhK4vdM0qwPh2P700v92mpEb7hyDA=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42NZZCGH38T12E8PCTNG",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/identity/bonsai-fingerprint.txt",
+  "file-hash": "2050f81af422041c586267d689f428fbb769d3a1c428f567884b1ff6684592c533c599451a420048516add86220ee7aa518cadfd50a13432cfb51a9f7044e101",
+  "signature": "a5fkr24fpV3IgJvcakoKVaY79wxNFgpTyn4//lmgaNMrRUEurlEnxi9X0LdZnXvBLnFQQCO6fjCRJUw89vH2AQ=="
+}

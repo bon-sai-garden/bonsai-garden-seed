@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4Z51Q3E88V1YC40G6BT0P34",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T18:02:59Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/test-planting-e2e.mjs",
+  "file-hash": "30a3cae96285d3db0c25da6cf1ba090f8410d33e207702dff710879f58752dde92e5f0d36053472f5aa0755efa3aaeb212b675c135a265e6344af0847d8e76e5",
+  "signature": "nwzorZg2pgeOnwHi4/hSxyAChJcAatA+7ildAovOft2SDU1bxu9V/MYpGSEPMzs2qt9qSaWhieWOgA29Uyw+Ag=="
+}

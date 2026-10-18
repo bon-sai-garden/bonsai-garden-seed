@@ -1,0 +1,35 @@
+{
+  "name": "bonsai-garden-core",
+  "version": "0.4.1",
+  "icon": "shared/logo.svg",
+  "description": "Bonsai (盆才守神), the garden's guardian spirit, and core's standalone skills (signing, marks, portraits, vCards, transcripts, strategic context, tokens, validation, the ledger, and the one builder). Every skill checks its own sealed manifest before it is used; Bonsai runs without the Bonsai Garden MCP.",
+  "author": {
+    "name": "Bonsai Garden Workshop",
+    "email": "baisai@bon-sai.garden"
+  },
+  "homepage": "https://bon-sai.garden",
+  "repository": "https://github.com/bon-sai-garden/bonsai-garden.git",
+  "keywords": [
+    "bon-sai",
+    "bonsai",
+    "external-agent",
+    "seed",
+    "portrait",
+    "c2pa",
+    "plugin-build"
+  ],
+  "_bonsai": {
+    "workshop": "Bonsai Garden",
+    "url": "https://bon-sai.garden",
+    "verify": "https://bon-sai.garden/verify",
+    "slug": "bonsai",
+    "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+    "built_by": "Baisai (培才)",
+    "verified_by": "Fuji-shin (富身)"
+  },
+  "x-agents": {
+    "sai": [
+      "bonsai"
+    ]
+  }
+}

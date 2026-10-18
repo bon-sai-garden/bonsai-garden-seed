@@ -1,0 +1,7 @@
+{
+  "format": "bonsai-garden-rt-minimum/1",
+  "name": "bonsai-garden-rt",
+  "min-version": "0.8.4",
+  "signers": ["baisai"],
+  "_what": "The oldest rt this core takes, and whose seal on an rt's RT-MANIFEST.json it believes (runtime rituals/specs/spec-rt-slice.md §4, §5). install-runtime takes an rt whose every byte matches its manifest, whose version is min-version or newer, and whose manifest carries an owner seal by one of signers over exactly its bytes, vouched for by the published keys at bon-sai.garden; anything else is refused. No hash and no commit: core names no rt as a dependency (the gardener, 2026-10-18). 0.8.4 is the first rt whose manifest is sealed; it moves up only when a core needs a newer rt, by hand."
+}

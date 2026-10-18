@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4KSMQQ6X17QT9EJYNX80HRJ",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-18T20:34:04Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/lib/rt-manifest.mjs",
+  "file-hash": "c43a1e73bd5ab8925ffbbcd71a661af521f06520fef2fec82ee3785d7f1cbcabf226fdcbd295736b2bbebc2392b0a01f0303d1c19fc0beb94053441722d257a2",
+  "signature": "yXilIhga1dKi2/KbiWntnX+7TlBs0yFkDd9q64dU5DNFFuPNOj1B6yKrCdjzFhNk+HbSv/h0rxVcu/mDt561BA=="
+}

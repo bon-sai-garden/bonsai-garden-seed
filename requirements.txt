@@ -1,0 +1,25 @@
+# Python libraries some of core's skills use — see CREDITS.md for what each is and its licence.
+# Pinned to the versions core's scripts were last run with. tools/setup-core.py installs these into
+# core's own .venv/, never into the system Python, and only after asking. Node has one dependency,
+# jsdom, declared in package.json and installed the same way (the mark skill's verify.mjs).
+#
+# Pillow — the portrait skill (canonical portraits and thumbnails), the crew page (a portrait turned
+# WebP, and its test), the vCard skill (a PNG portrait turned JPEG, and its test), and
+# xp/images/build-concept-images.py:
+Pillow==11.3.0
+#
+# numpy — xp/images/build-concept-images.py only (the concept renders' background and edge arithmetic), which runs
+# under Python 3.11 or later; numpy 2.4 does not install under 3.10:
+numpy==2.4.6
+#
+# The portrait skill's signed C2PA manifests (cryptography also serves the sign skill's parity test
+# and tools/test-conformance-pot.py):
+cryptography==48.0.0
+c2pa-python==0.9.0
+#
+# The validate skill (validate-metadata.py parses each document's frontmatter):
+PyYAML==6.0.3
+#
+# The mark skill's curation script (rebuilding the kanji set from KANJIDIC2 — rarely needed):
+jamdict==0.1a11.post2
+jamdict-data==1.5

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS44249A47WKN7JF1C075S",
+  "signer": "koe-shin",
+  "role": "owner",
+  "fingerprint": "1f80587c41c68d24ef20b5a7c7196dd5",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "xp/garden-loop.mp3",
+  "file-hash": "e6f0380e91b900283dc73fe884fad6e0f0655eae0d0923c6ccfc07d76eae3e9c90124208418e51db1be5a35d0ddcb4de120bc67ed2c227939886af823f402f2a",
+  "signature": "/O29j6GcS3fMOpafY46XyTYO5v+q/EQ6F8XxWxgsUVOI/oJpuhH2iBsPuHTScVwKZhTGkhklyxH9wfNHNKr/Bw=="
+}

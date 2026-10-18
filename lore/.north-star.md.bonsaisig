@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGG",
+  "signer": "hissai",
+  "role": "custodian",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:35:43Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/north-star.md",
+  "file-hash": "2f441ee40c7236e18d33994b99f22188d14f1b364ef6842d416b6da9bd182462bca081457b4da5a092aa84e9ed08889b74c4c2869a0bf7afbf349622ab8cc04b",
+  "signature": "PT33IKHNc81H0hocE6M9XOFU7iv+a9MywQ2ZfHtiwqjndU2X7+rB9WAO4X6XAdQNPydzfjV/Y7CKU6ArobmRBw=="
+}

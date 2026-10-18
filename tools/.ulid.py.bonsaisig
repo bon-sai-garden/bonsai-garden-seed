@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37VT9ZCPJX1D0H5SJYDAX2Q",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:56:07Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/ulid.py",
+  "file-hash": "1b4f3ad4349acfd9898f4464828524ee00a3f657039d5eb9aab2b83d1045c941c8e1feb6f8cdb20f5a354702945a28672f9633d87529fbdbb7cc460ccdc4b871",
+  "signature": "QViOMP4jasBt5wvmf4ZzIiSz9DuNzdFJIhUT7ixQ3QE5pfzvWxZkhTT7+jgNf21g17is1f017LCH9hWZasaoDw=="
+}

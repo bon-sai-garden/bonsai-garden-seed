@@ -1,0 +1,7 @@
+# The real identity profile lists the identifiers the gate hunts for, which
+# makes it the densest possible carrier of them. It is never committed to a
+# repository being prepared for publication. Keep it outside any such tree and
+# point --profile at it; identity-profile.example.json is the shape.
+identity-profile.json
+*.report.json
+__pycache__/

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4ZPA9RJ72S42ZDNS9E84PFK",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:34:42Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/vanity-three-chain.mjs",
+  "file-hash": "29874c51a7b69e5c72f27d868ef6ac093cc495dc0ce244ef3707266278624f38415ef083a0132878e1d2c1e7928bc5d8f76232d396b080fe43c2da8d5b07cce5",
+  "signature": "HwyNWqjtca7lDyqZAB978mGyKhBmFNE1ZPhfrPSXbiYNbMBcDbVhTJ8ttGO+efML/9JojRd9C2RmJlCwinjrAA=="
+}

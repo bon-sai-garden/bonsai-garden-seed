@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48JWT2ZYVGRQRBP8N75749S",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-07T09:09:10Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/src/08-calling-home.html",
+  "file-hash": "0d6292a3f12305609881b618c960e0dc8de99b34b3533fca7ccfd6deb1d3787f568ce7875024d1fbb9f88f2ddae004d465a23ef8d3e58cea2ddab5080318cbc2",
+  "signature": "cJMjDwTGidwwpuLM/jEdco75FnlvMW8w2vcFHKXQidl9QonlsKlyoInLmXVWeIuiRSEfTSen11GuDeo/D9cJAw=="
+}

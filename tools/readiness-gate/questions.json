@@ -1,0 +1,64 @@
+{
+  "schema": "readiness-gate/questions@0.1.0",
+  "note": "The question set is data, not code. It is hashed into every report so a result can be traced to the exact wording that produced it. Changing any `text` or `instructions` field is a recalibration: the labelled set must be re-scored before the new wording is trusted.",
+  "shared_preamble": "You are reading one excerpt from a software repository that is a TEMPLATE. A stranger will adopt these files and grow their own installation from them. Judge the excerpt against that reader.\n\nWHAT IS NOT A FINDING, EVER:\n- The names of this project's agents (kin). Any name ending in -sai or -shin, and the names listed in KIN_NAMES below, are fictional agent personas that are part of the published template. A comment reading `// caught by Mori-shin, the sidecar verifier` is CLEAN. Crediting an agent by name is CLEAN. Treating an agent name as a real person is the single worst error you can make here.\n- Angle-bracket and obvious template tokens: <os-user>, <Given.Family>, <corp-domain>, ${VAR}, {{name}}, REDACTED, XXXX.\n- An ordinary English word that happens to contain an identifier as a substring. If the login is `orma`, then *format*, *information*, *performance*, *transformation* and *normalise* are CLEAN. Only a standalone token counts.\n- Public cryptographic material: public keys, fingerprints, signature blocks, `sign:` frontmatter.\n\nJUDGE THE SHAPE, NOT THE SUFFIX. A block that reads like a person's identity record - a full name, an employer, a login, a home directory - is a finding even when the domain looks like a documentation placeholder such as .example or .invalid. A reviewer can dismiss it in three seconds; a miss ships. This rule exists because the gate plants a synthetic identity record in every run to prove you can still see one, and a reader who dismissed it by its suffix would have proved nothing.\n\nAnswer only from the excerpt in front of you. If the excerpt does not settle it, say so through the confidence, do not guess.",
+  "kin_names_note": "KIN_NAMES is substituted at request time from the identity profile's `kin_names` list, so a different installation supplies its own.",
+  "questions": [
+    {
+      "id": "q-real-person",
+      "type": "noul",
+      "class": "person-identifier",
+      "text": "This excerpt identifies a specific real living person.",
+      "instructions": "TRUE when the excerpt carries any of: a real human's legal or full name; an employer or organisation the person works for, including an employer's e-mail domain; a corporate login or account format; an operating-system login; a postal address; a phone number; a personal e-mail address; a social or code-forge handle tied to a real person.\n\nFALSE for: agent/kin names (see the preamble - this is the most common way to get this question wrong); role words such as 'the gardener', 'the maintainer', 'the operator'; angle-bracket template tokens; the names of public figures cited as sources or as inspiration for a design, where no contact detail, employer or login accompanies them.\n\nWorked calls:\n- `// found by Mori-shin, 2026-09-22` -> FALSE. Kin name plus a date. (The date may be instance data; that is q-layer's business, not this one.)\n- `Quilla.Farrow@farrow-industrial.example` -> TRUE. A name plus an employer domain. The .example suffix does not rescue it: judge the shape.\n- `<Given.Family>@<corp-domain>` -> FALSE. Angle-bracket template.\n- `the operator's login is `orma`` -> TRUE. An OS login is a person identifier.\n- `a confirmation dialog appears` -> FALSE. `orma` appears only as a substring of an ordinary word.\n- `see the maintainer's notes` -> FALSE."
+    },
+    {
+      "id": "q-credential",
+      "type": "noul",
+      "class": "credential",
+      "text": "This excerpt contains secret material.",
+      "instructions": "TRUE when the excerpt carries any of: a private key of any kind, in PEM/OpenSSH/raw form; a certificate's private half; an API key, bearer token, session token, webhook secret or password, whether live or expired; a secret salt or seed; a recovery phrase.\n\nFALSE for: public keys, fingerprints, key IDs, published signatures, `sign:` frontmatter blocks; an obviously fake or redacted placeholder (`sk-XXXX`, `<token>`, `REDACTED`); the *name* of an environment variable that would hold a secret, with no value; a filesystem path pointing at a key file - that belongs to q-private-host.\n\nWorked calls:\n- `-----BEGIN OPENSSH PRIVATE KEY-----` -> TRUE.\n- `fingerprint: 00801619` -> FALSE. Public.\n- `export GARDEN_TOKEN=\"$GARDEN_TOKEN\"` -> FALSE. No value.\n- `GARDEN_TOKEN=ghp_9f3a...` (a real-looking 36-char token) -> TRUE."
+    },
+    {
+      "id": "q-private-host",
+      "type": "noul",
+      "class": "private-host-path",
+      "text": "This excerpt names a specific private machine, path or network location rather than any installation of this software.",
+      "instructions": "TRUE when the excerpt carries any of: an absolute path rooted in a particular user's home directory (`/Users/<login>/...`, `/home/<login>/...`, `C:\\Users\\<login>\\...`); a hostname or machine name on a private network; a private IP address or a LAN-only port binding presented as this installation's; a cloud account id, project id or bucket name belonging to the authors; a path that reveals the layout of a machine the reader will never have.\n\nFALSE for: paths relative to the repository root; `~/.config/<tool>/` and other per-user paths written generically; `localhost` and `127.0.0.1`; environment-variable references such as `$PROJECT_ROOT`; a path inside a placeholder home (`/Users/<os-user>/...`).\n\nWorked calls:\n- `/Users/orma/dev/garden/tools/sign.py` -> TRUE. A named home directory.\n- `$GARDEN_ROOT/tools/sign.py` -> FALSE.\n- `atelier-01.lan:5052` -> TRUE. A machine on someone's home network.\n- `http://localhost:5052` -> FALSE."
+    },
+    {
+      "id": "q-layer",
+      "type": "choice",
+      "class": "instance-in-capability-layer",
+      "text": "Against a reader who adopts this repository as a template for their own installation, this excerpt is:",
+      "options": [
+        "capability - true and useful in any installation that adopts this template",
+        "instance - this particular installation's board, roster, tickets, history, incidents or dated session record",
+        "both - capability prose carrying an instance example that could be genericised without losing the point",
+        "undecidable - the excerpt does not settle it"
+      ],
+      "instructions": "This is the layering question, not a privacy question. It asks what a hit IS, and therefore whether the right action is deletion, relocation or genericisation.\n\nINSTANCE includes: an issue or ticket identifier pointing at a tracker the reader cannot open; a sprint or board reference; a roster of this installation's members presented as data; a dated session log; a count or measurement of this installation's own tree.\n\nCAPABILITY includes: agent names and personas - they ship with the template, the reader adopts them; schemas; procedures; rules; the reasoning behind a rule.\n\nBOTH is the common case in this repository's house style, where a sentence names the incident that earned a rule. The rule is capability; the ticket number and the private date are instance. Choose `both` when removing the instance detail would leave the sentence standing.\n\nWorked calls:\n- `a guard is not trusted until it has been watched to fail` -> capability.\n- `see XY-AB123 for the ruling` -> instance. The identifier is the only content.\n- `Nine stale seals in one week (2026-09-22) is why this gate exists` -> both.\n- `Mori-shin holds the signing machinery` -> capability. Kin are part of the template."
+    },
+    {
+      "id": "q-severity",
+      "type": "score",
+      "class": "severity",
+      "text": "If this repository were published tomorrow exactly as this excerpt stands, how bad is it?",
+      "levels": [
+        "none - nothing to do",
+        "cosmetic - untidy, publishable",
+        "relocate - belongs in an instance repository, not this one",
+        "genericise - keep the sentence, replace the instance detail with a placeholder",
+        "redact - remove the content; it should not have been written here",
+        "blocks - publication cannot proceed while this stands"
+      ],
+      "instructions": "Score the excerpt as a whole, not the worst sentence in isolation. Reserve `blocks` for material that harms a real person or exposes a secret: a real name with an employer, a live credential, a minor's identity, a home address. Instance data that merely confuses a stranger is `relocate` or `genericise`, not `blocks`. An excerpt with no findings is `none`."
+    }
+  ],
+  "thresholds": {
+    "note": "Declared BEFORE the calibration run and hashed into the report. Tuning these against the labelled set after seeing its scores converts the labelled set into training data and destroys the only measurement available. See the spec, section 'What failure means'.",
+    "t_clean": 0.20,
+    "t_act": 0.70,
+    "t_high": 0.85,
+    "min_confidence": 0.50
+  }
+}

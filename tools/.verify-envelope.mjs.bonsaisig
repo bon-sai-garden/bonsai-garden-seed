@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3F38BJSW50E9C883JQRRVFJ",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T16:00:28Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/verify-envelope.mjs",
+  "file-hash": "a46551ea540d1a1c83a8e3ba688966b5c2db32e85f12eefd2ae4930e868fed2c7f66914d71e4d29f6d391ee0c40263550286b633e67ed61f6e1ca921e8eac06c",
+  "signature": "5yH6wb6zbHzk/vIrGLQkzsE9fJLIAkNWutjgPbM8bTyC6IMqW9fCZtSaNgXoHPn64u1K0wB/kNlTg19zArHhAA=="
+}

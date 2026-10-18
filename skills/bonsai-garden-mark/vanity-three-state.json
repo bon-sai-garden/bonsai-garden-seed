@@ -1,0 +1,18 @@
+{
+  "base": "example-agent",
+  "separator": "#",
+  "targetChars": [
+    "才",
+    "多",
+    "〇"
+  ],
+  "indices": [
+    1,
+    2,
+    0
+  ],
+  "nextStartN": 50000,
+  "lastChunkAttempts": 0,
+  "lastChunkMs": 132,
+  "cumulativeProbability": 0.000046727880181229864
+}

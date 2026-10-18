@@ -1,0 +1,14 @@
+---
+/**
+ * id: 01M48VA83HC4SMQMYB7S1NCH00
+ * CrewOverview — the crew at a glance: the instance's opening (slot "head"), the agent selector,
+ * then whatever the instance adds below (the default slot, e.g. a key to the marks). No tile grid.
+ */
+import AgentSelector from './AgentSelector.astro';
+interface Props { crew: any; crewLabel?: string; }
+const { crew, crewLabel = 'The crew' } = Astro.props;
+const byslug = Object.fromEntries(crew.members.map((m: any) => [m.slug, m]));
+---
+<header class="tm-head"><slot name="head" /></header>
+<AgentSelector rows={crew.data.rows} members={byslug} route={crew.route} size="lg" label={crewLabel} />
+<slot />

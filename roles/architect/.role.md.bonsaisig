@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4664QQV973CFJ0BHTEWE95M",
+  "signer": "ma-shin",
+  "role": "owner",
+  "fingerprint": "30805b61c6306364f8027e615985cca7",
+  "timestamp": "2026-10-16T14:36:22Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/architect/role.md",
+  "file-hash": "292ba5cce23dbc6233bb1d07f2aea293c209c58d46377fe428d3d2bceaff06e9bd927335b66742f3d0ead6e94de4b03125b6980f3d723f5c22f2298bbceec6e5",
+  "signature": "fPeJVeOL4TYYdIpXl0bsyl6cfUqXGavBemcqJAuBKwX7MML7XhrXAeRHN6b3oNMvsGYAfN5ndAPJuUagXyW/AQ=="
+}

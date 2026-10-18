@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01JYMKP3N8XQGZ7T4VWRH6D2B1",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/references/number-to-kanji.md",
+  "file-hash": "f7977366dce8c20e7354bfa2b2b7850481c2526ea51c809fe8df7e679a88069b2d872bfd9416c85d865c5349d4543e7dd010c1a39fcc6681e6b13b29f40b2fe1",
+  "signature": "hiCmjdZe4PX/ITZ+LE0dT2C4sf8oMadQ0qRf8MELOpo57P12/pAQoHpExxWfc2MSIIq4kzHnCdgjRjCB0BtzBA=="
+}

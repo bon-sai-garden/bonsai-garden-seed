@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48WAGHK2AJB6042G3BSN8CP",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-09T07:35:08Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-crew-page/templates/astro/components/CrewMember.astro",
+  "file-hash": "32616fe8adba266279e0debbf12379f5459ae5556d35d2e798aa6d6f6372b64baead8bf9f650d15cce06ba35bd7d275501c8bd2bcc013bb398ea4fc3da8c1499",
+  "signature": "Wp0ApEgJ+oSODLonWYhEnOUEudtPnbM6vtohq8Xa18ECpK8axFTzjyc8oztKMeThQfijbe7nMD9g7J+odTisAg=="
+}

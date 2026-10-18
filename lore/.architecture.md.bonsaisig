@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KRNHR3SSQT2NWDD6QTD8KG8Q",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:35:27Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/architecture.md",
+  "file-hash": "3ea75e932922b257d5abb409a8c4ffe384ede962af42a432447fa0b7164f3c9d6fc0140807b2b4d530a0b6ff4d22d8aef121b69783c0c3c586726a5a8d283206",
+  "signature": "7CdiRTY5ksPf4yvUHgmB8O3A0UuzfZiiwnfAr3O2Anl1qdaSWCHIEqpo19S0VB3HXXjcRR26PeckdPsONi08BQ=="
+}

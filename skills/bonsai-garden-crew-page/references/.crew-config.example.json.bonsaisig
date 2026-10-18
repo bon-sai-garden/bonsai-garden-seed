@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48WAFK4MEGEMGFNWYWPTZG0",
+  "signer": "eisai",
+  "role": "owner",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-06T15:11:41Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-crew-page/references/crew-config.example.json",
+  "file-hash": "eca7423d2f43bbdac4821ed31b2a81c8c63609c7baf75ea3ff80b05de34ba931ce5d8bcb15f7b27dcb13604b811ade70c80642ff3a319efbac59ddda5277e209",
+  "signature": "te6bMYu7r1JZqkmVOITvCrwys3N+K6TgF0qFS5bTUkrIherrP7iXYfFeeyrASo+5hNckdnfB78+exz+o320FCA=="
+}

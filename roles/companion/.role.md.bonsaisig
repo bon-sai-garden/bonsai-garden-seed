@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP5ZZATK45GEN4R7K59JV",
+  "signer": "triu",
+  "role": "owner",
+  "fingerprint": "00005570e6445e9cfcc5c215746e8f1d",
+  "timestamp": "2026-10-16T14:34:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/companion/role.md",
+  "file-hash": "22c0de3b77b42d3ad9a57f940adc2ee51c242e5e7a9662e2dda3fe6ae1e396158debc5e1e664214a6fd052d2d2041525920550a44d58082472e5c7f1a127c54b",
+  "signature": "A83UVoVvJ0WAD0MCesConIrcXMItIAPhZ6dS7kPDXcYsUkX8Ves6j/FXld2NiC6VJp7p4d1SWeo6w8s5C1n5Aw=="
+}

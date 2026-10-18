@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48N5GTH9E2TVC4CQDWJJYWQ",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:07:46Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/walk-early.js",
+  "file-hash": "4b50fd2d98b486748fbed4b9c4640faaef86c9effb7f75db814333a66c7ec1212f4937b098e615c755200ac807acdb9652a0e28fd4e755378c33e19017f60511",
+  "signature": "LL/zvcPVNHqvmFmiU6xyYRse+rjVr+wxHrNrvS4i4yEcz7rukE/z42Vw4AtMEqpAWyE2L8NL3/PUenvbVIgtBg=="
+}

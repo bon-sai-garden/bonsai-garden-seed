@@ -1,0 +1,9 @@
+{
+  "signer": "bonsai",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-09-24T09:37:06Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/fixtures/negative/stale-hash.txt",
+  "body-hash": "c7fee67f22ec916c89547944b9ff910b61e77eb01d1294dc2819a153788323b41cf53b3f90febd8b6e7cda8a368a4b4e438f3cf7f0bdd890a7850b6a4407c884",
+  "signature": "rPI1vOR0vOnVf3K63c28kTN67vO7Dm0VmZdHol32yhV87ZKTcGa89oQ1lSRmrUCULtxDV7AO+dnR/y+BO1/vDw=="
+}

@@ -1,0 +1,129 @@
+<div class="w-split">
+  <div class="w-voice">
+    {{who}}
+    <p class="eyebrow w-step">First, about you</p>
+    <p class="say">I'd like to know a little about you.</p>
+    <p class="say">You can fill in a few short fields, write it your own way, or I can ask you a few questions: four is plenty, six at most.</p>
+    <p class="say">Whichever you like. <em>A name to call you by is enough.</em></p>
+    <p class="aside"><b>This is a walk.</b> I'll show you how it works, and nothing is set up until you tell me you want it.</p>
+  </div>
+
+  <div class="w-side">
+    <section class="card card-stage" aria-labelledby="pick-h">
+      <h2 id="pick-h" class="sr">Pick one way in</h2>
+      <div class="ways">
+        <input type="radio" name="way" id="way-a">
+        <input type="radio" name="way" id="way-b">
+        <input type="radio" name="way" id="way-c">
+        <div class="pick" role="group" aria-label="Pick one">
+          <label for="way-a"><b>A few fields</b><span>Four short lines. Quickest.</span></label>
+          <label for="way-b"><b>In your own words</b><span>Write it your way, or bring a file.</span></label>
+          <label for="way-c"><b>A few questions</b><span>I ask, one at a time. You can stop after any.</span></label>
+        </div>
+
+        <div class="panel" id="p-a">
+          <div class="fld">
+            <label for="f-call">What should I call you?<span class="need">the one I need</span></label>
+            <input class="in" id="f-call" data-bind="call-me" placeholder="A name, or a nickname" autocomplete="off">
+          </div>
+          <div class="fld">
+            <label for="f-name">Your name, if it's different <span class="hint">· optional</span></label>
+            <input class="in" id="f-name" data-bind="name" autocomplete="off">
+          </div>
+          <div class="fld">
+            <label for="f-pro">Your pronouns, if you'd like to say <span class="hint">· optional</span></label>
+            <input class="in" id="f-pro" data-bind="pronouns" autocomplete="off">
+            <span class="hint">I won't guess them.</span>
+          </div>
+          <div class="fld">
+            <label for="f-links">Any links you'd like to point me to? <span class="hint">· optional, one per line</span></label>
+            <textarea class="ta" id="f-links" data-bind="links" style="min-height:84px"></textarea>
+            <span class="hint">Pointing me to a link isn't asking me to read it. I'll ask once whether you'd like me to look, or just keep it.</span>
+          </div>
+        </div>
+
+        <div class="panel" id="p-b">
+          <div class="fld">
+            <label for="f-own">Tell me who you are, your own way</label>
+            <textarea class="ta tall" id="f-own" data-bind="words" placeholder="Write or paste. I keep it exactly as you give it: no tidying, no summary, no corrected typos."></textarea>
+          </div>
+          <div class="row" style="margin-bottom:18px">
+            <label class="btn ghost small" for="f-file">Bring a file instead</label>
+            <input type="file" id="f-file" class="sr">
+            <span class="hint" style="font-size:.85rem;color:var(--muted)">Kept exactly as it is, beside what you write.</span>
+          </div>
+          <div class="fld">
+            <label for="f-call-b">And what should I call you? <span class="hint">· only if your words don't already say</span></label>
+            <input class="in" id="f-call-b" data-bind="call-me" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="panel" id="p-c">
+          <div class="qcount"><span class="eyebrow">Question 1 · four is plenty</span><span class="bar" aria-hidden="true"><i style="width:25%"></i></span></div>
+          <p class="q">What should I call you?</p>
+          <p class="follow">…and, if you'd like to say, which pronouns I should use.</p>
+          <div class="fld">
+            <label class="sr" for="q-1">Your answer</label>
+            <textarea class="ta big" id="q-1" data-bind="call-me" style="min-height:96px"></textarea>
+          </div>
+          <div class="row between">
+            <button class="btn" type="button">Next question</button>
+            <button class="btn quiet" type="button">That's enough</button>
+          </div>
+          <details style="margin-top:18px">
+            <summary class="hint" style="cursor:pointer;color:var(--slate)">What I might ask, in order</summary>
+            <ol class="hint" style="margin:10px 0 0 18px;list-style:decimal;color:var(--slate);display:grid;gap:4px">
+              <li>What should I call you?</li>
+              <li>What fills most of your days right now?</li>
+              <li>When someone helps you well, what do they do?</li>
+              <li>What would you like me to know about you from the start?</li>
+              <li><em>If you're still with me:</em> Is there anything you'd like me never to assume about you?</li>
+              <li><em>And:</em> Is there anywhere I could look to know you a little better?</li>
+            </ol>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="card after-choice" aria-labelledby="more-h">
+      <div class="row between" style="align-items:baseline"><h2 id="more-h" style="font-size:1.4rem">Three small things, all optional</h2><span class="hint" style="font-size:.85rem;color:var(--muted)">Whichever way you came in</span></div>
+      <div class="fld" style="margin-top:22px">
+        <span class="lbl">Languages you use <span class="hint">· up to three; the first is the one we talk in</span></span>
+        <div class="row" style="gap:10px;flex-wrap:nowrap">
+          <select class="in" aria-label="First language, the one we talk in" data-bind-lang><option>English</option><option>Deutsch</option><option>Français</option><option>Español</option><option>Italiano</option><option>日本語</option></select>
+          <select class="in" aria-label="Second language, optional"><option value="">·</option><option selected>Deutsch</option><option>English</option><option>Français</option><option>Español</option><option>日本語</option></select>
+          <select class="in" aria-label="Third language, optional"><option value="" selected>·</option><option>English</option><option>Deutsch</option><option>Français</option><option>Español</option><option>日本語</option></select>
+        </div>
+        <span class="hint">Your companions' introductions can be written in each of them.</span>
+      </div>
+      <div class="fld">
+        <span class="lbl">Bring something along <span class="hint">· a CV, a deck, a page you wrote</span></span>
+        <div class="row"><label class="btn ghost small" for="f-bring">Bring a file</label><input type="file" id="f-bring" class="sr" multiple><span class="hint" style="font-size:.85rem;color:var(--muted)">Kept as it is. I read it only if you ask me to.</span></div>
+      </div>
+      <div class="fld" style="margin-bottom:0">
+        <label for="f-who">Who told you about the garden? <span class="hint">· only if someone did</span></label>
+        <input class="in" id="f-who" data-bind="told" autocomplete="off">
+      </div>
+    </section>
+
+    <section class="kept after-choice" aria-labelledby="kept-h">
+      <header>
+        <span class="eyebrow" id="kept-h">What I'd keep, in your words</span>
+        <span class="flags"><span class="tag">Simulation</span><span class="tag">Intel</span><span class="tag">Non-disclosure</span></span>
+      </header>
+      <h3 data-fill="call-me" data-empty="Your name">Sam</h3>
+      <p class="sub"><span data-fill="name" data-empty="">Samira Ahmadi</span> · <span data-fill="pronouns" data-empty="">they/them</span></p>
+      <div data-hide-empty><h4>In my own words</h4><p class="mine" data-fill="words" data-empty="">I teach river ecology, and on weekends I write about water.</p></div>
+      <div data-hide-empty><h4>Languages</h4><p class="mine">English (the one we talk in), Deutsch</p></div>
+      <div data-hide-empty><h4>Came to the garden through</h4><p class="mine" data-fill="told" data-empty="">Jo, a friend who keeps bees</p></div>
+      <div data-hide-empty><h4>Where to find me</h4><p class="mine" data-fill="links" data-empty="">samwrites.example</p></div>
+      <p class="sub" style="margin:16px 0 8px;color:var(--ink)">Is this you, as you'd like it kept?</p>
+      <div class="row"><a class="btn small" href="@next">Yes, that's me</a><button class="btn quiet small" type="button">Change a word</button></div>
+    </section>
+
+    <div class="nav after-choice">
+      <a class="btn ghost" href="@prev">Back</a>
+      <span class="stay">Kept on your machine, in a folder called <b>garden-walk</b>. Not with us.</span>
+    </div>
+  </div>
+</div>

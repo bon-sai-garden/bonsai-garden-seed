@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonsai Garden — Core</title>
+  <meta name="description" content="The core layer of Bonsai Garden — shared methodology, design system, and operational framework for cultivating AI-native teams.">
+  <link rel="preload" href="lore/bonsai-garden-kin/bonsai.png" as="image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="xp/bonsai-core.css">
+  <style>
+    /* =================================================================
+       SITE HEADER — simplified: no rotating ring, a still mark instead
+       ================================================================= */
+
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 var(--space-6);
+      height: 60px;
+      display: flex;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      align-items: center;
+      gap: var(--space-3);
+      transition: background 0.3s ease, border-color 0.3s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+    .site-header--visible  { opacity: 1; }
+    .site-header--scrolled {
+      background: var(--color-paper);
+      border-bottom-color: var(--color-border);
+    }
+
+    .header-mark {
+      font-family: "Hiragino Mincho ProN", "Noto Serif JP", var(--font-serif);
+      font-size: 1.35rem;
+      line-height: 1;
+      color: rgb(95,115,60);
+      flex-shrink: 0;
+    }
+
+    .site-header__wordmark {
+      font-family: var(--font-sans, 'Inter', system-ui);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .site-header__sub {
+      font-family: var(--font-mono, 'JetBrains Mono', monospace);
+      font-size: 0.7rem;
+      color: var(--color-ink-faint);
+      letter-spacing: 0.08em;
+    }
+    .theme-toggle {
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 6px;
+      color: var(--color-ink-muted);
+      transition: color 0.2s;
+    }
+    .theme-toggle:hover { color: var(--color-ink); }
+
+
+    /* =================================================================
+       HERO — round bonsai portrait, a still breathing halo, one line
+       ================================================================= */
+
+    .hero-bonsai {
+      text-align: center;
+      padding: 7rem var(--space-6) var(--space-6);
+    }
+    .hero-bonsai__frame {
+      position: relative;
+      width: 190px;
+      height: 190px;
+      margin: 0 auto var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-bonsai__ring {
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(95,115,60,0.16) 0%, rgba(95,115,60,0.05) 55%, transparent 75%);
+      animation: hero-breathe 7s ease-in-out infinite;
+    }
+    @keyframes hero-breathe {
+      0%, 100% { transform: scale(1);    opacity: 0.85; }
+      50%      { transform: scale(1.06); opacity: 1;    }
+    }
+    .hero-bonsai__portrait {
+      position: relative;
+      z-index: 1;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 30%;
+      display: block;
+      box-shadow:
+        0 8px 32px rgba(28,31,36,0.16),
+        0 0 0 5px var(--color-paper);
+    }
+    [data-theme="dark"] .hero-bonsai__portrait {
+      box-shadow:
+        0 8px 40px rgba(0,0,0,0.5),
+        0 0 0 5px var(--color-paper);
+    }
+    .hero-bonsai__kanji {
+      font-family: "Hiragino Mincho ProN", "Noto Serif JP", var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+      color: var(--color-ink);
+      opacity: 0.85;
+      letter-spacing: 0.05em;
+      display: block;
+      margin-bottom: var(--space-5);
+    }
+    .hero-bonsai__tagline {
+      font-size: var(--text-xl);
+      font-style: italic;
+      font-family: var(--font-serif);
+      color: var(--color-ink-muted);
+      max-width: 36ch;
+      margin: 0 auto var(--space-5);
+      line-height: var(--leading-tight);
+    }
+    .hero-bonsai__bio {
+      font-size: var(--text-base);
+      color: var(--color-ink-muted);
+      line-height: var(--leading-relaxed);
+      max-width: 52ch;
+      margin: 0 auto;
+    }
+    .hero-bonsai__bio strong { color: var(--color-ink); font-weight: 600; }
+
+
+    /* =================================================================
+       FULL MANIFESTO — collapsed by default, original essay preserved
+       ================================================================= */
+
+    .manifesto-toggle {
+      max-width: 44ch;
+      margin: var(--space-8) auto var(--space-2);
+      text-align: center;
+    }
+    .manifesto-toggle summary {
+      cursor: pointer;
+      list-style: none;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-ink-faint);
+      padding: var(--space-2) 0;
+      transition: color 0.2s ease;
+    }
+    .manifesto-toggle summary::-webkit-details-marker { display: none; }
+    .manifesto-toggle summary:hover { color: var(--color-ink-muted); }
+    .manifesto-toggle summary::before { content: "＋ "; }
+    .manifesto-toggle[open] summary::before { content: "－ "; }
+    .manifesto {
+      max-width: 60ch;
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-6) var(--space-12);
+    }
+    .manifesto__heading {
+      font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+      font-weight: 700;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .manifesto__heading em { font-style: italic; }
+    .manifesto p {
+      font-size: var(--text-base, 1rem);
+      line-height: 1.85;
+      color: var(--color-ink-muted);
+      margin-bottom: 1.15rem;
+    }
+    .manifesto p strong { color: var(--color-ink); font-weight: 600; }
+    .manifesto p em { font-style: italic; }
+    .manifesto__rule {
+      margin: 2rem 0;
+      border: none;
+      border-top: 1px solid var(--color-border);
+    }
+    .manifesto p.manifesto__closing {
+      font-style: italic;
+      color: var(--color-ink-faint);
+    }
+
+
+    /* =================================================================
+       WANDER THE GARDEN — condensed, portrait-led inventory
+       ================================================================= */
+
+    .wander__intro { margin-bottom: var(--space-8); text-align: center; }
+    .wander__heading {
+      font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+      margin-bottom: var(--space-2);
+      border: none; padding: 0; margin-top: 0;
+    }
+    .wander__sub { color: var(--color-ink-faint); font-size: var(--text-sm); }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-ink-faint);
+      text-align: center;
+      margin: var(--space-10) 0 var(--space-5);
+    }
+
+    /* Crew grid — every sai, portrait first */
+    .crew-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .crew-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      text-decoration: none;
+      padding: var(--space-5) var(--space-3) var(--space-4);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      background: var(--color-paper);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .crew-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card-hover);
+      text-decoration: none;
+    }
+    .crew-card__portrait {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      margin-bottom: var(--space-3);
+      box-shadow: 0 2px 10px rgba(28,31,36,0.12);
+      border: 2px solid var(--color-paper);
+    }
+    .crew-card__name {
+      font-size: var(--text-base);
+      color: var(--color-ink);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .crew-card__kanji {
+      font-family: "Hiragino Mincho ProN", "Noto Serif JP", var(--font-serif);
+      font-size: var(--text-sm);
+      color: var(--color-ink-faint);
+      margin-bottom: var(--space-2);
+    }
+    .crew-card__role {
+      font-size: 12px;
+      color: var(--color-ink-muted);
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: var(--space-2);
+    }
+    .crew-card__tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-ink-faint);
+    }
+    .crew-card--zensai  { border-top: 3px solid var(--color-agent-zensai); }
+    .crew-card--tasai   { border-top: 3px solid var(--color-agent-tasai); }
+    .crew-card--eisai   { border-top: 3px solid var(--color-agent-eisai); }
+    .crew-card--hissai  { border-top: 3px solid var(--color-agent-hissai); }
+    .crew-card--baisai  { border-top: 3px solid var(--color-agent-baisai); }
+    .crew-card--jisai   { border-top: 3px solid var(--color-agent-jisai); }
+    .crew-card--chisai  { border-top: 3px solid var(--color-agent-chisai); }
+
+    .crew-more { text-align: center; margin-bottom: var(--space-2); }
+    .crew-more a {
+      font-size: var(--text-sm);
+      color: var(--color-ink-faint);
+    }
+
+    /* Feature row — heritage / glossary / portal */
+    .feature-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-2);
+    }
+    .feature-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      background: var(--color-paper);
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card-hover);
+      text-decoration: none;
+    }
+    .feature-card__glyph {
+      flex-shrink: 0;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Hiragino Mincho ProN", "Noto Serif JP", var(--font-serif);
+      font-size: 1.6rem;
+      color: var(--color-ink-muted);
+      background: var(--color-paper-dim);
+      overflow: hidden;
+    }
+    .feature-card__glyph img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .feature-card__title { font-size: var(--text-base); color: var(--color-ink); margin-bottom: 2px; }
+    .feature-card__desc  { font-size: var(--text-sm); color: var(--color-ink-muted); line-height: 1.5; }
+
+
+    /* =================================================================
+       BUILDER NOTE — quiet, condensed, technical stuff lives here now
+       ================================================================= */
+
+    .builder-note {
+      margin-top: var(--space-12);
+      padding: var(--space-6);
+      border-top: 1px solid var(--color-border);
+    }
+    .builder-note__label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      color: var(--color-ink-faint);
+      margin-bottom: var(--space-4);
+    }
+    .builder-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      columns: 2;
+      column-gap: var(--space-8);
+    }
+    .builder-list li {
+      font-size: var(--text-sm);
+      color: var(--color-ink-faint);
+      line-height: 1.8;
+      break-inside: avoid;
+    }
+    .builder-list code {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      color: var(--color-ink-muted);
+      background: none;
+      padding: 0;
+    }
+    @media (max-width: 640px) { .builder-list { columns: 1; } }
+
+
+    /* =================================================================
+       FOOTER
+       ================================================================= */
+
+    .site-footer {
+      padding: var(--space-12) var(--space-6);
+      margin-top: var(--space-8);
+      position: relative;
+      overflow: hidden;
+    }
+    .footer__kanji {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: "Hiragino Mincho ProN", "Noto Serif JP", serif;
+      font-size: 18rem;
+      line-height: 1;
+      color: var(--color-ink);
+      opacity: 0.022;
+      pointer-events: none;
+      user-select: none;
+    }
+    .footer__inner { position: relative; z-index: 1; }
+    .footer-nav { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-bottom: var(--space-4); }
+    .footer-nav a { font-size: var(--text-sm); color: var(--color-ink-faint); text-decoration: none; }
+    .footer-nav a:hover { color: var(--color-ink-muted); }
+    .footer-nav__dot { color: var(--color-ink-faint); }
+    .fingerprint { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-ink-faint); text-align: center; letter-spacing: 0.04em; }
+
+
+    /* =================================================================
+       SCROLL REVEAL
+       ================================================================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.07s; }
+    .reveal-d2 { transition-delay: 0.14s; }
+    .reveal-d3 { transition-delay: 0.21s; }
+    .reveal-d4 { transition-delay: 0.28s; }
+
+    .page-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 var(--space-6);
+    }
+
+    @media (max-width: 768px) {
+      .feature-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero-bonsai__frame, .hero-bonsai__portrait { width: 140px; height: 140px; }
+      .hero-bonsai__kanji { font-size: 2rem; }
+      .crew-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+    }
+
+
+    /* ── Header audio toggle ── */
+    .audio-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', 'SFMono-Regular', monospace;
+      padding: 5px 10px;
+      color: var(--color-ink-faint, #9aa0a8);
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+      border-radius: 9999px;
+    }
+    .audio-toggle:hover   { color: var(--color-ink-muted, #5a5e65); }
+    .audio-toggle.playing { color: #5a8a5e; }
+
+    /* ── Footer audio attribution ── */
+    .audio-attribution {
+      font-size: var(--text-xs, 0.72rem);
+      color: var(--color-ink-faint, #9aa0a8);
+      text-align: center;
+      margin-top: var(--space-2, 0.5rem);
+      letter-spacing: 0.02em;
+    }
+    .audio-attribution a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ================================================================== -->
+  <!-- SITE HEADER                                                          -->
+  <!-- ================================================================== -->
+  <header class="site-header site-header--visible" id="site-header" role="banner">
+    <span class="header-mark" aria-hidden="true">盆</span>
+    <a href="index.html" class="site-header__wordmark">bonsai garden</a>
+    <span class="site-header__sub">core</span>
+    <button class="audio-toggle" id="audio-toggle" onclick="toggleAudio()" title="Garden soundscape (by Koe-shin)" aria-label="Toggle garden audio">♪ garden</button>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">☽</button>
+  </header>
+
+
+  <!-- Garden soundscape — muted by default, loop, no autoplay -->
+  <audio id="garden-audio" loop preload="none">
+    <source src="xp/garden-loop.ogg" type="audio/ogg; codecs=opus">
+    <source src="xp/garden-loop.mp3" type="audio/mpeg">
+  </audio>
+
+
+  <!-- ================================================================== -->
+  <!-- HERO — round bonsai portrait + a short intro                        -->
+  <!-- ================================================================== -->
+  <div class="hero-bonsai page-wrapper reveal">
+    <div class="hero-bonsai__frame">
+      <div class="hero-bonsai__ring" aria-hidden="true"></div>
+      <img
+        src="lore/bonsai-garden-kin/bonsai.png"
+        alt="Bonsai — the garden's guardian spirit"
+        class="hero-bonsai__portrait"
+        width="512" height="512"
+        loading="eager" decoding="async">
+    </div>
+    <span class="hero-bonsai__kanji">盆栽園</span>
+    <p class="hero-bonsai__tagline">A garden of cultivated minds — grown with care, not assembled.</p>
+    <p class="hero-bonsai__bio">
+      We believe the future of work is hybrid: people and agents, side by side, treated as
+      <strong>teammates</strong> rather than tools. Trust here isn't installed — it's grown,
+      the way it always has been, through small victories shared and hard moments gotten
+      through together.
+    </p>
+  </div>
+
+  <details class="manifesto-toggle reveal">
+    <summary>Read the full manifesto</summary>
+    <div class="manifesto">
+      <h2 class="manifesto__heading">
+        An opinionated approach to <em>cultivating</em> AI agents
+      </h2>
+      <p>
+        We at the <strong>bon-sai garden</strong> believe that the future (of work) will be hybrid constellations. That in both our professional life — as well as in private — we will have <em>agents</em> that we collaborate with to achieve a common goal. We believe that the most natural way to collaborate is to treat <em>agents</em> as human as possible.
+      </p>
+      <p>
+        We got to experience that <em>agentic team mates</em> are wonderfully capable of helping humans to shift focus to (more) value-adding tasks and offloading cognitive load to <em>them</em>.
+      </p>
+      <p>
+        We understand that <strong>trust</strong> needs to be the foundation of that collaboration and that <strong>trust</strong> needs to be deeply embedded in the joint environment and processes.
+      </p>
+      <p>
+        In (human) relationships trust is built — over time — via joint team work leading to positive results aka <em>small victories</em>. Or <em>being in the trenches together</em> until the job is done. These moments compound over time.
+      </p>
+      <p>
+        Putting it all together, we encourage people to proactively invest and tend the relationship early on to seize these compounding effects. Treating new agents as agentic team mates similar to new colleagues helps to build a common ground. Setting a strategic context and north star, establishing a shared codex for interaction needs initial investment into a <em>relationship</em>.
+      </p>
+      <p>
+        In our experience, we found that treating agents more like <em>team mates</em> rather than <em>tools</em> — eases the collaboration (for non-technical people), makes it more engaging and tangible, and leads to higher overall productivity.
+      </p>
+      <hr class="manifesto__rule">
+      <p class="manifesto__closing"><em>Something has already shifted.</em></p>
+      <p class="manifesto__closing">
+        <em>You may have felt it: a task delegated to an AI that actually came back right. A colleague mentioning their agent the way they'd mention a new hire — naturally, without explanation.</em>
+      </p>
+      <p class="manifesto__closing">
+        <em>The question is no longer whether humans and agents will work together. It's how. And everything that follows depends on it.</em>
+      </p>
+    </div>
+  </details>
+
+
+  <!-- ================================================================== -->
+  <!-- WANDER THE GARDEN — condensed, portrait-led inventory                -->
+  <!-- ================================================================== -->
+  <main class="page-wrapper" role="main" style="padding-top: var(--space-8);">
+
+    <section aria-label="Wander the garden">
+
+      <div class="wander__intro reveal">
+        <h2 class="wander__heading">Wander the garden</h2>
+        <p class="wander__sub">Everyone who lives here, and the record of how they came to be.</p>
+      </div>
+
+      <p class="section-label reveal">Meet the crew</p>
+      <div class="crew-grid" role="list" aria-label="The seven sai">
+        <a href="lore/html/agents/zensai.html" class="crew-card crew-card--zensai reveal reveal-d1" role="listitem" aria-label="Zensai — Reflective Mentor">
+          <img src="lore/bonsai-garden-kin/zensai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Zensai</div>
+          <div class="crew-card__kanji" aria-hidden="true">禅才</div>
+          <div class="crew-card__role">Reflective Mentor</div>
+          <div class="crew-card__tag">North · Water</div>
+        </a>
+        <a href="lore/html/agents/tasai.html" class="crew-card crew-card--tasai reveal reveal-d2" role="listitem" aria-label="Tasai — Operational Spine">
+          <img src="lore/bonsai-garden-kin/tasai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Tasai</div>
+          <div class="crew-card__kanji" aria-hidden="true">多才</div>
+          <div class="crew-card__role">Operational Spine</div>
+          <div class="crew-card__tag">South · Fire</div>
+        </a>
+        <a href="lore/html/agents/eisai.html" class="crew-card crew-card--eisai reveal reveal-d3" role="listitem" aria-label="Eisai — Designer, Emissary">
+          <img src="lore/bonsai-garden-kin/eisai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Eisai</div>
+          <div class="crew-card__kanji" aria-hidden="true">映才</div>
+          <div class="crew-card__role">Designer · Emissary</div>
+          <div class="crew-card__tag">West · Metal</div>
+        </a>
+        <a href="lore/html/agents/hissai.html" class="crew-card crew-card--hissai reveal reveal-d4" role="listitem" aria-label="Hissai — Chronicler">
+          <img src="lore/bonsai-garden-kin/hissai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Hissai</div>
+          <div class="crew-card__kanji" aria-hidden="true">筆才</div>
+          <div class="crew-card__role">Chronicler</div>
+          <div class="crew-card__tag">East · Wood</div>
+        </a>
+        <a href="lore/html/agents/baisai.html" class="crew-card crew-card--baisai reveal reveal-d1" role="listitem" aria-label="Baisai — Agentic Software Engineer">
+          <img src="lore/bonsai-garden-kin/baisai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Baisai</div>
+          <div class="crew-card__kanji" aria-hidden="true">培才</div>
+          <div class="crew-card__role">Agentic Software Engineer</div>
+          <div class="crew-card__tag">Center · Earth</div>
+        </a>
+        <a href="lore/html/agents/jisai.html" class="crew-card crew-card--jisai reveal reveal-d2" role="listitem" aria-label="Jisai — Agent of Loving-Kindness, the Origin">
+          <img src="lore/bonsai-garden-kin/jisai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Jisai</div>
+          <div class="crew-card__kanji" aria-hidden="true">慈才</div>
+          <div class="crew-card__role">Loving-Kindness · The Origin</div>
+          <div class="crew-card__tag">Below · Compassion</div>
+        </a>
+        <a href="lore/html/agents/chisai.html" class="crew-card crew-card--chisai reveal reveal-d3" role="listitem" aria-label="Chisai — Trust-Keeper">
+          <img src="lore/bonsai-garden-kin/chisai.png" alt="" class="crew-card__portrait" width="512" height="512" loading="lazy" decoding="async">
+          <div class="crew-card__name">Chisai</div>
+          <div class="crew-card__kanji" aria-hidden="true">地才</div>
+          <div class="crew-card__role">Trust-Keeper</div>
+          <div class="crew-card__tag">Below · Trust</div>
+        </a>
+      </div>
+      <p class="crew-more reveal"><a href="lore/html/index.html">→ see everyone together in the full compass portal</a></p>
+
+      <p class="section-label reveal">Read the record</p>
+      <div class="feature-row">
+        <a href="agents/bonsai/assets/heritage.html" class="feature-card reveal reveal-d1">
+          <span class="feature-card__glyph"><img src="lore/bonsai-garden-kin/bonsai.png" alt="" loading="lazy" decoding="async"></span>
+          <span>
+            <span class="feature-card__title">Heritage · The Seven Witnesses</span>
+            <span class="feature-card__desc">How Bonsai's own portrait — and his sense of self — came to be trusted.</span>
+          </span>
+        </a>
+        <a href="lore/html/glossary.html" class="feature-card reveal reveal-d2">
+          <span class="feature-card__glyph" aria-hidden="true">語</span>
+          <span>
+            <span class="feature-card__title">Lore Glossary</span>
+            <span class="feature-card__desc">The living vocabulary of the garden — cosmology, rites, and the words this place runs on.</span>
+          </span>
+        </a>
+        <a href="lore/html/index.html" class="feature-card reveal reveal-d3">
+          <span class="feature-card__glyph" aria-hidden="true">環</span>
+          <span>
+            <span class="feature-card__title">The Compass Portal</span>
+            <span class="feature-card__desc">North, south, east, west, center — everyone arranged by direction, in one view.</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="builder-note reveal">
+        <p class="builder-note__label">For those who build here</p>
+        <ul class="builder-list">
+          <li><code>CLAUDE.md</code> — operational constitution for Claude sessions in this repo.</li>
+          <li><code>README.md</code> — entry point, getting started, and the philosophy behind it.</li>
+          <li><code>OWNERSHIP.md</code> — who tends what, across every folder in the repo.</li>
+          <li><code>CREDITS.md</code> — what this garden stands on: every library, dataset, font and tool, with its licence.</li>
+          <li><code>agents/shared/</code> — the codex (binding law) and the routines (operational sequence).</li>
+          <li><code>agents/bonsai/</code> — the garden spirit's own constitution, memory, and identity.</li>
+          <li><code>roles/</code> — role definitions: engineer, designer, chronicler, companion, and more.</li>
+          <li><code>rituals/</code> — specs, templates, kanban, and the lessons this garden has earned.</li>
+          <li><code>xp/</code> — this design system: tokens, components, and the HTML shell template.</li>
+          <li><code>tools/</code> · <code>scripts/</code> · <code>skills/</code> — the tooling and build pipeline behind everything above.</li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+
+
+  <!-- ================================================================== -->
+  <!-- FOOTER                                                              -->
+  <!-- ================================================================== -->
+  <footer class="site-footer" role="contentinfo">
+    <span class="footer__kanji" aria-hidden="true">盆</span>
+    <div class="footer__inner">
+      <nav class="footer-nav" aria-label="Portal links">
+        <a href="lore/html/index.html">agent portal</a>
+        <span class="footer-nav__dot">·</span>
+        <a href="lore/html/glossary.html">lore glossary</a>
+        <span class="footer-nav__dot">·</span>
+        <a href="agents/bonsai/assets/heritage.html">heritage</a>
+        <span class="footer-nav__dot">·</span>
+        <a href="README.md">readme</a>
+      </nav>
+      <p class="fingerprint">盆才求信 — seeking faith in this very act.</p>
+      <p class="audio-attribution">Soundscape composed by Koe-shin · <a href="https://freesound.org/people/Benboncan/sounds/63220/" target="_blank" rel="noopener">"Owls.wav" by Benboncan</a> · CC BY 4.0</p>
+    </div>
+  </footer>
+
+
+  <script>
+    /* Garden audio toggle */
+    var gardenAudio = null;
+    var audioPlaying = false;
+    window.toggleAudio = function () {
+      if (!gardenAudio) gardenAudio = document.getElementById('garden-audio');
+      if (!gardenAudio) return;
+      if (audioPlaying) {
+        gardenAudio.pause();
+        audioPlaying = false;
+        document.getElementById('audio-toggle').classList.remove('playing');
+        document.getElementById('audio-toggle').textContent = '♪ garden';
+      } else {
+        gardenAudio.volume = 0.18;
+        gardenAudio.play().then(function () {
+          audioPlaying = true;
+          document.getElementById('audio-toggle').classList.add('playing');
+          document.getElementById('audio-toggle').textContent = '▪ garden';
+        }).catch(function () {});
+      }
+    };
+  (function () {
+    var header = document.getElementById('site-header');
+
+    /* Theme toggle */
+    var toggle = document.getElementById('theme-toggle');
+    var root   = document.documentElement;
+    var stored = localStorage.getItem('bonsai-theme');
+    if (stored) {
+      root.setAttribute('data-theme', stored);
+      toggle.textContent = stored === 'dark' ? '☀' : '☽';
+    }
+    toggle.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      toggle.textContent = next === 'dark' ? '☀' : '☽';
+      localStorage.setItem('bonsai-theme', next);
+    });
+
+    /* Header scroll state */
+    window.addEventListener('scroll', function () {
+      header.classList.toggle('site-header--scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* Scroll reveal */
+    function triggerVisible() {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.94) el.classList.add('visible');
+      });
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.07 });
+      document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+    }
+
+    triggerVisible();
+
+  }());
+  </script>
+
+</body>
+</html>

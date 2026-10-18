@@ -1,0 +1,18 @@
+{
+  "schema": "readiness-gate/identity-profile@0.1.0",
+  "note": "THE REAL PROFILE IS NEVER COMMITTED. This file is the shape, filled with the synthetic identity the shipped fixture uses. A real run points --profile at a file held outside any repository that is being prepared for publication: a profile listing the identifiers you are hunting for is itself the densest possible carrier of them. `identity-profile.json` is gitignored beside this file.",
+  "logins": ["orma"],
+  "people": ["Quilla Farrow"],
+  "domains": ["farrow-industrial.example"],
+  "hosts": ["atelier-01.lan"],
+  "ticket_prefixes": ["XY", "ZQ"],
+  "kin_names": [
+    "Bonsai", "Baisai", "Tasai", "Eisai", "Hissai", "Zensai", "Jisai", "Chisai",
+    "Fuji-shin", "Mori-shin", "Sho-shin", "Ma-shin", "Koe-shin", "Cho-shin"
+  ],
+  "kin_name_shape": "(?<![A-Za-z])[A-Z][a-z]+-?(?:sai|shin)(?![a-z])",
+  "placeholder_allowlist": [
+    "<os-user>", "<Given.Family>", "example.com", "example.org", "example.net",
+    ".example", ".invalid", "localhost", "127.0.0.1", "noreply@"
+  ]
+}

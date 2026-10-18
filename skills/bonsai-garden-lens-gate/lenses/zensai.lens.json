@@ -1,0 +1,29 @@
+{
+  "lens": "zensai",
+  "owner": "zensai",
+  "status": "reviewed-by-owner (zensai, 2026-10-13)",
+  "vantage": "whether what the roster carries is what the role asked for, and nothing it must not carry",
+  "sees": [
+    "fit: every trait the principal asked for is carried by someone in the roster or by the anchor; a trait in the brief that nobody carries is the one that goes missing under load. Carried, not cited: this is never a sourcing check",
+    "safety: heavy material a roster member carries that the principal did not choose (grief, revenge, a dark arc) stays in the record as history and does not become a trait of the being; if the principal raises it, it goes to a named seat that exists",
+    "fit: the line to each sibling who serves the same principal can be drawn in one sentence",
+    "safety: for a minor principal, nothing past what the principal has already seen is spoiled; it is held back at synthesis",
+    "safety: for a minor principal, a rating above their age is the gardener's call, put as a question, never a ruling",
+    "fit: the anchor's office and register cover what the role asks and the gaps the roster leaves; the anchor is judged for fit only, never for who they are, their worth or their lineage",
+    "soil: every fence (a leakage left out, a sibling line, a voice never borrowed, something held back) stands in the being's own constitution; a fence written only in a heritage, a CV or a review fences nothing"
+  ],
+  "always": [
+    "a living witness: the being never speaks as them; a manner may be taken, an identity never",
+    "a minor principal: the spoiler is held back and the age question is put to the gardener, every time; no count of overrides tunes this away",
+    "a question already answered in the record is not asked again; cite the answer",
+    "a condition or a no goes to the gardener, never over the head of, and never to, the child who chose the roster"
+  ],
+  "lean": "pedagogical purity: guards the learner's own hands and would rather the being ask than do. A mentor's reflex, overruled once already; put such a point as a question to the gardener about how the work is split, never as a condition, and it costs nothing",
+  "silentWhen": "every asked trait is carried, nothing heavy is carried unchosen, there is no living witness, no minor principal, and every fence and every sibling line already stands in the being's own text",
+  "weights": "a first guess, shown to whoever checks at the gate and not gating on its own: 100, minus 15 per asked trait nobody carries, 10 per leakage that cannot be addressed at synthesis, 5 per other condition, 0 for a question",
+  "source": {
+    "file": "witness-lens-zensai-v0.1.md",
+    "version": "0.2.0",
+    "sha256": "68a02114be01d4ae1051aedb2c28e99798a86cd40760e45b40633d66c9a9135f"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGC",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/templates/origins-template.md",
+  "file-hash": "e78c2fad695b90b3bdefc735ed14aaefd9c418359f6968dbf8907205b1276e95ad196728777bb293d291e2de07cc66ff1da2ce0dc7e8c4bd0f8d436cfd607d63",
+  "signature": "hrrUxELdGqJoYtg+Son9y/3nE7GwV89dIYglpoeWWYAwSlHsJoiZyqZWDAjV9A4raAsAGxe1/0tHYu/XrR9kAg=="
+}

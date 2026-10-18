@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43MWXEYQ3S06F6CEF266",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:38Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/vanity-three.mjs",
+  "file-hash": "ca869f4a5bc85311e90b1680a1273a7a48cfd18b80175f92685904c03cffbe3064a9d44de0cd7e224f9fefc73bddbe08df58b390b03b0236baf537fcede6efda",
+  "signature": "CMKqVW3dEcccCAsA2SDViqnjuD3s7lFp7uuNO++SWpqDlcMZ8rjSILL9S4zfyDvby8Ja8HInE1Mzz48KmFwiBg=="
+}

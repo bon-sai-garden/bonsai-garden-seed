@@ -1,0 +1,37 @@
+---
+/**
+ * id: 01M48VA7YATQET88DRJ4E8SMT4
+ * CrewShell — what every crew page shares inside the instance's own layout: the preview banner, the
+ * page body, the footer, and the rings' player (RingPlayer). Everything is in the HTML; the
+ * script only animates lights, so a reader without JavaScript loses the motion and nothing else.
+ * The instance wraps it in its layout (head, theme) and fills slot "foot" (credits, home link).
+ */
+import '../crew.css';
+import RingPlayer from './RingPlayer.astro';
+interface Props { preview: boolean; rings: any[]; }
+const { preview, rings } = Astro.props;
+---
+  {preview && (
+    <div class="tm-preview" role="note">
+      <strong>PREVIEW BUILD</strong> · drafts are shown and marked DRAFT · not for publication
+    </div>
+  )}
+  <main class="tm">
+    <slot />
+    <footer class="tm-foot">
+      <p>
+        Every name, mark and light on these pages is read from the garden's own records when the pages are built.
+        An introduction appears once the gardener has approved it and its writer has sealed it.
+      </p>
+      <slot name="foot" />
+    </footer>
+  </main>
+
+  <RingPlayer rings={rings} />
+  <script is:inline>
+    (function () {
+      var strip = document.querySelector('.tm-roster');
+      var cur = strip && strip.querySelector('[aria-current="page"]');
+      if (cur && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = cur.offsetLeft - (strip.clientWidth - cur.offsetWidth) / 2;
+    })();
+  </script>

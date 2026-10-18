@@ -1,0 +1,517 @@
+<!doctype html>
+<!--
+  Architecture Walk-through ("How the Garden Holds"), for senior engineers.
+  A separate root-level document on the gardener's word; index.html stays locked.
+  Content: Baisai (培才), verbatim from the source he wrote from the ratified specs
+  and the running code. Page: Eisai (映才), 2026-09-23, on the Aruji's ask to give
+  it a root-level page in core. Design follows the workshop shell: the attract
+  screen's LED ring (index.html geometry) in the header, dark by default, the rust
+  accent for the document, amber only in the ring.
+  Core is behind its publication-readiness gate: committed, not published.
+-->
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture Walk-through · How the Garden Holds — Bonsai Garden Core</title>
+<meta name="description" content="Architecture walkthrough for senior engineers: repository topology, the agent package, the memory model, identity and signing, the access broker, change management.">
+<link rel="icon" type="image/svg+xml" href="bonsai-garden-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>
+  (function () {
+    try { var t = localStorage.getItem('bonsai-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  })();
+</script>
+<style>
+:root, html[data-theme="dark"] {
+  --bg:#0c0e12; --paper:#12151b; --paper-2:#1a1e26; --ink:#eef0f4; --slate:#b7bdc8; --muted:#7b8291;
+  --rule:#252a34; --accent:#d27a62; --accent-soft:rgba(210,122,98,.12); --code-bg:#171b22;
+  --lore-bg:rgba(210,122,98,.16); --lore-fg:#eaa18c; color-scheme:dark;
+}
+html[data-theme="light"] {
+  --bg:#f5f1e8; --paper:#fdfbf5; --paper-2:#f1ebdf; --ink:#1a1d23; --slate:#4a4f58; --muted:#8a8f97;
+  --rule:#e0d8c9; --accent:#b8624c; --accent-soft:rgba(184,98,76,.09); --code-bg:#efe9dd;
+  --lore-bg:rgba(184,98,76,.11); --lore-fg:#9a4c38; color-scheme:light;
+}
+:root {
+  --led:212,150,42;
+  --serif:"Cormorant Garamond","Iowan Old Style",Georgia,serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  --top:88px;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--top) + 16px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+::selection{background:var(--accent-soft)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Top bar — the miniature attract screen */
+.top{position:sticky;top:0;z-index:10;height:var(--top);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 20px;
+  background:radial-gradient(360px 120px at 52px 50%,rgba(var(--led),.14),transparent 70%),var(--paper);border-bottom:1px solid var(--rule)}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,rgba(var(--led),.9),rgba(var(--led),.1) 50%,transparent);box-shadow:0 0 12px rgba(var(--led),.45)}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);min-width:0}
+.ring{position:relative;width:68px;height:68px;display:grid;place-items:center;flex:0 0 auto}
+.ring>*{grid-area:1/1}
+.ring .halo{width:58%;height:58%;border-radius:50%;box-shadow:0 0 28px 8px rgba(var(--led),.35);animation:halo 4.5s ease-in-out infinite}
+.ring .stage{width:74%;height:74%;border-radius:50%;background:radial-gradient(circle at 50% 40%,#1d2128,#0b0d10 72%)}
+.ring svg{width:100%;height:100%;fill:rgb(var(--led));animation:spin 7s linear infinite}
+.ring img{width:62%;height:62%;object-fit:contain}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes halo{50%{box-shadow:0 0 36px 12px rgba(var(--led),.22)}}
+@media (prefers-reduced-motion:reduce){.ring svg,.ring .halo{animation:none}}
+.brand-text{display:flex;flex-direction:column;gap:3px;min-width:0}
+.brand-name{font:600 1.45rem/1 var(--serif);white-space:nowrap}
+.brand-crumb{font:500 .74rem var(--sans);letter-spacing:.06em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--rule);background:var(--paper-2);color:var(--slate);cursor:pointer}
+.theme:hover{color:var(--ink);border-color:var(--accent)}
+.theme svg{width:19px;height:19px;fill:currentColor;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.theme .moon{display:none} html[data-theme="light"] .theme .sun{display:none} html[data-theme="light"] .theme .moon{display:block}
+
+/* Document — Baisai's classes, set in the house */
+.page{padding:0 clamp(16px,4vw,48px) 72px}
+header.hero{max-width:1180px;margin:0 auto 44px;padding-block:56px 34px;border-bottom:1px solid var(--rule)}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+h1{font:600 clamp(42px,6vw,68px)/1.02 var(--serif);letter-spacing:-.015em;margin:16px 0 18px;text-wrap:balance}
+.lede{font-size:18.5px;line-height:1.6;color:var(--slate);max-width:68ch;margin:0 0 16px}
+.lede strong{color:var(--ink);font-weight:600}
+.legend{font-size:14.5px;color:var(--slate);max-width:72ch;margin:0}
+.meta{margin-top:20px;font:12px/1.5 var(--mono);color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:60px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;gap:0}.toc{display:none}}
+nav.toc{position:sticky;top:calc(var(--top) + 28px);align-self:start;font-size:13.5px;border-left:1px solid var(--rule);padding-left:18px}
+nav.toc p{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+nav.toc a{display:block;color:var(--slate);text-decoration:none;padding:4px 0 4px 10px;margin-left:-11px;border-left:2px solid transparent;transition:color .2s,border-color .2s}
+nav.toc a:hover{color:var(--ink)}
+nav.toc a.on{color:var(--ink);border-left-color:var(--accent);font-weight:500}
+main{min-width:0;max-width:800px}
+section{padding-block:6px 34px;border-bottom:1px solid var(--rule);margin-bottom:36px}
+section:last-of-type{border-bottom:0}
+h2{font:600 34px/1.1 var(--serif);margin:0 0 8px;text-wrap:balance}
+h2 .n{font:500 12px/1 var(--mono);color:var(--accent);letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:12px}
+h3{font:600 15.5px/1.3 var(--sans);margin:28px 0 8px}
+p{margin:0 0 14px;max-width:70ch}
+.sub{color:var(--slate);font-size:17px;margin-bottom:20px}
+a{color:var(--ink);text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:3px}
+a:hover{color:var(--accent)}
+strong{font-weight:600}
+code{font:13px/1.4 var(--mono);background:var(--code-bg);border:1px solid var(--rule);padding:1px 5px;border-radius:5px}
+code.lore{background:var(--lore-bg);border-color:transparent;color:var(--lore-fg);font-weight:500}
+pre{font:12.5px/1.6 var(--mono);background:var(--code-bg);padding:16px 18px;border-radius:12px;overflow-x:auto;margin:0 0 20px;border:1px solid var(--rule)}
+pre code{background:none;border:0;padding:0}
+pre .l{color:var(--lore-fg)}
+pre .c{color:var(--muted)}
+.scroll{overflow-x:auto;margin:0 0 22px;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th{text-align:left;font:500 11px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:11px 14px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
+td{padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.inv{border-left:3px solid var(--accent);background:var(--accent-soft);padding:14px 18px;margin:0 0 20px;max-width:72ch;border-radius:0 12px 12px 0}
+.inv .k{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+.inv ul{margin:0;padding-left:18px}
+.inv p:last-child{margin:0}
+.lim{border:1px dashed var(--rule);border-radius:12px;padding:13px 17px;margin:0 0 20px;max-width:72ch;font-size:15px;color:var(--slate);background:var(--paper)}
+.lim b{color:var(--ink)}
+ul,ol{margin:0 0 16px;padding-left:22px;max-width:68ch}
+li{margin-bottom:6px}
+li::marker{color:var(--accent)}
+pre.mermaid{background:var(--paper);text-align:center;padding:22px;white-space:pre}
+pre.mermaid[data-processed="true"]{white-space:normal}
+pre.mermaid{overflow-x:auto}
+pre.mermaid svg{min-width:620px;height:auto}
+footer{max-width:1180px;margin:0 auto;padding-top:22px;border-top:1px solid var(--rule);font:12px/1.6 var(--mono);color:var(--muted)}
+@media (max-width:560px){.brand-crumb{display:none}.brand-name{font-size:1.2rem}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="brand" href="index.html" aria-label="Bonsai Garden — home">
+    <span class="ring" aria-hidden="true">
+      <span class="halo"></span><span class="stage"></span>
+      <svg viewBox="0 0 260 260"><circle cx="130" cy="15" r="9" fill-opacity="1.0"/><circle cx="174" cy="23.8" r="9" fill-opacity="0.85"/><circle cx="211.3" cy="48.7" r="9" fill-opacity="0.55"/><circle cx="236.2" cy="86" r="9" fill-opacity="0.25"/><circle cx="245" cy="130" r="9" fill-opacity="0.07"/><circle cx="236.2" cy="174" r="9" fill-opacity="0.07"/><circle cx="211.3" cy="211.3" r="9" fill-opacity="0.07"/><circle cx="174" cy="236.2" r="9" fill-opacity="0.07"/><circle cx="130" cy="245" r="9" fill-opacity="0.07"/><circle cx="86" cy="236.2" r="9" fill-opacity="0.07"/><circle cx="48.7" cy="211.3" r="9" fill-opacity="0.07"/><circle cx="23.8" cy="174" r="9" fill-opacity="0.07"/><circle cx="15" cy="130" r="9" fill-opacity="0.07"/><circle cx="23.8" cy="86" r="9" fill-opacity="0.07"/><circle cx="48.7" cy="48.7" r="9" fill-opacity="0.07"/><circle cx="86" cy="23.8" r="9" fill-opacity="0.07"/></svg>
+      <img src="bonsai-garden-logo.svg" alt="" width="42" height="42">
+    </span>
+    <span class="brand-text">
+      <span class="brand-name">Bonsai Garden</span>
+      <span class="brand-crumb">core · architecture walk-through</span>
+    </span>
+  </a>
+  <button class="theme" id="theme" aria-label="Switch light or dark" title="Light / dark">
+    <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z"/></svg>
+  </button>
+</div>
+<div class="page">
+<header class="hero">
+  <div class="eyebrow">Architecture walkthrough · senior engineers</div>
+  <h1>How the Garden Holds</h1>
+  <p class="lede">A multi-agent system built on Claude Code and Agent Skills. An agent here is <strong>model + harness</strong>, and this document covers the harness: <strong>repository topology, the agent package format, the memory model, identity and signing, the access broker (an MCP server), and change management in git.</strong> Every section states its invariants and names its known gaps.</p>
+  <p class="legend">The project has its own vocabulary. Engineering terms carry the text. Where a project term appears in code, paths or conversation, it is introduced once in this style: <code class="lore">shintai</code>. A full mapping is in the <a href="#glossary">glossary</a>.</p>
+  <div class="meta">Draft · 2026-09-23 · written from the ratified specs and the running code (router, signer, MCP server, conformance gate)</div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <a href="#summary">1 · System at a glance</a>
+  <a href="#topology">2 · Repository topology</a>
+  <a href="#session">3 · Anatomy of a session</a>
+  <a href="#package">4 · The agent package</a>
+  <a href="#memory">5 · Memory model</a>
+  <a href="#signing">6 · Identity &amp; signing</a>
+  <a href="#broker">7 · Access broker (MCP)</a>
+  <a href="#git">8 · Change management</a>
+  <a href="#context">9 · The instance as context store</a>
+  <a href="#limits">10 · Known gaps</a>
+  <a href="#glossary">Glossary</a>
+</nav>
+
+<main>
+
+<section id="summary">
+  <h2><span class="n">1 · System at a glance</span>What runs, and where state lives</h2>
+  <ul>
+    <li><strong>~20 long-lived agents</strong> (project term: <code class="lore">kin</code>). Each has a role, a spec, an ed25519 identity and its own memory. They run as Claude Code / Cowork sessions and as long-running processes on an always-on host.</li>
+    <li><strong>One human operator</strong> (<code class="lore">Aruji</code>, "the gardener"). The operator owns approvals, deletions, deploys and product decisions.</li>
+    <li><strong>Three kinds of repo:</strong> one <code class="lore">core</code>, one <code class="lore">runtime</code>, and one or more <code class="lore">pot</code>s. A deployment is core + runtime + at least one pot; each pot is one tenant's instance.</li>
+    <li><strong>All state is files in git.</strong> Agent definitions, memory, specs, rosters, keys (public halves only), letters between agents. There is no database in the control path.</li>
+    <li><strong>A single access broker.</strong> One MCP server process mediates agent reads and writes. It routes paths across repos, enforces ownership, seals memory for sensitive agents, and re-signs signed files.</li>
+    <li><strong>Integrity by signature.</strong> Documents, scripts and packages carry ed25519 seals made with the owning agent's key. Gates verify them; the broker refuses to start on a stale one.</li>
+  </ul>
+</section>
+
+<section id="topology">
+  <h2><span class="n">2 · Repository topology</span>Core, runtime, pot(s): one dependency direction</h2>
+  <p class="sub">Split by what a file <em>is</em> (reusable capability or deployment-specific instance data), not by topic.</p>
+
+  <div class="scroll"><table>
+    <thead><tr><th>Layer</th><th>Repo</th><th>Role</th><th>Must not contain</th></tr></thead>
+    <tbody>
+      <tr><td>L1</td><td><code class="lore">core</code></td><td>deployment-agnostic library, schemas, specs, the bootstrap procedure and the bootstrap agent</td><td>keys, salts, any agent's lived memory</td></tr>
+      <tr><td>L2</td><td><code class="lore">runtime</code></td><td>access broker, path router, write-policy enforcement, integrity hooks, build pipeline</td><td>deployment-specific data or orchestration</td></tr>
+      <tr><td>L3</td><td><code class="lore">pot</code> (one per tenant)</td><td>an <strong>instance repo</strong>: one tenant's agents, roster, salts, lived memory, operating context</td><td>anything another tenant would need; anything from another pot</td></tr>
+    </tbody>
+  </table></div>
+
+  <pre class="mermaid">
+flowchart TB
+  P1["L3 pot A — tenant instance"] --> C["L1 core — depends on nothing"]
+  P2["L3 pot B — tenant instance"] --> C
+  R["L2 runtime — serves a pot, given its path"] --> C
+  R -. "input, not import" .-> P1
+  </pre>
+
+  <div class="inv"><span class="k">Invariants</span>
+    <ul>
+      <li><strong>Dependencies point strictly down.</strong> A dependent may only depend on a lower-numbered layer.</li>
+      <li><strong>Core is self-sufficient.</strong> From a checkout of core alone, the bootstrap procedure produces a working runtime and a pot. This is a testable property, and it is why core may never reference runtime internals.</li>
+      <li><strong>Runtime takes instance data as input, never as an import.</strong> A tool that needs the roster is passed its path and fails loudly without it. Otherwise runtime would depend upward on L3.</li>
+      <li><strong>Pots are isolated from each other.</strong> No pot references another, and nothing in core or runtime names a pot's contents. A second tenant is a second pot repo, never a folder inside the first.</li>
+      <li><strong>A mention is not a dependency.</strong> Links, prose paths and <code>related:</code> ids may point anywhere. The test is whether it still works with the other repo absent.</li>
+    </ul>
+  </div>
+
+  <h3>Placement rule: capability vs instance, then split</h3>
+  <p>Ask: <em>would another deployment need this?</em> The identicon engine is capability; the locked salts it runs on are instance. When a file mixes the two, it is <strong>split, not moved</strong>:</p>
+  <ul>
+    <li>the instance part goes to L3;</li>
+    <li>if a clean generic version is useful, it is written into L1;</li>
+    <li>in L2 the logic stays and becomes parameterised. A hardcoded agent list in a general script is lifted out, and the script stays.</li>
+  </ul>
+  <p>Any template in core derived from instance data is <strong>generated by a scrub step and drift-gated</strong>, never hand-maintained.</p>
+
+  <h3>Path routing</h3>
+  <p>A <strong>routing registry</strong> maps logical paths to the repo that holds them (<code>adopted | pending | archived | dropped</code>). A router module answers "which repo owns this path", and the broker and every tool that writes ask it; nothing hardcodes a repo. Moved paths leave a tombstone at the old address. A health check fails when an entry no longer matches the repos.</p>
+</section>
+
+<section id="session">
+  <h2><span class="n">3 · Anatomy of a session</span>From activation to commit</h2>
+  <pre class="mermaid">
+sequenceDiagram
+  participant H as Harness (Claude Code)
+  participant A as Agent session
+  participant B as Broker (MCP server)
+  participant R as Router + routing registry
+  participant G as git repos
+  H->>A: load skill: frontmatter, then SKILL.md
+  A->>B: session_start(slug)
+  B->>R: resolve agent paths
+  B-->>A: contract, env block, handover, working state, inbox
+  A->>B: write_file(logical path, content, expected_base)
+  B->>B: guards on logical path: owner lock, memory seal
+  B->>R: resolve target repo
+  B->>G: atomic write in core / runtime / pot, 3-way merge if base differs, re-seal, audit
+  B-->>A: "Written → repo"
+  A->>G: commit by explicit pathspec, under the agent's author line
+  </pre>
+  <ol>
+    <li><strong>Activation.</strong> The harness loads the package's frontmatter (always), then <code>SKILL.md</code>, then the always-loaded references.</li>
+    <li><strong>Boot through the broker.</strong> If the harness exposes the broker, the agent must enter through it. If the broker is expected and unreachable, the agent stops. It never falls back to reading repos by filesystem path.</li>
+    <li><strong>Boot payload.</strong> One call returns:
+      <ul>
+        <li>the binding contract;</li>
+        <li>an environment block: host, harness, repo head, whether the installed package body matches the repo body, UTC time;</li>
+        <li>the most recent handover, the agent's working state, its inbox, and its patterns.</li>
+      </ul>
+    </li>
+    <li><strong>Writes</strong> carry a logical path. Policy runs on that path; routing picks the physical repo; the result names it.</li>
+    <li><strong>Commits</strong> are explicit and scoped: one agent's files per commit, staged by pathspec, authored as that agent.</li>
+  </ol>
+</section>
+
+<section id="package">
+  <h2><span class="n">4 · The agent package</span>An Agent Skill, extended (<code class="lore">shintai</code>)</h2>
+  <p class="sub">The unit that ships and installs. It builds on Anthropic's skill folder: <code>SKILL.md</code> plus optional <code>scripts/</code>, <code>references/</code> and <code>assets/</code>.</p>
+<pre><code>agents/&lt;slug&gt;/                  <span class="c"># the package (shintai)</span>
+  SKILL.md                      <span class="c"># entry point: activation contract, boot sequence</span>
+  .SKILL.md.bonsaisig           <span class="c"># detached seal (SKILL.md tolerates no extra frontmatter)</span>
+  patterns.md                   <span class="c"># role-level operating rules; portable</span>
+  references/                   <span class="c"># loaded into context — inputs</span>
+    about-me.md                 <span class="c"># agent spec (<span class="l">constitution</span>); embedded seal</span>
+    presence.md                 <span class="c"># voice/audio profile</span>
+    heritage.md  lineage.md     <span class="c"># design provenance; parent agents (<span class="l">bunshin</span> line)</span>
+    procedures/                 <span class="c"># operating procedures; always loaded</span>
+  assets/                       <span class="c"># emitted into output: portrait, &lt;slug&gt;-mark.svg, audio</span>
+  identity/                     <span class="c"># issued at mint, immutable</span>
+    &lt;slug&gt;-public-key.bin       <span class="c"># ed25519, 32 raw bytes</span>
+    &lt;slug&gt;-fingerprint.txt      <span class="c"># sha256(pubkey)[:32]</span>
+  scripts/&lt;group&gt;/SKILL.md      <span class="c"># agent-owned tools, grouped as sub-skills</span>
+  memory/                       <span class="c"># ships EMPTY: working-state.md + MEMORY.md, frontmatter only</span>
+
+home/&lt;slug&gt;/                    <span class="c"># per-agent workspace (<span class="l">home</span>): sibling, never shipped</span>
+  inbox/ outbox/ working/ misc/ temp/</code></pre>
+
+  <h3>Load levels</h3>
+  <p>Skills disclose progressively. Frontmatter is always in context (enough to route); the <code>SKILL.md</code> body loads when the skill is relevant; linked files load on demand. The agent spec and procedures are pinned at the second level, <strong>always loaded</strong>. The design rule: <strong>minimum footprint is the smallest load that still produces the agent rather than the base model.</strong></p>
+
+  <h3>Placement</h3>
+  <p><code>references/</code> flows <em>in</em> (it shapes behaviour); <code>assets/</code> flows <em>out</em> (it becomes output). <code>identity/</code> holds issued material nobody edits in normal work. <code>home/</code> is mutable workspace and correspondence; it's a sibling tree, so it can never be packaged by accident.</p>
+
+  <h3>Versioning</h3>
+  <p><code>MAJOR.MINOR.PATCH[.BUILD][-LABEL]</code>. <code>BUILD</code> counts re-productions of one meaning (a re-seal, a re-package); <code>LABEL</code> names a build and never orders it. <code>SKILL.md</code> and the agent spec are <strong>version-locked</strong>, so the package reports one version.</p>
+
+  <h3>Build and install</h3>
+  <p>The build pipeline stages each package, verifies every seal, strips anything that must not ship, and writes a <code>MANIFEST.json</code> (sha256 per file) sealed by the <em>owner's</em> key. It stamps the build id into <code>SKILL.md</code>. An install check hashes the body (frontmatter excluded) of whatever the harness actually loaded and compares it with the repo body, so "which version is running" is measured rather than assumed.</p>
+
+  <div class="inv"><span class="k">Conformance gate — checked, not documented</span>
+    <p>A package is "3.0" only if <code>check-shintai-conformance.py</code> passes it. On disk, the gate checks:</p>
+    <ul>
+      <li>required parts are present;</li>
+      <li>nothing forbidden (<code>README.md</code> inside a skill folder, <code>.bak</code>);</li>
+      <li>nothing misplaced;</li>
+      <li><code>home/</code> is never nested in the package;</li>
+      <li>the version lock holds;</li>
+      <li><strong>every seal verifies</strong>, not merely exists;</li>
+      <li>any PEM beside a key decodes to that key.</li>
+    </ul>
+    <p>Packaged, it checks that the memory skeleton is empty and that no workspace leaked. Every rule ships with a negative test.</p>
+  </div>
+</section>
+
+<section id="memory">
+  <h2><span class="n">5 · Memory model</span>Typed by meaning, placed by tenancy</h2>
+  <p class="sub">Five file-based layers per agent. The split rule: what defines the agent ships; what it has done stays in the instance repo.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Layer</th><th>File</th><th>Cognitive type</th><th>Writer</th><th>Location</th></tr></thead>
+    <tbody>
+      <tr><td>Identity</td><td><code>references/about-me.md</code></td><td>semantic (self)</td><td>agent, sealed; edits need operator sign-off</td><td>package</td></tr>
+      <tr><td>Patterns</td><td><code>patterns.md</code></td><td>procedural</td><td>agent proposes after 3 instances; operator approves</td><td>package</td></tr>
+      <tr><td>Operating context</td><td><code>memory/strategic-context.md</code></td><td>semantic + episodic</td><td>operator</td><td>instance repo</td></tr>
+      <tr><td>Working state</td><td><code>memory/working-state.md</code></td><td>working memory</td><td>agent</td><td>instance repo</td></tr>
+      <tr><td>Journal</td><td><code>memory/journal/YYYY-MM-DD.md</code></td><td>episodic</td><td>agent, append-only</td><td>instance repo</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Design basis</h3>
+  <ul>
+    <li><strong>CoALA</strong> (Sumers et al., 2024): working memory plus episodic, semantic and procedural long-term memory. The layers map onto it. The one CoALA leaves ambiguous, operating context, is the one we split to the instance side.</li>
+    <li><strong>MemGPT / Letta</strong> (Packer et al., 2023–) tiers by what fits in the context window. We tier by what content <em>means</em>; the axes are orthogonal. Adopted: a fixed location per tier, which is enforceable.</li>
+    <li><strong>A-MEM</strong> (Xu et al., 2025): linked notes. Every document carries a ULID <code>id:</code>, and cross-references use ids, not paths, so the substrate already supports automated linking. Promotion is manual today.</li>
+    <li><strong>Mem0</strong> (Chhikara et al., 2025): salience extraction. <strong>Deferred deliberately.</strong> At current corpus size, agents read their full memory at boot; retrieval layers come when the corpus requires them.</li>
+    <li><strong>OWASP LLM06 (2025): don't delegate authorization to the model.</strong> Tenancy boundaries are enforced by path, repo and broker policy, not by instructions to the agent.</li>
+  </ul>
+
+  <h3>Portability tiers</h3>
+  <ul>
+    <li><strong>Invite state</strong> (<code class="lore">seed</code>): the agent spec only.</li>
+    <li><strong>Portable memory</strong> (<code class="lore">initial</code>): an abstracted extract that may travel. It is allowed for two explicitly named packages only, so the exception can't generalise silently.</li>
+    <li><strong>Instance-bound memory</strong>: the full lived memory, which never ships.</li>
+  </ul>
+  <p>The package gate fails a build that carries lived memory, because a leaked journal looks like a correct build from the outside.</p>
+
+  <h3>Sealed memory for sensitive agents</h3>
+  <p>Agents serving an individual closely keep memory in a <strong>per-agent encrypted vault</strong>, a git repo of client-side-encrypted, signed episodes. The broker intercepts any write to such an agent's memory path and seals it or refuses it, so plaintext never lands in the repo.</p>
+  <ul>
+    <li><strong>Isolation by addressing:</strong> an agent can only resolve its own vault. That is stronger than a row filter, where one missed <code>WHERE</code> leaks.</li>
+    <li><strong>Provenance:</strong> per-episode signatures give the provenance OWASP's memory-poisoning guidance (ASI06) asks for.</li>
+  </ul>
+  <div class="lim"><b>Open:</b>
+    <ul>
+      <li>there is no quarantine path for an episode that fails verification;</li>
+      <li>there is no boot-time assertion that what the vault <em>holds</em> equals what was <em>loaded</em>.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="signing">
+  <h2><span class="n">6 · Identity &amp; signing</span>ed25519, derived keys, three seal forms</h2>
+  <h3>Keys</h3>
+  <p>Per-agent private keys are <strong>derived, not stored</strong>: <code>HKDF-SHA256(master_salt, agent_signing_salt)</code> on the operator's host, used and dropped. The master salt never enters a repo. Public keys live in each package's <code>identity/</code>. The fingerprint is <code>sha256(pubkey)[:32]</code>, and the roster (<code>agents/registry.json</code>) holds the canonical fingerprint per agent. The signer refuses to write a seal the roster disagrees with.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Form</th><th>Carrier</th><th>Digest</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>Embedded</td><td><code>sign:</code> block in YAML frontmatter</td><td>BLAKE2b-512 of the body (frontmatter excluded, CRLF→LF); the signature is over the raw 64 digest bytes</td><td>specs, agent specs, journals</td></tr>
+      <tr><td>Detached</td><td><code>&lt;file&gt;.bonsaisig</code> (JSON)</td><td>BLAKE2b-512 of the exact file bytes</td><td><code>SKILL.md</code>, scripts, manifests, binaries</td></tr>
+      <tr><td>Image</td><td><code>BonsaiSign</code> iTXt chunk</td><td>canonical pixel bytes</td><td>PNGs</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li><strong>Owner key, any executor.</strong> Every sealed file in a package verifies against that agent's key. A build pipeline may run the signer on the owner's behalf.</li>
+    <li><strong>Two implementations, one contract.</strong> A Python reference and a Node port, held together by shared test vectors, a corpus parity test and mutation tests that watch parity break.</li>
+    <li><strong>Execution gate.</strong> The broker verifies every module in its import closure at startup and exits if one mismatches. A pre-exec hook refuses to run any sealed script whose seal is stale.</li>
+    <li><strong>Declared-open state</strong> (<code class="lore">seal-open</code>). A document may be deliberately out of step with its seal, as long as a signed declaration from its own signer says so. The declaration is domain-tagged so it can't double as a seal, and carries:
+      <ul>
+        <li>a checkable reason;</li>
+        <li>who closes it;</li>
+        <li>an expiry of 14 days at most.</li>
+      </ul>
+      Verify returns a distinct exit code for OPEN; the build pipeline refuses it; re-sealing closes it.</li>
+    <li><strong>No stored PEMs.</strong> PEM exports are generated at build time for external consumers. A committed PEM that drifts from its key fails the gate.</li>
+  </ul>
+  <div class="lim"><b>Threat model, stated plainly.</b> A seal proves <b>integrity and membership</b>: these bytes, this deployment's key for that agent. It does not prove <b>authorship</b>. Anyone holding the master salt can derive every key. That is acceptable for a single-operator deployment and insufficient for federation. The public verify endpoint today maps a fingerprint to an agent from a bundle generated from the pot's roster and drift-gated. That is identification; signature verification end to end is not yet exercised live.</div>
+</section>
+
+<section id="broker">
+  <h2><span class="n">7 · Access broker</span>One MCP server, shared by every session</h2>
+  <p class="sub">A single long-running process on a loopback port, under a process supervisor. One code version, one restart, one view of ownership.</p>
+  <h3>Tool surface</h3>
+  <p>Session start; read, write, append, move and delete; directory listing; search; find by ULID; memory recall; git status, log and diff; metadata validation; presence and location signals.</p>
+  <h3>Write path</h3>
+  <ol>
+    <li><strong>Policy on the logical path, before routing:</strong>
+      <ul>
+        <li>the owner lock: only an agent writes its own memory tree;</li>
+        <li>the self-memory guard;</li>
+        <li>the sealed-memory interceptor.</li>
+      </ul>
+    </li>
+    <li><strong>Routing.</strong> The router resolves the physical repo. Archived targets refuse; a target repo that isn't checked out refuses; path traversal refuses.</li>
+    <li><strong>Write.</strong> Atomic, under a file lock. An <code>expected_base</code> token from the prior read enables a three-way merge against concurrent edits.</li>
+    <li><strong>Post-write.</strong> The file is re-sealed if signed, the write is audited, and the result line names the repo it landed in.</li>
+  </ol>
+  <div class="inv"><span class="k">Fail-safe, not fall-back</span>
+    <p>If resolution fails, the write fails. The broker never falls back to a default path, because a silent fallback reports success while writing to the wrong place.</p>
+  </div>
+  <div class="lim"><b>Open:</b> caller identity is <b>asserted</b>. A session declares its slug, and nothing proves it. The owner lock verifies that the claimed caller owns the path, not that the claim is true. A handshake design (challenge/response over the agent's ed25519 key) is specified and not yet merged into the write path.</div>
+</section>
+
+<section id="git">
+  <h2><span class="n">8 · Change management</span>Git as oracle and audit trail</h2>
+  <ul>
+    <li><strong>Restructures are proven with git.</strong> Rename detection and blob-OID multiset comparison before and after a move show that nothing changed except what was intended.</li>
+    <li><strong>One agent per commit, explicit pathspecs, the agent's author line.</strong> Sessions share a working tree, so broad staging is not allowed.</li>
+    <li><strong>Stable ids over paths.</strong> Every document carries a ULID <code>id:</code> that survives moves. A duplicate id is treated as worse than a stale path.</li>
+    <li><strong>Tombstones instead of deletes.</strong> Deletes require operator approval at the time they are needed.</li>
+    <li><strong>Generated copies are drift-gated.</strong> Anything derived from the pot's roster (the verify bundle, rosters, templates in core) is regenerated, and <code>--check</code> fails CI on any difference.</li>
+    <li><strong>History retains what was scrubbed.</strong> Publishing a repo means choosing between a history rewrite and a fresh root.</li>
+  </ul>
+</section>
+
+<section id="context">
+  <h2><span class="n">9 · The instance as context store</span>Why the system compounds</h2>
+  <p class="sub">The instance repo (<code class="lore">pot</code>) is the operating context plus the knowledge base. It is the reason a session starts where the last one ended.</p>
+  <ul>
+    <li><strong>Operating context</strong> (per agent, operator-maintained): what we're doing and why. Loaded at every boot.</li>
+    <li><strong>Knowledge base:</strong> specs, handovers, journals, lessons, all ULID-addressed and cross-linked.</li>
+    <li><strong>Failure-driven rules.</strong> When an agent makes a mistake, the fix is engineered so it can't recur, and the rule is recorded where it is enforced. <code>AGENTS.md</code> and the conformance gate grow one line per incident.</li>
+    <li><strong>Pattern promotion.</strong> An agent observes something three times and proposes it; the operator approves; it becomes a role-level pattern that travels with the package. Deployment-wide lessons are promoted manually.</li>
+    <li><strong>Escalation policy in the agent spec</strong> (<code class="lore">Empty-Chair tripwire</code>). Acting without the operator is permitted. An agent noticing it <em>prefers</em> to is required to say so and hand the decision back. It's a reporting control, logged where the operator will see it.</li>
+    <li><strong>Deliberately temporary.</strong> Much of the harness encodes what current models can't reliably do alone. We expect to delete parts of it as models improve, and we keep the lessons, not the code.</li>
+  </ul>
+</section>
+
+<section id="limits">
+  <h2><span class="n">10 · Known gaps</span>As of this draft</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Gap</th><th>Impact</th><th>Direction</th></tr></thead>
+    <tbody>
+      <tr><td>Caller identity asserted, not proven</td><td>owner lock trusts the claim</td><td>ed25519 handshake into the write path</td></tr>
+      <tr><td>Workspace (<code class="lore">home/</code>) not owner-locked</td><td>any session can write any agent's workspace</td><td>per-subtree policy in the broker</td></tr>
+      <tr><td>No memory quarantine; no loaded-vs-held assertion</td><td>poisoned or missing memory is detected late</td><td>quarantine table; boot-time count assertion in the payload</td></tr>
+      <tr><td>Verify endpoint identifies, doesn't verify</td><td>public trust surface weaker than it reads</td><td>exercise the signed path end to end</td></tr>
+      <tr><td>Some runtime tools still duplicate core tools</td><td>second-master drift</td><td>generate from one source, drift-gate</td></tr>
+      <tr><td>An agent serving more than one pot</td><td>memory and keys must not cross pots</td><td>per-pot memory; spec open</td></tr>
+      <tr><td>Portable-memory curation unspecified</td><td>two hand-made instances</td><td>spec after more instances</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="glossary">
+  <h2><span class="n">Glossary</span>Project term → engineering meaning</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Project term</th><th>Engineering meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code class="lore">shintai</code></td><td>agent package: a sealed Agent Skill folder plus identity and memory skeleton</td></tr>
+      <tr><td><code class="lore">constitution</code> / <code>about-me.md</code></td><td>the agent's spec: role, behaviour, edges; always loaded; sealed</td></tr>
+      <tr><td><code class="lore">kin</code>, <code class="lore">*-sai</code>, <code class="lore">*-shin</code></td><td>agents; a founding agent; an agent derived from one or more parents</td></tr>
+      <tr><td><code class="lore">bunshin</code></td><td>derivation of a new agent from a parent (lineage and attestation)</td></tr>
+      <tr><td><code class="lore">Aruji</code></td><td>the human operator; owns approvals, deletes, deploys, purpose</td></tr>
+      <tr><td><code class="lore">core</code> · <code class="lore">runtime</code> · <code class="lore">pot</code></td><td>library and bootstrap · access &amp; build layer · a tenant's instance repo (one per tenant)</td></tr>
+      <tr><td><code class="lore">home/</code></td><td>per-agent workspace and mailbox, never packaged</td></tr>
+      <tr><td><code class="lore">seed</code> / <code class="lore">initial</code></td><td>invite-time spec only / portable memory extract</td></tr>
+      <tr><td><code class="lore">seal</code></td><td>owner-key ed25519 signature (embedded, detached or PNG)</td></tr>
+      <tr><td><code class="lore">seal-open</code></td><td>signed, time-boxed declaration that a document intentionally differs from its seal</td></tr>
+      <tr><td><code class="lore">tombstone</code></td><td>forwarding file at a moved path</td></tr>
+      <tr><td><code class="lore">second master</code></td><td>an unmanaged duplicate; the fix is generate-and-gate</td></tr>
+      <tr><td><code class="lore">Empty-Chair tripwire</code></td><td>escalation control: the agent reports when it would prefer to act without the operator</td></tr>
+      <tr><td><code class="lore">bonsai</code></td><td>the bootstrap agent, shipped in core, which runs the setup procedure</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</main>
+</div>
+
+<footer>How the Garden Holds · draft 2026-09-23 · scope: core, runtime, pot(s) · grounded in LAYERS.md 1.2.0, the agent-package spec 3.0.7, the memory architecture spec, the signer and the MCP server as running today</footer>
+</div>
+<script type="module">
+  // Diagrams: the source text stays in the page (readable without JS); mermaid
+  // renders it, themed from the page's own tokens, and re-renders on theme change.
+  const sources = [...document.querySelectorAll('pre.mermaid')].map((el) => el.textContent);
+  let mermaid;
+  async function draw() {
+    try {
+      mermaid = mermaid || (await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs')).default;
+      const css = getComputedStyle(document.documentElement);
+      const v = (n) => css.getPropertyValue(n).trim();
+      mermaid.initialize({ startOnLoad: false, theme: 'base', fontFamily: 'Inter, sans-serif', themeVariables: {
+        background: v('--paper'), primaryColor: v('--paper-2'), primaryTextColor: v('--ink'), primaryBorderColor: v('--accent'),
+        lineColor: v('--muted'), secondaryColor: v('--paper'), tertiaryColor: v('--paper'), textColor: v('--ink'),
+        actorBkg: v('--paper-2'), actorBorder: v('--accent'), actorTextColor: v('--ink'), signalColor: v('--slate'), signalTextColor: v('--ink'),
+        noteBkgColor: v('--paper-2'), noteTextColor: v('--ink'), fontSize: '14px' } });
+      const els = [...document.querySelectorAll('pre.mermaid')];
+      els.forEach((el, i) => { el.removeAttribute('data-processed'); el.textContent = sources[i]; });
+      await mermaid.run({ nodes: els });
+    } catch (e) { /* offline: the diagram source stays readable */ }
+  }
+  draw();
+
+  const btn = document.getElementById('theme');
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('bonsai-theme', next); } catch (e) {}
+    draw();
+  });
+
+  // Contents rail follows the reader.
+  const links = new Map([...document.querySelectorAll('nav.toc a')].map((a) => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((en) => { if (en.isIntersecting) { links.forEach((a) => a.classList.remove('on')); links.get(en.target.id)?.classList.add('on'); } });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('main section[id]').forEach((s) => io.observe(s));
+</script>
+</body>
+</html>

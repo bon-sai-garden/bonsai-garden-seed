@@ -1,0 +1,26 @@
+{
+  "_meta": {
+    "id": "01M4Z27XX0XP3D7TXKYHAVGDRZ",
+    "title": "Planting 7c: the words a planting makes stale, and the words only a rehearsal may carry",
+    "type": "shared-reference",
+    "tended-by": "baisai",
+    "created": "2026-10-15",
+    "updated": "2026-10-15",
+    "description": "Read by lib/fill-bodies.mjs (keys.mjs fill-bodies --check). stale-words is C2: a body that still carries one of these was sealed before it knew its outcome. lab-words is C5: in a garden whose garden.json says lab-preview: false, no body and no registry text may carry one; in a lab-preview garden, each SKILL.md's integrity line must carry integrity-rehearsal-word. Each entry is matched whole-word and case-insensitive; a space matches any run of whitespace. No per-garden allow-list until a real body needs one (spec Open)."
+  },
+  "stale-words": [
+    "at the identity step",
+    "at sealing",
+    "pending",
+    "not yet drawn",
+    "not yet given",
+    "unsealed",
+    "slot"
+  ],
+  "lab-words": [
+    "lab-preview",
+    "rehearsal",
+    "throwaway"
+  ],
+  "integrity-rehearsal-word": "rehearsal"
+}

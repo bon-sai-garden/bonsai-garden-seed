@@ -1,0 +1,58 @@
+<div class="w-split">
+  <div class="w-voice">
+    {{who}}
+    <p class="eyebrow w-step">Second, what it's for</p>
+    <p class="say">Now, what do you want this garden to <em>do</em>?</p>
+    <p class="say">I'll ask a few questions: at most twelve, and four is plenty. You can stop at any point. Whatever you tell me, I'll write down in your words and show you.</p>
+    <p class="aside"><b>One at a time, and not a test.</b> Someone who answers four and stops has done it. “I don't know yet” is an answer, and I write it down as one.</p>
+  </div>
+
+  <div class="w-side">
+    <section class="card card-stage" aria-labelledby="q-h">
+      <div class="qcount"><span class="eyebrow">Question 2 · up to twelve, four is plenty</span><span class="bar" aria-hidden="true"><i style="width:17%"></i></span><span class="tag">Example</span></div>
+      <div class="thread" id="thread" aria-label="What you've said so far">
+        <div class="a"><small>I asked: What are you trying to do?</small>Teach river ecology to people who have never been outdoors.</div>
+        <div class="a"><small>I asked: If that goes right, really right, what does it become?</small>A school with no walls, in every town that has a river.</div>
+      </div>
+      <h2 class="q" id="q-h">Tell me about a day when it went well. What actually happened?</h2>
+      <div class="fld">
+        <label class="sr" for="q-2">Your answer</label>
+        <textarea class="ta big" id="q-2" placeholder="Take your time."></textarea>
+      </div>
+      <div class="row between">
+        <span class="row">
+          <button class="btn" type="button">Answer</button>
+          <button class="btn ghost" type="button" data-idk="Tell me about a day when it went well. You didn't know yet.">I don't know yet</button>
+        </span>
+        <button class="btn quiet" type="button">That's enough for now</button>
+      </div>
+    </section>
+
+    <section class="kept" aria-labelledby="kept2-h">
+      <header>
+        <span class="eyebrow" id="kept2-h">What I've written, in your words</span>
+        <span class="flags"><span class="tag">Simulation</span><span class="tag">Intel</span><span class="tag">Non-disclosure</span></span>
+      </header>
+      <h3>What this garden is for</h3>
+      <h4>What it's for</h4>
+      <p class="mine">“Teach river ecology to people who have never been outdoors. A school with no walls, in every town that has a river.”</p>
+      <h4>Who is in it</h4>
+      <p class="mine">Just me for now. I wish there were someone to run the signups.</p>
+      <h4>Where the work gets stuck</h4>
+      <p class="mine">Scheduling and email take my weekends. I'd rather never do them.</p>
+      <h4>What stays yours</h4>
+      <p class="mine empty">Not yet said.</p>
+      <h4>What must never leave</h4>
+      <p class="mine">The names of the students.</p>
+      <h4>Still open</h4>
+      <p class="mine" data-fill="open" data-empty="Nothing yet.">Tell me about a day when it went well. You didn't know yet.</p>
+      <p class="sub" style="margin:16px 0 8px;color:var(--ink)">Is this what you meant? If a line isn't right, say which, and I change it.</p>
+      <div class="row"><a class="btn small" href="@next">Yes, that's right</a><button class="btn quiet small" type="button">Change a line</button></div>
+    </section>
+
+    <div class="nav">
+      <a class="btn ghost" href="@prev">Back</a>
+      <span class="stay">Your yes is spoken and written down with the date. Nothing is sealed yet.</span>
+    </div>
+  </div>
+</div>

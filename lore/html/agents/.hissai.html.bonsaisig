@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42Z9YADNN832T3GY5C26",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/html/agents/hissai.html",
+  "file-hash": "226723c3b6dee0499fee71fbb7714e2b64f8e2c9a20e88cd2225299d67fa4c2e3c862253e6233cda68b2b3dcf7bd130129a6572c821298ac2d5a32d97c044973",
+  "signature": "HXh5hSMJgN3B/6yNRhWwTO0v1dCRP1xrG2G7WIaBxvGB6PD55gVcD8fotccRr/HXLX0tJK/7BF+eqjaU0R+qBQ=="
+}

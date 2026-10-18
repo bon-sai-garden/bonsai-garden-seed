@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43PC5FTP1Q7ZZEB9YC81",
+  "signer": "eisai",
+  "role": "owner",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/templates/greeting-v5.html",
+  "file-hash": "e9024b7786edc4e76c7ff2f030ed7dba8bc19a2efc572899ec0ce4ff21aa85fd989a4d8a874a5f4daa565658346b89898e51b1ccf800a526a93e7fcecb249fee",
+  "signature": "kuWEI08/Qc3vae4faQ0JHpxbqU188lh3w6UQwtTNN5ti9NtRsXMglohzHkArLhbBcTa+QgalIn+cMmc6KO2wDw=="
+}

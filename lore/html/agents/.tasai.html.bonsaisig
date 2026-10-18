@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42ZFC346HK8QETMHF99T",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/html/agents/tasai.html",
+  "file-hash": "0212882f8600d7834be8a1d3d25ddd0988a26a467c07a10a1ce356b7d34ede20ffdc8e11a2795b7f738736e2a515797d42c81cf4d3f3933b2b3573c1bb9e16d8",
+  "signature": "MuKuXOtr7UJxzyYzs+rOhJVOrE77fD51Br4GHoAlDsCSEv5DCla29YIISAHjMcAIadd1nSA7uoYP3k7U4o4RCQ=="
+}

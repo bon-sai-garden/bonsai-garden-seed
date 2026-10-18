@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M393J50WHVS36QR87NX9TQNF",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-15T19:42:35Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/fp-kanji.py",
+  "file-hash": "de489d91f7919723c51710a6be4d1026b3d6c26e4d6de0b93f4c9238520ae991f5bceb1948b38c1597de8fdf958c20157ad90bd394a4c0d8a0516b3529713859",
+  "signature": "971mGRCsm2bJryv3hI5fVIbsLpcCAqQtsYZoZEXyxzMPiKeT6WC+3EcitlutuXwQjWF9jVLrtrCUlZXcDA/CDA=="
+}

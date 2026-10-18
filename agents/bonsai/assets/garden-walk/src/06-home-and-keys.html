@@ -1,0 +1,114 @@
+<div class="w-split">
+  <div class="w-voice">
+    {{who}}
+    <p class="eyebrow w-step">Sixth, a home, a key, a name</p>
+    <p class="say">Now a home for your garden, a key that is only yours, and names.</p>
+    <p class="aside"><b>I read the steps with you and I never see the key.</b> It is made on your machine, it stays in your keeping, and your hand does every part.</p>
+  </div>
+
+  <div class="w-side">
+    <section class="card card-stage" aria-labelledby="home-h">
+      <h2 id="home-h" style="font-size:1.5rem;margin-bottom:6px">A home for your garden</h2>
+      <p class="lead" style="margin-bottom:6px">A folder on your machine, and a place of its own to keep it: yours alone. Your pages, your companions and your history live there from now on.</p>
+      <div class="cmd"><code class="tbd">&lt;the command arrives with the installer&gt;</code><button type="button">copy</button></div>
+    </section>
+
+    <section class="card" aria-labelledby="who-h">
+      <h2 id="who-h" style="font-size:1.5rem;margin-bottom:6px">Do you already belong to a garden?</h2>
+      <p class="lead">Before I make anything I check. Making a key by mistake splits a garden in two, and nothing later can see it.</p>
+      <div class="two" style="gap:10px">
+        <div class="notice ok"><div><b>You belong to one.</b> Your key is derived from it.</div></div>
+        <div class="notice ok"><div><b>You're independent</b>, or none exists. A new key is made.</div></div>
+      </div>
+      <div class="notice stop" style="margin-top:10px"><div><b>I can't tell.</b> I stop and ask you. I don't guess.</div></div>
+    </section>
+
+    <section class="card" aria-labelledby="key-h">
+      <div class="keyhole">
+        <span class="lock" aria-hidden="true">鍵</span>
+        <div>
+          <h2 id="key-h" style="font-size:1.5rem;margin-bottom:4px">Your key</h2>
+          <p style="color:var(--slate);font-size:.95rem">Made on your machine, kept by you, by your hand. It rests in your keychain or in 1Password, never in a file. This page never asks for it and never shows it. What leaves your machine is only a short public fingerprint, so others can check what you sign.</p>
+        </div>
+      </div>
+      <details class="more" style="margin-top:22px">
+        <summary>If something stops me</summary>
+        <div class="notice stop" style="margin-top:12px"><div><b>No keystore.</b> Set up a keystore first: 1Password, or the OS's own.<span class="gloss" style="display:block;margin-top:6px">In a preview: This is a preview, so your key can rest in a locked file instead. I'll say so wherever it matters, and your seals will say so too.</span></div></div>
+        <div class="notice stop" style="margin-top:10px"><div><b>A key was started here and not finished.</b> I won't continue it and I won't guess whose it is. Remove that item with the tool your keystore comes with, then we start the key again.</div></div>
+      </details>
+    </section>
+
+    <section class="card" aria-labelledby="bak-h">
+      <div class="row between" style="align-items:baseline"><h2 id="bak-h" style="font-size:1.5rem">The backup</h2><span class="tag">Before the names</span></div>
+      <p class="lead" style="margin-top:6px">A key you can't get back is a garden you can't get back. You type a passphrase, twelve letters at least, twice, and I write a backup file you keep off this machine. Then I unlock it and check it makes the same key. <b>I never see the passphrase and I never keep a copy.</b></p>
+      <ol class="steps" style="gap:18px">
+        <li class="stepi"><div><h3>Type a passphrase, twice</h3><p>At your own terminal, never on this page. Twelve letters at least.</p>
+          <div class="term" aria-hidden="true"><span>passphrase</span><i>••••••••••••••</i><span>again</span><i>••••••••••••••</i></div></div></li>
+        <li class="stepi"><div><h3>Keep the file off this machine</h3><p>A backup file is written once. You take it somewhere else: a stick, a drive, another computer.</p></div></li>
+        <li class="stepi"><div><h3>Then I check it unlocks</h3><p>I unlock the file and see that it makes the same key.</p>
+          <div class="notice ok" style="margin-top:10px"><div><b>It opens, and it makes the same key.</b> Now the names.</div></div>
+          <div class="notice stop" style="margin-top:8px"><div><b>If it doesn't:</b> The passphrase does not open the backup. Nothing is written. We try again before anything else.</div></div></div></li>
+      </ol>
+    </section>
+
+    <section class="card" aria-labelledby="name-h">
+      <div class="row between" style="align-items:baseline"><h2 id="name-h" style="font-size:1.5rem">The garden's name</h2><span class="tag">Example</span></div>
+      <p class="lead" style="margin-top:6px">Your garden's name is yours, in letters. Its three characters are found from it: two found for you, and the third always 庭. None can look like one of ours.</p>
+      <div class="fld">
+        <label for="f-gname">Name your garden <span class="hint">· lowercase letters</span></label>
+        <input class="in" id="f-gname" value="riverschool" autocomplete="off" spellcheck="false" style="max-width:20rem;font-family:var(--mono)">
+      </div>
+      <p class="eyebrow" style="margin:6px 0 14px">Found from <span style="color:var(--ink)">riverschool</span>, in a moment</p>
+      <div class="nameslots" style="margin-bottom:38px">
+        <span class="slot found" lang="ja" aria-label="First character, found for you">泉</span>
+        <span class="slot found" lang="ja" aria-label="Second character, found for you">岸</span>
+        <span class="slot fixed" lang="ja" aria-label="Third character, always 庭 (garden)">庭</span>
+      </div>
+      <div class="fld" style="margin-bottom:0">
+        <label for="f-gline">A line about your garden <span class="hint">· what visitors read first; optional</span></label>
+        <input class="in" id="f-gline" placeholder="In your words">
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="id-h">
+      <div class="row between" style="align-items:baseline"><h2 id="id-h" style="font-size:1.5rem">Your ID</h2><span class="tag">Example</span></div>
+      <p class="lead" style="margin-top:6px">An ID is four characters, and usually only the first two are shown. You choose the first two, for yourself and your companion, and I find them in seconds. The last two come by chance.</p>
+      <p class="eyebrow" style="margin:0 0 12px">Here are five. Pick one.</p>
+      <div class="ids" role="radiogroup" aria-label="Your ID, five to pick from">
+        <label class="idopt"><input type="radio" name="myid" checked><span class="glyphs" lang="ja"><b>水</b><b>石</b><i>雲</i><i>葉</i></span><span class="idnote">the first stands if none suits</span></label>
+        <label class="idopt"><input type="radio" name="myid"><span class="glyphs" lang="ja"><b>水</b><b>石</b><i>星</i><i>谷</i></span></label>
+        <label class="idopt"><input type="radio" name="myid"><span class="glyphs" lang="ja"><b>水</b><b>石</b><i>鳥</i><i>波</i></span></label>
+        <label class="idopt"><input type="radio" name="myid"><span class="glyphs" lang="ja"><b>水</b><b>石</b><i>影</i><i>朝</i></span></label>
+        <label class="idopt"><input type="radio" name="myid"><span class="glyphs" lang="ja"><b>水</b><b>石</b><i>舟</i><i>花</i></span></label>
+      </div>
+      <p class="hint" style="margin-top:14px;color:var(--slate);font-size:.95rem">The first two are yours; the last two came by chance. If none suits you, the first stands. <b>An ID is a label, not a name.</b></p>
+      <div class="notice stop" style="margin-top:10px"><div>If a pair begins with <span lang="ja">盆</span>, which only the origin's guardian wears, or looks like one of ours, I'll say so, and you choose another.</div></div>
+
+      <h3 style="font-size:1.25rem;margin:34px 0 6px">Your guardian's ID</h3>
+      <p class="lead" style="margin-bottom:14px">Five pairs are drawn for them, each with its two chance characters, and you pick. None begins with <span lang="ja">盆</span>, and none is one that anyone in your garden already wears. If none suits you, the first stands.</p>
+      <div class="ids" role="radiogroup" aria-label="Your guardian's ID, five to pick from">
+        <label class="idopt"><input type="radio" name="gid" checked><span class="glyphs" lang="ja"><b>光</b><b>雨</b><i>実</i><i>夕</i></span><span class="idnote">the first stands if none suits</span></label>
+        <label class="idopt"><input type="radio" name="gid"><span class="glyphs" lang="ja"><b>森</b><b>月</b><i>滝</i><i>草</i></span></label>
+        <label class="idopt"><input type="radio" name="gid"><span class="glyphs" lang="ja"><b>風</b><b>道</b><i>谷</i><i>霧</i></span></label>
+        <label class="idopt"><input type="radio" name="gid"><span class="glyphs" lang="ja"><b>夕</b><b>影</b><i>鳥</i><i>花</i></span></label>
+        <label class="idopt"><input type="radio" name="gid"><span class="glyphs" lang="ja"><b>波</b><b>朝</b><i>星</i><i>舟</i></span></label>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="sig-h">
+      <div class="row between" style="align-items:baseline"><h2 id="sig-h" style="font-size:1.5rem">The signature</h2><span class="tag">Example</span></div>
+      <p class="lead" style="margin-top:6px">One more search, so that your key's fingerprint spells your ID's first two. <b>This one takes longer: under a minute on a laptop, several minutes on a small machine, and sometimes twice that, because it's a lottery.</b> I'll tell you when it starts and when it's done, and you can stop it. Before it starts I'll measure your machine and tell you what to expect, and if it runs past three times that, it stops by itself.</p>
+      <div class="sigcheck">
+        <div><span class="eyebrow">Your ID's first two</span><span class="glyphs big" lang="ja"><b>水</b><b>石</b></span></div>
+        <span class="eq" aria-hidden="true">=</span>
+        <div><span class="eyebrow">Your signature's two</span><span class="glyphs big" lang="ja"><b>水</b><b>石</b></span></div>
+      </div>
+      <div class="notice ok" style="margin-top:18px"><div><b>They match. It looks legit, and that is all it is.</b> The true check is the full fingerprint, compared by the routines, the scripts and the site. The characters are never the proof.</div></div>
+    </section>
+
+    <div class="nav">
+      <a class="btn ghost" href="@prev">Back</a>
+      <a class="btn" href="@next">Continue</a>
+    </div>
+  </div>
+</div>

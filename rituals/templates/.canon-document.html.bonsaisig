@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS4374G4FFBHFZR1G7JP28",
+  "signer": "eisai",
+  "role": "owner",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/templates/canon-document.html",
+  "file-hash": "41621326e9bd08cc430d686ec94e5085894c7929ed895000959cdeaee2e64fa1d585cbdf4fb15b7ddfe605102b5d8339d22e8627b133128324d4d7d02e58677d",
+  "signature": "MzHPBuEjn8d1143ahjdKCqpYzJFSnJUIny7kZWS4KcPxIZDXBIB3B7dsTvkkUgFDF2zKZ+p0goNP7msjr4zuCw=="
+}

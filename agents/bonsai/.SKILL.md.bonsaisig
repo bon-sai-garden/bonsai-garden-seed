@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3A3WVESMK9WBSWRF3QNXWQZ",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-18T18:48:44Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/SKILL.md",
+  "file-hash": "35bcd8783ccd309d1eef49c7dfaf1a73f276bd1933703d6b39edc44432f79895e1f6835fbcd022e1c902867c7f06427614e567fc02554f8b311ca46f7e84073f",
+  "signature": "+x4x8bhOh6MqgKELVUJAdIx1+4Tj1g40giHjVhvo16pcUyFixYYVN4aPtuPxwd7oC4UIobEezrEKFE4CQRuCDQ=="
+}

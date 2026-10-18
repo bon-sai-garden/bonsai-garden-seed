@@ -1,0 +1,23 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" width="64" height="64">
+  <title>盆才 — mark</title>
+  <desc>Strokes from KanjiVG (https://kanjivg.tagaini.net/), © Ulrich Apel and the KanjiVG contributors, licensed CC BY-SA 3.0 Unported (https://creativecommons.org/licenses/by-sa/3.0/). This mark is a derived work under the same licence.</desc>
+  <rect width="64" height="64" fill="#fdfbf5" />
+  <rect x="8.000" y="8.000" width="48.000" height="48.000" fill="#b8624c14" />
+  <g transform="translate(10.000,22.000) scale(0.183486)">
+  <path d="M42.67,15c0,1.12-0.23,1.81-0.93,2.75C35.25,26.5,27.38,34.25,14,42" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M56.69,10.25c5.93,0,17.68,15.38,26.75,22.43c2.95,2.3,4.44,3.2,6.81,4.32" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M36.76,35.4c1.83,0.57,3.52,0.82,5.4,0.57c8.42-1.12,20.76-2.92,24.9-3.25c3.26-0.27,4.63,1,3.91,4.18c-1.17,5.21-5.28,14.59-8.61,19.46c-4.09,5.98-5.99,2.03-7.07,0.13" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M48.89,38.93c0.11,0.99,0.05,1.89-0.46,2.77C44,49.38,39,55.12,29.73,61" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M24.06,69.04c1.14,1.13,1.63,2.32,1.78,3.27c1.19,7.5,2.37,12.76,3.48,20.35" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M26.15,70.89c12.6-2.02,39.95-4.63,49.98-5.25c4.11-0.25,6.55,0.91,5.68,5.36c-1.05,5.41-2.43,11.99-3.87,18.47" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M42.19,71.5c0.9,0.9,1.34,1.81,1.47,2.7c1.21,7.92,1.58,10.92,2.53,17.33" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M62.74,69.95c0.63,1.18,0.61,2.57,0.47,3.67C62.4,80,61.62,84.5,60.79,90.67" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M13.38,93.54c2.8,1,5.88,1,8.76,0.81c15.21-0.96,40.65-2.97,64.61-3.8c3.22-0.11,6.26,0.49,9.38,1.16" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <g transform="translate(34.000,22.000) scale(0.183486)">
+  <path d="M18.62,38.5c2.62,0.62,4.54,0.53,7.82,0.25C41.25,37.5,67.62,35,84.75,34c3.28,-0.19,5.86,0,8,0.5" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M60.77,13.58c1.39,1.39,2.26,2.99,2.26,6.02,0,15.4,-0.01,66.41,-0.01,71.37,0,8.78,-7.21,0.5,-8.71,-0.75" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M73.043742,46.367587C62.856133,57.87424,32.711367,80.494361,23.641472,85.467096" fill="none" stroke="#1c1f24" stroke-width="6.540" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <path d="M 2.000 2.000 L 62.000 2.000 M 62.000 2.000 L 62.000 62.000 M 62.000 62.000 L 2.000 62.000 M 2.000 62.000 L 2.000 9.200" fill="none" stroke="#b8624c" stroke-width="1.40" stroke-linecap="square" />
+</svg>

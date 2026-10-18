@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3953H363PMB496YVHRGGSFM",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:02:44Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-vcard/scripts/build-agent-vcard.py",
+  "file-hash": "e320207d6ede37a50d03ae95365237a2f2d0f33f6745a9732ff6e2158b5e95546b65d9c34fec3e4cd5d53f66483206d3f63731ecffb1b1bf6e13db9c0fbfd68c",
+  "signature": "r0yiij6SU04pu2Uor+R0tpgzmHC3rtaR05CkDeKcSr/nDCDs4rIwYeawudiFo9pVH1CDJkkX7ZnuSldR29KFBQ=="
+}

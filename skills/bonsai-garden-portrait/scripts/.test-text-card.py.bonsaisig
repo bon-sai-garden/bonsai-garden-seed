@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M51QPA4G2C1H9ATBXN2ZQWHD",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T11:51:09Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/scripts/test-text-card.py",
+  "file-hash": "3713ba5e1e94134350eb857bf79a61857a97b6aa06db790a65e3d3ec0fd72df540dbf016a0a6c8c7039e07f8847d08ad607b98a0fd76aee8189f5402d62d9d2e",
+  "signature": "i/mef/yv3U9B5/wY1yMBkFPouiD3Sjzw4EuIlaw6CAWFfNh2LNC01H/5pgx6Sgh+vTQLasnFK6EUzwTGRJyVAA=="
+}

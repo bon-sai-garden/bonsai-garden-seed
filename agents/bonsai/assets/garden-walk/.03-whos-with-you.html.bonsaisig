@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48JVM7ADC4VV1T0MVB68XX2",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-06T17:59:45Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/03-whos-with-you.html",
+  "file-hash": "1d27b6829833d73639619d5ec8d7d462bbbfeb8ada7cde2879a9cbe495204a03659cb6e259724b8a92e1e5a8679faa3e344d03ccf22ba6af8628b29d4e1ee58b",
+  "signature": "V8w2C1PAkXB/63WcTH2/LWRyhPLxvJl2b+CCFET2XavLZcGtldmeIIEpAxWI4+cflcCaEKN1obTMkLKa/PkqAw=="
+}

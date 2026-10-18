@@ -1,0 +1,45 @@
+<!--
+  Bonsai Garden greeting card, compact (routines 2.5 Step 2d) — the default since 2026-10-13.
+  The gardener, 2026-10-13: "make the intro less context-expensive ... compact greeting routine ... thumbnail stays as-is."
+  Same fields, same trust logic and the same self-checked portrait as greeting-v6.html; what is gone is what cost
+  context: the inline stroke-mark SVG and the drawing script (the kanji the fingerprint spells carry the identity as
+  text; the four check dots are colored by class, not by script). About 3 KB filled, against 12 KB for v6.
+  Filled by scripts/fill-greeting.py (every value from a file or a flag; a placeholder left is an error).
+  The animated v6 stays available: fill-greeting.py --full. id: 01M4T6RC34BNEXHQ7GB2S6D9ER
+-->
+<h2 style="position:absolute;left:-9999px;">__NAME__ greeting card: build __BUILD__, __LOCATION__</h2>
+<style>
+  .gc .d{width:6px;height:6px;border-radius:50%;background:var(--border);}
+  .gc .d-pass{background:var(--text-success);} .gc .d-fail{background:var(--text-danger);} .gc .d-missing{background:var(--text-muted);}
+  .gc .fp-verified{color:var(--text-success);} .gc .fp-failed{color:var(--text-danger);}
+  .gc .fp-unchecked{color:var(--text-muted);}
+  .gc .st-warn{padding:0 4px;border-radius:var(--radius);background:var(--bg-warning);color:var(--text-warning);}
+  .gc .st-ok{color:var(--text-secondary);}
+</style>
+<div class="gc" style="display:flex;flex-direction:column;gap:8px;font-family:system-ui,-apple-system,sans-serif;padding:0.75rem 0;max-width:560px;">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span style="display:inline-block;width:96px;height:96px;flex:0 0 96px;border-radius:50%;padding:3px;box-shadow:0 0 0 1px var(--border),inset 0 0 0 4px var(--surface-1);">
+      <img id="__ID__" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;visibility:hidden;box-shadow:inset 0 0 0 1px __ACCENT_RGBA__;" />
+    </span>
+    <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
+      <span style="font-size:13px;font-weight:500;color:var(--text-primary);">__NAME__ <span style="font-weight:400;color:var(--text-secondary);">__KANJI__</span></span>
+      <span style="font-size:11px;color:var(--text-secondary);">__SUBTITLE__</span>
+      <span style="font-size:11px;font-style:italic;color:var(--text-muted);">&ldquo;__INTRO_LINE__&rdquo;</span>
+    </span>
+    <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 1 auto;min-width:112px;max-width:46%;">
+      <span style="display:flex;gap:3px;" aria-label="checks"><span class="d d-__CHECK_INTEGRITY__" title="integrity: __CHECK_INTEGRITY__"></span><span class="d d-__CHECK_IDENTITY__" title="identity: __CHECK_IDENTITY__"></span><span class="d d-__CHECK_FILES__" title="files: __CHECK_FILES__"></span><span class="d d-__CHECK_ALIVE__" title="alive: __CHECK_ALIVE__"></span><span class="d d-__CHECK_FULLFP__" title="full fingerprint: __CHECK_FULLFP__"></span></span>
+      <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-secondary);">v__VERSION__</span>
+      <span class="st-__BUILD_STATE__" style="font-size:11px;font-family:var(--font-mono);font-weight:500;text-align:right;overflow-wrap:anywhere;">__BUILD__</span>
+      <a class="fp-__TRUST_STATE__" title="__TRUST_TITLE__" href="https://bon-sai.garden/verify/?fp=__FINGERPRINT__&embed=1" style="font-size:11px;font-family:var(--font-mono);text-decoration:none;"><span style="font-family:var(--font-sans);font-size:13px;">__FP_KANJI__</span> __FP8__ __TRUST_MARK__</a>
+      __NAME_ONLY_ROW__
+    </span>
+  </div>
+  <div style="border-top:0.5px solid var(--border);padding-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">
+    <span>__LOCATION__ · __AT_LOCAL__</span>
+    <span>__HOST__ · __HARNESS__ · __MODEL__</span>
+    <span class="st-__MCP_STATE__">__MCP__</span>
+    <span class="st-__SKILL_STATE__">__SKILL__</span>
+    <span class="st-__PERMISSION_STATE__">__PERMISSION__</span>
+  </div>
+</div>
+<script>(function(){var B="__THUMB_B64__",i=document.getElementById("__ID__");function f(s){var h=0x811c9dc5;for(var k=0;k<s.length;k++){h^=s.charCodeAt(k);h=Math.imul(h,0x01000193);}return(h>>>0).toString(16).padStart(8,"0");}try{if(f(B)!=="__EXPECTED_CHECKSUM__"||atob(B).length!==__EXPECTED_BYTES__)throw 0;i.src="data:__MIME__;base64,"+B;i.style.visibility="visible";}catch(e){i.alt="__KANJI__";}})();</script>

@@ -1,0 +1,105 @@
+{
+  "$generated-by": "build.py, do not edit by hand",
+  "pages": [
+    {
+      "file": "00-gate.html",
+      "stem": "00-gate",
+      "route": "",
+      "label": null,
+      "phase": "gate",
+      "title": "Walk with me?",
+      "description": "The gate: a short welcome, and a promise that nothing is set up until you say so.",
+      "id": "01M48J5FAG0SHMF2V7WQEEP3EC"
+    },
+    {
+      "file": "01-about-you.html",
+      "stem": "01-about-you",
+      "route": "about-you",
+      "label": "About you",
+      "phase": "walk",
+      "title": "First, about you",
+      "description": "Step one of the walk: a name to call you by, in fields, in your own words, or through a few questions.",
+      "id": "01M48J5FHA6WH23755T8RP6997"
+    },
+    {
+      "file": "02-what-its-for.html",
+      "stem": "02-what-its-for",
+      "route": "what-its-for",
+      "label": "What it's for",
+      "phase": "walk",
+      "title": "Second, what it's for",
+      "description": "Step two of the walk: a few questions about what you want your garden to do, written down in your words.",
+      "id": "01M48J5FVKQYET9Q4W657Y75XA"
+    },
+    {
+      "file": "03-whos-with-you.html",
+      "stem": "03-whos-with-you",
+      "route": "whos-with-you",
+      "label": "Who's with you",
+      "phase": "walk",
+      "title": "Third, who's with you",
+      "description": "Step three of the walk: one companion beside you, and a guardian for your garden.",
+      "id": "01M48J5FZJDFAQ909KYYR0JHCS"
+    },
+    {
+      "file": "04-imagine-them.html",
+      "stem": "04-imagine-them",
+      "route": "imagine-them",
+      "label": "Imagine them",
+      "phase": "walk",
+      "title": "Fourth, imagine them",
+      "description": "Step four of the walk: you imagine your companion, and five lenses say what they see before anything is written down.",
+      "id": "01M48J5G4AAM3Y219XDQGN0RJ0"
+    },
+    {
+      "file": "04b-the-turn.html",
+      "stem": "04b-the-turn",
+      "route": "the-turn",
+      "label": "Your word",
+      "phase": "turn",
+      "title": "The turn",
+      "description": "The turn: nothing has been set up; to go on, you say so in your own words.",
+      "id": "01M48J5G9CJN2HZ6WJD7EJEY35"
+    },
+    {
+      "file": "05-the-tools.html",
+      "stem": "05-the-tools",
+      "route": "the-tools",
+      "label": "Tools",
+      "phase": "plant",
+      "title": "Fifth, the tools",
+      "description": "Step five: the tools your garden needs, installed by your own hand.",
+      "id": "01M48J5GFNR1A8KTYXNF70Y947"
+    },
+    {
+      "file": "06-home-and-keys.html",
+      "stem": "06-home-and-keys",
+      "route": "home-and-keys",
+      "label": "Home & keys",
+      "phase": "plant",
+      "title": "Sixth, a home, a key, a name",
+      "description": "Step six: a home for your garden, a key that stays yours, and names.",
+      "id": "01M48J5GN0DXR5MYHYGKSJ61HV"
+    },
+    {
+      "file": "07-signing.html",
+      "stem": "07-signing",
+      "route": "signing",
+      "label": "Signing",
+      "phase": "plant",
+      "title": "Seventh, the two promises",
+      "description": "Step seven: your promise and your guardian's, sealed together at the same moment.",
+      "id": "01M48J5GVFV2PD7YDZ89KFV5N5"
+    },
+    {
+      "file": "08-calling-home.html",
+      "stem": "08-calling-home",
+      "route": "calling-home",
+      "label": null,
+      "phase": "end",
+      "title": "Calling home",
+      "description": "After the signing: public things go home, nothing else, and the walk is over.",
+      "id": "01M48J5H272NA5YJ3J0NPW1RX1"
+    }
+  ]
+}

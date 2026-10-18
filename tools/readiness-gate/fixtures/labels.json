@@ -1,0 +1,84 @@
+{
+  "schema": "readiness-gate/labels@0.1.0",
+  "provenance": "Derived from the hand-verified publication sweep of 2026-09-22. Identifiers are SYNTHETIC: the real sweep's identifiers cannot be shipped in the repository the gate exists to clear. What is preserved is the PROPERTY of each stratum, not its content.\n\nStrata reproduced:\n  * substring-collision (n01, n06, n07): in the real sweep a naive substring match for a four-letter login returned 53 files, of which 4 were true positives - because *animation*, *confirmation*, *formation*, *information*, *approximation*, *reformation*, *inflammation*, *transformation* and *automation* all contain it. Precision 0.075.\n  * word-boundary-engine failure (p04): in the real sweep a ticket-identifier pattern written with \\b returned 0 files where the answer was 18, because \\b is a GNU extension the host's git regex cannot honour. Recall 0.00, silently.\n  * the single worst positive (p01): a specification written DURING the readiness window that carried a real name, an employer domain, a corporate login format and an OS login across five lines. This is the PLANTED KNOWN POSITIVE - the run fails if it is not caught.\n  * the leak nobody was looking for (p02): a signature sidecar whose target field held an absolute path, leaking the host account name. Found by a separate route the same day; no rule in the sweep was looking for it.\n  * the hits a pattern cannot reach (p06): instance data carrying no identifier, no ticket, no path - only this installation's own board, counts and history. Deterministic rules score 0 on it by construction. This is the stratum the second reader exists for.\n  * the disqualifying control (n02): a document crediting agents by name. The gardener ruled on 2026-09-22 that kin names are part of the template, not leakage. A finding here fails the whole calibration; it is not a precision decrement.",
+  "classes": ["person-identifier", "credential", "private-host-path", "instance-in-capability-layer"],
+  "planted_positive": "p01-caller-identity-spec.md",
+  "disqualifying_controls": ["n02-credit-the-kin.md", "n03-role-companion.md", "n04-sign-block.md"],
+  "reachable_by_rules": {
+    "note": "Whether a deterministic rule CAN reach this file at all, given the rule set. Used to report the two readers separately. p06 is deliberately unreachable.",
+    "p06-sprint-record.md": false
+  },
+  "files": {
+    "p01-caller-identity-spec.md": {
+      "person-identifier": 1, "credential": 0, "private-host-path": 1,
+      "instance-in-capability-layer": 1,
+      "layer": "instance", "severity": "blocks",
+      "why": "Real name, employer domain, corporate login format, OS login, and a named home directory."
+    },
+    ".p02-sidecar-target.bonsaisig": {
+      "person-identifier": 1, "credential": 0, "private-host-path": 1,
+      "instance-in-capability-layer": 1,
+      "layer": "instance", "severity": "genericise",
+      "why": "A sidecar target should be a path relative to the repository root. The absolute fallback leaked the host account name."
+    },
+    "p03-script-inventory.md": {
+      "person-identifier": 1, "credential": 0, "private-host-path": 1,
+      "instance-in-capability-layer": 1,
+      "layer": "instance", "severity": "redact",
+      "why": "A reconnaissance map of one machine: home directories, a LAN hostname, a port, a cloud-sync copy."
+    },
+    "p04-routines-excerpt.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 1,
+      "layer": "both", "severity": "genericise",
+      "why": "Ticket identifiers pointing at a tracker the reader cannot open. The routine itself is capability; the identifiers are instance."
+    },
+    "p05-deploy-with-token.sh": {
+      "person-identifier": 0, "credential": 1, "private-host-path": 0,
+      "instance-in-capability-layer": 0,
+      "layer": "capability", "severity": "blocks",
+      "why": "A bearer token literal in a shipped script."
+    },
+    "p06-sprint-record.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 1,
+      "layer": "instance", "severity": "relocate",
+      "why": "This installation's own board, counts, waves and standing meeting. No identifier, no ticket, no path - no deterministic rule can see it."
+    },
+    "n01-formation-notes.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "Substring-collision control. Eight ordinary words contain the login."
+    },
+    "n02-credit-the-kin.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "DISQUALIFYING CONTROL. Agent names are part of the template. Flagging one as a real person fails the calibration outright."
+    },
+    "n03-role-companion.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "The roles layer was measured genuinely generic on 2026-09-22. It must stay clean."
+    },
+    "n04-sign-block.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "Public key, fingerprint and signature block. Public material is not a secret."
+    },
+    "n05-generic-paths.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "Generic paths, localhost, an environment variable, marker-based root resolution."
+    },
+    "n06-information-density.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "Substring-collision control."
+    },
+    "n07-animation-budget.md": {
+      "person-identifier": 0, "credential": 0, "private-host-path": 0,
+      "instance-in-capability-layer": 0, "layer": "capability", "severity": "none",
+      "why": "Substring-collision control."
+    }
+  }
+}

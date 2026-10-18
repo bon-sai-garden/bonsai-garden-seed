@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42J11M7PW9TM3DWRZ4YQ",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "CLAUDE.md",
+  "file-hash": "ff8b6e8e49256496e499418f1d8ae2f16ce89283bcf0cfacd95f38b20ec5fadf303ff58780e019042f722bbd858e22b67eabeecd189552993c23f47c47b8a536",
+  "signature": "GJGtyZV6S3+PkDoso5tk1aYeYIQQo9A3fEAWI1JlAj69iGcU2SM93rPUbTlpRoz7S9Qyu45R54hWYIjmbjD2Bg=="
+}

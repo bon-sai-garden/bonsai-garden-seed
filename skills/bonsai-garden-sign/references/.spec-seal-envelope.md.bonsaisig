@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M39M8YVYWYXFH633T3FSQACW",
+  "signer": "mori-shin",
+  "role": "owner",
+  "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/references/spec-seal-envelope.md",
+  "file-hash": "4914d9de2ff56a14ec36c78eb676ef868fae20c3aaa7e50e65e8e4a293c0f10e683d95d6aaccd9e2f9424defdf867ab3000385016bf4c7269838e11ef6daca20",
+  "signature": "dZRRPsRnlv5M+gmgXC+/aKsb+yGsoVddSKRXaAu5H7OVwV8xaPV/dSepzslJCLMMpsBSQYa13XYL6NBQdeecBA=="
+}

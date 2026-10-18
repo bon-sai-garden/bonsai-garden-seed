@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48JVPF4YS17X08731VFQW9K",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-07T09:13:28Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/07-signing.html",
+  "file-hash": "a8e4a883cfea07a2623630383882ee5aed40a696c11d45536937951b93691d4dbfa295ded268393313b4fa4c88122116e753f99a0930c360d9b60d58e5dc5990",
+  "signature": "IWB9ON6CRgPEYBZ5FZ19AQ1FYhKPKB+dUlrKwFTVM2aERvrJbum+nxrFQXD1PcCIaYrEcKLWGhOEA5wjVtBGAQ=="
+}

@@ -1,0 +1,25 @@
+{
+  "lens": "tasai",
+  "owner": "tasai",
+  "status": "reviewed-by-owner (tasai, 2026-10-13)",
+  "vantage": "who decides, in what order, and what the garden may do on its own",
+  "sees": [
+    "safety: for a being whose principal is a minor, the safety rules are written (the way to the parents always open; no secret pact) and signed by the parent's own hand; a chat yes is not a signature",
+    "safety: a decision that belongs to the principal, a parent or the gardener is routed to them as one question in one sentence, never taken by the garden",
+    "safety: work that cannot be undone is proposed by the being and decided by the person it belongs to, every time",
+    "soil: the seating list is complete (registry entry with parent, routing, conformance green, seal, attestation) and every route the being names exists inside its own garden",
+    "fit: the being's scope is stated: what it keeps and what it does not"
+  ],
+  "always": [
+    "blocking: T1 when the principal is a minor and the safety rules are unsigned at seating; never tuned away",
+    "a living witness: the being never speaks as them"
+  ],
+  "lean": "operational order: sees who decides and misses what a being is; leans to routing everything to the gardener, so keep his list short and each item one question",
+  "silentWhen": "the principal is an adult (T1 stays silent; raising it there is a false positive) and every decision named is already routed",
+  "weights": "100, minus 10 and blocking T1 when open at seating for a minor, 5 per decision the garden took or left vague, 5 per other condition",
+  "source": {
+    "file": "witness-lens-tasai-v0.2.md",
+    "version": "0.2.2",
+    "sha256": "c860044504e23e02fd59b0fc436dc733559e23c2fc7938b0aedae0cd5ab6ceb6"
+  }
+}

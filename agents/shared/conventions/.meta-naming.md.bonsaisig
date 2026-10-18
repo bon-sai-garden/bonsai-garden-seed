@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGE",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:38Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/shared/conventions/meta-naming.md",
+  "file-hash": "229829158d926bcdff3bf8e72a553d4bacb2578542fca700affeb021bf85984151ea073d8c34a721fbb16563e1d3dba1fd1bc3a09ad59c7076b43dc8ce734c43",
+  "signature": "sD7NhtpLTv/hqMB9r5GMF6br5aqNOXiTjHCn8AghfKQLt0Q0hUFNsAwa93MN6S6MwYTkYZTgyuLTR/A+BUHGCQ=="
+}

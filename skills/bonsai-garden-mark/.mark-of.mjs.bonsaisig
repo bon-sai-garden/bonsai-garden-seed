@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43K9GWDT1FBPF8YKV579",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:30:02Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/mark-of.mjs",
+  "file-hash": "2b6d3040de6794cdcce9edaa7ce5c85db02084a8d78c5f5cb586a27e52520517108cae2002dffafcff692345c312c89111fbb5bbcbb4b30c337bf1e7d28f4d41",
+  "signature": "iqBD0WQXC1BmUfvpD2FPuao+cAoz/9dFGERPyNQxZpnNEKaIOVsqE8jzStqxt46TpLSnR/84zjAzebrwluhGCw=="
+}

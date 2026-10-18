@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43N91ZZ6JDRTWG59GZ54",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:37:51Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/SKILL.md",
+  "file-hash": "e709c98a5cd69088a025cee12d5de0bf74eddad38fa5842b21c7bff64b1502d7a1705032e010b6860a4565fa229c87189a1d0f9dbd269031aa46a660d4b7a989",
+  "signature": "5aINR6gza560NsKM5UVftg5WaLVqbJh4krADTAipEBjBLJSZijsMBe7tk84iHCGLPDQfLmgp2zigd0dbLlUPAQ=="
+}

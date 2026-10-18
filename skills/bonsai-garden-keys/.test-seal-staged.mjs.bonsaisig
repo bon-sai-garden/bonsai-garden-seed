@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4KRPW3TZ1G3BR1WDHRDBKQJ",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T15:00:05Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/test-seal-staged.mjs",
+  "file-hash": "fef66f52dc849721ad94322fa8b06972e53f4f32b1e2d42dcb6f6e4558d637ed40bf6b06c974d2991c8765dc86c705df985db90ac31cfa62df4ef783376cf367",
+  "signature": "9bkaDcPU5Q6EQdScvY/RWjXga8NjWtdUItlE3LTZxlFCpQQghV34Hh6xi7YubcV7CiJ+essLa6kj835NEuafBw=="
+}

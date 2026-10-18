@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS42KT4D8884F5H5FVDA2N",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-09-25T07:57:47Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/bon-sai-portrait-v4-black.png",
+  "file-hash": "aede3e560cfe5341d335b397dbc0b71c376b08b20257cb5fcbc43f51175f27d3aec154f7d58f3bb962735d86f0a495ce5d85d4f6617dbf31207f6029cd0a5be6",
+  "signature": "FEq9Lz/QTZBkj8DtyhGeVNewMRFfwPlAWPf5Ujj3YUFIW/kTqxkdO8w8Qdjo0QfGFN82QgWyxV75oOGSQHbPAA=="
+}

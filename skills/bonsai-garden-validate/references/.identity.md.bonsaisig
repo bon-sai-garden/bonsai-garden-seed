@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M2D3H97345GHSACB5EESGVXR",
+  "signer": "fuji-shin",
+  "role": "owner",
+  "fingerprint": "02005daa83f430ae21122e42cea925a0",
+  "timestamp": "2026-10-07T05:54:24Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-validate/references/identity.md",
+  "file-hash": "9f25bd6f80147d24e86056461ab3f52b625d9b8c72f1562aa62a57b1042bfafb1d5044642d8b728909632fbbfb38566418e559dc4f70f7970416e229721ba4e1",
+  "signature": "bEomNjQ+bqldtuC24D1q//5blP5gXhUMqSe0l0PggVEmxb+Bqygki7j1PWZ5tIqjUcefK8/1+BdUhAPtOKy1Cw=="
+}

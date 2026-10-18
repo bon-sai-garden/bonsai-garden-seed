@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3A3WVPVMG7E7CBZXXB1TQ0X",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-16T14:33:54Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-strategic-context/SKILL.md",
+  "file-hash": "70a91b17c1cb794b185c7d51787f25025a060af781df03a8f1dbe4655d01eb9d73e70dee118f175ff359f9359b5b5ff4f3823014a819600f22f93661141b278a",
+  "signature": "j81a75SDxvMMN1DdaaMjiI52THQo6fOzMyd+jwzpiwwGNuJst4UTWmIhVMbSl4k+KmjZLKe7a8gBBj+auO9PCA=="
+}

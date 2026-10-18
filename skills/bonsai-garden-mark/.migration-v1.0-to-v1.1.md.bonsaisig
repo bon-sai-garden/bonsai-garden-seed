@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KT6QCN5APAZQ92RTFSA2P5MV",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/migration-v1.0-to-v1.1.md",
+  "file-hash": "95e9ca2d95eee6ab3cd8b1f30f838fe7b70f5cf427d7868a28a1d76b5685591ede8c42d5b020ba012b631433744f97681986de4631e3dee8b7e5df965a39b199",
+  "signature": "3kiYeBposD6AW6RZN5v9ugAp5iP5yQFRndymCQztmfKc1BlvcAMT1hJZlvb1AsBGutWSxCgXddZRzlV2euepCg=="
+}

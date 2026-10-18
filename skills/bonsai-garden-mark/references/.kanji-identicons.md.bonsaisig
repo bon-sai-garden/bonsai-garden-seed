@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KT6QCNAMYVCFXJJ5SPV8M3HP",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-17T11:33:43Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/references/kanji-identicons.md",
+  "file-hash": "26707c9f767b368ac87db38ea3da5b1d3573b8c0fa276e744e171373a51727f4d3a2b096db38dc49a8a85b0deaa21756e40b729b634ca88c0837923e345739d5",
+  "signature": "Jotnd7OoJrZbBj8MXVPYGHAICCe/czRDXOMHYjy59JLUQswUO6F5+GTlzPlCyF3n4+hEcFfi6UM/u5LPzDvJDg=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43XNNHVMTG1MC8CZ4G1J",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-13T13:49:13Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/bonsai-core-plugin.json",
+  "file-hash": "eb22d6c938f007aa0a84642ff7d74ee410a900506d6b6af3c9907203b5ab245c03024896adeae58a6797be8990a592c97ca56427838eb8a807e0d0edf04d78de",
+  "signature": "LJyi15GK4Ak7DnwOJo5XAjNALJaIC7CzYVDjzLlVWf01BKWnp/hqeBxPRSvsdrrUU70/Uoy836rOHONH35JsCA=="
+}

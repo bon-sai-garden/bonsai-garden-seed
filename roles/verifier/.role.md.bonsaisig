@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M46651R7NGWNFEF76T3C7VN4",
+  "signer": "fuji-shin",
+  "role": "owner",
+  "fingerprint": "02005daa83f430ae21122e42cea925a0",
+  "timestamp": "2026-10-16T14:38:23Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/verifier/role.md",
+  "file-hash": "d6b9891452785ccd385a2dc2ecec42a874e0c2610a9b0996f72e3cdbdffcbe5a2db9f67233e87bac93e9d6dc8d51a57286da16bf6b0137443bf41fa06cb44689",
+  "signature": "h6XUfWqXqn9p9lED499xzaE8RyzXT/tlNpqnUsN8wN2aDLE+i81KS1yBqKF8IyegCMJM8fD60swqQqAgq1VoDw=="
+}

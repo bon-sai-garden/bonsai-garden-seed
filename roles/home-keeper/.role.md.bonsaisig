@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M47W2630GXSRR8FRFRFSN55S",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T14:28:56Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/home-keeper/role.md",
+  "file-hash": "ddd4f03b7a1601b6ea873f67b63bc59be1cb7fa6ad8de3e5e40a41fc1cd3aac2aab05069bef166d499fd96d8916816bad94f23d6f0413eaf13d91eaf33b1858f",
+  "signature": "m3IHpqg0irNzMreyqCW+DrMKSz41brstsDNv/nRrvsM8oLwT5qn3VtjDKIGdGdyYMGV8Ch0cUn4Ef/X+yGngCw=="
+}

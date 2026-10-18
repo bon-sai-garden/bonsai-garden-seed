@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bonsai Garden — Core</title>
+  <meta name="description" content="The core layer of Bonsai Garden — shared methodology, design system, and operational framework for cultivating AI-native teams.">
+  <link rel="preload" href="agents/bonsai/assets/bon-sai-portrait-v4-transparent.png" as="image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="xp/bonsai-core.css">
+  <style>
+
+    /* =================================================================
+       INTRO OVERLAY
+       ================================================================= */
+
+    /* Scrollbar — dark to match bg, gutter reserved to prevent layout shift */
+    html {
+      scrollbar-gutter: stable;
+      scrollbar-color: #07080d #07080d;
+      scrollbar-width: thin;
+    }
+    ::-webkit-scrollbar { width: 8px; background: #07080d; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 99px; }
+    ::-webkit-scrollbar-track { background: #07080d; }
+
+    body.intro-active { overflow: hidden; }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #07080d;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, sans-serif;
+      scrollbar-width: none; /* no layout shift when overflow-y:auto triggers a scrollbar */
+    }
+    .intro::-webkit-scrollbar { display: none; }
+
+    /* Breathing background */
+    .attract-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 65%, rgba(245,166,35,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 35%, rgba(74,158,255,0.05) 0%, transparent 55%),
+        #07080d;
+      animation: kx-attract-bg 12s ease-in-out infinite;
+    }
+
+    /* Firefly particles */
+    .attract-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: #f5a623; /* fireflies: always amber; each fly sets its own warm hue inline (2026-10-07) */
+      box-shadow: 0 0 10px 3px rgba(255,190,80,0.55), 0 0 22px 8px rgba(255,160,40,0.25);
+      opacity: 0;
+      animation: kx-particle-rise 3s ease-out infinite;
+    }
+
+    /* Center content — pinned to viewport center, never in flex flow */
+    .attract-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 64px;
+    }
+    /* LED ring wrap — sized by logo (flow); ring/portrait absolute beyond */
+    .attract-logo-wrap {
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(120px, 34vmin, 400px);
+      height: clamp(120px, 34vmin, 400px);
+    }
+
+    /* halo removed temporarily — Aruji 2026-09-03
+    */
+
+    /* 16-dot LED ring — SAME position and animation always */
+    .attract-led-ring {
+      position: absolute;
+      width: clamp(200px, 55vmin, 650px);
+      height: clamp(200px, 55vmin, 650px);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      animation: kx-led-ring-rotate 7s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Amber ring fades out on transition */
+    .attract-led-ring--amber {
+      transition: opacity 3s ease 1.2s;
+    }
+    .attract-led-ring--amber.fade-out { opacity: 0; }
+
+    /* Green ring fades in on transition */
+    .attract-led-ring--green {
+      opacity: 0;
+      transition: opacity 3s ease 1.2s;
+    }
+    .attract-led-ring--green.fade-in { opacity: 1; }
+
+    /* Logo image — in center of ring (position:relative gives wrap its height) */
+    .attract-logo {
+      position: relative;
+      z-index: 1;
+      width: clamp(120px, 34vmin, 400px);
+      height: clamp(120px, 34vmin, 400px);
+      object-fit: contain;
+      transition: opacity 0.55s ease;
+    }
+    .attract-logo.fade-out { opacity: 0; }
+
+    /* Portrait — 2x size, same centering as ring */
+    .attract-portrait {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      width: clamp(200px, 65vmin, 780px);
+      height: calc(clamp(200px, 65vmin, 780px) * 0.5629); /* 941÷1672 — no image decode needed */
+      object-fit: contain;
+      object-position: center center;
+      border-radius: 0;
+      box-shadow: none;
+      opacity: 0;
+      transition: opacity 0.9s ease 0.3s;
+    }
+    .attract-portrait.fade-in { opacity: 1; }
+
+    /* Walk CTA — 30% smaller, pushed lower */
+    .attract-cta {
+      display: inline-block;
+      margin-top: 80px;
+      padding: 15px 40px;
+      background: #f5a623;
+      border: none;
+      border-radius: 9999px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.84rem, 1.75vw, 1.66rem);
+      font-weight: 700;
+      color: #0a0b0c;
+      cursor: pointer;
+      /* animation paused */
+      letter-spacing: 0.04em;
+      transition: background 0.15s ease, transform 0.12s ease, opacity 0.4s ease;
+    }
+    .attract-cta:hover  { background: #ffc857; }
+    .attract-cta:active { transform: scale(0.96); }
+    .attract-cta.fade-out { opacity: 0; pointer-events: none; }
+
+    /* Identity card layer — invisible on splash, fades in after walk */
+    .attract-manifesto-scroll {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      overflow: hidden;
+      scrollbar-width: none;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.7s ease 0.2s;
+    }
+    .attract-manifesto-scroll::-webkit-scrollbar { display: none; }
+    .attract-manifesto-scroll.open {
+      overflow-y: auto;
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    /* Manifesto text — starts below portrait, scrolls up into view */
+    .attract-manifesto {
+      padding-top: calc(50vh + clamp(100px, 28vmin, 320px));
+      padding-left: 64px;
+      padding-right: 64px;
+      padding-bottom: 120px;
+      max-width: calc(54ch + 128px);
+      margin: 0 auto;
+      text-align: left;
+    }
+    .intro-heading {
+      font-size: clamp(1.0rem, 2vw, 1.25rem);
+      font-weight: 700;
+      color: #f0ece5;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      line-height: 1.35;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .intro-heading em { font-style: italic; color: rgba(240,236,229,0.85); }
+    .intro-heading.show { opacity: 1; transform: translateY(0); }
+
+    .intro-para {
+      font-size: clamp(0.875rem, 1.35vw, 0.975rem);
+      line-height: 1.85;
+      color: rgba(226,221,213,0.76);
+      margin-bottom: 1rem;
+      opacity: 0;
+      transform: translateY(7px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .intro-para strong { color: rgba(240,236,229,0.90); font-weight: 600; }
+    .intro-para em { font-style: italic; color: rgba(226,221,213,0.84); }
+    .intro-para.show { opacity: 1; transform: translateY(0); }
+
+    .intro-rule {
+      margin: 1.5rem 0;
+      border: none;
+      border-top: 1px solid rgba(95,115,60,0.3);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .intro-rule.show { opacity: 1; }
+
+    .intro-para--closing {
+      font-style: italic;
+      color: rgba(226,221,213,0.52);
+    }
+
+
+    /* ── After-walk reveal: identity mark + button swap ──────────────────── */
+    /* Identity mark — absolutely positioned between LED ring and button */
+    .attract-identity {
+      position: absolute;
+      /* Just below the logo-wrap bottom, above the button */
+      top: calc(50% + clamp(60px, 17vmin, 200px) - 1rem);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      color: rgba(240,236,229,0.82);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+      text-align: center;
+      pointer-events: none;
+    }
+    .attract-identity.show { opacity: 1; }
+
+    /* CTA slot: Walk in normal flow sets width; Enter absolute over same spot */
+    .attract-cta-slot {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 80px;
+    }
+    .attract-cta-slot .attract-cta  { margin-top: 0; }
+    .attract-cta-slot .intro-enter  {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      margin-top: 0;
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .intro-enter {
+      margin-top: 2.25rem;
+      margin-bottom: 2rem;
+      padding: 12px 40px;
+      background: transparent;
+      border: 1px solid rgba(95,115,60,0.45);
+      border-radius: 9999px;
+      color: rgba(226,221,213,0.68);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease, border-color 0.25s, color 0.25s, background 0.25s;
+      display: inline-block;
+    }
+    .intro-enter.show { opacity: 1; pointer-events: auto; }
+    .intro-enter:hover {
+      border-color: rgba(95,115,60,0.85);
+      color: #e2ddd5;
+      background: rgba(95,115,60,0.08);
+    }
+
+    /* Intro exit */
+    .intro--exit {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transition: opacity 0.8s ease !important;
+    }
+
+    /* Walk phase — stop bg drift; layout frozen (scroll is in separate layer) */
+    .intro--walk .attract-content {
+      animation: none;
+    }
+
+    /* =================================================================
+       KEYFRAMES
+       ================================================================= */
+
+    @keyframes kx-attract-bg {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.025); }
+    }
+    @keyframes kx-attract-drift {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-10px) scale(1.01); }
+    }
+    @keyframes kx-particle-rise {
+      0%   { opacity: 0;   transform: translateY(0) scale(1); }
+      20%  { opacity: 0.85; }
+      100% { opacity: 0;   transform: translateY(-100px) scale(0.2); }
+    }
+    @keyframes kx-led-ring-rotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    @keyframes kx-pulse-glow {
+      0%, 100% { opacity: 0.7; box-shadow: 0 0 0 0 rgba(245,166,35,0); }
+      50%       { opacity: 1;   box-shadow: 0 0 48px 12px rgba(245,166,35,0.20); }
+    }
+    @keyframes kx-button-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,166,35,0); }
+      50%       { box-shadow: 0 0 32px 8px rgba(245,166,35,0.30); }
+    }
+
+
+    /* ── Small audio toggle — visible in intro before entering garden ── */
+    .intro-audio-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 10;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9999px;
+      color: rgba(240,236,229,0.38);
+      line-height: 0;
+      padding: 9px 12px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .intro-audio-btn .i-on { display: none; }
+    .intro-audio-btn.playing .i-on { display: block; }
+    .intro-audio-btn.playing .i-off { display: none; }
+    .intro-audio-btn:hover  { color: rgba(240,236,229,0.7); border-color: rgba(255,255,255,0.22); }
+    .intro-audio-btn.playing { color: rgba(95,115,60,0.9); border-color: rgba(95,115,60,0.4); }
+
+  </style>
+</head>
+<body class="intro-active">
+
+  <!-- ================================================================== -->
+  <!-- INTRO OVERLAY                                                        -->
+  <!-- ================================================================== -->
+  <div class="intro" id="intro" role="dialog" aria-label="Welcome to Bonsai Garden" aria-modal="true">
+
+    <!-- Sound: off by default, a speaker mark turns the garden loop on and off (the Aruji, 2026-10-08) -->
+    <button class="intro-audio-btn" id="intro-audio-btn" type="button" onclick="toggleAudio()" title="Garden soundscape" aria-label="Sound off" aria-pressed="false">
+      <svg class="i-off" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+      <svg class="i-on" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4Z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.8a7.5 7.5 0 0 1 0 10.4"/></svg>
+    </button>
+
+    <div class="attract-bg" id="attract-bg"></div>
+
+    <!-- Firefly particles: 24, as on a welcome screen (sizes 6 to 12 px, warm hues, a glow) -->
+    <div class="attract-particles" aria-hidden="true">
+      <div class="particle" style="left:4%;top:18%;width:6px;height:6px;background:hsl(34,100%,62%);animation-delay:0s;animation-duration:3s"></div>
+      <div class="particle" style="left:41%;top:71%;width:9px;height:9px;background:hsl(40,100%,66%);animation-delay:0.7s;animation-duration:3.6s"></div>
+      <div class="particle" style="left:78%;top:60%;width:12px;height:12px;background:hsl(46,100%,70%);animation-delay:1.4s;animation-duration:4.2s"></div>
+      <div class="particle" style="left:23%;top:49%;width:6px;height:6px;background:hsl(52,100%,62%);animation-delay:2.1s;animation-duration:4.8s"></div>
+      <div class="particle" style="left:60%;top:38%;width:9px;height:9px;background:hsl(34,100%,66%);animation-delay:2.8s;animation-duration:5.4s"></div>
+      <div class="particle" style="left:5%;top:27%;width:12px;height:12px;background:hsl(40,100%,70%);animation-delay:3.5s;animation-duration:6s"></div>
+      <div class="particle" style="left:42%;top:80%;width:6px;height:6px;background:hsl(46,100%,62%);animation-delay:4.2s;animation-duration:3s"></div>
+      <div class="particle" style="left:79%;top:69%;width:9px;height:9px;background:hsl(52,100%,66%);animation-delay:0.7s;animation-duration:3.6s"></div>
+      <div class="particle" style="left:24%;top:58%;width:12px;height:12px;background:hsl(34,100%,70%);animation-delay:1.4s;animation-duration:4.2s"></div>
+      <div class="particle" style="left:61%;top:47%;width:6px;height:6px;background:hsl(40,100%,62%);animation-delay:2.1s;animation-duration:4.8s"></div>
+      <div class="particle" style="left:6%;top:36%;width:9px;height:9px;background:hsl(46,100%,66%);animation-delay:2.8s;animation-duration:5.4s"></div>
+      <div class="particle" style="left:43%;top:25%;width:12px;height:12px;background:hsl(52,100%,70%);animation-delay:3.5s;animation-duration:6s"></div>
+      <div class="particle" style="left:80%;top:78%;width:6px;height:6px;background:hsl(34,100%,62%);animation-delay:4.2s;animation-duration:3s"></div>
+      <div class="particle" style="left:25%;top:67%;width:9px;height:9px;background:hsl(40,100%,66%);animation-delay:0.7s;animation-duration:3.6s"></div>
+      <div class="particle" style="left:62%;top:56%;width:12px;height:12px;background:hsl(46,100%,70%);animation-delay:1.4s;animation-duration:4.2s"></div>
+      <div class="particle" style="left:7%;top:45%;width:6px;height:6px;background:hsl(52,100%,62%);animation-delay:2.1s;animation-duration:4.8s"></div>
+      <div class="particle" style="left:44%;top:34%;width:9px;height:9px;background:hsl(34,100%,66%);animation-delay:2.8s;animation-duration:5.4s"></div>
+      <div class="particle" style="left:81%;top:23%;width:12px;height:12px;background:hsl(40,100%,70%);animation-delay:3.5s;animation-duration:6s"></div>
+      <div class="particle" style="left:26%;top:76%;width:6px;height:6px;background:hsl(46,100%,62%);animation-delay:4.2s;animation-duration:3s"></div>
+      <div class="particle" style="left:63%;top:65%;width:9px;height:9px;background:hsl(52,100%,66%);animation-delay:0.7s;animation-duration:3.6s"></div>
+      <div class="particle" style="left:8%;top:54%;width:12px;height:12px;background:hsl(34,100%,70%);animation-delay:1.4s;animation-duration:4.2s"></div>
+      <div class="particle" style="left:45%;top:43%;width:6px;height:6px;background:hsl(40,100%,62%);animation-delay:2.1s;animation-duration:4.8s"></div>
+      <div class="particle" style="left:82%;top:32%;width:9px;height:9px;background:hsl(46,100%,66%);animation-delay:2.8s;animation-duration:5.4s"></div>
+      <div class="particle" style="left:27%;top:21%;width:12px;height:12px;background:hsl(52,100%,70%);animation-delay:3.5s;animation-duration:6s"></div>
+    </div>
+
+    <!-- Center content — persists through all phases -->
+    <div class="attract-content" id="attract-content">
+
+      <!-- LED ring + image (logo → portrait, same position) -->
+      <div class="attract-logo-wrap" aria-hidden="true">
+
+        <!-- Amber ring -->
+        <svg class="attract-led-ring attract-led-ring--amber" id="led-amber" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle cx="130" cy="15"  r="7" fill="rgb(212,150,42)" fill-opacity="1.00"/>
+            <circle cx="174" cy="23.8"  r="7" fill="rgb(212,150,42)" fill-opacity="0.85"/>
+            <circle cx="211.3" cy="48.7"  r="7" fill="rgb(212,150,42)" fill-opacity="0.55"/>
+            <circle cx="236.2" cy="86"  r="7" fill="rgb(212,150,42)" fill-opacity="0.25"/>
+            <circle cx="245" cy="130" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="236.2" cy="174" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="211.3" cy="211.3" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="174" cy="236.2" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="130" cy="245" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="86"  cy="236.2" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="48.7"  cy="211.3" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="23.8"  cy="174" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="15"  cy="130" r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="23.8"  cy="86"  r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="48.7"  cy="48.7"  r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+            <circle cx="86"  cy="23.8"  r="7" fill="rgb(212,150,42)" fill-opacity="0.07"/>
+          </g>
+        </svg>
+
+        <!-- Moss-green ring (fades in on transition) -->
+        <svg class="attract-led-ring attract-led-ring--green" id="led-green" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <circle cx="130" cy="15"  r="7" fill="rgb(95,115,60)" fill-opacity="1.00"/>
+            <circle cx="174" cy="23.8"  r="7" fill="rgb(95,115,60)" fill-opacity="0.85"/>
+            <circle cx="211.3" cy="48.7"  r="7" fill="rgb(95,115,60)" fill-opacity="0.55"/>
+            <circle cx="236.2" cy="86"  r="7" fill="rgb(95,115,60)" fill-opacity="0.25"/>
+            <circle cx="245" cy="130" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="236.2" cy="174" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="211.3" cy="211.3" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="174" cy="236.2" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="130" cy="245" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="86"  cy="236.2" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="48.7"  cy="211.3" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="23.8"  cy="174" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="15"  cy="130" r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="23.8"  cy="86"  r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="48.7"  cy="48.7"  r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+            <circle cx="86"  cy="23.8"  r="7" fill="rgb(95,115,60)" fill-opacity="0.07"/>
+          </g>
+        </svg>
+
+        <!-- Bonsai Garden logo (fades out on walk) -->
+        <img src="bonsai-garden-logo.svg" alt="Bonsai Garden" class="attract-logo" id="attract-logo">
+
+        <!-- Bonsai portrait (transparent PNG, no box, fades in) -->
+        <img
+          src="agents/bonsai/assets/bon-sai-portrait-v4-transparent.png"
+          alt="Bonsai"
+          class="attract-portrait"
+          id="attract-portrait"
+        >
+      </div>
+
+      <!-- CTA slot — Enter is absolute-centered over Walk, no layout impact -->
+      <div class="attract-cta-slot">
+        <button class="attract-cta" id="intro-btn" onclick="beginWalk()">Walk with me</button>
+        <button class="intro-enter" id="intro-enter" onclick="enterGarden()">Enter the garden →</button>
+      </div>
+
+    </div><!-- end .attract-content -->
+
+    <!-- Identity mark — floats between LED ring and button, outside flex flow -->
+    <div class="attract-identity" id="attract-identity">盆才守神</div>
+
+
+
+  </div>
+
+
+  <!-- Garden soundscape — off by default, loop, never autoplays; the speaker mark above starts it -->
+  <audio id="garden-audio" loop preload="none">
+    <source src="xp/garden-loop.ogg" type="audio/ogg; codecs=opus">
+    <source src="xp/garden-loop.mp3" type="audio/mpeg">
+  </audio>
+
+
+
+  <script>
+    /* Garden soundscape: OFF by default and never started by the page. The speaker mark turns it on and off,
+       with a short fade (the Aruji, 2026-10-08). This page has only the one button; the garden page has its own. */
+    var gardenAudio = null;
+    var audioPlaying = false;
+    var audioFade = 0;
+    var AUDIO_VOL = 0.3;
+    function audioFadeTo(target, done) {
+      clearInterval(audioFade);
+      audioFade = setInterval(function () {
+        var d = target - gardenAudio.volume;
+        if (Math.abs(d) < 0.03) { gardenAudio.volume = target; clearInterval(audioFade); if (done) done(); return; }
+        gardenAudio.volume = Math.max(0, Math.min(1, gardenAudio.volume + (d > 0 ? 0.03 : -0.03)));
+      }, 60);
+    }
+    function paintAudioBtn(on) {
+      var ib = document.getElementById('intro-audio-btn');
+      if (!ib) return;
+      ib.classList.toggle('playing', on);
+      ib.setAttribute('aria-pressed', on ? 'true' : 'false');
+      ib.setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
+    }
+    window.toggleAudio = function () {
+      if (!gardenAudio) {
+        gardenAudio = document.getElementById('garden-audio');
+        if (!gardenAudio) return;
+        gardenAudio.volume = 0;
+      }
+      if (audioPlaying) {
+        audioPlaying = false; paintAudioBtn(false);
+        audioFadeTo(0, function () { gardenAudio.pause(); });
+      } else {
+        audioPlaying = true; paintAudioBtn(true);
+        gardenAudio.play().then(function () { audioFadeTo(AUDIO_VOL); })
+          .catch(function () { audioPlaying = false; paintAudioBtn(false); });   /* a browser that refuses: stay off */
+      }
+    };
+  (function () {
+
+    var intro          = document.getElementById('intro');
+    var ledAmber       = document.getElementById('led-amber');
+    var ledGreen       = document.getElementById('led-green');
+    var attractLogo    = document.getElementById('attract-logo');
+    var attractPortrait= document.getElementById('attract-portrait');
+    var attractManifest= document.getElementById('attract-manifesto');
+    var introBtn       = document.getElementById('intro-btn');
+    var header         = document.getElementById('site-header');
+
+    window.beginWalk = function () {
+      if (introBtn) introBtn.disabled = true;
+      introBtn.classList.add('fade-out');
+
+      /* Step 1 — logo fades, portrait fades in (same position/size) */
+      setTimeout(function () {
+        attractLogo.classList.add('fade-out');
+        attractPortrait.classList.add('fade-in');
+      }, 200);
+
+      /* Step 2 — LED color shifts: amber → moss green */
+      setTimeout(function () {
+        ledAmber.classList.add('fade-out');
+        ledGreen.classList.add('fade-in');
+        intro.classList.add('intro--walk'); /* halo + particle color shift */
+      }, 800);
+
+
+      /* Step 4 — identity mark then Enter button */
+      setTimeout(function () {
+        var id = document.getElementById('attract-identity');
+        if (id) id.classList.add('show');
+      }, 2000);
+      setTimeout(function () {
+        var en = document.getElementById('intro-enter');
+        if (en) en.classList.add('show');
+      }, 2700);
+    };
+
+    window.enterGarden = function () {
+      intro.classList.add('intro--exit');
+      setTimeout(function () {
+        window.location.href = 'garden.html';
+      }, 900);
+    };
+
+  }());
+  </script>
+
+</body>
+</html>

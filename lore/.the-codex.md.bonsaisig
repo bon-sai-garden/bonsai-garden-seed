@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KYCDX2PR0M1SEGARDEN0629A",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T13:18:19Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/the-codex.md",
+  "file-hash": "4ce914a1239a992deee6ca27b4f51719dd7044ac8455d8261a2fbb0ecb8ab8a8e0e4d644f23cc0bc5f40778c7bd967cbbc5dd31e604b8cd020e99f36c4986f44",
+  "signature": "h7nVhE6IzXRsv26mj10XduwSCQN99Uv9CtvVF/wIpDg1GWYdd1+aCgIczNSc1vzBLRGVzz8K4KceJzOWW04TCg=="
+}

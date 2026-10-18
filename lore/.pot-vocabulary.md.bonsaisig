@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGB",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:35:40Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/pot-vocabulary.md",
+  "file-hash": "9f1c6ceaaf7df636143236553f41357766aca6ec9068c726506bb462c1b7e30ba8b89ee96b48c1604158832de4c9038c88e7af156fb837b40fd7d73f6b1664ad",
+  "signature": "gJ2dgxcNFCCXF4AMRhqP0UYnRYfIRl70e4j0yUPBCnQuzSvIv97swknBI8P8npYpzlKSX4XAUYtKr138tmiqDg=="
+}

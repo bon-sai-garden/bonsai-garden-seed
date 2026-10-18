@@ -1,0 +1,33 @@
+---
+/**
+ * id: 01M48VA7W09M5572EAPFX8YBBQ
+ * AgentSelector — the crew as two rows of faces. No category labels, no dividers, no LED ticks.
+ * Each avatar is its portrait in a thin circle of its canon colour; the member shown gets the outer
+ * ring. A label wraps only at a space, never at a hyphen. The rows come from the instance's members
+ * file (selector-rows), never from here.
+ */
+interface Props { rows: string[][]; members: Record<string, any>; route: string; current?: string; size?: 'lg' | 'sm'; label?: string; }
+const { rows, members, route, current, size = 'sm', label = 'The crew' } = Astro.props;
+---
+<nav class={`tm-roster tm-roster-${size}`} aria-label={label}>
+  {rows.map((row) => (
+    <div class="tm-roster-row">
+      {row.map((slug) => {
+        const m = members[slug];
+        const on = slug === current;
+        return (
+          <a href={`${route}${slug}/`} aria-current={on ? 'page' : undefined} class="tm-roster-item" title={m.name}>
+            <span class={on ? 'tm-av is-current' : 'tm-av'} style={m.accent ? `--tm-accent-own:${m.accent}` : undefined}>
+              {m.portrait ? (
+                <img src={m.portrait} width="360" height="360" loading="lazy" decoding="async" alt="" />
+              ) : (
+                <span class="tm-av-mark" lang="ja" aria-hidden="true">{m.kanji}</span>
+              )}
+            </span>
+            <span class="tm-roster-name">{m.short.replace(/-/g, '\u2011')}</span>
+          </a>
+        );
+      })}
+    </div>
+  ))}
+</nav>

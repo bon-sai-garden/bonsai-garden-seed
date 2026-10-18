@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M586MMRG9C68RA1BE03HERT1",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-18T19:08:27Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/lint/biome-master.jsonc",
+  "file-hash": "db6f53cbcb20bf5907055ccb536e2085eef5e1168e535bc9f63800e0321f89967b0ed6588e40dcf7ad9e96402cea0159f8b8804e261b9ba7e2724c0f04bf95ab",
+  "signature": "nBqzRwfxeZN1R9LzL+KFSeK/7iC5EKawU6zzsR2lsc7zNM17n04ZC4O+R/T3SwZFemliCiQEs4vOaiDrjow5AA=="
+}

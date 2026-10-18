@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43NWBRBEMEN98BDBX0MJ",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:02:30Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/scripts/make-identity-cards.py",
+  "file-hash": "ab27b8b26ab0ef0c6ca9d574396d1f2c658cdc89dd2bd1ca7d47dc374c1f0ffb4d23bee1fc1e217325649a286ed94ebdfb0c39c1165c98224e3ccd6862526152",
+  "signature": "rJFQC3DFz/nbaA8d0jB71xYjSNB3Fdtl3pW4y1saHvo8k8W0qxSvScGWACygi4Dq3HMzoGf0v3ZFrSMtikKgAQ=="
+}

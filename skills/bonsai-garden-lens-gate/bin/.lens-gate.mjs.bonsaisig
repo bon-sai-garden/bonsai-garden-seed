@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4TC82K1WESC2FR0HQ85M0BQ",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:33Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-lens-gate/bin/lens-gate.mjs",
+  "file-hash": "dbebf103d77a77790b1344a082345bfcac164d330c2f496a8c0dd7c82c37d99695b480fdc64e525e4d3a454e532c3a92652f58088055e50f2a92e587224431c1",
+  "signature": "nNTiPqtP5za9usFE3kLIVTrjn0cq36HXUh2exslV6tQoCECi3u9dMDWzalLwyaGvkLf7rh7jXVvRKYLzmKQhBA=="
+}

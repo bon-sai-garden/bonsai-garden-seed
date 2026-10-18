@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M57WW90D8AFEK7TPRN265ZCN",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-18T20:41:10Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "build/bonsai-garden-core.zip.sha256",
+  "file-hash": "78605ef070706f96f6a72d9fbf0c727e55011f2b59520125c1ad32ac19d0900d7b28c6e963151bc9ddcf31f0dfc242e251fe26de9bcb0fccc099215c15d0436a",
+  "signature": "Y0wewS6cJ4yKzL2PP+xKuJN8yvoDJHWMzcf+OFbFnNS+J/DakEQFANV5aYBR9anbD1JPg6GclJRhhRGcE0CeAA=="
+}

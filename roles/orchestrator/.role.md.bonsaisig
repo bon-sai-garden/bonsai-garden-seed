@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3J7Y228KPMRF9VHZG1H4DW3",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T14:28:58Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/orchestrator/role.md",
+  "file-hash": "10d74ba17494a81c603fde57259095339acdaf83a4523ff60b37320d2bf855f3edfb26ec8b3675fa76395340699733998d360c9599528282c691fdce6d4d7fc5",
+  "signature": "3KPV99iV3qiS0JXGH7qe5Zos/O6MJHCJDb7mcFOnncThGIv1JHPSnZC82RWKI2Tw3Zdtl0/fsAz8bNGeXMjHCg=="
+}

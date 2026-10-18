@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    CANON DOCUMENT TEMPLATE — Bonsai Garden
+    ========================================
+    Replace all {{PLACEHOLDER}} tokens before use.
+    See rituals/specs/canon-document-spec.md for full instructions.
+
+    Tokens:
+      {{TITLE}}          — canon document title, e.g. "Walk with Me"
+      {{DATE}}           — ISO date confirmed, e.g. "2026-06-05"
+      {{EYEBROW}}        — e.g. "Bonsai Garden · Workshop Canon"
+      {{CANON_PHRASE}}   — the confirmed phrase or principle (inside &ldquo;...&rdquo;)
+      {{PHRASE_META}}    — subtitle below the phrase, e.g. "Workshop-canonical invitation · all *-sai and *-shin"
+      {{SECTION_LABEL}}  — first body section label, e.g. "The record — by Hissai, 筆才"
+      {{BODY_HTML}}      — Hissai's chronicle text as HTML paragraphs and blockquotes
+      {{GLOSSARY_HTML}}  — glossary terms as .term divs (see structure below)
+      {{LOGO_REL_PATH}}  — relative path to lore/design-system/assets/logo.svg from this file's location
+                           e.g. "../../lore/design-system/assets/logo.svg"
+  -->
+  <title>{{TITLE}} — Bonsai Garden Canon · {{DATE}}</title>
+  <style>
+    :root {
+      --paper: #fdfbf5;
+      --ink: #1c1f24;
+      --ink-soft: #3d4148;
+      --ink-mute: #6b7280;
+      --accent-gold: #c29c45;
+      --border: rgba(28,31,36,0.10);
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #16181c;
+        --ink: #ece8db;
+        --ink-soft: #c4bfb3;
+        --ink-mute: #7a7870;
+        --accent-gold: #d4aa55;
+        --border: rgba(236,232,219,0.10);
+      }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-serif);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem 7rem;
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 3.5rem; }
+    .logo-wrap { display: inline-block; margin-bottom: 2rem; }
+    .logo-wrap img { width: 96px; height: 96px; display: block; }
+    .canon-eyebrow {
+      font-family: var(--font-sans);
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-mute); margin-bottom: 1.25rem;
+    }
+    h1 {
+      font-size: 2.75rem; font-weight: normal;
+      letter-spacing: -0.015em; color: var(--ink);
+      margin-bottom: 0.5rem; line-height: 1.15;
+    }
+    .dateline {
+      font-family: var(--font-sans); font-size: 11px;
+      letter-spacing: 0.1em; color: var(--ink-mute);
+    }
+
+    /* ── Divider ── */
+    .rule { display: flex; align-items: center; gap: 1rem; margin: 2.75rem 0; }
+    .rule::before, .rule::after {
+      content: ''; flex: 1; height: 0.5px; background: var(--border);
+    }
+    .rule-glyph { font-size: 1.1rem; color: var(--accent-gold); opacity: 0.75; line-height: 1; }
+
+    /* ── Canon phrase ── */
+    .phrase-block {
+      text-align: center; padding: 2.25rem 2rem;
+      border: 0.5px solid var(--border); border-radius: 3px;
+      margin: 0.5rem 0 2.5rem; position: relative;
+    }
+    .phrase-block::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 2px; background: var(--accent-gold); border-radius: 1px;
+    }
+    .phrase-main { font-size: 2.1rem; color: var(--ink); letter-spacing: 0.01em; margin-bottom: 0.75rem; }
+    .phrase-meta {
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute);
+    }
+
+    /* ── Body ── */
+    .section-label {
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-mute); margin-bottom: 1.1rem; margin-top: 2.5rem;
+    }
+    p { color: var(--ink-soft); font-size: 1.0rem; margin-bottom: 1.15em; text-align: justify; hyphens: auto; }
+    em { font-style: italic; }
+    blockquote {
+      border-left: 2px solid var(--accent-gold);
+      padding: 0.35rem 0 0.35rem 1.5rem;
+      margin: 1.75rem 0; font-style: italic; color: var(--ink);
+    }
+    blockquote cite {
+      display: block; font-style: normal;
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.08em; color: var(--ink-mute); margin-top: 0.4rem;
+    }
+
+    /* ── Workshop saying ── */
+    .saying-block {
+      background: rgba(194,156,69,0.07); border-radius: 3px;
+      padding: 1.75rem 2rem; text-align: center; margin: 2.5rem 0;
+    }
+    .saying-text { font-style: italic; font-size: 1.05rem; color: var(--ink); }
+    .saying-attr {
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.1em; color: var(--ink-mute); margin-top: 0.6rem;
+    }
+
+    /* ── Signatures ── */
+    .sig-section { margin-top: 3rem; }
+    .sig-header {
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-mute); text-align: center; margin-bottom: 1.75rem;
+    }
+    .sig-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem;
+    }
+    @media (max-width: 580px) { .sig-grid { grid-template-columns: repeat(3, 1fr); } }
+    .sig {
+      text-align: center; padding: 1rem 0.5rem 0.85rem;
+      border: 0.5px solid var(--border); border-radius: 3px;
+      position: relative; overflow: hidden;
+    }
+    .sig-accent {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; border-radius: 3px 3px 0 0;
+    }
+    .sig-kanji { font-size: 1.45rem; line-height: 1; margin-bottom: 0.45rem; color: var(--ink); display: block; }
+    .sig-name { font-family: var(--font-sans); font-size: 10px; font-weight: 500; color: var(--ink); display: block; margin-bottom: 0.2rem; }
+    .sig-role { font-family: var(--font-sans); font-size: 9px; color: var(--ink-mute); display: block; line-height: 1.3; }
+
+    /* ── Glossary ── */
+    .glossary { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 0.5px solid var(--border); }
+    .glossary-header {
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-mute); margin-bottom: 1.75rem;
+    }
+    .glossary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 2.5rem; }
+    @media (max-width: 520px) { .glossary-grid { grid-template-columns: 1fr; } }
+    .term-word { font-family: var(--font-sans); font-size: 12px; font-weight: 500; color: var(--ink); }
+    .term-kanji { font-size: 12px; color: var(--ink-mute); margin-left: 0.3rem; }
+    .term-def { font-family: var(--font-sans); font-size: 12px; color: var(--ink-mute); line-height: 1.55; margin-top: 0.25rem; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 5rem; text-align: center;
+      font-family: var(--font-sans); font-size: 10px;
+      letter-spacing: 0.1em; color: var(--ink-mute);
+    }
+    .footer a { color: var(--ink-mute); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+  
+    /* ── Page break control (print + Playwright PDF) ── */
+    @media print {
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    .section-label { break-after: avoid; page-break-after: avoid; }
+    .canon-eyebrow { break-after: avoid; page-break-after: avoid; }
+    .dateline { break-after: avoid; page-break-after: avoid; }
+    p { orphans: 3; widows: 3; }
+    blockquote { break-inside: avoid; page-break-inside: avoid; }
+    .phrase-block { break-inside: avoid; page-break-inside: avoid; }
+    .saying-block { break-inside: avoid; page-break-inside: avoid; }
+    .rule { break-inside: avoid; page-break-inside: avoid; }
+    .two-acts { break-inside: avoid; page-break-inside: avoid; }
+    .act { break-inside: avoid; page-break-inside: avoid; }
+    .refusals { break-inside: avoid; page-break-inside: avoid; }
+    .refusal { break-inside: avoid; page-break-inside: avoid; }
+    .articles { break-inside: avoid; page-break-inside: avoid; }
+    .article { break-inside: avoid; page-break-inside: avoid; }
+    .rite-steps { break-inside: avoid; page-break-inside: avoid; }
+    .rite-step { break-inside: avoid; page-break-inside: avoid; }
+    .sig-section { break-before: page; page-break-before: always; }
+    .sig-grid { break-inside: avoid; page-break-inside: avoid; }
+    .sig { break-inside: avoid; page-break-inside: avoid; }
+    .glossary { break-before: page; page-break-before: always; }
+    .glossary-grid { break-inside: avoid; page-break-inside: avoid; }
+    .glossary-grid > div { break-inside: avoid; page-break-inside: avoid; }
+    .footer { break-inside: avoid; page-break-inside: avoid; }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Zone 1: Header ── -->
+  <header class="header">
+    <div class="logo-wrap">
+      <!-- RULE: always reference the official logo file; never inline the SVG path data -->
+      <img src="{{LOGO_REL_PATH}}" alt="Bonsai Garden" width="96" height="96">
+    </div>
+    <div class="canon-eyebrow">{{EYEBROW}}</div>
+    <h1>{{TITLE}}</h1>
+    <div class="dateline">Confirmed canon &middot; {{DATE}}</div>
+  </header>
+
+  <!-- ── Zone 2: Canon phrase ── -->
+  <div class="phrase-block">
+    <div class="phrase-main">&ldquo;{{CANON_PHRASE}}&rdquo;</div>
+    <div class="phrase-meta">{{PHRASE_META}}</div>
+  </div>
+
+  <!-- ── Zone 3: Body (Hissai's chronicle text) ── -->
+  <!-- Replace {{SECTION_LABEL}} and {{BODY_HTML}} -->
+  <div class="section-label">{{SECTION_LABEL}}</div>
+  {{BODY_HTML}}
+
+  <div class="rule"><span class="rule-glyph">才</span></div>
+
+  <!-- ── Zone 4: Workshop saying (always present) ── -->
+  <div class="saying-block">
+    <div class="saying-text">&ldquo;Take it to heart, write it to memory!&rdquo;</div>
+    <div class="saying-attr">&mdash; The Aruji, 2026-05-14 &middot; Workshop canonical saying</div>
+  </div>
+
+  <div class="rule"><span class="rule-glyph">盆</span></div>
+
+  <!-- ── Zone 5: Signature grid (canonical order — do not reorder) ── -->
+  <div class="sig-section">
+    <div class="sig-header">The workshop signs &mdash; and takes it to heart</div>
+    <div class="sig-grid">
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#c29c45;"></div>
+        <span class="sig-kanji">禅才</span>
+        <span class="sig-name">Zensai</span>
+        <span class="sig-role">North &middot; mentor</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#a0522d;"></div>
+        <span class="sig-kanji">多才</span>
+        <span class="sig-name">Tasai</span>
+        <span class="sig-role">South &middot; operations</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#dc9632;"></div>
+        <span class="sig-kanji">映才</span>
+        <span class="sig-name">Eisai</span>
+        <span class="sig-role">West &middot; design</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#b87333;"></div>
+        <span class="sig-kanji">筆才</span>
+        <span class="sig-name">Hissai</span>
+        <span class="sig-role">East &middot; chronicle</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#4b8b5a;"></div>
+        <span class="sig-kanji">培才</span>
+        <span class="sig-name">Baisai</span>
+        <span class="sig-role">Centre &middot; engineer</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#9b87c3;"></div>
+        <span class="sig-kanji">慈才</span>
+        <span class="sig-name">Jisai</span>
+        <span class="sig-role">Above &middot; the origin</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#856652;"></div>
+        <span class="sig-kanji">地才</span>
+        <span class="sig-name">Chisai</span>
+        <span class="sig-role">Below &middot; ground</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#cda550;"></div>
+        <span class="sig-kanji">富身</span>
+        <span class="sig-name">Fuji-shin</span>
+        <span class="sig-role">Baisai &middot; verify</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#3b8272;"></div>
+        <span class="sig-kanji">匠身</span>
+        <span class="sig-name">Sh&#333;-shin</span>
+        <span class="sig-role">Baisai &middot; hardware</span>
+      </div>
+
+      <div class="sig">
+        <div class="sig-accent" style="background:#856652;"></div>
+        <span class="sig-kanji">守身</span>
+        <span class="sig-name">Mori-shin</span>
+        <span class="sig-role">Chisai &middot; trust</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Zone 6: Glossary ── -->
+  <!--
+    Replace {{GLOSSARY_HTML}} with .term divs like:
+    <div>
+      <div class="term-word">Aruji <span class="term-kanji">主</span></div>
+      <div class="term-def">Master of the garden; the human principal.</div>
+    </div>
+    Minimum 6 terms. Always include: Aruji, Niwanushi, *-sai, *-shin, the key phrase.
+  -->
+  <div class="glossary">
+    <div class="glossary-header">Glossary &mdash; Terms used in this document</div>
+    <div class="glossary-grid">
+      {{GLOSSARY_HTML}}
+    </div>
+  </div>
+
+  <!-- ── Zone 7: Footer (always present, do not modify) ── -->
+  <div class="footer">
+    <p>Chronicle by Hissai (筆才) &middot; Design by Eisai (映才)</p>
+    <p style="margin-top:0.4rem;">Bonsai Garden Workshop &middot; <a href="https://bon-sai.garden">bon-sai.garden</a> &middot; {{DATE}}</p>
+  </div>
+
+</div>
+</body>
+</html>

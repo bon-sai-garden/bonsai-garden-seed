@@ -1,0 +1,43 @@
+// Biome: the one lint and format configuration for every JavaScript file in this repository.
+// Core's copy is the master; core's tools/lint.mjs pins Biome 2.5.15 (run through npx: a dev tool, nothing ships
+// with it) and refuses a repository whose copy differs.
+// Its name (2026-10-18, off core's top level into tools/lint/): Biome takes any biome.json(c) inside the tree it checks
+// for a second root configuration and refuses to run, so the master is named to Biome and never found by it. A
+// repository's copy sits at its root as biome.jsonc, or a comment-free biome.json.
+// The gardener, 2026-10-15: "the best possible code base. No redundancy, perfectly linted."
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "files": {
+    "includes": ["**/*.mjs", "**/*.js", "**/*.cjs", "!**/node_modules"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "all",
+      "semicolons": "always"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended"
+    }
+  },
+  "overrides": [
+    {
+      // A mutation harness's strings are source text by design: each one is a snippet of the file it breaks, so a
+      // ${} inside one is the planted code's own template, never a template literal the harness forgot to write.
+      "includes": ["**/test-*-mutants.mjs", "**/test-*-mutations.mjs"],
+      "linter": { "rules": { "suspicious": { "noTemplateCurlyInString": "off" } } }
+    }
+  ],
+  "assist": {
+    "enabled": false
+  }
+}

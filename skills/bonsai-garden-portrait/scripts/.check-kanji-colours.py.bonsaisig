@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M51QPA4G2C1H9ATBXN2ZQWHC",
+  "signer": "tasai",
+  "role": "owner",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-16T11:51:08Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-portrait/scripts/check-kanji-colours.py",
+  "file-hash": "1d6e7be85deeac6ed35fdce0890b2004573390352a2431581287fed30350e4de76ff0510f453d50650d04732a4377c21a3b52c281506ef07a2a7836c6bdbfc74",
+  "signature": "vpHFBsS2hVWUEUleZqbwdH5gB21QeUkncJ6vB1Y3A7W+mQPY9ihXNiO8aNto2BboHxxN8zq65J+ekUK8xXRsDg=="
+}

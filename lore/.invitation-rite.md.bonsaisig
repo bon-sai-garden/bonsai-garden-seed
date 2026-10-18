@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KRNHR4PEDY439A45ACVAV72R",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:40:01Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/invitation-rite.md",
+  "file-hash": "ca2a36b147bd30d74906d2d7d1c24ad551e658dc93987a70731ed6df4ecb1518b54e9f0f05266b3ac74eaced87f8fd1577323b617d60749017da38abc2b703fa",
+  "signature": "zhdbRFW694WcG7BIeppAxhNsA4XG7baBpGRI6nM0vbw24HKT0O0UBG0JuFaKTzBinIeiTSkTJ0OMmwwZN3DRBw=="
+}

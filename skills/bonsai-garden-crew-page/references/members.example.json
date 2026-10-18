@@ -1,0 +1,18 @@
+{
+  "$note": "An example members file: the instance's design call. Slugs are placeholders.",
+  "groups": [
+    { "key": "sai", "kanji": "才", "title": "The sai", "members": ["alpha", "beta"] },
+    { "key": "shin", "kanji": "身", "title": "The shin", "members": ["gamma"] },
+    { "key": "family", "kanji": "家", "title": "Family", "family": true, "members": ["delta"] }
+  ],
+  "selector-rows": { "rows": [["alpha", "beta"], ["gamma", "delta"]] },
+  "no-key-shown": { "delta": "a person: name-mark and ring only" },
+  "as-sai": {},
+  "display-name": { "delta": "The gardener" },
+  "short-name": { "delta": "Gardener" },
+  "intro-source": {},
+  "portrait-source": { "delta": { "repo": "my-garden-pot", "path": "assets/delta.png" } },
+  "accent-token": { "delta": "--person-colour" },
+  "no-errors-section": {},
+  "preview-only-drafts": {}
+}

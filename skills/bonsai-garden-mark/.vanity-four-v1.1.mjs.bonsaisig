@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43MDGK0K3BGAZW4HMCVW",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-16T14:48:36Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/vanity-four-v1.1.mjs",
+  "file-hash": "82f446d3fd2de62a61d4852445f26f82c2d1f868c9b8438da3b4b7953a9e3f10dda80a07c287ab6f9a0c11c22a32263fb8c41302f8788804715d02c6c22a5a79",
+  "signature": "fAI2SnnBJ0q3nFWu1aYO+Zsxph2JgcPeDLjq10PkdqJIDEGaLtJbLXrC5fZsiVqxhI+l+jQ4s54Vj4nPXV2xBQ=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M57W1J3AM38JP3DZY8ANMCT4",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-18T20:41:11Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "build/bonsai-garden-portrait.skill",
+  "file-hash": "670682bca0dd829f3e553fb545e6b7ceea59f643ef6dda99e0a59801a958f70641c300125ba9f2fe60b11a01a886197e029ce09cb2820889100564c9bb08f737",
+  "signature": "MFHHAUzxF1qKvbEn3qa83cCTY/xgPKEnqJOcYrfWuxEwlEmsK3RT7dn3Fafu0sRzzR/mziEvbALRn3q0a+lJBw=="
+}

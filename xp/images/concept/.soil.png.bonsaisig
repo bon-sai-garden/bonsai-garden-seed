@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M586MQ4M4KN2D88157X138TP",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-18T19:08:30Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "xp/images/concept/soil.png",
+  "file-hash": "5103fa9c94ca69e611e1a2cddb89b846e0a6be5fff8f63bf3c5999da3f9027f4dd83b6c13b7275a6b7a68af9a6edea09dceb6dedf0e0136692aee2b6de8b070f",
+  "signature": "Y+4ufZaXR8m3noDpU7zXxqSKZpAvoyiZD4zehz7D2n6L6B2J7q8nnBEAIsvd//CXfI9QKsm5L5AW9wHbHruYCQ=="
+}

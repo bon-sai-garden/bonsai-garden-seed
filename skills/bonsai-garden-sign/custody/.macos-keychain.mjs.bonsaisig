@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M2D299CGQN9NA74A5XHGX338",
+  "signer": "mori-shin",
+  "role": "owner",
+  "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
+  "timestamp": "2026-10-16T05:53:00Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/custody/macos-keychain.mjs",
+  "file-hash": "be2f8f3b82beda1a3882c9f5e4400a8fbcc6b40caeacbec9acbfcd8102910a37cb1d3a2b28ff4997b2f378a5c805d792f36fa466760b79c76f6e4f0213bb2052",
+  "signature": "IJ7oH3t0NQSMW4Zwv7NIiYDX5c7DtIvG1/sFe+uL48KKK2vJJNYZPpX3e/EDWxAyFZFrUbq8mte8t2pbdRSXBw=="
+}

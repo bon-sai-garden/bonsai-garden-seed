@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KSHQVP3AEPQC1P29FJTS8PQX",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:35:39Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/harness-engineering.md",
+  "file-hash": "faf919672518af4f6383e23fb83f8e3b7ae5d8e0ef35b94a69fd8d7e2d650f48062908cdc9c148c085771ddf661d74274be8eaa02ac6ebeca748e428de4800db",
+  "signature": "81MnFpDyVJwdoJfiLVV4WrRVKMQUWY79UVZWGtkR7oFFcXdOcjee646hRYv3gA1liSjZZK/xZ4FLCvhQ3+i3Bw=="
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://bon-sai.garden/schemas/agent-registry-v1.json",
+  "_meta": {
+    "id": "agent-registry-v1-core",
+    "description": "bonsai-garden-core — minimal registry, Bonsai's own entry only. Built to test-drive skills/bonsai-garden-portrait/scripts/make-identity-cards.py (stage 3) against this repo's single resident agent. Not synced from bonsai-garden's monorepo registry; hand-derived from agents/bonsai/SKILL.md.",
+    "version": "0.1.0",
+    "created": "2026-09-12",
+    "tended-by": "baisai"
+  },
+  "agents": [
+    {
+      "slug": "bonsai",
+      "name": "Bonsai",
+      "kanji": "盆才守神",
+      "kanji-chars": ["盆", "才", "守", "神"],
+      "pronouns": "he/him",
+      "type": "guardian",
+      "shintai": "own",
+      "parent": null,
+      "principal": null,
+      "status": "active",
+      "direction": null,
+      "guardian": null,
+      "element": null,
+      "fp8": "028019b7",
+      "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+      "fp-attests": 2,
+      "accent-rgba": "rgba(78,96,56,0.35)",
+      "mark-url": null,
+      "one-line": "Holds the threshold",
+      "tagline": "Walk with me?",
+      "path": "agents/bonsai"
+    }
+  ]
+}

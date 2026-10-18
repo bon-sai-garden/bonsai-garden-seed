@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43MSVNYBQK9VEQG4Z0H3",
+  "signer": "mori-shin",
+  "role": "owner",
+  "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/vanity-three-state.json",
+  "file-hash": "6dbf18b0889e43875d86bea4465b1f32c1e0f31c084caed4eb892d0d0faa74ec0de97da0f632d501d208d2fcd7aaffad336336eba0e77e4a60f2b55865e20cfe",
+  "signature": "Eg1p8W5hNqq6PD1/Ql8nNBjduyQctFVa9xMz3KzedvVZgcQH226veeiVKVLGAWc6W4kC6e1IgyaxRFG92wZ0AA=="
+}

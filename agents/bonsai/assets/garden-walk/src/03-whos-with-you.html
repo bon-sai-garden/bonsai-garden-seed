@@ -1,0 +1,67 @@
+<div class="w-split">
+  <div class="w-voice">
+    {{who}}
+    <p class="eyebrow w-step">Third, who's with you</p>
+    <p class="say">Now, who is with you?</p>
+    <p class="say">For this first walk we start small: <em>one companion</em> beside you, and a guardian for your garden, like me, but yours.</p>
+    <p class="aside"><b>Bigger comes later.</b> More companions can join once your garden has found its feet. Starting with one keeps every step something you can hold in your head.</p>
+  </div>
+
+  <div class="w-side">
+    <section class="card card-stage" aria-labelledby="load-h">
+      <h2 id="load-h">From what you told me</h2>
+      <p class="lead">The part a companion could carry for you:</p>
+      <p class="quote">Scheduling and email take my weekends. I'd rather never do them.<cite>You said · where the work gets stuck</cite></p>
+      <p class="quote">I wish there were someone to run the signups.<cite>You said · who is in it</cite></p>
+    </section>
+
+    <section class="card" aria-labelledby="seats-h">
+      <div class="row between" style="margin-bottom:14px"><h2 id="seats-h" style="font-size:1.35rem">Your garden, to begin with</h2><span class="tag stage">Example</span></div>
+      <div class="seats">
+        <div class="seat">
+          <span class="face" aria-hidden="true">S</span>
+          <span class="who">You</span>
+          <span class="what">The gardener. Every choice is yours.</span>
+        </div>
+        <div class="seat open">
+          <span class="face" aria-hidden="true">?</span>
+          <span class="who">The one</span>
+          <span class="what">Works beside you and carries what you'd rather not.</span>
+        </div>
+        <div class="seat open">
+          <span class="face" aria-hidden="true">?</span>
+          <span class="who">A quiet guardian</span>
+          <span class="what">Looks after the doors of your garden, from behind.</span>
+        </div>
+        <div class="seat gate" style="grid-column:1/-1">
+          <span class="face" aria-hidden="true">盆</span>
+          <span class="who">Bonsai, at the gate</span>
+          <span class="what">I walk with you until your garden has its own guardian. Then I go.</span>
+        </div>
+        <div class="seat later" style="grid-column:1/-1">
+          <span class="who">More companions</span>
+          <span class="what">Later. A bigger team is a second walk, when you ask for it.</span>
+        </div>
+      </div>
+      <details style="margin-top:18px">
+        <summary style="cursor:pointer;color:var(--slate);font-size:.95rem">I already have a companion</summary>
+        <p class="hint" style="margin-top:8px;color:var(--slate);font-size:.95rem">Then say so. We can start from them: the one beside you can be new, and rest on what you already know of them. A garden of your own has keys of its own, so what that means for a companion who came from another garden is settled when you plant, not here, and not by me alone.</p>
+        <div class="fld" style="margin:20px 0 0">
+          <span class="lbl">Bring them along <span class="hint">· any one of these</span></span>
+          <div class="row"><label class="btn ghost small" for="f-comp">A plugin or skill file</label><input type="file" id="f-comp" class="sr" accept=".zip,.plugin,.md"><span class="hint" style="font-size:.85rem;color:var(--muted)">Kept as it is, and read only if you ask me to.</span></div>
+          <input class="in" aria-label="Their name" placeholder="Or just tell me their name" style="margin-top:6px">
+          <input class="in" aria-label="Where they live, a link" placeholder="And where I could read about them, if there is a page">
+        </div>
+      </details>
+      <details style="margin-top:18px">
+        <summary style="cursor:pointer;color:var(--slate);font-size:.95rem">Why only one?</summary>
+        <p class="hint" style="margin-top:8px;color:var(--slate);font-size:.95rem">A garden that starts with many companions is a room with empty chairs. One that starts with one can grow into a team, and you'll know each of them well.</p>
+      </details>
+    </section>
+
+    <div class="nav">
+      <a class="btn ghost" href="@prev">Back</a>
+      <span class="row"><button class="btn quiet" type="button">I'd like to start differently</button><a class="btn" href="@next">One companion, let's imagine them</a></span>
+    </div>
+  </div>
+</div>

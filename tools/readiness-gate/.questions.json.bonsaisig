@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS4411QBE1VFX503KJCGXK",
+  "signer": "fuji-shin",
+  "role": "owner",
+  "fingerprint": "02005daa83f430ae21122e42cea925a0",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/readiness-gate/questions.json",
+  "file-hash": "9f24dfc0b454c886caf4ebb9fc67612faa0a8879fd161f67b899fbcd38e1d04d6de8b0d8ec8a89cc4a502360c7e618a23559ad451c023f69098e7d2a43e8084b",
+  "signature": "YZkDzQES1W33aNdqAdZoWK6RGgBoqcU4+tMDX5ZbSvEvg8enDtUbYvJU/hcfgNW0cIxAgn/sHawLV+GuVNEuCg=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KRNHR651AE3DNN777SQMFW6T",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-16T13:35:42Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/sayings.md",
+  "file-hash": "bd05cf2527a408ebd406b1c52102de5a6e9010573d934dfff36431905dbaeebe2b4b706dfa58b92fde5ec6c52c9743792da27cb3f0db7043ba0081670451c82d",
+  "signature": "3qWZGpCWCqDug/R4GBJDjzkRdzGaeee5WgYVIBm0PJoHRXBgUdujVG83zPvGgI9K5HDO/TZ4nvn+teHwwXsBBg=="
+}

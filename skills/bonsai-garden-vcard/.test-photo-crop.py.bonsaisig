@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4P6WRZM4NJ3HCRQB1A2ESDX",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T18:02:44Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-vcard/test-photo-crop.py",
+  "file-hash": "98ad6fbeb04eeaaf3752dc28498c3553738eb3fac2810edf4afa9ac14a6b62d124d51a56c6f5db96c6511b840ee45835488f410dcea47e0de1bebaef59de387a",
+  "signature": "/HqIw0C0p4b9MSxDiL0OJfPLykJMqOH0bTIObve2j3advaDKZIQKbc5BaxnYM0Vxz5WT/ekdQLQ/JHESIPyUDQ=="
+}

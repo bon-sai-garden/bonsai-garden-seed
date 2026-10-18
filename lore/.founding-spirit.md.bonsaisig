@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M37XP600EA9G46JAZE6DXVGS",
+  "signer": "zensai",
+  "role": "owner",
+  "fingerprint": "03801f1b5238186f88b4bd8853d629c4",
+  "timestamp": "2026-10-16T13:33:43Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/founding-spirit.md",
+  "file-hash": "ac316de37cb0115337fdd521b5f7566606edff59cbe8d4778c36646bb108642c20b0be20629ab65485e40bf7a7461b9e0ac2ac7b93af7de3773d09da5fd8c686",
+  "signature": "uA6UpR1fRtJFmmHqYbzIfynUZI/4HP1gMGlJDgOhkGbxGr/MF7U167/7px+1CGyQcDaasOATBZE/42ZZO61kBA=="
+}

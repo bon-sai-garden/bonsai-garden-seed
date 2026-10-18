@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M48JVKMXZK7385ZJX6FKGX4N",
+  "signer": "eisai",
+  "role": "custodian",
+  "fingerprint": "0240128926629be035f20bb3eb5c4507",
+  "timestamp": "2026-10-06T17:59:44Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/assets/garden-walk/02-what-its-for.html",
+  "file-hash": "8854d9b36a7f57b81ca2816fad3ffc5695efc718c7763539ef95451088ccb46e94f2fb86c7e073bff729f043322b4167674f77d55ea10e98b4401056f345917b",
+  "signature": "Q1Sriyd1UVOmNE48iWzU2nI5bV7IVA2cxbYKFJ9uYSOCoss7HqCrxhnbruWum/URI1mm8YQbsT3+f9wU3aPIDQ=="
+}

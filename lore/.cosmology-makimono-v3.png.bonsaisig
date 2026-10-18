@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3HWZM1R25P3XDKEHJYBJA95",
+  "signer": "hissai",
+  "role": "custodian",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-09-27T17:00:42Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/cosmology-makimono-v3.png",
+  "file-hash": "505bc7e8f00ca9bed995917d10ceb9f4f4db63c4d51b8f62f974e11b4fcff3d42d877b51d927854f793f739f995ba0bd9fa81c90a5666b179d4d1407ade28ae1",
+  "signature": "HO1W4Ikj/hXPmSKEFIjVGTtUg98Yuce4smqzLBU7B+qHkOZzH6VswJiJPAVHOEsVbNfeZtpp76kvRjPOKpxFCw=="
+}

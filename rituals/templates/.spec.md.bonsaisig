@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KRNHR9Z2SKP6W1SCPHXXDPSH",
+  "signer": "tasai",
+  "role": "custodian",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-09-25T07:57:48Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "rituals/templates/spec.md",
+  "file-hash": "73f3dfe51ba5dcbacf19044c0c7070c07498660c5d0cf687d27541f822c3aced3c43bba461aeb0b07573f25b635054806420e1695284011e7a5724cf1b43c9f3",
+  "signature": "UL7Q+PERLWOTr4sBbRFEZrv42/ppGF0ZBNa/2rZQ9AJ2sTeEQeYH4XAcam/Mcu0l3lWlNM59lqCpfLRZjxM5Bg=="
+}

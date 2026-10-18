@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M3BS43V53JJ4H7FPDVFZA2YX",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:30:12Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-sign/test-document-format.mjs",
+  "file-hash": "35df86c9d767ed5d0f1c93ff111771ee70f2477433aa6939bab3124c4b0083e8402eddbe4152e86c123c6531211e60adcea202098d267398fe8fe3955d96eeec",
+  "signature": "+2Rs3rMBVxgWQdoB+S2Pd5NcrxVumqmaBTM2JjzFJaptPaTz6N+6OaLMRGlUFBQ7Fl9n9hbnWfXxCoJJ6ZWDDg=="
+}

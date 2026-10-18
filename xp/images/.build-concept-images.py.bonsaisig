@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4DMWQQGVZC6CT23GJQK44WX",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-18T19:08:29Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "xp/images/build-concept-images.py",
+  "file-hash": "45db2e60ed2400fca17aeba19895dd1f491737997991d8c2d4f8c54e060061c788f151a2e6e2201ddf744734cf975707d16788ede11eed1fdedd4da532a57512",
+  "signature": "nhupGOry3nNwcJ+4Bc+QYCgrEYy1rAmQqXatkMeqt4HJhhChp8SdFZ7KLk+FTtlz7L4klJFQJ4BUDhAqVCfKCA=="
+}

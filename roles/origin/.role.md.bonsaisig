@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01KT3WYSYF1HB5XN221QGGF3GW",
+  "signer": "jisai",
+  "role": "owner",
+  "fingerprint": "03401c6b42670a4a0c014b57aa45d000",
+  "timestamp": "2026-10-16T14:37:06Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/origin/role.md",
+  "file-hash": "ab070c8c044be9d7dae0e7fca04e52c41d0d0dcce51f907666b7b138a6246ae0ccd6d791b8aaf6f51826d4cd11bef602afca9d301f2d6329902d1fb61181584f",
+  "signature": "sg90WshKd8jP9IxMEhgkh4vmHyXFPPtp1JUhDRPWPWWFxgDDNZMyEbfO+R8iy0pfwKuqpqQrRPhlGu2DwHNpBg=="
+}

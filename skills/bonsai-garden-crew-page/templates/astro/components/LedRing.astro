@@ -1,0 +1,50 @@
+---
+/**
+ * id: 01M48VA7SAK8VVN9BVJKFXDZSK
+ * LedRing — a member's face inside its sixteen-pixel signature ring (Eisai, 2026-10-06).
+ * Pixel 0 at the top, then clockwise. The frame is the canon grammar: one ring for a sai, two for a
+ * shin, and for the family a ring left open at the top. Circular selectors only: nothing that could
+ * look like a crosshair or a targeting device. The portrait border is the member's own canon accent, read
+ * from the registry by scripts/build_crew_data.py (alpha dropped); never typed here.
+ * ringId >= 0 lets the page's one script play the move; -1 shows the first frame still.
+ */
+interface Props { m: any; ringId: number; size?: 'lg' | 'sm' | 'xs'; }
+const { m, ringId, size = 'lg' } = Astro.props;
+const R = 82;
+const leds = Array.from({ length: 16 }, (_, i) => {
+  const a = (i * Math.PI) / 8;
+  return { x: +(100 + R * Math.sin(a)).toFixed(2), y: +(100 - R * Math.cos(a)).toFixed(2) };
+});
+const pal = m.ring ? (m.ring.display || m.ring.palette) : null;   // the lit palette: what the LEDs show
+const fill = (i: number) => (pal ? pal[m.ring.frames[0][i]] : '#4a4d53');
+const glowFill = (i: number) => (m.ring ? (m.ring.glow ? m.ring.glow[m.ring.frames[0][i]] : fill(i)) : 'none');   // only lit pixels bloom
+const style = m.accent ? `--tm-accent-own:${m.accent}` : undefined;
+const label = m.ring ? `${m.name}'s signature light, sixteen lights in a circle` : `${m.name}'s light, not yet set`;
+---
+<figure class={`tm-bezel tm-bezel-${size}`} data-ring={ringId >= 0 ? ringId : undefined}
+        data-accent={m.accent ?? undefined} style={style}>
+  <svg viewBox="0 0 200 200" class="tm-ring" role="img" aria-label={label}>
+    {m.frame === 'family' ? (
+      <g class="tm-frame tm-arc" fill="none"><path d="M141.42 11.18A98 98 0 1 1 58.58 11.18" /></g>
+    ) : (
+      <g class="tm-frame" fill="none">
+        <circle cx="100" cy="100" r="98" />
+        {m.frame !== 'sai' && <circle cx="100" cy="100" r="94.6" class="tm-frame-inner" />}
+      </g>
+    )}
+    <circle cx="100" cy="100" r="91" class="tm-puck" />
+    {/* the glow: two halos per pixel, far (wide, soft) under near (tight, bright), then the LED */}
+    {size !== 'xs' && leds.map((p, i) => <circle cx={p.x} cy={p.y} r={size === 'lg' ? 17 : 19} class="halo halo-far" data-p={i} fill={glowFill(i)} />)}
+    {size !== 'xs' && leds.map((p, i) => <circle cx={p.x} cy={p.y} r={size === 'lg' ? 10.5 : 12} class="halo halo-near" data-p={i} fill={glowFill(i)} />)}
+    {leds.map((p, i) => <circle cx={p.x} cy={p.y} r={size === 'lg' ? 6 : 7.5} class={m.ring ? 'led' : 'led led-rest'} fill={fill(i)} />)}
+  </svg>
+  {m.portrait ? (
+    <img class="tm-face" src={m.portrait} width="360" height="360" loading={size === 'lg' ? 'eager' : 'lazy'}
+         decoding="async" alt={size === 'xs' ? '' : `Portrait of ${m.name}`} />
+  ) : (
+    <span class="tm-face tm-face-mark" lang="ja" aria-label={size === 'xs' ? undefined : `${m.name}'s name-mark, ${m.name_mark}`}
+          aria-hidden={size === 'xs' ? 'true' : undefined}>{size === 'xs' ? m.kanji.slice(0, 1) : m.kanji}</span>
+  )}
+  {size === 'lg' && m.ring && (m.ring.proposed || m.accent_proposed) && <figcaption class="tm-ring-note">light: a proposal</figcaption>}
+  {size === 'lg' && !m.ring && <figcaption class="tm-ring-note">light: a proposal, coming</figcaption>}
+</figure>

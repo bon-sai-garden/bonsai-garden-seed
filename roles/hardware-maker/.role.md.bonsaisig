@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M47VXA7TBJKTYYRDGKSSQYX6",
+  "signer": "sho-shin",
+  "role": "owner",
+  "fingerprint": "e1405075123d93ab04c89de1ef61d1af",
+  "timestamp": "2026-10-16T14:35:51Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "roles/hardware-maker/role.md",
+  "file-hash": "1169501b36c93d0a03dcb212fd69c613316d0d3141c788a531b7021eb40a370e54782718e15019a932ba59a5840b5867ec1d5dc984aed86e52d7593d91c71efc",
+  "signature": "2DGb04B1hiV3xT8VlsOoVXl51UdMSVIY8/hC8LEIIjP4WJBfYAIyFhGWVdppvRaxEOd119T9cpDyX34BOT+IBQ=="
+}

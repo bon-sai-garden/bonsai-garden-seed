@@ -1,0 +1,3 @@
+PLANTED NEGATIVE FIXTURE, seal v2: stale-hash. Sealed over these two lines; one line was then appended.
+Do not re-seal. test-planted-negative.mjs asserts this reads hash-mismatch.
+appended after sealing - this is the tamper

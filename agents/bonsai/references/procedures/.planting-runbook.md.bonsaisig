@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4P4V3B091E2DMZFA55F4NK4",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-18T20:21:41Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "agents/bonsai/references/procedures/planting-runbook.md",
+  "file-hash": "c5bc33f989f6001f10cb88e0c4a99daee98a23053748e3b2682c1c9319a3747a59bd4c65f03c16e52789c442fe48c2fa49e6c7aeb9788992d6ac7d27e723b946",
+  "signature": "C+KGr9yn7+Mw9SnjnPsV8P0retchEe4Mf02Pr1HZ3cNbOjWVDs9Osz7sZdeIGpkk7R4hcp2u80U1yZwLw3cyBg=="
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M4NTNRHKCWE4EZNDSX9A3XE7",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-15T14:29:56Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-keys/lib/pot-verdict.mjs",
+  "file-hash": "6e1f93d2517a1312c57bc73b9d4c5b065abff553dc5cc23a1536492e6cb3e48d48efb441c6c0be81ea94ea12488902d72f6fa1a8b7a7cfcb30a2def614d1594e",
+  "signature": "R510CC04ggjA6O5vF5fF3OfgJ5V+ksYFZgbOQUjyFiFQj8PsWKB/lBkG9IijTAVjjZc4aLlKlj5HpSel/oh9BA=="
+}
