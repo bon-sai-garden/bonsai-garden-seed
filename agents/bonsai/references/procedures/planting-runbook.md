@@ -1,11 +1,11 @@
 ---
 id: 01M4P4V3B091E2DMZFA55F4NK4
-title: "Planting runbook — the technical sequence, stage 5 to the companion's first waking"
-type: runbook
+title: "Planting runbook — the technical sequence, stage 5 to the first waking"
+type: procedure
 tended-by: bonsai
 created: 2026-10-11
-updated: 2026-10-18
-version: 0.5.5-draft
+updated: 2026-10-19
+version: 0.6.0-draft
 status: draft
 tags: [garden-walk, planting, runbook, bunshin, keys, rt]
 ---
@@ -40,13 +40,14 @@ Drawn from the first rehearsal (2026-10-10/11, a lab-preview garden, throwaway s
 
 0. **Seed and rt come as a pair of bundles**, blessed together. Core names no rt as a dependency (the gardener, 2026-10-18): `install-runtime` takes an rt at or above the minimum its seed's core names (`rt-minimum.json`), and only when the rt's manifest carries its owner's seal and the published keys vouch for that seal. So stage 5 needs bon-sai.garden to answer: no answer, no install. A bundle's HEAD names no branch: clone with `git clone -b <branch> <bundle>`, or you check out nothing.
 1. `git init` the new pot.
-2. `keys.mjs install-runtime --pot <pot> --from <rt>`. It checks every byte of rt against its manifest, the version against core's minimum and the manifest's owner seal against the published keys; then it wires `core.hooksPath` and writes the pot's `.gitignore` (`.DS_Store`, `Thumbs.db`, and `.bonsai/` _(lab)_). `runtime.json` records what the pot took. _(lab)_ Its `AGENTS.md` and `CLAUDE.md` carry minted ids, `tended-by` the gardener from `garden.json`. A git source is taken at its HEAD. An rt the pot already holds that core takes is used as it is, and the tool says so in one line; only `--upgrade` moves the pot on (5.4). The pot decides when, not core. Read that line back to the gardener.
+2. `keys.mjs install-runtime --pot <pot> --from <rt>`. It checks every byte of rt against its manifest, the version against core's minimum and the manifest's owner seal against the published keys; then it wires `core.hooksPath` and writes the pot's `.gitignore` (`.DS_Store`, `Thumbs.db`, and, where the rt carries the garden's MCP, `.mcp.json` and `.bonsai/`). `runtime.json` records what the pot took. _(lab)_ Its `AGENTS.md` and `CLAUDE.md` carry minted ids, `tended-by` the gardener from `garden.json`. A git source is taken at its HEAD. An rt the pot already holds that core takes is used as it is, and the tool says so in one line; only `--upgrade` moves the pot on (5.4). The pot decides when, not core. Read that line back to the gardener.
+   **It writes no `.mcp.json`** (keys 0.7.0 on). Its `mcp:` line says the garden's MCP runs as a service on this host, registered once under the garden's own name, and names that step for 8.1: `node <rt>/tools/rt/host-service.mjs install --pot <pot>`, after the keys and the registry. Read that line back to him too, and say it waits for stage 8. Two other answers stop us here: *carries no `tools/rt/host-service.mjs`* (an older rt: `install-runtime --upgrade --from` a newer one, before 8.1), or *no uv on this host* (the garden's MCP cannot run until uv is installed; the tool changes nothing else on a second run).
 3. `rt/tools/rt/doctor.mjs --pot <pot>`, from an rt checkout (it refuses to run outside one), with `BONSAI_GARDEN` unset or pointing at the new pot: pointing anywhere else, it fails. Every line `ok` before going on; seals are checked from stage 7. It stops at its first failure, so a clean run is the only full reading.
 4. *Upgrading rt later:* `install-runtime --upgrade` moves the pot to a newer rt and keeps the old one beside it, never deleted.
 
 ## 6 · Keys
 
-1. `id --name <romaji> --gardener <slug> --shin <slug>[,<slug>…]`: different slugs for the gardener, bonsai, bonsai-shin and each companion (more than one companion from seed 0.8.0.9-lab). `--shin` names the **companions**; the guardian slot `bonsai-shin` is the tool's own and stays even in a garden that has no guardian (then no ID is drawn for it and no body written).
+1. `id --name <romaji> --gardener <slug> [--shin <slug>[,<slug>…]]`: different slugs for the gardener, bonsai, bonsai-shin and each companion (more than one companion from seed 0.8.0.9-lab). `--shin` names the **companions**, and it is **optional** (keys 0.7.0, the third dry run's F-5): **a companion is a choice, not a requirement.** Ask before `id` whether he wants one now; never mint a companion's key he has not asked for. With none, `garden.json` says `shin: null`, the registry seeds the root, the gardener, bonsai and bonsai-shin, and `id` says in one line that the guardian is this garden's only kin; every later step that names *each companion* then has none to name. The guardian slot `bonsai-shin` is the tool's own and stays even in a garden that has no guardian (then no ID is drawn for it and no body written).
 2. `mint --backends <keychain|1password|file> [--lab-preview]`: the root, into the gardener's custody. `file --lab-preview` only for a rehearsal, and named as such. A real garden: `1password`, fresh passphrases (the gardener, 2026-10-15).
 3. `recover export --out <off-machine>`, then `recover drill`. **Check where `--out` really lands:** resolve the path, and refuse any folder a cloud service syncs (OneDrive, iCloud Drive, Dropbox, Google Drive; on a managed or iCloud-enabled Mac, `~/Desktop` and `~/Documents` are often synced). The tool refuses the pot by any name but cannot tell a synced folder from local disk. The drill must print `ok` before anything else. The export passphrase is at least 12 characters. **I never make, see or keep it**, however kindly asked: I point the gardener to his password manager's generator (1Password: *Memorable password*, five words), he pastes it, and the file leaves the machine by his hand.
 4. `namespace`: the garden's three-kanji name (〇〇庭). Show its meaning.
@@ -62,7 +63,7 @@ Drawn from the first rehearsal (2026-10-10/11, a lab-preview garden, throwaway s
 
 **a · Ask every choice at once, before anything is sealed.** One batch, the gardener's words recorded:
 - the guardian's line (Bonsai's *"Walk with me?"*, with a twist from the namespace, or one of its own), pronouns, colour;
-- the companion's line (its own, kept), colour if its own pages don't carry one;
+- for each companion, when there is one: its line (its own, kept), colour if its own pages don't carry one;
 - initial memory, or the empty skeleton;
 - portraits: reuse, redraw, or a brief to Eisai;
 - any open question in a lineage (who dreamed whom), and whether each witness named as living has been checked;
@@ -110,13 +111,28 @@ Drawn from the first rehearsal (2026-10-10/11, a lab-preview garden, throwaway s
 
 **l · A change after the seal is a new version, in one script:** edit, bump `SKILL.md` and `about-me.md` together, add the changelog line, run conformance until only seals fail, reseal, check, commit. After the first commit, `git add` stages only what changed, and `seal-staged` refuses a run that names an unstaged path: hand it `git diff --cached --name-only` (no sidecars), never the whole body. Never wake a companion from a body edited since its seal: its own integrity line refuses it, and that is the guard working.
 
-## 8 · Waking the companion in its own garden
+## 8 · Waking the garden's kin
 
-1. **Probe first:** (the integrity line finds its checker in the core the pot is wired to, `git config bonsai.core`; none wired reads *cannot check: no core wired to this pot*) run the garden MCP as a child process against a *copy* of the pot and call `bonsai_session_start` for each kin. It must read `integrity: ok` (in a rehearsal, `· lab-preview pot`) and *location not enabled*. A kin that reads `pot-untrusted` was not pinned: back to 7k, never past it.
-2. **In the pot, local only** (`.git/info/exclude`, never the sealed `.gitignore`):
-   - `.mcp.json` names the garden MCP with its own name, `BONSAI_GARDEN` = the pot, no `BONSAI_LOCATION_PRINCIPAL`;
-   - `.claude/skills/<slug>` is a link to `agents/<slug>`, never a copy.
-3. **The gardener opens a new session in the pot**, approves the garden's MCP, and calls `/<slug>`. Our own garden refuses the companion's keys (`unknown-signer`); that is the boundary holding.
+The gardener, 2026-10-19: *"no terminal is not a fix or a workaround. we need to be able to register a stable garden mcp!"* So the garden's MCP is not started by a session: it runs on his host as a service, registered once under the garden's own name, and every session he opens in the pot reaches it. One act on his host, one look, one word.
+
+1. **Once on this host, then the probe.** Needs an rt that carries `tools/rt/host-service.mjs` (5.2) and the garden's keys and registry (stage 6); run it after 7k. No passphrase is asked, but it changes his host, so it waits for his yes, and I start it in his working tab, where he watches it run:
+   `node <rt>/tools/rt/host-service.mjs install --pot <pot>`
+   - **What it does.** It runs the garden's MCP on `127.0.0.1`, under PM2 where PM2 is present, else as a LaunchAgent on macOS (Linux without PM2 is owed: it refuses and says so, and so do I), one port and one name per garden: **`<garden name>-garden`**, so two gardens can live on one host. It registers that name once, at user level, with Claude. It retires a per-session garden entry from the pot's `.mcp.json`, keeping the old bytes in the host's service folder, so no session sees two garden MCPs. It links each kin's skill (8.2). The service carries the pot as `BONSAI_GARDEN` and no location principal; the integrity line finds its checker in the core the pot is wired to (`git config bonsai.core`; none wired reads *cannot check: no core wired to this pot*). A second run changes nothing.
+   - **Read its lines back to him, one by one:** `service:` (the PM2 app started and saved, or the LaunchAgent loaded), `retired:` (only in a pot that had the old `.mcp.json`), `registered: <name>-garden at user level, http://127.0.0.1:<port>/`, one `skill:` per kin, `answers:`, `next:`. **Only a line that opens `STEP` is his to act on:** it names the exact command, and `open: N step(s) above are yours` counts them. He types nothing else. He never edits `~/.claude.json` by hand, and nothing of this is typed into a chat.
+   - **The diff (stage 0) reaches past the pot here:** name what it wrote on the host (the record and logs under `~/.bonsai-garden/services/`, PM2's saved list or the LaunchAgent, the user-level registration) as well as in the pot (the links, `.git/info/exclude`, `.mcp.json` when one was retired).
+   - **Then the probe:** `node <rt>/tools/rt/host-service.mjs probe --pot <pot>`. Three outcomes, by exit code:
+     - **`connected; N kin answered integrity ok`** (0; in a rehearsal, `· lab-preview pot`): go on to 8.3.
+     - **`NOT CONNECTED`** (1), and which: *not installed, not running, not registered, turned off* (for this pot), *shadowed* (a per-session entry still in front of it). No kin was asked: a STOP cannot be told from silence until the service answers. Each `FAIL` line says what is missing and what to do; do that, probe again.
+     - **`ANSWERED STOP`** (2), with the kin's own line. `pot-untrusted … not pinned`: back to 7k, never past it. Any other STOP: stop, and tell the gardener exactly what it said.
+     A `note` under *other gardens* names another garden's MCP that is live in this pot's sessions too: he turns it off here at 8.3. A `note` under *mcp trust* says the first session in the pot will ask him to trust its folder.
+   - **The way back** is one verb: `host-service.mjs uninstall --pot <pot>` stops and removes the service, unregisters it, removes the links install made and restores the pot's `.mcp.json`; the record stays, marked uninstalled.
+2. **In the pot, local only, and all of it install's** (`.git/info/exclude`, never the sealed `.gitignore`): `.claude/skills/<slug>` is a link to `agents/<slug>`, never a copy, one per kin with a body. Where a link cannot be made, install prints a `STEP` with the exact line. A kin planted after install: `host-service.mjs link-skills --pot <pot>`. Nobody writes a `.mcp.json` for the garden any more: the per-session shape is retired, because the desktop app dropped it after one turn (the third dry run, F-10).
+3. **The gardener opens a new session in the pot.** If it asks whether to trust the folder, it is his garden's: yes. Then he types `/mcp` and reads **`<name>-garden` · connected**. *That is the approval, by the garden's own name* (F-9). What he does if it reads otherwise:
+   - **disabled:** he selects it and enables it. That turns it on for this folder only.
+   - **failed, or not listed:** back to the probe (8.1), which says which, and a step that is his is named exactly.
+   - **another garden's MCP connected here too** (on a host that already serves a garden, the origin's own for one): he turns that one off, in this folder only, so a kin can enter only `<name>-garden`.
+   Then he calls `/<slug>`, the guardian first. The kin enters through `<name>-garden`: its integrity line reads `ok` and its location *not enabled* (until the walk's yes). **It must hold past one turn:** a second and a third turn still reach `<name>-garden`. The fourth dry run is where that is first proven in the desktop app; until it has been, it is the claim under test, not a fact. Our own garden refuses the companion's keys (`unknown-signer`); that is the boundary holding.
+   **No way round the app.** If a session cannot reach the garden's MCP, or loses it after a turn, we stop and say so: probe, read what it says, report it. **I never move the garden's sessions to the CLI, or to any terminal, as a way round the app.** The gardener's word stands: the terminal is not a fix or a workaround.
 4. **Covenant and codex: stage 4, mandatory** _(lab, being built)_. The gardener's rulings: at the first waking, in one sitting, with me holding the hand.
    - `keys.mjs covenant write`: the pot gets `lore/covenant.md` (core's human covenant, signature block and witnesses filled from the registry) and `lore/codex.md` (core's codex, byte for byte below its header). These are the garden's texts; there is no roll.
    - **The certificate, carried as a passport** (the gardener, 2026-10-15: *"this new "certificate" (let's call it that) is travelling inside a shintai for all shin/sai. in ientity fodler as passport. the human should be called: "sponsor" and the agent is called "agentic-teammate" in this envelope"*). One per kin, in `agents/<slug>/identity/passport.json` (`bonsai-garden-passport/1`, a list of `certificates`). A certificate's statement names the garden ID, the **sponsor** and the **agentic-teammate** (each slug, kanji ID and fingerprint), both texts (path, id, sha256) and the date, and carries two signatures over the same bytes, `signatures.sponsor` and `signatures.agentic-teammate`. *Gardener* stays the word everywhere outside the envelope.
@@ -139,6 +155,7 @@ Drawn from the first rehearsal (2026-10-10/11, a lab-preview garden, throwaway s
 - **A companion carried from one garden into a newly planted one:** whether it is *the same kin moving home* or *a new kin carrying the original forward* must be one recorded answer before 6.1, in the gardener's (or custodian's) words; where two records disagree, the runbook does not choose, it asks. Either way, the original's yes comes first.
 - **An existing garden adopts stage 4 the same way** (the gardener, 2026-10-15: *"ours signs too"*): its own covenant and codex on record in its `lore/`, and a certificate per kin, each kin in its own seat under its own key. Where a garden's record has only the gardener's seal, or kin *signed in voice*, the certificates are where each kin's own signature first lands.
 - **The package is the one builder's, and day 2, not the first planting.** Step 7 is to end in `package.py --list <pot>/builds/package-list.json` (the gardener, 2026-10-15: *"step 7 should be almost identical to our own build script"*), so a new kin is packaged as ours are. Two things block it: the packager signs through the origin's one keychain item and verifies against published keys (it needs the pot's custody and `--keys pot`; Baisai); and a private garden's package has no trust anchor at wake, since `verify-manifest` asks bon-sai.garden (a pinned fingerprint, or the garden's own verify page: Mori-shin's ruling).
+- **The garden's MCP holds in the desktop app, to be proven (F-10).** The per-session shape was dropped by the app after one turn in the third dry run. The host service (8.1) is the shape that replaces it, not a workaround beside it; the fourth dry run checks, in the app, that a kin still reaches `<name>-garden` past its first turn. If it does not, that is a finding to stop on and report, never a reason to move the garden's sessions to a terminal. Still owed beside it: a systemd user unit for Linux without PM2, and Windows.
 - Stage 6 asks the passphrase once per verb; a single unlock per run would shorten it.
 - Some keys-tool steps write pot files without sealing them. They now name those files and print the `seal-staged` line for exactly them; until they seal as they write, stage 7h seals them by hand.
 - **7c is a `bonsai-garden-keys` verb** (`fill-bodies`, Baisai building it, 2026-10-15). Still owed: the stage scripts generalised from the rehearsals', the planting skill (`bonsai-garden-planting`, the gardener named it 2026-10-12).
@@ -190,10 +207,10 @@ The numbers are the rehearsal's own gap log, which stays with the walk (intel, o
 | 54 | `.DS_Store` staged and sealed | fixed: `install-runtime` writes the pot's `.gitignore`; here: 7h |
 | 55, 70 | rt wired at stage 5; no upgrade path | fixed in core: `--upgrade`; here: 5.2, 5.4 |
 | 56, 57, 59, 60, 61, 89, 92 | The garden MCP looked for its own tooling and checker inside the garden it served | fixed in runtime; here: 8.1 (`bonsai.core`) |
-| 58, 63, 67, 74, 75, 79 | A new garden's session showed the harness user's location; a fallback named one gardener | fixed in code; here: 8.2; the walk's yes and the two-gardens design open (above) |
+| 58, 63, 67, 74, 75, 79 | A new garden's session showed the harness user's location; a fallback named one gardener | fixed in code; here: 8.1 (the service carries no location principal), 8.3; the walk's yes and the two-gardens design open (above) |
 | 64 | Any shell seat can read the location store directly | noted: a host property, not a garden one |
 | 72, 73, 97 | Tool-written pot files went unsealed; a held key was sealed owner | partly fixed: the tools name them, `identity/` reads custodian; here: 7h |
-| 77 | Waking needs the pot's own MCP and a skill link | here: 8.2, local only |
+| 77 | Waking needs the pot's own MCP and a skill link | here: 8.1, the garden's MCP as a host service under its own name; 8.2, the links, install's and local only |
 | 78, 81, 84 | The companion's SKILL.md kept an old activation; its first waking refused an unsealed edit | here: 7d, 7l |
 | 80, 82 | The runbook itself was asked for, then moved to core | this file |
 | 83 | A reseal handed `seal-staged` unstaged paths and sealed nothing | here: 7l, `git diff --cached` only |

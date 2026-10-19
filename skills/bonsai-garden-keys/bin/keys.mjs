@@ -5,7 +5,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-18
+// updated: 2026-10-19
 // ---
 //
 // keys.mjs — spec-gardeners-keys.md §2: detect, id, mint, recover, namespace, identity, derive,
@@ -118,7 +118,7 @@ const KNOWN = new Set([
 const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs in the arc's order:
 
   detect   --pot <dir>                              what custody this host has, and: mint · derive · cannot tell
-  id       --pot <dir> --name <romaji> --gardener <slug> --shin <slug>
+  id       --pot <dir> --name <romaji> --gardener <slug> [--shin <slug>[,<slug>...]]   no --shin: no companion
   mint     --pot <dir> [--lab-preview]              32 bytes into custody; prints the root fingerprint only
   recover  export --pot <dir> --out <file>          the sealed backup, by your hand, once
   recover  drill  --pot <dir> --file <export>       decrypt in memory, compare the root: ok (mandatory before namespace)
@@ -444,14 +444,18 @@ async function cmdId(ctx) {
   const { pot, f } = ctx;
   if (!fs.existsSync(pot) || !fs.existsSync(path.join(pot, '.git')))
     throw refuse(`${pot} is not a git repository; a pot is one (git init it first)`);
-  if (!f.name || !f.gardener || !f.shin)
-    throw usage('id needs --name <romaji> --gardener <slug> --shin <slug>[,<slug>...]');
+  if (!f.name || !f.gardener) throw usage('id needs --name <romaji> --gardener <slug> [--shin <slug>[,<slug>...]]');
   if (!NAME_RE.test(f.name))
     throw refuse(`the garden's name is lowercase romaji, ^[a-z][a-z0-9-]{1,30}$, not ${JSON.stringify(f.name)}`);
-  // one companion or more (a garden may plant more than one): --shin a,b
-  const shins = String(f.shin)
-    .split(',')
-    .map((s) => s.trim());
+  // no companion, one, or more: --shin a,b. A garden needs none (W's audit of the third dry run, F-5, 2026-10-18: the
+  // gardener said "we do not need W/u-shin", the tool required one, and a key was minted for a kin no one asked for).
+  // Its guardian, bonsai-shin, is the tool's own slot and the only kin a garden must have.
+  const shins =
+    f.shin === undefined
+      ? []
+      : String(f.shin)
+          .split(',')
+          .map((s) => s.trim());
   for (const s of [f.gardener, ...shins])
     if (!SLUG_RE.test(s)) throw refuse(`${JSON.stringify(s)} is not a slug (^[a-z0-9][a-z0-9-]*$)`);
   const seeded = [f.gardener, 'bonsai', 'bonsai-shin', ...shins];
@@ -468,12 +472,12 @@ async function cmdId(ctx) {
   if (pj) throw refuse(`${P.pot(pot)} already names garden ${pj.garden}`);
   const ulid = newUlid();
   if (whyBad(ulid)) throw halt(`the generated id ${ulid} fails the ULID rule (${whyBad(ulid)})`);
-  // `shin` stays the first companion, as every reader of a one-companion garden expects; `shins` is written only for more
+  // `shin` stays the first companion, as every reader of a one-companion garden expects (null: none); `shins` only for more
   writeJson(P.garden(pot), {
     garden: ulid,
     name: f.name,
     gardener: f.gardener,
-    shin: shins[0],
+    shin: shins[0] ?? null,
     ...(shins.length > 1 ? { shins } : {}),
     namespace: null,
     'root-fingerprint': null,
@@ -484,6 +488,11 @@ async function cmdId(ctx) {
   });
   writeJson(P.pot(pot), { garden: ulid, namespace: null });
   console.log(`garden ${ulid} · ${f.name}`);
+  console.log(
+    shins.length
+      ? `companions: ${shins.join(', ')}`
+      : "companions: none; the guardian, bonsai-shin, is this garden's only kin (a companion needs --shin <slug> at id)",
+  );
   console.log('next: mint');
 }
 

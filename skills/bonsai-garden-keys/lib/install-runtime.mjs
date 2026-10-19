@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-18
+// updated: 2026-10-19
 // ---
 //
 // install-runtime.mjs — runtime rituals/specs/spec-rt-slice.md §5 and §6, the verb behind
@@ -21,7 +21,7 @@
 // The order is the contract. Fetch into a staging directory beside the destination; read the staging tree's bytes
 // (a, b and the seal's form, offline); only then ask the published keys (c); then, and only then, move it into
 // place, record it in the pot (runtime.json) and set the pot's local git config (core.hooksPath, bonsai.core,
-// bonsai.rt). Nothing fetched is imported, required or run before it verifies; a refusal removes the staging
+// bonsai.rt). It writes no .mcp.json (2026-10-19): the garden MCP is a host service, rt's host-service.mjs. Nothing fetched is imported, required or run before it verifies; a refusal removes the staging
 // directory it made and writes nothing else. The published keys not answering halts (3): nothing is installed.
 //
 // Sources: a git repository (a local path or a URL: cloned, at its HEAD), a directory holding an unpacked rt, or a
@@ -387,14 +387,16 @@ function wire(pot, dest, taken, kind, url) {
   console.log(`next: node ${path.join(dest, ...M.DOCTOR.split('/'))} --pot ${pot}`);
 }
 
-// ── the garden MCP (runtime rituals/specs/spec-rt-mcp-slice.md, phase 4) ─────────────────────────────────────────────────────
-// An rt that carries the server (tools/bonsai-mcp/server.py) gets the pot wired to it: .mcp.json names the server
-// `bonsai-garden-runtime`, run by uv from the installed rt with `--garden <pot>`. Host-local by nature (absolute paths), so
-// .gitignore lists it. Two things keep rt exactly its manifest after the server has run, since rt refuses any file it does
-// not list: the Python environment lives outside rt (UV_PROJECT_ENVIRONMENT, under ~/.bonsai-garden/rt-env/) and Python
-// writes no __pycache__ (PYTHONDONTWRITEBYTECODE). uv brings its own Python, so a host needs uv, not Python.
-export const MCP_SERVER_NAME = 'bonsai-garden-runtime';
+// ── the garden MCP (runtime rituals/specs/spec-rt-mcp-slice.md) ─────────────────────────────────────────────────────────────
+// Until 2026-10-19 an rt that carries the server (tools/bonsai-mcp/server.py) got the pot's .mcp.json written: a server per
+// session, started by the client from the pot's folder. The desktop app drops such a server after one turn (W's F-10, the third
+// dry run), and the gardener: "no terminal is not a fix or a workaround. we need to be able to register a stable garden mcp!"
+// So install-runtime writes no .mcp.json. The garden MCP is a service on the host, registered once at user level under the
+// garden's own name, by rt's own tools/rt/host-service.mjs, once the garden has its keys (garden.json) and its registry
+// (planting §8). Here: say so, and name the step. .mcp.json stays ignored by git: a pot may still carry one of its own, and
+// host-service install retires a per-session garden entry from it. uv runs the server, so a host without uv is told now.
 const SERVER = ['tools', 'bonsai-mcp', 'server.py'];
+const HOST_SERVICE = ['tools', 'rt', 'host-service.mjs'];
 
 /** uv by absolute path: BONSAI_UV when set (and then only it), else PATH and the places uv's installers use. */
 function findUv() {
@@ -418,50 +420,26 @@ function findUv() {
   return null;
 }
 
+/** true when this rt carries the garden MCP and this host can run it; then the pot gets its first contract. Writes nothing. */
 function wireMcp(pot, dest, rt) {
-  const server = path.join(dest, ...SERVER);
-  if (!fs.existsSync(server)) {
-    console.log(`mcp: ${rt.name} ${rt.version} carries no garden MCP server; no .mcp.json written`);
+  if (!fs.existsSync(path.join(dest, ...SERVER))) {
+    console.log(`mcp: ${rt.name} ${rt.version} carries no garden MCP server`);
     return false;
   }
-  const uv = findUv();
-  if (!uv) {
+  if (!findUv()) {
     console.log(
-      'mcp: no uv on this host (https://docs.astral.sh/uv/), so the server cannot run; no .mcp.json written. ' +
+      'mcp: no uv on this host (https://docs.astral.sh/uv/), so the garden MCP cannot run here. ' +
         'Install uv, or name it with BONSAI_UV=<path>, and run install-runtime again (it changes nothing else).',
     );
     return false;
   }
-  const entry = {
-    command: uv,
-    args: ['run', '--frozen', '--project', path.dirname(server), 'python', server, '--garden', pot],
-    env: {
-      PYTHONDONTWRITEBYTECODE: '1',
-      UV_PROJECT_ENVIRONMENT: path.join(os.homedir(), '.bonsai-garden', 'rt-env', `${rt.name}-${rt.version}`),
-    },
-  };
-  const file = path.join(pot, '.mcp.json');
-  let cfg = {};
-  if (fs.existsSync(file)) {
-    try {
-      cfg = JSON.parse(fs.readFileSync(file, 'utf8'));
-    } catch (e) {
-      console.log(`mcp: ${file} is not JSON (${e.message}); left as it is, nothing written`);
-      return false;
-    }
-  }
-  const servers = { ...(cfg.mcpServers || {}) };
-  if (JSON.stringify(servers[MCP_SERVER_NAME]) === JSON.stringify(entry)) {
-    console.log(`mcp: .mcp.json already names ${MCP_SERVER_NAME} for this rt`);
-    return true;
-  }
-  const others = Object.keys(servers).filter((k) => k !== MCP_SERVER_NAME);
-  servers[MCP_SERVER_NAME] = entry;
-  fs.writeFileSync(file, `${JSON.stringify({ ...cfg, mcpServers: servers }, null, 2)}\n`);
+  const hs = path.join(dest, ...HOST_SERVICE);
   console.log(
-    `mcp: .mcp.json names ${MCP_SERVER_NAME}, run by ${uv} from ${path.dirname(server)}` +
-      (others.length ? ` (kept: ${others.join(', ')})` : '') +
-      '; host-local, ignored by git',
+    fs.existsSync(hs)
+      ? `mcp: the garden MCP runs as a service on this host, registered once at user level under the garden's own name; ` +
+          `no .mcp.json is written. After the keys (garden.json) and the registry: node ${hs} install --pot ${pot}`
+      : `mcp: ${rt.name} ${rt.version} carries the server and no tools/rt/host-service.mjs, so the garden MCP cannot be ` +
+          'installed as a host service from it; install-runtime --upgrade --from <a newer rt>. No .mcp.json is written.',
   );
   return true;
 }
@@ -499,11 +477,7 @@ function firstContract(pot) {
     const tpl = fs
       .readFileSync(path.join(SKILL, 'references', 'pot-agents.md'), 'utf8')
       .replace(/^---\n[\s\S]*?\n---\n+/, '');
-    fs.writeFileSync(
-      agents,
-      header(pot, "This pot's AGENTS.md: the garden contract, the pot's own") +
-        tpl.split('__SERVER__').join(MCP_SERVER_NAME),
-    );
+    fs.writeFileSync(agents, header(pot, "This pot's AGENTS.md: the garden contract, the pot's own") + tpl);
     wrote.push('AGENTS.md');
   }
   const claude = path.join(pot, 'CLAUDE.md');

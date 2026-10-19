@@ -10,7 +10,7 @@ status: active
 
 # build/
 
-Core's sealed packages, ready to install. Built by core's one builder from core `713a9af`, sealed by each owner's key, every package checked from a clean folder before it was committed here.
+Core's sealed packages, ready to install. Built by core's one builder from core `b59ee49`, sealed by each owner's key, every package checked from a clean folder before it was committed here.
 
 | File | What it is |
 |---|---|

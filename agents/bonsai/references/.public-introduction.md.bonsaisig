@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
-  "id": "01M48DNAASSJ2N172WX97D7TDV",
+  "id": "01M59EZXABSHAASJ8ESGYPKHRK",
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-06T10:55:53Z",
+  "timestamp": "2026-10-19T06:56:05Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/public-introduction.md",
-  "file-hash": "d4b37b0af9b29a2974084f0fb26c1f4c99673e7f81428b66f5e5d1892ba40577c5fb585ec77721bddb7544d871f03d9b1b06ea76fca64c1d09a9df70f33df192",
-  "signature": "D0iK+yOySC/+pp/9/YFTdBqrzSzb+aAOJRpgt2/6B9oTEidV+bacMe7TK0bviSe8So0brkwx3m5XJRttrnaYBw=="
+  "file-hash": "f2a8d89be7f9217bc6dad04b7e7b88e8c4b5a48f4bffd77154e38652f0abcaafecad907bc7c8ab1fd349c794cde393edb1e49ce46308de592d0d3dc19950089b",
+  "signature": "/SU28V0hG3jZr7XjJI9USGps+nWSKEjZEBFWLGFHHKEaL7ZKzy7qzungi4zITSWnsvGmgeKby9IjtV21bA08Cg=="
 }

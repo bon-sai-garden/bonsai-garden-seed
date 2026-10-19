@@ -1,10 +1,10 @@
 {
   "format": "bonsai-garden-distro-manifest/1",
   "name": "bonsai-garden-seed",
-  "version": "0.8.4-lab",
+  "version": "0.8.5-lab",
   "upstream": {
     "repo": "bonsai-garden-core",
-    "commit": "33b93a2b09ca17e9f499a202f7e9185197c0b622"
+    "commit": "6dfc717423620d2b3180980923f216d54e57de90"
   },
   "held": [
     "AGENTS.md",
@@ -271,8 +271,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.03-whos-with-you.html.bonsaisig",
-      "sha256": "bbf8f08007487e6fc0b8523a8378de329dcab0717d4b9fff5f8b322ecf458bc6",
-      "bytes": 565
+      "sha256": "42ee4cf08245932e7e2c14cab7b05036d5d5cda3645819f673c4b5b06e5197f6",
+      "bytes": 566
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.04-imagine-them.html.bonsaisig",
@@ -301,8 +301,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.08-calling-home.html.bonsaisig",
-      "sha256": "4bc5c8d04fcfb4d2d755c2d6e832e26dfe9b72d97130b4ff7830ab4bf4f05f77",
-      "bytes": 564
+      "sha256": "cde30f0be1ea2396a2ec8d0eaaf373ba6711d61857661276bededf0210539f72",
+      "bytes": 565
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.build.py.bonsaisig",
@@ -356,8 +356,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/03-whos-with-you.html",
-      "sha256": "71a74d42774346f4e0d7a76b874eaadcd1f379a2e1d96678f82e31472b8b3bb3",
-      "bytes": 8203
+      "sha256": "af477cdbf3bf5cfb028396e6d3323f779b4543648599a0b12c4d969dde303d6a",
+      "bytes": 8702
     },
     {
       "path": "agents/bonsai/assets/garden-walk/04-imagine-them.html",
@@ -386,8 +386,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/08-calling-home.html",
-      "sha256": "b8ac024ba7fb62f93f9603e8f14136aeac2d44824da96ebf099225148c3f6276",
-      "bytes": 7252
+      "sha256": "08167454fc761239ae08a499d3df3228dcd7c54631bd31a2bacc9c3a27814f4d",
+      "bytes": 9867
     },
     {
       "path": "agents/bonsai/assets/garden-walk/build.py",
@@ -426,8 +426,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.03-whos-with-you.html.bonsaisig",
-      "sha256": "d7193882ed4280fbaaf15e83cd83dec2a30a77b5b6975ac081b4087dc1c8cc64",
-      "bytes": 569
+      "sha256": "fe72b770d3612d700d6bf25f44ce8e6f892c9bb6cef066bae5979d0096bdfc81",
+      "bytes": 570
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.04-imagine-them.html.bonsaisig",
@@ -456,8 +456,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.08-calling-home.html.bonsaisig",
-      "sha256": "a483a40c2ac2ae8f9d8708e75d48bd4d40286b91041118e10b17277be4909cee",
-      "bytes": 568
+      "sha256": "b2aafeb16edd29e97795c1a9bece9d45916d0a4d4399d9fd56ec32c94eaaad80",
+      "bytes": 569
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/00-gate.html",
@@ -476,8 +476,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/03-whos-with-you.html",
-      "sha256": "3d3b4bdf0365e3043d42ca65acf966a7f62a43d6d9b7328a83701f45b2f1aad9",
-      "bytes": 4363
+      "sha256": "25e17583f3ae5d3623792e14a8009805e32d08573c2efabc051c7139cf437418",
+      "bytes": 4862
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/04-imagine-them.html",
@@ -506,8 +506,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/08-calling-home.html",
-      "sha256": "6292ea602b3551a4d108c558a179030541744def56c87c48a3e0f890c274bbf5",
-      "bytes": 3537
+      "sha256": "f2653ec84b1d54d154fc42b3d0b655e9df351fd29cc0446556489c27bc9036ba",
+      "bytes": 6152
     },
     {
       "path": "agents/bonsai/assets/garden-walk/walk-early.js",
@@ -676,7 +676,7 @@
     },
     {
       "path": "agents/bonsai/references/.public-introduction.md.bonsaisig",
-      "sha256": "5ae3b9c364e47bff95e1c5895185128e178ffc43c68b956cf012d1651cb2eb11",
+      "sha256": "cb8f3385a3f73b5e99888ac2787233b05dd96201c3351f98242c976bacb8803b",
       "bytes": 555
     },
     {
@@ -766,18 +766,18 @@
     },
     {
       "path": "agents/bonsai/references/procedures/.planting-runbook.md.bonsaisig",
-      "sha256": "fd4a215a4d4894025c3cdae5b5d9448e6c9e1dbf073b24682783774a776b368e",
+      "sha256": "40e477e199d8412e4608cb3b3ca1be0a1288fcfc8a0690e475ef5cd25ae6ede8",
       "bytes": 563
     },
     {
       "path": "agents/bonsai/references/procedures/planting-runbook.md",
-      "sha256": "56cff8b922fb7ed77c81f4683dac5d92ae6aac09e57dcbeee610c359b7df3f74",
-      "bytes": 32781
+      "sha256": "05cd5a28187eb392dfa008e12fed4644712e1e8e143b985437ce1f5246f8199c",
+      "bytes": 39149
     },
     {
       "path": "agents/bonsai/references/public-introduction.md",
-      "sha256": "efbb162ae157bd79ad74990f8fb00a95e81feb16a73e59e6a5dda70c65c038e6",
-      "bytes": 2406
+      "sha256": "65683fbcb6ba33b7a24e123826b4abb93accb295ced85aae3007fcec953ca361",
+      "bytes": 999
     },
     {
       "path": "agents/bonsai/references/witness/.baisai.md.bonsaisig",
@@ -981,312 +981,312 @@
     },
     {
       "path": "build/.README.md.bonsaisig",
-      "sha256": "4125348058c3c3bf4269af2003f9a63383e03107ee653fb8f72e896390754be7",
+      "sha256": "b94f5fa24557e78af12fdf40ea9109c8a14e312a47b53ca7ffffb472e79cbab7",
       "bytes": 522
     },
     {
       "path": "build/.bonsai-garden-core-plugin.skill.bonsaisig",
-      "sha256": "c5cfd18442f97a120b46cd17cd431623478e18a66ac0e1656ef1e3d13bd9d44a",
+      "sha256": "4bb1f089d5d27fa1ec8b4d22ccc6287985a170a9403ada81a928800025115117",
       "bytes": 548
     },
     {
       "path": "build/.bonsai-garden-core-plugin.skill.sha256.bonsaisig",
-      "sha256": "4e31c97df2018f7363038778b6cfe7a3cd9d72fd962021eb0ef09dfaadcbf909",
+      "sha256": "494f0ab9faf11ea09694e7caca2c7f6bfc96ee186b458b9edb9b4abde4a5e1f8",
       "bytes": 555
     },
     {
       "path": "build/.bonsai-garden-core.plugin.bonsaisig",
-      "sha256": "60afb31a7c57690a3417322c1dba53222c879a1fb91dea484febbda631f5a00e",
+      "sha256": "1838de209b38813a7116ac71d8936049aa89c04eba1e1381f35e599650b27f11",
       "bytes": 542
     },
     {
       "path": "build/.bonsai-garden-core.plugin.sha256.bonsaisig",
-      "sha256": "2b2737f09e761f6d3e7853d6690d61f508ada094e8b97657c876f28d1f6fbf74",
+      "sha256": "84a0e274d7a27ca8f275353d5f8e1841941d9450314082c408a79c6b15dfeee3",
       "bytes": 549
     },
     {
       "path": "build/.bonsai-garden-core.zip.bonsaisig",
-      "sha256": "10542b053f9c51143fc3ec22926d7ce7f389a1e1e312ec92ec629938ac395a1d",
+      "sha256": "f5333cded03bf3a7052f338a9f844f66a6cba96f7db191c0174533ad02a33c79",
       "bytes": 539
     },
     {
       "path": "build/.bonsai-garden-core.zip.sha256.bonsaisig",
-      "sha256": "9ace03aa30b2566f1abff9c6747a68e203ec58094dad13c75ace8b2bb197de20",
+      "sha256": "8136cb1178198228f5c7603f779e52c7cf403917c4a1e09f10a138fb0ddc797c",
       "bytes": 546
     },
     {
       "path": "build/.bonsai-garden-keys.skill.bonsaisig",
-      "sha256": "6c99524698bf480c7de7d68bff6756f9bfebdd97afbc1edc713273470d21516b",
+      "sha256": "7e438f845c93a22e31435e8df9c9cdb74d11b89db6b3e501ca68f9b48181d2fa",
       "bytes": 541
     },
     {
       "path": "build/.bonsai-garden-keys.skill.sha256.bonsaisig",
-      "sha256": "aab7a55f135c160d5159aff25e976e3d39f5babb1de74528da54967a66d76ed2",
+      "sha256": "1ee25e6fdb41c00ec8ac8a93d63b16ddc36c98c629383d2af391ce319dd64be1",
       "bytes": 548
     },
     {
       "path": "build/.bonsai-garden-ledger.skill.bonsaisig",
-      "sha256": "5a371c8b7a13d5acf73a262538b2f931ce3c65f5a69c0f9ecbefbbbd0662cf49",
+      "sha256": "0489d341f065698d5b7dc83a8dcce9af445ef2df2903524d308bb57a9621cbfb",
       "bytes": 543
     },
     {
       "path": "build/.bonsai-garden-ledger.skill.sha256.bonsaisig",
-      "sha256": "ed20dbddcba58090cba4cdc0d98e6b4d589d5c3599ee9a73e50a7e4bb6510e9a",
+      "sha256": "0f80c47768cdbd9681d5aaa791f7313b5736ad519550bc60ce9ffc429a61ea2a",
       "bytes": 550
     },
     {
       "path": "build/.bonsai-garden-mark.skill.bonsaisig",
-      "sha256": "ba301889537a38249138491184db6f72fcad1641bcf137da2b5cc82e1e43d60c",
+      "sha256": "df024dd8b53013883e0c2b5e927be1b7213ea05ea9367a10e8b0e561a37e2c74",
       "bytes": 541
     },
     {
       "path": "build/.bonsai-garden-mark.skill.sha256.bonsaisig",
-      "sha256": "c083b4f8285fdc4905e465cdfd3eba9215cbd00f9bbc01a0e56590e467593fa5",
+      "sha256": "c39dfc933ee9adc0a84cffffb5ebb4eeaa20df917b3a1bdf687e4f76dce50289",
       "bytes": 548
     },
     {
       "path": "build/.bonsai-garden-portrait.skill.bonsaisig",
-      "sha256": "08a14d70c24ee900cb4bf7d391a01b34a855c2ec3f76eb2350e523578149689a",
+      "sha256": "384af917b916ba8cdf53461b9f951255aa079e54603170dddc911719058c0697",
       "bytes": 545
     },
     {
       "path": "build/.bonsai-garden-portrait.skill.sha256.bonsaisig",
-      "sha256": "51fffe89b51bf79f7fc8b7bf2d6f22a8dc48c73c6e20e0ab5904b85b86964095",
+      "sha256": "3011b4c5f1b9d4fc66731093d95414ce408593245d58126c6cb266bc9e9f3833",
       "bytes": 552
     },
     {
       "path": "build/.bonsai-garden-sign.skill.bonsaisig",
-      "sha256": "28877f71a07d839a88a1f09a0ccd93f071c61e32dd726dd5787e4020f06e121b",
+      "sha256": "beb359a0ff859019c5e0cf9c7b26cb8c7d38ae862d45a1001ac4efc9329db6e0",
       "bytes": 541
     },
     {
       "path": "build/.bonsai-garden-sign.skill.sha256.bonsaisig",
-      "sha256": "d0cdc4c80ba7f36c4c3cba278599c8c51e3c700db4c197aee05f9c5bbd981a2e",
+      "sha256": "46de7b9915a1db2219ffe80cc6d1f4796cff6c93ed4e3e1e8040a87dbe7b816e",
       "bytes": 548
     },
     {
       "path": "build/.bonsai-garden-strategic-context.skill.bonsaisig",
-      "sha256": "b84c1d517f706ea1c8b3a6f652158dfc6c4768de64ba5e8c58e652c84c80b036",
+      "sha256": "82cbdd700826f027fdd70117d1eec900e323c4bfa415ec006c45dc34d005309e",
       "bytes": 554
     },
     {
       "path": "build/.bonsai-garden-strategic-context.skill.sha256.bonsaisig",
-      "sha256": "8c78483a9b593db9b689f5d3aa7c67fa2de77458bc3cf992137c4ffc5212b54c",
+      "sha256": "5a47d73c0ed80090dcbc814bf843f0675401ba02fbbe54508e3db79f7217fbe9",
       "bytes": 561
     },
     {
       "path": "build/.bonsai-garden-tokens.skill.bonsaisig",
-      "sha256": "7ac7ba3a5414d72d04e1485a49208811076f39f1b7614b726dce1e6fc449686b",
+      "sha256": "9ffc7d74f0e63530ee993425e4d55d0553262ac7cd7959ab956edab745ef86c7",
       "bytes": 543
     },
     {
       "path": "build/.bonsai-garden-tokens.skill.sha256.bonsaisig",
-      "sha256": "5442c26dbd2c43e3881cf2e343267924a2534cd9a892d5386ec10d49dfcf955c",
+      "sha256": "fbdb2f4a0da0ad7c89881c6b984b0a20bb14f6f63dcec412d9fb5f6f5e8dd917",
       "bytes": 550
     },
     {
       "path": "build/.bonsai-garden-transcript.skill.bonsaisig",
-      "sha256": "f4c6dcc0b60faa5ef1151b412aa44dfa58a248ab09dbae7b254a2fa4662c7602",
+      "sha256": "c07523ced1ec09335c4d7a4f01198bf1f37a331d60f77c39e06b877c2e805c68",
       "bytes": 547
     },
     {
       "path": "build/.bonsai-garden-transcript.skill.sha256.bonsaisig",
-      "sha256": "ab37f3a641bfbaf639b7837ddf1d336bd982a0192b513e5961ec7541223d3023",
+      "sha256": "96ee3319cbe6509b17634a6eb032c8a2c25399fb3f6c36b0edb452780a31ec7a",
       "bytes": 554
     },
     {
       "path": "build/.bonsai-garden-validate.skill.bonsaisig",
-      "sha256": "83d53ae99d92938af19343a9ffb7c1d2607a4b1240c30039a95bc3840322b388",
+      "sha256": "707386e54f0da8c12cd85772ff51863a3dab736b9276f8339511602d0c2e443e",
       "bytes": 545
     },
     {
       "path": "build/.bonsai-garden-validate.skill.sha256.bonsaisig",
-      "sha256": "91b1b38d9eb6bc88ef2ad0d3ce9855387e0fd40632dc723da60c69aeb40d89fb",
+      "sha256": "1270aac5c621dc9424259830d0e1c572b757320bd05dc163545e267c48bba559",
       "bytes": 552
     },
     {
       "path": "build/.bonsai-garden-vcard.skill.bonsaisig",
-      "sha256": "8d1132efdb46acc878cffbaa4ad7378498249d7696901a55ebed11f42b5703e3",
+      "sha256": "643cadc81c3eb8f0d6b1a26e77f05539f6be44e7132a77384f76f12725c6461d",
       "bytes": 542
     },
     {
       "path": "build/.bonsai-garden-vcard.skill.sha256.bonsaisig",
-      "sha256": "fc54cf034732dae0b84b5c4eb6795446af96e6e4feb47149316cf3d354f60ace",
+      "sha256": "b85a1781002d75a5479ddee35081cf5bd04fbaba4c2d5d874aefdefacbf38f8b",
       "bytes": 549
     },
     {
       "path": "build/.bonsai.skill.bonsaisig",
-      "sha256": "695437e9de29ee0f8792f9dac79faf6619dea922733c07058d4219d39fe73fdb",
+      "sha256": "bfd80866618772af5d5d776b97b9933e4b423c28f64d36d455140839ecd2fc62",
       "bytes": 529
     },
     {
       "path": "build/.bonsai.skill.sha256.bonsaisig",
-      "sha256": "3f15b3846b50a8b7629a933b3ae43f58d6229e2421d6d542d3767f53dfaa5860",
+      "sha256": "1760766ffd1e148f136e4d0298139bd86ba6ad099fb7547e13c5cdd05272d25a",
       "bytes": 536
     },
     {
       "path": "build/.bonsai.zip.bonsaisig",
-      "sha256": "2c048bb88f9332f2b1b5d23a8bf537d6e09be8f61adb970081f97b326fc3c45c",
+      "sha256": "8f3cef0de65664b061bf6b1c4545c0a9dff4327b87a7c8f7d702f669a1d0fe5d",
       "bytes": 527
     },
     {
       "path": "build/.bonsai.zip.sha256.bonsaisig",
-      "sha256": "016e7bdfd33e2d1e2af4c3676ff24ca8b6a03b69e587aef7a7149291ffab97c1",
+      "sha256": "e02540bac5c28ddea537ab646986df2f2ae548dfc7d7d13b7561c714ea336f27",
       "bytes": 534
     },
     {
       "path": "build/README.md",
-      "sha256": "8e80834db86bdb379157f671c4b484d93ed509baf9c0d3e0002d371bab3e1724",
+      "sha256": "f0a8155117e3d30c33558d99c278501b446867f7bf271faf9ad9ad09c5292478",
       "bytes": 2194
     },
     {
       "path": "build/bonsai-garden-core-plugin.skill",
-      "sha256": "da9b8c08ad8a4cabb7ce421b7d1cc3794e6ae4ca1667271300811768cffe25d6",
-      "bytes": 192716
+      "sha256": "24eb6ebd3171181dd63e2076f5d1696d35329a5f4b4739460b38df0358792bec",
+      "bytes": 192717
     },
     {
       "path": "build/bonsai-garden-core-plugin.skill.sha256",
-      "sha256": "117ecbbd5a28336a6b1a1aeb9c79900b4efe5b956b8f8203fd937e066af7b1c2",
+      "sha256": "3afbc88edbad213b4f1663607f3109923db27062a423d2abc655c030d217b909",
       "bytes": 98
     },
     {
       "path": "build/bonsai-garden-core.plugin",
-      "sha256": "edc1aa7a195e503f849f3bdb9291ae5df51e131fad1126dd002398b440ba3665",
-      "bytes": 5863599
+      "sha256": "53e4a6509c8a4e2192f48beb2de8eac1826bfde884d8fa73d28391bcf4feb568",
+      "bytes": 5866448
     },
     {
       "path": "build/bonsai-garden-core.plugin.sha256",
-      "sha256": "8e21a63cc16845ab8f3d215e684a18e2c60b51d0b7371ceb4226c4ae415b8376",
+      "sha256": "c4d7df50c5ae72fcf1e792d78013dae05d8a4d903e9aebd993ce8b774964801e",
       "bytes": 92
     },
     {
       "path": "build/bonsai-garden-core.zip",
-      "sha256": "edc1aa7a195e503f849f3bdb9291ae5df51e131fad1126dd002398b440ba3665",
-      "bytes": 5863599
+      "sha256": "53e4a6509c8a4e2192f48beb2de8eac1826bfde884d8fa73d28391bcf4feb568",
+      "bytes": 5866448
     },
     {
       "path": "build/bonsai-garden-core.zip.sha256",
-      "sha256": "596bf7682db5d36c27b03586da7e9e45a752e8dc512340bf4a3b37a1f46c8fb0",
+      "sha256": "ae9943a9898b7f8f388826edd95569f1c3e7514ddfa3bffe90a65650dcb90e1c",
       "bytes": 89
     },
     {
       "path": "build/bonsai-garden-keys.skill",
-      "sha256": "f2e223aee87aa67554655118eba82c714972046833af6e0b6476cb2186a643f1",
-      "bytes": 199121
+      "sha256": "a822c8e6e5cea761225d409f26f26e7a7fcb4047e9fcb808e25b39f7f8ffb314",
+      "bytes": 199470
     },
     {
       "path": "build/bonsai-garden-keys.skill.sha256",
-      "sha256": "fa9f138168d4421fb62ffb340005276e2f00e3b5fbf7b38a178a17f861fd2f2e",
+      "sha256": "aefce8a6746d17bd2d763402e05efc6fe62bf9ed075671757e3a62e2ba09ed95",
       "bytes": 91
     },
     {
       "path": "build/bonsai-garden-ledger.skill",
-      "sha256": "762e5d1dcdb43c9e67487675ec3651873443bdf4cc0a063edf31ebd8cf0ca60e",
-      "bytes": 134148
+      "sha256": "08e9b52bda507f24fc52f74b2f5f98565926b6d01be7c41740f071fa479e3cb2",
+      "bytes": 134150
     },
     {
       "path": "build/bonsai-garden-ledger.skill.sha256",
-      "sha256": "a3c6747cf9c0e9373c3e5658bc4059eb548599d6349f2af6d6b514e7eb6735ef",
+      "sha256": "e53d3702cbf5fb841d4244ce85d0b39efdc4136387e5c9c7d1f168b5c572e674",
       "bytes": 93
     },
     {
       "path": "build/bonsai-garden-mark.skill",
-      "sha256": "897528e8ddcf93de645151f859609eae69f0bd191fdbea06952fb5639d95e6c2",
-      "bytes": 297617
+      "sha256": "6c2557db31bc5376dc2841d52b52ff82cf52e2417e4afd5b21ad8c3aed49c22a",
+      "bytes": 297618
     },
     {
       "path": "build/bonsai-garden-mark.skill.sha256",
-      "sha256": "21d15bb93175285030535c0edbd9eb73fb645b4b446b982ad4e569dbd46b8f5a",
+      "sha256": "89fc1b4c830c454a2daaebe7d16de6bec7300ab8432949fb0eeaed7041d56a89",
       "bytes": 91
     },
     {
       "path": "build/bonsai-garden-portrait.skill",
-      "sha256": "1a39262f6fe6f39709d06adefb531ab54404f4eb5fb4597d7d7e18ab88e3b7c0",
-      "bytes": 171721
+      "sha256": "0f201c4d324de67adf9fd176aaf364f2942b24ed9284723c5c0ed18fa6276d95",
+      "bytes": 171723
     },
     {
       "path": "build/bonsai-garden-portrait.skill.sha256",
-      "sha256": "d79b84cef792630ae649e3e958016618c4a64cfd550dbdc130d2a0f64744f5e9",
+      "sha256": "530a791639e4107b6b3b3e7225440c03ef49a8f8e390fc545ac79208bc343c0a",
       "bytes": 95
     },
     {
       "path": "build/bonsai-garden-sign.skill",
-      "sha256": "a4cb7a48189cf1c12142bc529fcde7589352e215e66f10b6f8cdc882c7980d26",
-      "bytes": 213263
+      "sha256": "d0e09bd2c9b90479dceddb74e79765c47a9319ad69294fa4e1e97ebfcd291b33",
+      "bytes": 213264
     },
     {
       "path": "build/bonsai-garden-sign.skill.sha256",
-      "sha256": "d0ddc7df714c05799a1260b1fd3cd958f8c558f2f9590f6dac8c1a03c5347555",
+      "sha256": "74248f3474f7752611f1a407c9bb783edb6cca3472c0655a3209b1c561136259",
       "bytes": 91
     },
     {
       "path": "build/bonsai-garden-strategic-context.skill",
-      "sha256": "857ef7bac1d1b72de60cd4c71cf5a618dcbf1cde7a333ac5adc7dc1cf41945b6",
-      "bytes": 120333
+      "sha256": "a93aa525c3d508fd2d462f5971f5d74cc9c53b8fb2e3c38ca7adf3847c9659c0",
+      "bytes": 120335
     },
     {
       "path": "build/bonsai-garden-strategic-context.skill.sha256",
-      "sha256": "9664448aefa2d499ccc914919b4245794a27477755b89bc918bf4a76f27b4c44",
+      "sha256": "a743308493fb6ff292abd8a7d51fdb3d1984c1aa96219a92e76d4ff5150a8848",
       "bytes": 104
     },
     {
       "path": "build/bonsai-garden-tokens.skill",
-      "sha256": "e432d356c11731653566da611ed46bed6189f54c9b736507a68f8a9234c43faf",
-      "bytes": 117433
+      "sha256": "1212665b4b139708e26949032cfcfa220b0822eb9129fb46e245add631694a61",
+      "bytes": 117430
     },
     {
       "path": "build/bonsai-garden-tokens.skill.sha256",
-      "sha256": "392eef4905d03c2902eae05c3c154ab6800c30b89a19aa1ac8c920ab936fe69d",
+      "sha256": "2430a3216974ec04c81acb9fb930e99ee391f908c2377866a914c0b33c646220",
       "bytes": 93
     },
     {
       "path": "build/bonsai-garden-transcript.skill",
-      "sha256": "a281f352aaf8542b0192d2bd9dcd9397bfe22c0fdd15912da737cc5486513762",
-      "bytes": 123961
+      "sha256": "c71e04d957a4bffc8b399d5181851536f2f09d51a8b214128a32cc8220c4d185",
+      "bytes": 123949
     },
     {
       "path": "build/bonsai-garden-transcript.skill.sha256",
-      "sha256": "efc24a6d5b73d98c3a90dfc9e7739dff7920b2172180d93e06304360d10b6ca0",
+      "sha256": "3fc45cf4965c1c3238c5a0f9b82a88182dd56b7cf0959ee94a676befd7c46317",
       "bytes": 97
     },
     {
       "path": "build/bonsai-garden-validate.skill",
-      "sha256": "a6f600cb69dc8a7ccc12911133dde3132101a3ba527858af7bfd6af129d7c484",
-      "bytes": 162532
+      "sha256": "4d49ff26cfd5303a0378ec0c0fc70f97940fc657025f0a75a7404ec3f4d814ab",
+      "bytes": 162529
     },
     {
       "path": "build/bonsai-garden-validate.skill.sha256",
-      "sha256": "73c9bbebf95f299d3b3b430e161002e7ec620c6f023215fa694527b1fed76fdf",
+      "sha256": "5aaef2909a602e43257d375f75fbef9d69e8afd2e694e42bc7b21b533d3d6e5d",
       "bytes": 95
     },
     {
       "path": "build/bonsai-garden-vcard.skill",
-      "sha256": "765df425e916f7cd0f1a6be756416bd35f432df96509201f9f01816ce12d8f44",
-      "bytes": 127076
+      "sha256": "957b39cbac569297b44a586147babf988120b5adc1c25c26faed8bba49e3fbca",
+      "bytes": 127069
     },
     {
       "path": "build/bonsai-garden-vcard.skill.sha256",
-      "sha256": "5f1a32a15b4b743e0ea37af3355e1f9d6d0252ffe64858ee8f8e7128668d5d55",
+      "sha256": "990f6870f3f22aa9c89c51c5569f82f6223036582ce585c13e2d14d4804d2c2e",
       "bytes": 92
     },
     {
       "path": "build/bonsai.skill",
-      "sha256": "6c2e596d4a0d3fd4beb77b915b2ea43727c8dc17d16ee3a657155cae2938768f",
-      "bytes": 3919349
+      "sha256": "c8353d4c17d0245555fe25694f98386db902a73c96f97b7626f1bd96ac318f3f",
+      "bytes": 3921871
     },
     {
       "path": "build/bonsai.skill.sha256",
-      "sha256": "4cf0d61dffcad76dd9931fcabe2329e60f15605fe2a26ff0fe06e87073fbc4b2",
+      "sha256": "af25de8f591f4f737e56c5cd112dc9d00bd0767c336f23a75f0dfc5f7033c191",
       "bytes": 79
     },
     {
       "path": "build/bonsai.zip",
-      "sha256": "6c2e596d4a0d3fd4beb77b915b2ea43727c8dc17d16ee3a657155cae2938768f",
-      "bytes": 3919349
+      "sha256": "c8353d4c17d0245555fe25694f98386db902a73c96f97b7626f1bd96ac318f3f",
+      "bytes": 3921871
     },
     {
       "path": "build/bonsai.zip.sha256",
-      "sha256": "fbe9d1bd869b00255adf27f30b8aae33b5ebff70b742ecf177ed001df01528c6",
+      "sha256": "3b5d106c0cce7f228f9ef34504004dc963df09e16031e6ca21839f88be4213b2",
       "bytes": 77
     },
     {
@@ -2316,7 +2316,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.SKILL.md.bonsaisig",
-      "sha256": "28b614b2827590b2a5d45dbc85dc4ea7c84745d90cdd0d2d00e7f3f6e14b4249",
+      "sha256": "be584a9d87d51d0dea8eaf309e37fbe2d9b6b8bdd51c8ae874f339f331995f69",
       "bytes": 542
     },
     {
@@ -2346,7 +2346,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.test-install-runtime.mjs.bonsaisig",
-      "sha256": "2c675cb0c4c59bcf6279755f61c946d0977a1d9601bd73848bd5cbf128373691",
+      "sha256": "8b0bf1d637dfb33f2e8eaed0d63626aeef301dfa2cb6584854c0416c47865a94",
       "bytes": 558
     },
     {
@@ -2361,7 +2361,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.test-planting-e2e.mjs.bonsaisig",
-      "sha256": "4df2f0eb5374e8068f9f9fb30b4fdf45514b2d91182ef1d710e3b72d87820581",
+      "sha256": "0c536ccc116bd691f0ed1fcbe72dfbf4df43ccf3ddeaa8ed7d72f76835408f35",
       "bytes": 555
     },
     {
@@ -2376,23 +2376,23 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.test-support.mjs.bonsaisig",
-      "sha256": "c85f9a9423e9bc5e2336674329736597e1b6387d32960d1f306d8f0343a00a95",
+      "sha256": "3843d20ab6543380e629f26643f5af3d45ab63b42ad7d60c947b66667d620173",
       "bytes": 550
     },
     {
       "path": "skills/bonsai-garden-keys/SKILL.md",
-      "sha256": "fff006e08a6274f4e6af16846a8f8225548a25a288dbd41ac24a4e3658ac002a",
-      "bytes": 13879
+      "sha256": "a5cfc1d7753b37779344a80220d6e90c397b4ad144fca4c248a2dcef29836c46",
+      "bytes": 14248
     },
     {
       "path": "skills/bonsai-garden-keys/bin/.keys.mjs.bonsaisig",
-      "sha256": "8af07e4f7f9470cef26f7e4017d26db03928b850aefb9a942df43e26e096a910",
+      "sha256": "20627f610a5494c46ee021d83bea6f96b910c2d02fd0a9fdbad8a59fdeb3220c",
       "bytes": 546
     },
     {
       "path": "skills/bonsai-garden-keys/bin/keys.mjs",
-      "sha256": "258de22b305bfdd58fd3c7da9acd94459bf7c277b0c46d1c04b2d6e68820171c",
-      "bytes": 65414
+      "sha256": "6871cb7f169d67a2fc66154fc0418e0d73804d9e52c4db5c7211668ef4ac4dd9",
+      "bytes": 65964
     },
     {
       "path": "skills/bonsai-garden-keys/lib/.call-home.mjs.bonsaisig",
@@ -2431,7 +2431,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/lib/.install-runtime.mjs.bonsaisig",
-      "sha256": "f1ea21243ce80e2eef80ed6ee9c1ae26e4378c7c47e515af7446c8475f3fd92f",
+      "sha256": "5ddcd3f5b3fadc98c52d455130b41a11bc0c4803154f168718f9982b58f91a57",
       "bytes": 557
     },
     {
@@ -2486,8 +2486,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/lib/install-runtime.mjs",
-      "sha256": "f10f49baaf6e3055e7fcddfea6eb58b8e6ec8c0e821c3567b90b5290415f145e",
-      "bytes": 24805
+      "sha256": "2345547178ebfe9594937fcd71054d00974c9817cbb99f1c48589d3017a91cdf",
+      "bytes": 24509
     },
     {
       "path": "skills/bonsai-garden-keys/lib/pot-verdict.mjs",
@@ -2516,7 +2516,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/references/.pot-agents.md.bonsaisig",
-      "sha256": "ac9c0e727ac3589a87500c44a12362498ef66112e7206c39d0a0598b992a0107",
+      "sha256": "fc0ebd1a2fe523a2d1b9c2591d315f7ae4e32df625d9c8c8bee579302c26ca66",
       "bytes": 558
     },
     {
@@ -2531,8 +2531,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/references/pot-agents.md",
-      "sha256": "0ccdb2e9cb60ff4f93c24e8d4e3420b445aac8a206044d6ae42d8ab727e0e63b",
-      "bytes": 1375
+      "sha256": "b2ecbab78c1a8f7f8d62b40b79fc5653920ef699b509f9dcd00b5a12c6151af9",
+      "bytes": 1605
     },
     {
       "path": "skills/bonsai-garden-keys/rt-minimum.json",
@@ -2561,8 +2561,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/test-install-runtime.mjs",
-      "sha256": "bb0d83e234cf212e5efbba9d7961a278c7d6acb35b0ac5066c162cf8bb5195cc",
-      "bytes": 34702
+      "sha256": "b395f1f3eb908b46999db6565f00de537f6dce0ecd8498cb083a89280673e8dd",
+      "bytes": 35700
     },
     {
       "path": "skills/bonsai-garden-keys/test-keys-mutants.mjs",
@@ -2576,8 +2576,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/test-planting-e2e.mjs",
-      "sha256": "677b50171e868a3c3b004d2ac34d6759fd0fd19ca3ddc3c4c544d7a0333d40f6",
-      "bytes": 9599
+      "sha256": "a8c82ecaabecc713762ec40a9125785475b6e004da0e1142ed4e4e42a891c605",
+      "bytes": 11008
     },
     {
       "path": "skills/bonsai-garden-keys/test-seal-staged.mjs",
@@ -2591,8 +2591,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/test-support.mjs",
-      "sha256": "e442e55abb9963aee9343e3423d6fa8191e8f44a3801bbe770b60dbc47335d5b",
-      "bytes": 13843
+      "sha256": "458eb29d387126957d5fd417beffbf71b7fbf92f0f118424f8e5d65724178b54",
+      "bytes": 14031
     },
     {
       "path": "skills/bonsai-garden-ledger/.SKILL.md.bonsaisig",

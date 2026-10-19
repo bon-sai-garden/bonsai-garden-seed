@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JWP2P29P6BR5JFM55EBDQ",
-  "signer": "eisai",
+  "signer": "bonsai",
   "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-06T16:07:23Z",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-19T08:09:51Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/03-whos-with-you.html",
-  "file-hash": "0ea165e262424cac8340285e5c036e92c8e62f56239b0ae8d5c762afb7c84c52d7b8e3de7f82f97e61546982854049e20b327a0a4b11d2d7a211f73d7a439406",
-  "signature": "zTd6CX41GBgkUUhVY93LlpVNLQ4YwDC0ZEVc9IivOGYlvn/nfH0GLu6HjSVUe2I2Qdx1ZcjkC3r+onSPZe84Ag=="
+  "file-hash": "ab7caec6ae86cdeada44210a547a71d90757613bb33b9f01a19f813c58f929ff1a2fd669bf08be6f00f357d3b1ddf4eec25b0d9c13562d1cb4bb89d792929f00",
+  "signature": "md5elGfS/QCfMKkP1zdNIyRa6ZRuZrNFe0LK06QGfJca1TmX/RHMSumG4vW0EuHH5inPkuvqjgxYfSYNea6gBA=="
 }

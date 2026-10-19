@@ -212,7 +212,8 @@ await cli(process.argv.slice(2), deps);
         throw new Error(`${what} exited ${r.code}: ${(r.stderr || r.stdout).trim().split('\n').slice(-2).join(' | ')}`);
       return r;
     };
-    step('id', ['id', '--pot', pot, '--name', name, '--gardener', gardener, '--shin', shin], '');
+    // shin: null plants a garden with no companion (W's F-5, 2026-10-18): bonsai-shin is then its only kin
+    step('id', ['id', '--pot', pot, '--name', name, '--gardener', gardener, ...(shin ? ['--shin', shin] : [])], '');
     step('mint', ['mint', '--pot', pot, '--lab-preview', ...B], pp(PASS, PASS));
     const exp = path.join(dir, `${name}-master-salt.sealed`);
     step(
@@ -229,7 +230,8 @@ await cli(process.argv.slice(2), deps);
     const SET = JSON.parse(
       fs.readFileSync(path.join(core, 'skills', 'bonsai-garden-mark', 'kanji-1024-v1.2.json'), 'utf8'),
     ).kanji;
-    for (const [slug, [a, b]] of Object.entries({ [gardener]: [21, 70], 'bonsai-shin': [24, 25], [shin]: [26, 27] })) {
+    const kin = { [gardener]: [21, 70], 'bonsai-shin': [24, 25], ...(shin ? { [shin]: [26, 27] } : {}) };
+    for (const [slug, [a, b]] of Object.entries(kin)) {
       step(`identity ${slug}`, [
         'identity',
         slug,
@@ -241,7 +243,7 @@ await cli(process.argv.slice(2), deps);
         ...B,
       ]);
     }
-    for (const slug of [name, gardener, 'bonsai-shin', shin])
+    for (const slug of [name, gardener, 'bonsai-shin', ...(shin ? [shin] : [])])
       step(`derive ${slug}`, ['derive', slug, '--pot', pot, ...B]);
     step('seed', ['seed', '--pot', pot, '--bonsai-entry', await bonsaiEntry(), ...B]);
     if (attest) step('attest', ['attest', '--pot', pot, ...B]);

@@ -708,8 +708,17 @@ await writeRt(RT_MCP, {
   ...FILES,
   'tools/bonsai-mcp/server.py': Buffer.from('# fixture server\n'),
   'tools/bonsai-mcp/pyproject.toml': Buffer.from('[project]\nname = "x"\n'),
+  'tools/rt/host-service.mjs': Buffer.from('// fixture host service\n'),
 });
 const MCP_SHA = shaOf(RT_MCP);
+// an older rt: the server, and no host service beside it
+const RT_MCP_OLD = path.join(W.dir, 'src', 'rt-mcp-old');
+fs.mkdirSync(RT_MCP_OLD, { recursive: true });
+await writeRt(RT_MCP_OLD, {
+  ...FILES,
+  'tools/bonsai-mcp/server.py': Buffer.from('# fixture server\n'),
+  'tools/bonsai-mcp/pyproject.toml': Buffer.from('[project]\nname = "x"\n'),
+});
 const FAKE_UV = path.join(W.dir, 'bin', 'uv');
 fs.mkdirSync(path.dirname(FAKE_UV), { recursive: true });
 fs.writeFileSync(FAKE_UV, '#!/bin/sh\nexit 0\n');
@@ -729,26 +738,33 @@ const ignored = (pot) => {
   }
 };
 
-t('an-rt-with-the-server-writes-mcp-json-run-by-uv-from-the-installed-rt-for-this-pot', () => {
+// The gardener, 2026-10-19: "no terminal is not a fix or a workaround. we need to be able to register a stable garden mcp!"
+// A per-session .mcp.json server is dropped by the desktop app after one turn (W's F-10); the garden MCP is a host service,
+// registered once at user level by rt's host-service.mjs. install-runtime writes no .mcp.json and names that step.
+t('an-rt-with-the-server-writes-no-mcp-json-and-names-the-host-service-step', () => {
   setMin();
   const g = fresh();
   const r = install(g.pot, RT_MCP, [], { BONSAI_UV: FAKE_UV });
-  const e = mcpOf(g.pot)?.mcpServers?.['bonsai-garden-runtime'];
-  const env = e?.env || {};
+  const hs = path.join(g.dest, 'tools', 'rt', 'host-service.mjs');
   const ok =
     r.code === 0 &&
-    e &&
-    e.command === FAKE_UV &&
-    e.args.includes(path.join(g.dest, 'tools', 'bonsai-mcp', 'server.py')) &&
-    e.args[e.args.indexOf('--garden') + 1] === g.pot &&
-    e.args.includes('--frozen') &&
-    env.PYTHONDONTWRITEBYTECODE === '1' &&
-    env.UV_PROJECT_ENVIRONMENT &&
-    !path.resolve(env.UV_PROJECT_ENVIRONMENT).startsWith(g.dest + path.sep) &&
+    !mcpOf(g.pot) &&
+    r.stdout.includes(`node ${hs} install --pot ${g.pot}`) &&
+    /registered once at user level/.test(r.stdout) &&
     ignored(g.pot).includes('.mcp.json') &&
     M.verifyTree(g.dest).ok &&
     shaOf(g.dest) === MCP_SHA;
-  return [ok, `exit ${r.code}; ${JSON.stringify(e || null).slice(0, 160)}`];
+  return [ok, `exit ${r.code}; .mcp.json ${JSON.stringify(mcpOf(g.pot)).slice(0, 120)}`];
+});
+
+t('an-rt-with-the-server-and-no-host-service-says-it-cannot-be-installed-from-it', () => {
+  setMin();
+  const g = fresh();
+  const r = install(g.pot, RT_MCP_OLD, [], { BONSAI_UV: FAKE_UV });
+  return [
+    r.code === 0 && !mcpOf(g.pot) && /no tools\/rt\/host-service\.mjs/.test(r.stdout) && /--upgrade/.test(r.stdout),
+    `exit ${r.code}`,
+  ];
 });
 
 t('the-first-contract-is-written-once-and-named-unsealed-and-an-existing-one-is-never-overwritten', () => {
@@ -761,7 +777,9 @@ t('the-first-contract-is-written-once-and-named-unsealed-and-an-existing-one-is-
     : '';
   const ok =
     r.code === 0 &&
-    /bonsai-garden-runtime/.test(agents) &&
+    /host-service\.mjs install/.test(agents) &&
+    /registered once, at user level/.test(agents) &&
+    !/bonsai-garden-runtime|\.mcp\.json/.test(agents) &&
     !/__SERVER__/.test(agents) &&
     fs.readFileSync(path.join(g.pot, 'CLAUDE.md'), 'utf8') === 'mine\n' &&
     /unsealed: .*AGENTS\.md/.test(r.stdout) &&
@@ -808,16 +826,14 @@ t('the-mcps-own-state-is-ignored-by-git', () => {
   return [r.code === 0 && ci.code === 0, `exit ${r.code}; check-ignore ${ci.code}`];
 });
 
-t('another-mcp-server-in-the-pot-is-kept', () => {
+t('a-pots-own-mcp-json-is-left-as-it-is', () => {
   setMin();
   const g = fresh();
-  fs.writeFileSync(path.join(g.pot, '.mcp.json'), JSON.stringify({ mcpServers: { theirs: { command: 'x' } } }));
+  const mine = JSON.stringify({ mcpServers: { theirs: { command: 'x' } } });
+  fs.writeFileSync(path.join(g.pot, '.mcp.json'), mine);
   const r = install(g.pot, RT_MCP, [], { BONSAI_UV: FAKE_UV });
-  const s = mcpOf(g.pot)?.mcpServers || {};
-  return [
-    r.code === 0 && s.theirs?.command === 'x' && !!s['bonsai-garden-runtime'],
-    `exit ${r.code}; ${Object.keys(s)}`,
-  ];
+  const now = fs.readFileSync(path.join(g.pot, '.mcp.json'), 'utf8');
+  return [r.code === 0 && now === mine, `exit ${r.code}; ${now.slice(0, 120)}`];
 });
 
 t('no-uv-writes-no-mcp-json-says-so-and-the-install-still-holds', () => {

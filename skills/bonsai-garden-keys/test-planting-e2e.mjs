@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-15
+// updated: 2026-10-19
 // ---
 //
 // test-planting-e2e.mjs — the verbs wired on 2026-10-15 (covenant write, certificate sign|verify, homes at
@@ -214,6 +214,36 @@ t('a-garden-with-two-companions-seeds-both-plants-their-homes-and-certifies-both
       .split('\n')
       .filter((l) => /identity|derive/.test(l))
       .join(' | ')}; ${out(v)}`,
+  ];
+});
+
+// W's audit of the third dry run, F-5 (2026-10-18): the gardener said "let's just plant bonsai-shin, we do not need W/u-shin",
+// and the keys tool's id required a companion, so a key was minted for a kin no one asked for. A garden needs none: the arc
+// runs through the real binary with no --shin, and nothing anywhere names a companion.
+const lone = W.newPot('lone');
+let loneErr = null;
+let loneSeed = null;
+try {
+  loneSeed = await W.seedPot(lone, { name: 'eremo', shin: null, attest: true });
+} catch (e) {
+  loneErr = e.message;
+}
+
+t('a-garden-plants-without-a-companion-and-its-arc-completes', () => {
+  if (loneErr) return [false, loneErr];
+  const g = JSON.parse(fs.readFileSync(path.join(lone, 'garden.json'), 'utf8'));
+  const reg = JSON.parse(fs.readFileSync(path.join(lone, 'agents/registry.json'), 'utf8'));
+  const slugs = reg.agents.map((a) => a.slug).join(',');
+  const idOut = loneSeed.steps.find(([w]) => w === 'id')[1].stdout;
+  const status = W.run(['status', '--pot', lone]);
+  return [
+    g.shin === null &&
+      !('shins' in g) &&
+      slugs === 'eremo,ana,bonsai,bonsai-shin' &&
+      /companions: none/.test(idOut) &&
+      /the arc is complete/.test(status.stdout) &&
+      fs.existsSync(path.join(lone, 'home/bonsai-shin/memory/working-state.md')),
+    `registry ${slugs}; id: ${idOut.trim().split('\n')[1] || ''}; ${status.stdout.trim().split('\n').slice(-1)[0]}`,
   ];
 });
 
