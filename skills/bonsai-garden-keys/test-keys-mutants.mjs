@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-15
+// updated: 2026-10-20
 // ---
 //
 // test-keys-mutants.mjs — a guard is not trusted until it has been watched to fail.
@@ -39,6 +39,7 @@ const N = 'bonsai-garden-mark/namespace.mjs';
 const G = 'bonsai-garden-keys/lib/garden.mjs';
 const RM = 'bonsai-garden-mark/reserved-marks.mjs'; // the floor and the rule moved here with the shipped reserved set
 const PV = 'bonsai-garden-keys/lib/pot-verdict.mjs'; // the pot's verify moved here from keys.mjs (13b5672, 2026-10-11)
+const RT = 'bonsai-garden-keys/lib/rt-manifest.mjs'; // the one order of versions: install-runtime, the doctor, rt's exec gate
 
 // [name, [[file, find, replace], ...], [cases that must go red]]
 const MUTANTS = [
@@ -140,6 +141,12 @@ const MUTANTS = [
       ],
     ],
     ['export-refuses-short-passphrase-and-the-pot'],
+  ],
+  // F-17 of the outside review: the open no longer names the tag length, so Node before 26 takes a short tag
+  [
+    'envelope-tag-length-unpinned',
+    [[E, "Buffer.from(env.nonce, 'base64'), { authTagLength: TAG_BYTES });", "Buffer.from(env.nonce, 'base64'));"]],
+    ['envelope-refuses-a-shortened-tag'],
   ],
   [
     'export-into-the-pot',
@@ -807,6 +814,28 @@ const MUTANTS = [
       ],
     ],
     ['seed-writes-vouched-from-the-origins-signed-answer'],
+  ],
+  [
+    'a-label-orders-a-version',
+    [
+      [
+        RT,
+        '  return [n[0], n[1], n[2], n[3] ?? 0];',
+        "  return [n[0], n[1], n[2], (n[3] ?? 0) + (v.includes('-') ? v.length : 0)];",
+      ],
+    ],
+    ['a-label-never-orders-a-version-so-an-rc-meets-its-numbers-minimum-and-no-label-is-an-upgrade'],
+  ],
+  [
+    'seed-ignores-the-origins-pronouns',
+    [
+      [
+        K,
+        "a.slug === 'bonsai' && typeof be.pronouns === 'string' && be.pronouns.trim()",
+        "false && typeof be.pronouns === 'string' && be.pronouns.trim()",
+      ],
+    ],
+    ['seed-gives-the-origin-the-pronouns-the-seed-entry-states-and-the-guardian-they-them-until-the-gardener-says'],
   ],
 ];
 

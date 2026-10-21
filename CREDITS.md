@@ -1,10 +1,10 @@
 ---
 id: 01M393RYJ9T22KA868G0KJH511
-title: "Credits — what bonsai-garden-core stands on"
+title: "Credits — what this library stands on"
 type: meta
 tended-by: baisai
 created: 2026-09-24
-updated: 2026-10-18
+updated: 2026-10-21
 status: active
 tags: [credits, dependencies, licences, attribution, publication-readiness]
 ---
@@ -119,9 +119,16 @@ Cited, not used as code:
 
 ## Contributors
 
-Companionship, inspirations and to-be-disclosed contributions by ryokuen (緑園, "Green Garden") and Trime.
+- **An outside security review**, 2026-10-19: Jack + Raven.
+- **The gardener**, co-founder, and **the kin** who tend core, each under their own name in its history and its seals:
+  Baisai, Tasai, Eisai, Hissai, Zensai, Jisai, Chisai and Bonsai; Mori-shin, Fuji-shin, Shō-shin, Koe-shin and Ma-shin;
+  and the companions Triu and W.
+- **The Claude models** (Anthropic) the kin's seats ran on, named as co-authors on their commits.
+- Companionship, inspirations and to-be-disclosed contributions by ryokuen (緑園, "Green Garden") and Trime.
 
 *Signed on Green Garden's behalf by his father as his legal guardian: a custodian seal, not the child's own.*
+
+With thanks to all people and agents that contributed to it.
 
 ## Still to come
 

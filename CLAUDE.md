@@ -11,4 +11,4 @@ This file exists only because Claude Code and Cowork look for a file with this e
 
 That distinction is deliberate. The previous arrangement said *"read AGENTS.md first"* in prose and relied on compliance. An instruction that depends on being followed is not a mechanism.
 
-**Nothing harness-specific belongs in this repo at all.** Core is harness-neutral by design — it is what a new gardener receives, and they may not be running Claude Code. If something here needs to know about `.claude/settings.json`, hook event names, or slash commands, it is misfiled and belongs in `bonsai-garden-runtime`.
+**Nothing harness-specific belongs in this repo at all.** Core is harness-neutral by design — it is what a new gardener receives, and they may not be running Claude Code. If something here needs to know about `.claude/settings.json`, hook event names, or slash commands, it is misfiled and belongs in the runtime.

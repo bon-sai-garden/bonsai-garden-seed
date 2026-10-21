@@ -5,7 +5,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-09-27
-// updated: 2026-10-17
+// updated: 2026-10-21
 // ---
 //
 // check-shintai-conformance.py verified a shintai by starting `node sign.mjs` once per seal: 148 starts,
@@ -17,6 +17,9 @@
 //
 //   stdin:  one JSON object per line   {"verb": "verify" | "verify-sidecar" | "find-sidecar" | "target-of", "file": "<path>"}
 //   stdout: one JSON object per line   {"file", "verb", "ok": bool, "retired": bool, "first": "<line>"}
+//           a v2 seal's verdict adds {"sealedAt", "foundAt", "moved"}: the address it was sealed at, the address it is
+//           found at (null with no seal root above it), and whether they differ. Provenance, never a verdict (F-12,
+//           2026-10-21); the first line names it only when moved, as sign.mjs prints it.
 //           find-sidecar (file = a target)  adds {"status": "ok"|"two-sidecars"|"no-sidecar", "sidecar": path|null}
 //           target-of    (file = a sidecar) adds {"status": "ok"|"ambiguous-sidecar"|"not-a-sidecar", "target": path|null, "exists": bool}
 //
@@ -143,15 +146,22 @@ function trustFor(file) {
 // The first line sign.mjs's reportVerdict prints for a result (stdout if it prints there, else
 // stderr, which is what the gate read). Only the first token and the file are an interface; the
 // gate reports the line as the finding.
-function firstLine({ status, open, accepted }, file) {
+function firstLine(r, file) {
+  const where = 'sealedAt' in r ? { sealedAt: r.sealedAt, foundAt: r.foundAt, moved: r.moved } : {};
+  return { ...firstLineOf(r, file), ...where };
+}
+
+function firstLineOf({ status, open, accepted, sealedAt, moved }, file) {
+  const at = moved ? `  sealed at ${sealedAt}` : '';
   if (status === 'open') return { ok: false, retired: false, first: `OPEN     ${file}` };
   if (status === 'open-expired' && open)
     return { ok: false, retired: false, first: `FAIL     ${file}  [open-expired]` };
-  if (status === 'ok') return { ok: true, retired: false, first: `ok       ${file}` };
-  if (status === RETIRED_V1 && accepted) return { ok: true, retired: true, first: `ok       ${file}  [${RETIRED_V1}]` };
+  if (status === 'ok') return { ok: true, retired: false, first: `ok       ${file}${at}` };
+  if (status === RETIRED_V1 && accepted)
+    return { ok: true, retired: true, first: `ok       ${file}  [${RETIRED_V1}]${at}` };
   // the dot-prefixed sidecar change phase 3: a seal at the old name, accepted while "sidecar-name" is warn: the line sign.mjs prints
   if (status === RETIRED_SIDECAR_NAME && accepted)
-    return { ok: true, retired: false, retiredName: true, first: `ok       ${file}  [${RETIRED_SIDECAR_NAME}]` };
+    return { ok: true, retired: false, retiredName: true, first: `ok       ${file}  [${RETIRED_SIDECAR_NAME}]${at}` };
   if (status === 'no-signature') return { ok: false, retired: false, first: `unsigned ${file}` };
   if (status === 'no-sidecar') return { ok: false, retired: false, first: `no-sidecar ${file}` };
   return { ok: false, retired: false, first: `FAIL     ${file}  [${status}]` };
@@ -235,7 +245,10 @@ async function verdict(verb, file) {
           retired: false,
           pot: true,
           labSoftened: r.labSoftened === true,
-          first: `pot-ok  ${file}  keys: pot ${tr.pot.dir}`,
+          first: `pot-ok  ${file}  keys: pot ${tr.pot.dir}${r.moved ? `  sealed at ${r.sealedAt}` : ''}`,
+          sealedAt: r.sealedAt,
+          foundAt: r.foundAt,
+          moved: r.moved,
         };
       return firstLine({ ...r, accepted: false }, file); // a pot's only yes is pot-ok
     } catch (err) {

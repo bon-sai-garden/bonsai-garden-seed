@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-19
+// updated: 2026-10-21
 // ---
 //
 // install-runtime.mjs — runtime rituals/specs/spec-rt-slice.md §5 and §6, the verb behind
@@ -101,7 +101,7 @@ async function vouch(ctx, seal, where, { refuse, halt }) {
 const recordOf = (a, root, verifiedAt) => ({
   name: a.manifest.name,
   version: a.manifest.version,
-  upstream: a.manifest.upstream,
+  ...(a.manifest.upstream ? { upstream: a.manifest.upstream } : {}), // an older rt's manifest names where it was made; 0.9.1-rc on, none
   'rt-commit': headOf(root),
   'manifest-sha256': a.manifestSha,
   'sealed-by': { signer: a.seal.signer, fingerprint: a.seal.fingerprint },

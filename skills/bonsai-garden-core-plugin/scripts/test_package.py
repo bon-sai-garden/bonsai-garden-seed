@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-18
+# updated: 2026-10-21
 # ---
 """Negative tests for package.py and verify-manifest.mjs, on planted fixtures only.
 
@@ -689,6 +689,19 @@ def main() -> int:
             "no _excluded in package.py" if ex is None else "",
         )
 
+        # T1s the stamp and the manifest say what was built, never where from (2026-10-21: a shipped file says nothing of
+        # where it was made): version first, as the conformance gate reads it
+        sp = extract(g / "out" / "fixkin.zip", tmp / "xstamp")
+        stamp = P.split_skill((sp / "SKILL.md").read_text(encoding="utf-8"))[1] or ""
+        mdata = json.loads((sp / "MANIFEST.json").read_text(encoding="utf-8"))
+        expect(
+            "T1s the stamp is version and body only, and the manifest names no source",
+            re.fullmatch(r"\d+\.\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+?)?-\d{8}T\d{4}Z · body [0-9a-f]{8}", stamp) is not None
+            and "source" not in mdata
+            and " from " not in stamp,
+            f"stamp {stamp!r}; manifest keys {sorted(mdata)}",
+        )
+
         # T1 tampered bytes at wake
         (pkg / "references" / "about-me.md").write_text((pkg / "references" / "about-me.md").read_text() + "x")
         rc, out = wake(pkg, g)
@@ -921,7 +934,8 @@ def main() -> int:
             samples = [
                 skill_md("a"),
                 "no frontmatter\n",
-                "---\nname: x\n---\n> Installed build: 1.0.0.1-x · from r@h · body 1\n\nbody\n",
+                "---\nname: x\n---\n> Installed build: 1.0.0.1-x-20261021T0900Z · body 1234abcd\n\nbody\n",
+                "---\nname: x\n---\n> Installed build: 1.0.0.1-x · from r@h · body 1\n\nbody\n",  # an older package's
                 "---\nname: x\n---\n> Installed build: y\nno blank\n",
                 "---\nname: x\n---\n",
             ]
@@ -1233,8 +1247,12 @@ def main() -> int:
             g,
         )
         expect(
-            "T13c a seal made at the source path still reads target-mismatch in place (the verifier's half, routed to Mori-shin)",
-            rc3 != 0 and "target-mismatch" in o3 and "agents/fixkin/references/about-me.md" in o3,
+            "T13c a seal made at the source path reads ok in place and says where it was sealed (F-12, 2026-10-21: "
+            "the address is provenance, never a verdict)",
+            rc3 == 0
+            and o3.startswith("ok")
+            and o3.splitlines()[0].endswith("sealed at agents/fixkin/references/about-me.md")
+            and "target-mismatch" not in o3,
             o3,
         )
 
@@ -1558,6 +1576,78 @@ def main() -> int:
             out,
         )
 
+        # T18 --units (W's A4, 2026-10-18: a sealed bonsai.skill must ship as the plugin carries it). Every skill the
+        # plugin bundles is also written as its own <name>.skill from the plugin's own stage: the same bytes, no second
+        # stamp. A unit that is not the plugin's to the byte is the failure this guards.
+        def unit_files(z: Path, prefix: str) -> dict[str, bytes]:
+            with zipfile.ZipFile(z) as zf:
+                return {n[len(prefix) :]: zf.read(n) for n in zf.namelist() if n.startswith(prefix) and n[-1] != "/"}
+
+        def units_same(out_dir: str) -> str:
+            """'' when every <name>.skill beside the plugin is the plugin's skills/<name>/ to the byte, else why."""
+            plug = tmp / out_dir / "fixcore.plugin"
+            if not plug.is_file():
+                return "no plugin was written"
+            names = sorted(
+                {
+                    n.split("/")[1]
+                    for n in zipfile.ZipFile(plug).namelist()
+                    if n.startswith("skills/") and n.count("/") > 1
+                }
+            )
+            why = []
+            for n in names:
+                sk = tmp / out_dir / f"{n}.skill"
+                if not sk.is_file():
+                    why.append(f"{n}.skill is missing")
+                    continue
+                a, b = unit_files(plug, f"skills/{n}/"), unit_files(sk, f"{n}/")
+                diff = sorted(set(a) ^ set(b)) + sorted(k for k in set(a) & set(b) if a[k] != b[k])
+                if diff:
+                    why.append(f"{n}.skill differs from the plugin's unit: {', '.join(diff[:4])}")
+            return "; ".join(why)
+
+        rc, out = core_alone("t18", "--salts", str(cc / "salts.json"), "--units")
+        why = units_same("t18")
+        expect(
+            "T18 --units, sealed: each skill the plugin bundles is written as its own .skill, the plugin's own unit "
+            "to the byte (no second stamp)",
+            rc == 0 and not why,
+            why or out,
+        )
+        x18 = tmp / "x18"
+        if (tmp / "t18" / "fixkin.skill").is_file():
+            zipfile.ZipFile(tmp / "t18" / "fixkin.skill").extractall(x18)
+        rc, out = wake(x18 / "fixkin", cc)
+        expect("T18 … and the .skill checks itself ok", rc == 0 and out.startswith("ok"), out)
+        rc, out = core_alone("t18u", "--units", home=stranger)
+        why = units_same("t18u")
+        expect("T18 --units, unsealed: the same, each unit the plugin's to the byte", rc == 0 and not why, why or out)
+        # M11 a builder that stages the units a second time (a second stamp, second seals): T18's comparison bites
+        anchor = '_zip(stage / "skills" / u.name, ua, u.name)'
+        if anchor in cc_pkg.read_text(encoding="utf-8"):
+            m11 = mutant(
+                cc_pkg,
+                cc_pkg.with_name(".mutant-units-restaged.py"),
+                anchor,
+                "_zip((lambda d: (stage_unit(u, d, pl, keys, review, counter_file(out)), d)[1])"
+                '(_stage_base() / (u.name + "-again")), ua, u.name)',
+            )
+            try:
+                rc, out = run(
+                    [
+                        *(sys.executable, str(m11), "--keys", "garden", "--out", str(tmp / "t18m11")),
+                        *("--salts", str(cc / "salts.json"), "--units"),
+                    ]
+                )
+            finally:
+                m11.unlink()
+            why = units_same("t18m11")
+            m11_ok = rc == 0 and "differs from the plugin's unit" in why
+        else:
+            m11_ok, why = False, f"the mutation's anchor is not in the builder under test: {anchor}"
+        expect("M11 units staged a second time are caught: not the plugin's unit to the byte", m11_ok, why or out)
+
         # M7 a verifier that waves an unsealed manifest through (ok, exit 0): the builder's own wake check refuses it
         vm = ccs / "scripts" / "verify-manifest.mjs"
         saved_vm = vm.read_text(encoding="utf-8")
@@ -1752,10 +1842,9 @@ def main() -> int:
         (cc / "SEED-MANIFEST.json").write_text(
             json.dumps(
                 {
-                    "format": "bonsai-garden-distro-manifest/1",
+                    "format": "bonsai-garden-release-manifest/1",
                     "name": "fixseed",
                     "version": "0.0.1",
-                    "upstream": {"repo": "bonsai-garden-core", "commit": "0" * 40},
                     "held": [],
                     "files": [],
                 }
@@ -1765,7 +1854,7 @@ def main() -> int:
         commit(cc)
         rc, out = core_alone("t17f", home=stranger)
         expect(
-            "T17f a checkout that carries a distro manifest (a cut) builds, and says it holds no slice",
+            "T17f a checkout that carries a cut's manifest (the release shape, no upstream) builds, and says it holds no slice",
             rc == 0 and (tmp / "t17f" / "fixcore.plugin").is_file() and "seed slice: none in this checkout" in out,
             out,
         )

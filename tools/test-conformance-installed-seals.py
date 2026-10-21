@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 # ---
 # id: 01M4WECWTW653DG4BT457G54RM
-# title: check-shintai-conformance accepts an installed body's moved seals only while core verifies its manifest
+# title: check-shintai-conformance holds an installed body's set to its manifest, and its moved seals hold where they are
 # type: script
 # tended-by: baisai
 # created: 2026-10-14
-# updated: 2026-10-16
+# updated: 2026-10-21
 # ---
-"""test-conformance-installed-seals.py: Bonsai, 2026-10-14. A seal binds the path it was sealed at, and an install puts
-every file at another one, so every sealed file of every installed body read `target-mismatch`. On a stamped body the
-gate now accepts that one verdict when MANIFEST.json verifies with core's verifier and the seal names a file of the same
-name. A byte changed in the install must still fail, and a body without the stamp stays exact.
+"""test-conformance-installed-seals.py. An install puts every file at another path than the one it was sealed at. Until
+2026-10-21 every such seal read `target-mismatch`, and the gate accepted that one verdict on a stamped body when
+MANIFEST.json verified (Bonsai, 2026-10-14). Since F-12 (the gardener, 2026-10-20: "if the bytes don't change a file
+should pass integrity check regardless of which repo contains it"; Mori-shin's design B) a seal's address is provenance,
+never a verdict: every moved seal reads ok, and the acceptance is gone. What an install must still answer for is its SET,
+which bytes sit at which path with nothing missing and nothing extra. That is MANIFEST.json's, verified by core, and the
+gate reports a manifest that does not verify on any stamped body. A byte changed is loud twice (its own seal and the
+manifest); a sealed file removed with its sidecar is loud once, by the manifest alone, and that is the case the mutant
+watches. A body without the stamp is a source tree: no manifest is asked.
 
 It needs a real installed body (a package the builder made, with MANIFEST.json and its seal); core carries none, so
 name one. It works on copies and never touches the one named. --keys is passed to the gate as given (default garden,
@@ -78,7 +83,8 @@ def a_sealed_file(body):
     return None
 
 
-def moved(out):
+def noted(out):
+    """The old acceptance's note: gone with the acceptance."""
     return re.search(r"seal\(s\) name their source path", out)
 
 
@@ -86,10 +92,14 @@ def loud(out):
     return "[target-mismatch]" in out
 
 
+def manifest_named(out):
+    return "the manifest does not verify" in out
+
+
 out = run(copy())
 if not check(
-    "an untouched install passes the gate, its moved seals a note",
-    out.startswith("PASS") and not loud(out) and moved(out),
+    "an untouched install passes the gate: every moved seal holds where it is, no acceptance and no note",
+    out.startswith("PASS") and not loud(out) and not noted(out),
     out,
 ):
     print(
@@ -106,8 +116,23 @@ if f is not None:
     f.write_bytes(f.read_bytes() + b"\n")
     out = run(tampered)
     check(
-        "one byte added to a sealed file: the moved seals are loud again, the manifest named",
-        loud(out) and "the manifest does not verify" in out and not moved(out),
+        "one byte added to a sealed file: its own seal reads hash-mismatch, and the manifest is named",
+        "[hash-mismatch]" in out and manifest_named(out) and not loud(out),
+        out,
+    )
+
+removed = copy()
+g = a_sealed_file(removed)
+if g is not None:
+    sc = g.with_name("." + g.name + ".bonsaisig")
+    print(f"    removing {g.relative_to(removed)} and its seal")
+    g.unlink()
+    if sc.is_file():
+        sc.unlink()
+    out = run(removed)
+    check(
+        "a sealed file removed with its seal: every seal left holds, and only the manifest sees it, by name",
+        out.startswith("FAIL") and manifest_named(out) and not loud(out) and "[hash-mismatch]" not in out,
         out,
     )
 
@@ -119,23 +144,26 @@ sk.write_text(
 )
 out = run(unstamped)
 check(
-    "the same body without its stamp is read as a source tree: target-mismatch stays loud", loud(out) and not moved(out)
+    "the same body without its stamp is read as a source tree: no manifest asked, its moved seals hold where they are",
+    not manifest_named(out) and not loud(out) and not noted(out),
+    out,
 )
 
-# the mutant: drop the manifest condition, and the tampered install must slip through
+# the mutant: drop the manifest finding, and the removed file must slip through
 src = TOOL.read_text(encoding="utf-8")
-mutated, n = re.subn(r'if manifest == "ok" and Path\(sealed_for\)', "if Path(sealed_for)", src)
+anchor = "        problems.append(f\"manifest: the manifest does not verify: {manifest}\")"
+mutated, n = src.replace(anchor, "        pass"), src.count(anchor)
 check(f"the mutation point exists in the gate (one site; found {n})", n == 1)
-if n == 1 and f is not None:
+if n == 1 and g is not None:
     mdir = Path(tempfile.mkdtemp(prefix="conf-mutant-"))
     shutil.copytree(TOOL.parent, mdir / "tools", symlinks=True)
     (mdir / "tools" / TOOL.name).write_text(mutated, encoding="utf-8")
     for sub in ("skills",):  # the gate finds core's verifiers beside tools/
         (mdir / sub).symlink_to(TOOL.parent.parent / sub, target_is_directory=True)
-    out = run(tampered, tool=mdir / "tools" / TOOL.name)
+    out = run(removed, tool=mdir / "tools" / TOOL.name)
     check(
-        "the mutant (no manifest condition) lets the tampered install through, so the case above can fail",
-        not loud(out),
+        "the mutant (no manifest finding) lets the removed file through, so the case above can fail",
+        out.startswith("PASS") and not manifest_named(out),
         out,
     )
 

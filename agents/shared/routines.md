@@ -4,8 +4,8 @@ title: Routines — Standard Operational Sequences for Bon-sai Agents
 type: routines
 tended-by: workshop
 created: 2026-05-22
-updated: 2026-10-16
-version: 3.3.0
+updated: 2026-10-21
+version: 3.3.1
 status: active
 ---
 
@@ -378,8 +378,8 @@ The greeting is the one place the gardener looks every session. It carries what 
 
 | Line | Source | Render |
 |---|---|---|
-| **version** | the **installed build stamp's full version** — the loaded SKILL.md's first body line, `> Installed build: 3.0.0.4-rc · from <repo>@<head> · body <8>`, stamped by the crew builder (codex §6: the packaged frontmatter holds only the three parts). **Only if there is no stamp:** the frontmatter's three-part `version:` | **the most prominent line in the zone**, mono, e.g. `v3.0.0.4-rc` — the `BUILD` and `LABEL` are what the gardener watches. No stamp → the three-part version beside `build unstamped` on a warning tint |
-| build | the same stamp's provenance: `from <repo>@<head> · body <8>` | mono, secondary. Absent → omitted (the version line already says `build unstamped`) |
+| **version** | the **installed build stamp's full version** — the loaded SKILL.md's first body line, `> Installed build: 3.0.0.4-rc-<UTC>Z · body <8>`, stamped by the crew builder (codex §6: the packaged frontmatter holds only the three parts). **Only if there is no stamp:** the frontmatter's three-part `version:` | **the most prominent line in the zone**, mono, e.g. `v3.0.0.4-rc` — the `BUILD` and `LABEL` are what the gardener watches. No stamp → the three-part version beside `build unstamped` on a warning tint |
+| build | the same stamp's body hash: `body <8>` (a package built before 2026-10-21 also says `from <repo>@<head>`; since then a stamp names no source) | mono, secondary. Absent → omitted (the version line already says `build unstamped`) |
 | fingerprint | `__FP_KANJI__ __FP8__`, linking `__VERIFY_URL__`. `__FP_KANJI__` is **decoded from the fingerprint** (`skills/bonsai-garden-mark/fp-kanji.py`), never typed. It must equal the kin's kanji: the vanity search made the key spell the name, so the reader can hold the greeting against any seal and see the same two kanji. The Aruji, 2026-09-24: *"They match - that's the whole trick."* A mismatch is **failed**, named in the title | colour by trust state, below |
 
 **Footer line, under a hairline** (mono, 11px, muted, wraps on narrow screens). Parsed by key from `session_start`'s `=== env ===` block, never by position:

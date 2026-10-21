@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-10-16
-# updated: 2026-10-16
+# updated: 2026-10-21
 # ---
 """test-check-no-ticket-ids.py — tools/check-no-ticket-ids.py against throwaway git repositories.
 
@@ -31,8 +31,8 @@ SHAPES = {k: "-".join(v) for k, v in {"a card": ("BL", "AB123"), "a lower-cased 
 CARD, ROUTE = SHAPES["a card"], SHAPES["a route"]
 
 
-def run(gate, *args):
-    r = subprocess.run([sys.executable, str(gate), *args], capture_output=True, text=True)
+def run(gate, *args, cwd=None):
+    r = subprocess.run([sys.executable, str(gate), *args], capture_output=True, text=True, cwd=cwd)
     return r.returncode, r.stdout + r.stderr
 
 
@@ -85,6 +85,43 @@ class Gate(unittest.TestCase):
         root = repo(self.tmp, {"ok.md": "fine\n", "bad.md": f"{CARD}\n"})
         self.assertEqual(run(GATE, "--root", str(root), str(root / "ok.md"))[0], 0)
         self.assertEqual(run(GATE, "--root", str(root), str(root / "bad.md"))[0], 1)
+
+    def test_a_named_file_is_read_under_root_never_the_working_folder(self):
+        # found 2026-10-21 (the 0.9.0-rc re-cut seat): a relative name was read in the working folder, so a gate run
+        # from elsewhere read another file of that name, or none at all
+        root = repo(tempfile.mkdtemp(dir=self.tmp), {"bad.md": f"{CARD}\n", "ok.md": "fine\n"})
+        here = Path(tempfile.mkdtemp(dir=self.tmp))
+        (here / "ok.md").write_text(f"{CARD} in the working folder only\n", "utf-8")
+        code, out = run(GATE, "--root", str(root), "bad.md", cwd=here)
+        self.assertEqual(code, 1, out)
+        self.assertIn(f"bad.md:1: {CARD}", out)
+        code, out = run(GATE, "--root", str(root), "ok.md", cwd=here)
+        self.assertEqual((code, out), (0, "check-no-ticket-ids: clean\n"), "the root's ok.md, not the working folder's")
+
+    def test_a_named_file_that_is_not_there_refuses(self):
+        # a gate that passes on nothing is the house failure: a name that reads no file is a refusal, never clean
+        root = repo(self.tmp, {"a.md": "fine\n", "b/c.md": "fine\n"})
+        for names in (["gone.md"], ["a.md", "gone.md"], [str(Path(self.tmp) / "gone.md")], ["b"]):
+            with self.subTest(names):
+                code, out = run(GATE, "--root", str(root), *names)
+                self.assertEqual(code, 2, out)
+                self.assertIn(Path(names[-1]).name, out)
+                self.assertNotIn("clean", out)
+
+    def test_the_missing_file_refusal_is_watched_to_fail(self):
+        # a gate that lost the refusal reads a missing name as clean again, which the case above would catch
+        root = repo(self.tmp, {"a.md": "fine\n"})
+        mutant = Path(tempfile.mkdtemp(dir=self.tmp)) / "tools"
+        mutant.mkdir()
+        src = GATE.read_text("utf-8")
+        self.assertTrue("        if missing:\n" in src, "the mutation point moved: update this test")
+        (mutant / "check-no-ticket-ids.py").write_text(
+            src.replace("        if missing:\n", "        if False:\n"), "utf-8"
+        )
+        self.assertEqual(
+            run(mutant / "check-no-ticket-ids.py", "--root", str(root), "gone.md")[0], 0, "the mutant passes"
+        )
+        self.assertEqual(run(GATE, "--root", str(root), "gone.md")[0], 2, "the real gate refuses")
 
     def test_rev_reads_the_commit_and_never_the_working_tree(self):
         root = repo(self.tmp, {"a.md": "clean\n"})

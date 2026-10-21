@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-15
+// updated: 2026-10-20
 // ---
 //
 // test-covenant.mjs — lib/covenant.mjs. Every pot here is scratch, every key a THROWAWAY derived from a random master
@@ -29,7 +29,7 @@ const C = await import(
     process.env.COVENANT_LIB ? path.resolve(process.env.COVENANT_LIB) : path.join(HERE, 'lib', 'covenant.mjs'),
   ).href
 );
-const SCRATCH = fs.mkdtempSync(path.join(os.tmpdir(), 'covenant-'));
+const SCRATCH = fs.mkdtempSync(path.join(process.env.KEYS_TEST_TMP || os.tmpdir(), 'covenant-'));
 
 const results = [];
 function t(name, fn) {
@@ -57,6 +57,7 @@ function fresh() {
     'fixture-gardener': 'throwaway-gardener',
     'bonsai-shin': 'throwaway-bonsai-shin',
     'fixture-shin': 'throwaway-shin',
+    'waiting-shin': 'throwaway-waiting',
   };
   const originRaw = crypto.randomBytes(32);
   const entry = (slug, type, shintai, kanji, extra = {}) => {
@@ -88,10 +89,21 @@ function fresh() {
       },
       entry('bonsai-shin', 'shin', 'own', '守試験身', { parent: 'bonsai' }),
       entry('fixture-shin', 'shin', 'own', '友試験身', { name: 'Fixture Shin' }),
+      // T-8 of the kobun walk: a kin with a key of this garden and no shintai yet (seed writes shintai: own for every
+      // key it derives); the covenant names her when she moves in, not before
+      entry('waiting-shin', 'shin', 'own', '待試験身', { name: 'Waiting Shin' }),
     ],
   };
   writeJson(path.join(pot, 'garden.json'), g);
   writeJson(path.join(pot, 'agents', 'registry.json'), reg);
+  // a shintai is a body on disk: the two kin who have one carry a SKILL.md where the registry's path puts it
+  for (const slug of ['bonsai-shin', 'fixture-shin']) {
+    fs.mkdirSync(path.join(pot, 'agents', slug), { recursive: true });
+    fs.writeFileSync(
+      path.join(pot, 'agents', slug, 'SKILL.md'),
+      `---\nname: ${slug}\nversion: '1.0.0'\n---\n# ${slug}\n`,
+    );
+  }
   return { pot, hex, g, reg, salts };
 }
 const signAs = (w, kin, slug, extra = {}) =>
@@ -145,6 +157,29 @@ t('write-fills-the-covenant-for-this-garden-and-copies-the-codex-word-for-word',
     cdx.endsWith(core) &&
     /^tended-by: fixture-gardener$/m.test(cdx);
   return [ok, `wrote ${wrote.join(', ')}; ids ${a.problem || a.id} ${b.problem || b.id}`];
+});
+
+t('the-roster-and-scope-name-only-kin-with-a-shintai-never-every-key', () => {
+  // T-8 (the gardener, 2026-10-20: "Take u-shin out of the roster and scope for now; add it when it moves in")
+  const w = fresh();
+  C.writeDocs(w.pot, { g: w.g, reg: w.reg });
+  const cov = fs.readFileSync(path.join(w.pot, 'lore/covenant.md'), 'utf8');
+  const scope = (/the kin of fixture-garden: ([^\n]*)/.exec(cov) || [])[1] || '';
+  const ok =
+    /\| Fixture Shin \|/.test(cov) &&
+    /\| bonsai-shin \|/.test(cov) &&
+    !/Waiting Shin|waiting-shin/.test(cov) &&
+    /Fixture Shin/.test(scope) &&
+    /bonsai-shin/.test(scope);
+  return [ok, `scope: ${scope}`];
+});
+
+t('a-kin-with-no-shintai-yet-carries-no-certificate-and-verify-asks-none', () => {
+  const w = fresh();
+  certified(w);
+  const r = refuses(() => signAs(w, 'waiting-shin', 'fixture-gardener'), /not a kin of this garden with a body/);
+  const c = checks(w);
+  return [r[0] && c.length === 0 && !fs.existsSync(ppath(w, 'waiting-shin')), `${r[1]} | verify ${JSON.stringify(c)}`];
 });
 
 t('write-never-overwrites-a-garden-text', () => {

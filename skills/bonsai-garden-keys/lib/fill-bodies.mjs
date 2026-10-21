@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-15
+// updated: 2026-10-20
 // ---
 //
 // fill-bodies.mjs — the verb behind `keys.mjs fill-bodies --pot <dir> --choices <choices.json> [--check]`
@@ -27,7 +27,11 @@
 // is read from a hash of the pot before and after, never from what it meant to write. No seal is written:
 // it prints the seal-staged line for exactly the files that changed. Never touches custody.
 //
-// --check: nine properties of the pot as a whole (C1–C9), every failing file:line named, exit 1.
+// --check: ten properties of the pot as a whole (C1–C10), every failing file:line named, exit 1. Carried testimony
+// (F-21 of dry run #4) is another's words in a body: a witness page, a feedstock CV, the heritage page, or any file
+// that names its source with `copied-from:`. C2, C3 and C8 read the owner's own voice only; C10 holds what they
+// read past to its provenance. The gardener's three rulings, 2026-10-20, are the spec: a witness's pronouns are the
+// witness's; ancestors in another garden, or witnesses with no fingerprint, never block; history is not a gap.
 // Exit 2 (refused, nothing written): no registry, no garden.json, a choices file for another garden, an
 // unknown token, a key-field disagreement, a body naming the origin's fingerprint with no vouched origin.
 
@@ -93,6 +97,33 @@ const INTEGRITY = '> **Integrity first.**';
 const B64_LINE = /^[A-Za-z0-9+/=]{60,}$/;
 
 const rel = (pot, abs) => path.relative(pot, abs).split(path.sep).join('/');
+
+/**
+ * Carried testimony, by place: where a body keeps another kin's words (a witness page, a CV seen from outside) and its
+ * lineage (the heritage page, whose ancestors may live in another garden). A file anywhere else is carried when it
+ * says so itself, with `copied-from:`. Paths are a body's own (`base`).
+ */
+export const CARRIED_DIRS = Object.freeze(['references/witness/', 'references/feedstock/']);
+export const CARRIED_FILES = Object.freeze(['references/heritage.html']);
+const carriedByPlace = (base) => CARRIED_DIRS.some((d) => base.startsWith(d)) || CARRIED_FILES.includes(base);
+/** Where a carried file says it came from: a frontmatter `copied-from:`, or an HTML `<meta name="copied-from">`. */
+export function copiedFrom(text) {
+  const lines = linesOf(text),
+    r = fmRange(lines);
+  if (r)
+    for (let i = r[0]; i < r[1]; i++) {
+      const m = /^copied-from:\s*(.*?)\s*$/.exec(lines[i]);
+      if (m) return m[1].replace(/^(['"])(.*)\1$/, '$2').trim() || null;
+    }
+  const meta = /<meta\s+name=["']copied-from["']\s+content=["']([^"']*)["']/i.exec(text);
+  return meta ? meta[1].trim() || null : null;
+}
+const carried = (f) => carriedByPlace(f.base) || copiedFrom(f.text) !== null;
+/** A body's files in its owner's own voice: everything but carried testimony. */
+const ownVoice = (b) => b.files.filter((f) => !carried(f));
+/** A changelog keeps its history: by name, or by its frontmatter `type: changelog` (C2 and C4 read it the same way). */
+const isChangelog = (f) =>
+  path.basename(f.base) === 'changelog.md' || /^type:\s*changelog\s*$/m.test(f.text.split(/\r?\n---/)[0]);
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 /** Whole-word, case-insensitive; a space in the entry matches any whitespace. Letters, digits and _ bound a word. */
 const wordRe = (w) =>
@@ -506,9 +537,9 @@ export const CHECKS = {
     }
   },
   C2(M, out) {
-    // no stale planting word (the shipped list)
+    // no stale planting word (the shipped list), in the owner's own voice: carried testimony and history are not gaps
     const res = M.words['stale-words'].map((w) => [w, wordRe(w)]);
-    for (const f of bodyFiles(M))
+    for (const f of M.bodies.flatMap(ownVoice).filter((x) => !isChangelog(x)))
       for (const [n, line] of scan(linesOf(f.text))) {
         for (const [w, re] of res) if (re.test(line)) out(f.rel, n, `a word a planting makes stale: "${w}"`);
       }
@@ -520,7 +551,8 @@ export const CHECKS = {
     if (M.origin?.vouched) ok.add(M.origin.entry.fingerprint);
     const fp8 = (a) => a.fp8 ?? a.fingerprint.slice(0, 8);
     for (const b of M.bodies)
-      for (const f of b.files) {
+      for (const f of ownVoice(b)) {
+        // carried testimony is read past: its ancestors may live in another garden, or carry no fingerprint (C10 holds it)
         const named = M.reg.agents.filter(
           (a) =>
             a === b.entry ||
@@ -572,8 +604,7 @@ export const CHECKS = {
       if (!present(prev)) continue;
       const re = new RegExp(`(?<![\\w.])${esc(String(prev))}(?![\\w-]|\\.\\d)`);
       for (const f of b.files) {
-        if (path.basename(f.base) === 'changelog.md' || /^type:\s*changelog\s*$/m.test(f.text.split(/\r?\n---/)[0]))
-          continue; // a changelog keeps its history
+        if (isChangelog(f)) continue; // a changelog keeps its history
         for (const [n, line] of scan(linesOf(f.text)))
           if (re.test(line)) out(f.rel, n, `the previous version ${prev} is still written here`);
       }
@@ -625,12 +656,12 @@ export const CHECKS = {
   C7(M, out) {
     // display fields present
     for (const b of M.bodies)
-      for (const k of ['one-line', 'accent-rgba', 'name']) {
+      for (const k of ['one-line', 'accent-rgba', 'name', 'pronouns']) {
         if (!present(b.entry[k]))
           out(
             'agents/registry.json',
             regLine(M, b.entry.slug),
-            `${b.entry.slug} has a body and its registry ${k} is null${k === 'one-line' ? " (the greeting's subtitle)" : ''}`,
+            `${b.entry.slug} has a body and their registry ${k} is null${k === 'one-line' ? " (the greeting's subtitle)" : k === 'pronouns' ? ' (a kin is never "it": not yet known is they/them)' : ''}`,
           );
       }
   },
@@ -650,7 +681,8 @@ export const CHECKS = {
     }
     for (const b of M.bodies) {
       const a = b.entry;
-      for (const f of b.files)
+      // the owner's own voice only: a witness page says "my pronouns are" of the witness, not of this kin
+      for (const f of ownVoice(b))
         for (const [n, line] of scan(linesOf(f.text))) {
           if (line.includes(TOKEN_OPEN)) continue; // C1's
           for (const [field, value] of labelled(line)) {
@@ -674,7 +706,8 @@ export const CHECKS = {
                 out(f.rel, n, `the custody tier written here, ${t}, is not garden.json's ${gt}`);
             } else if (field === 'pronouns') {
               const p = (/[A-Za-z]+\/[A-Za-z]+(?:\/[A-Za-z]+)?/.exec(value) || [])[0];
-              if (p && p.toLowerCase() !== String(a.pronouns || '').toLowerCase())
+              // a registry with none is C7's to say, once; here only a body that differs from what it records
+              if (p && present(a.pronouns) && p.toLowerCase() !== String(a.pronouns).toLowerCase())
                 out(f.rel, n, `the pronouns written here, ${p}, are not ${a.slug}'s registry pronouns ${a.pronouns}`);
             }
           }
@@ -689,6 +722,18 @@ export const CHECKS = {
       if (fs.existsSync(pend) && keyOnFile(M.pot, a.slug) && c && yes(c['pending-removal']))
         out(rel(M.pot, pend), 1, `${a.slug}'s keys are on file and the gardener said yes to removing it`);
     }
+  },
+  C10(M, out) {
+    // carried testimony names where it came from: C2, C3 and C8 read past it only on its provenance, never on its place
+    for (const b of M.bodies)
+      for (const f of b.files) {
+        if (!carriedByPlace(f.base) || copiedFrom(f.text) !== null) continue;
+        out(
+          f.rel,
+          1,
+          `carried testimony that names no source: give it ${f.base.endsWith('.html') ? '<meta name="copied-from" content="<the body it came from>"> in its head' : 'copied-from: <the body it came from> in its frontmatter'}`,
+        );
+      }
   },
 };
 

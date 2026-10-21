@@ -4,7 +4,7 @@
 // type: script
 // tended-by: mori-shin
 // created: 2026-09-15
-// updated: 2026-10-06
+// updated: 2026-10-21
 // ---
 /**
  * verify.mjs — the two verdicts, ported from tools/sign.py's `verify_file` and
@@ -22,7 +22,7 @@
  *   sidecar:  ok · no-sidecar   · unknown-signer · hash-mismatch · bad-signature
  *             · bad-sidecar (<reason>)
  *   seal v2 (2026-09-24): the above, plus
- *             target-mismatch   the sidecar names another file (moved, renamed, copied)
+ *             id-mismatch       a file that carries its own id carries another one (or none)
  *             retired-v1        a v1 seal (embedded sign: block or v1 sidecar): body-only,
  *                               metadata unsigned. Accepted with a warning while
  *                               ../seal-policy.json says "v1": "warn"; refused once it
@@ -37,6 +37,13 @@
  *   published (both forms, 2026-09-24): the above, less unknown-signer, plus
  *             rejected · keys-unreachable · answer-unsigned · answer-forged ·
  *             answer-malformed · open-unpublished — every one of them a FAIL
+ *
+ * THE ADDRESS IS PROVENANCE, NEVER A VERDICT (F-12, from 2026-10-21; Mori-shin's ruling on the payload, the
+ * gardener's pick: "if the bytes don't change a file should pass integrity check regardless of which repo contains
+ * it"). A v2 seal still names the address it was made at (`target`, inside the signed payload, so it cannot be
+ * rewritten), and every v2 verdict carries it: `sealedAt` (the seal's target), `foundAt` (the file's own address
+ * under its seal root, or null with none above it) and `moved`. `target-mismatch` left the vocabulary. Where an
+ * address must be vouched for, it is the set's: a sealed manifest, and the gates that run code check one.
  *
  * ORDER OF CHECKS IS ALSO THE CONTRACT. sign.py checks the stored fingerprint
  * against the resolved key BEFORE recomputing the hash, so a file signed by the
@@ -277,40 +284,46 @@ function potKey(pot, meta) {
 }
 
 /**
- * After the signature holds: where the file is, what id it carries, what its bytes
- * are. Shared by the local and the published verdicts, which differ only in who
- * vouches for the signature.
- *   target-mismatch  the seal names another address (moved, renamed, copied onto)
- *   id-mismatch      a file that carries its own id carries another one (or none)
+ * After the signature holds: what id the file carries, then what its bytes are. Shared by the local and the published
+ * verdicts, which differ only in who vouches for the signature.
+ *   id-mismatch  a file that carries its own id carries another one (or none). It is judged by its name in both
+ *                places, where it sits and where it was sealed: if either name carries an id, the id must be the
+ *                seal's. A crafted seal cannot lose its id check by moving to a name that carries none.
  *   then the bytes:  ok · hash-mismatch · open · open-drift · open-expired · open-malformed
+ * The address decides nothing (F-12): every verdict from here carries sealedAt, foundAt and moved.
  */
 export function v2Tail(filePath, meta) {
-  let actual;
+  let foundAt = null;
   try {
-    actual = sealTargetFor(filePath);
-  } catch (err) {
-    return { status: 'target-mismatch', meta, reason: err.message };
+    foundAt = sealTargetFor(filePath);
+  } catch {
+    foundAt = null; // no seal root above it: found at no root, and that is no verdict either
   }
-  if (actual !== meta.target) {
-    return { status: 'target-mismatch', meta, reason: `sealed for ${meta.target}, found at ${actual}` };
-  }
+  const where = { sealedAt: meta.target, foundAt, moved: foundAt !== meta.target };
   const bytes = fs.readFileSync(filePath);
-  const own = ownId(bytes, actual);
-  if (own.carrier && (own.problem || own.id !== meta.id)) {
-    return {
-      status: 'id-mismatch',
-      meta,
-      reason: own.problem ? `the file's own id: ${own.problem}` : `the seal says ${meta.id}, the file says ${own.id}`,
-    };
+  const here = foundAt ?? filePath.split(path.sep).join('/');
+  for (const name of here === meta.target ? [here] : [here, meta.target]) {
+    const own = ownId(bytes, name);
+    if (own.carrier && (own.problem || own.id !== meta.id)) {
+      const as = name === here ? '' : ` (read as ${name}, where it was sealed)`;
+      return {
+        status: 'id-mismatch',
+        meta,
+        ...where,
+        reason: own.problem
+          ? `the file's own id: ${own.problem}${as}`
+          : `the seal says ${meta.id}, the file says ${own.id}${as}`,
+      };
+    }
   }
   const status = adjudicateBytes(meta, blake2b512Hex(bytes), meta.target);
-  return { status, meta, ...(meta.open ? { open: meta.open } : {}) };
+  return { status, meta, ...where, ...(meta.open ? { open: meta.open } : {}) };
 }
 
 /**
  * v2, local keys. Order is the contract: schema → signer's key → fingerprint (the
- * key's, and the registry's) → the signature over the payload → target → id →
- * bytes. The fingerprint comes before the hash, as in v1 (the wrong-signer fixture
+ * key's, and the registry's) → the signature over the payload → id → bytes. The
+ * address is carried, never checked (F-12). The fingerprint comes before the hash, as in v1 (the wrong-signer fixture
  * holds that order).
  */
 export function verifyV2Local(filePath, data, { root, pot } = {}) {

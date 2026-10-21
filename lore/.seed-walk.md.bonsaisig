@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M37XP600EA9G46JAZE6DXVGW",
-  "signer": "zensai",
-  "role": "owner",
-  "fingerprint": "03801f1b5238186f88b4bd8853d629c4",
-  "timestamp": "2026-10-16T13:33:43Z",
+  "signer": "hissai",
+  "role": "custodian",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-21T10:33:36Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/seed-walk.md",
-  "file-hash": "19b8707ddf5f5fb7245c4c322db10ec88c4f5f398646961a8e6d8d3fa691b11cdaf97a08d86cc2f618aeff6f219412ebb552d3a71ad10b14ff0a6b1c99c9a8a5",
-  "signature": "6h9WBWPL7kaC0sTCGK3fMuSyRPEEpsNnUvqXOny6lqA8L68YbDAUQuY/iHV14HvS4QRdOJ3p7w2BT0unYLMDBA=="
+  "file-hash": "460af78c0795a3aef0a828a77267fba01c36a5555aeb6c18f35be83425f466297b072cdffa1205547f595bcae0fff4eda68b69342733462036b0b591a0b6ca6a",
+  "signature": "0x96tdhRuAi7ukyW1kse5TdhBg+X3ILPoLNPf0QtkIS7IX6jEXI2taFS9oo8mKfiB95HNI2IcrAskwVXNVTHBw=="
 }

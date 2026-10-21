@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-06
+// updated: 2026-10-20
 // ---
 //
 // envelope.mjs — spec-gardeners-keys.md §9 and §3.3: 32 bytes wrapped under a passphrase,
@@ -22,6 +22,8 @@ import crypto from 'node:crypto';
 
 export const KDF = Object.freeze({ name: 'scrypt', N: 2 ** 17, r: 8, p: 1 });
 export const MIN_PASSPHRASE = 12;
+// The GCM tag is 16 bytes, named on both sides: without it Node before 26 opens on a tag of 4 to 15 bytes (F-17).
+const TAG_BYTES = 16;
 const AAD = (garden) => Buffer.from(`bonsai-garden-salt-envelope/1\n${garden}`, 'utf8');
 
 function key(passphrase, salt, kdf) {
@@ -45,7 +47,7 @@ export function sealEnvelope(raw, passphrase, garden) {
   const nonce = crypto.randomBytes(12);
   const k = key(passphrase, salt, KDF);
   try {
-    const c = crypto.createCipheriv('aes-256-gcm', k, nonce);
+    const c = crypto.createCipheriv('aes-256-gcm', k, nonce, { authTagLength: TAG_BYTES });
     c.setAAD(AAD(garden));
     const ct = Buffer.concat([c.update(raw), c.final()]);
     return {
@@ -66,7 +68,7 @@ export function openEnvelope(env, passphrase, garden = env.garden) {
   if (env?.v !== 1 || !env.kdf) throw Object.assign(new Error('not a salt envelope (v1)'), { code: 'BAD_ENVELOPE' });
   const k = key(passphrase, Buffer.from(env.kdf.salt, 'base64'), env.kdf);
   try {
-    const d = crypto.createDecipheriv('aes-256-gcm', k, Buffer.from(env.nonce, 'base64'));
+    const d = crypto.createDecipheriv('aes-256-gcm', k, Buffer.from(env.nonce, 'base64'), { authTagLength: TAG_BYTES });
     d.setAAD(AAD(garden));
     d.setAuthTag(Buffer.from(env.tag, 'base64'));
     const raw = Buffer.concat([d.update(Buffer.from(env.ct, 'base64')), d.final()]);

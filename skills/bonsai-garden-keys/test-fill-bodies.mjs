@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-15
+// updated: 2026-10-20
 // ---
 //
 // test-fill-bodies.mjs — planting 7c (Bonsai's spec, 2026-10-15): `keys.mjs fill-bodies` writes the outcome into
@@ -60,7 +60,7 @@ const check = (p) => run(['fill-bodies', '--check', '--pot', p.pot, '--choices',
 const findings = (r) =>
   r.out
     .split('\n')
-    .map((l) => /^\s+(C\d)\s+(\S+)\s/.exec(l))
+    .map((l) => /^\s+(C\d+)\s+(\S+)\s/.exec(l))
     .filter(Boolean)
     .map((m) => [m[1], m[2]]);
 const only = (r, c, file) => {
@@ -162,7 +162,7 @@ function build({ lab = false, slugs = {}, vouched = true } = {}) {
       name: slug,
       kanji: k,
       'kanji-chars': [...k],
-      pronouns: null,
+      pronouns: slug === S.root ? null : 'they/them', // seed's own default since F-26: never a blank
       type,
       shintai: slug === S.root || type === 'gardener' ? 'none' : type === 'seed' ? 'origin' : 'own',
       parent: extra.parent || null,
@@ -551,6 +551,120 @@ t('C9-pending-still-there', () => {
   const r = check(p);
   return [only(r, 'C9', p.rel(p.S.shin, 'identity/.pending')), show(r)];
 });
+t('C7-a-pronoun-left-blank', () => {
+  // F-26 of dry run #4: a kin is never "it", so a body's registry pronouns are never a blank a reader falls back from
+  const p = filled();
+  editReg(p, (reg) => {
+    reg.agents.find((a) => a.slug === p.S.shin).pronouns = null;
+  });
+  const r = check(p);
+  return [only(r, 'C7', 'agents/registry.json'), show(r)];
+});
+
+// ── F-21 of dry run #4: carried testimony. The gardener's three rulings (2026-10-20, as Aruji): a witness's pronouns
+//    are the witness's; ancestors in another garden, or witnesses with no fingerprint, never block; history is not a
+//    gap. The fixture is kobun's fourteen findings in their own shapes: eight witness pages speaking in the first
+//    person (six with pronouns that are not the guardian's), a heritage page naming seven ancestors by fp8 (THROWAWAY
+//    keys of no garden), and a witness's own line that something is "pending". ────────────────────────────────────
+
+const WITNESSES = [
+  ['aki', 'they/them'],
+  ['bo', 'she/her'],
+  ['cira', 'she/her'],
+  ['dov', 'he/him'],
+  ['ema', 'she/her'],
+  ['fen', 'she/her'],
+  ['gil', 'he/him'],
+  ['hana', 'she/her'],
+];
+const witnessPage = (slug, pronouns, { from = 'bonsai', extra = '' } = {}) =>
+  `---\nid: ${newUlid()}\ntitle: "Witness CV — ${slug}"\ntype: feedstock-cv\nauthor: ${slug}\n` +
+  `${from ? `copied-from: ${from}\n` : ''}created: 2026-09-01\nversion: 1.1.0\n---\n\n# Witness CV: ${slug}\n\n` +
+  `I am **${slug}**. My pronouns are ${pronouns}.\n${extra}`;
+const heritagePage = ({ from = 'bonsai' } = {}) =>
+  `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n${from ? `<meta name="copied-from" content="${from}">\n` : ''}` +
+  '<title>Heritage · the seven witnesses</title>\n</head>\n<body>\n' +
+  Array.from(
+    { length: 7 },
+    (_, i) =>
+      `<h2>${WITNESSES[i][0]} <span class="jp">${SET[200 + i].char}才</span></h2>\n` +
+      `<div class="fingerprint">fp &middot; ${throwawayKey().fingerprint.slice(0, 8)}</div>\n`, // THROWAWAY ancestors
+  ).join('') +
+  '</body>\n</html>\n';
+/** The guardian's body as kobun's carried it: witness pages, a feedstock CV and the heritage page, each with its source. */
+function carry(p, opts = {}) {
+  const at = (f) => p.rel(p.S.guardian, f);
+  const w = (f, s) => {
+    fs.mkdirSync(path.dirname(path.join(p.pot, at(f))), { recursive: true });
+    fs.writeFileSync(path.join(p.pot, at(f)), s);
+  };
+  for (const [i, [slug, pr]] of WITNESSES.entries()) {
+    const extra = i === 7 ? '\nMy parent signs our bond in an attestation, pending the ratification ceremony.\n' : '';
+    w(`references/witness/${slug}.md`, witnessPage(slug, pr, { ...opts, extra }));
+  }
+  // a feedstock CV speaks of its kin from outside, as core's do: carried, with no first-person line of its own
+  w(
+    'references/feedstock/cv-aki.md',
+    `---\nid: ${newUlid()}\ntitle: "CV — aki, seen from outside"\ntype: feedstock-cv\n` +
+      `${opts.from === undefined || opts.from ? `copied-from: ${opts.from ?? 'bonsai'}\n` : ''}created: 2026-09-02\n---\n\naki keeps the soil.\n`,
+  );
+  w('references/heritage.html', heritagePage(opts));
+  return at;
+}
+
+t('F21-kobuns-fourteen-carried-testimony-reads-clean', () => {
+  const p = filled();
+  carry(p);
+  const r = check(p);
+  return [r.code === 0 && /0 finding/.test(r.out), show(r)];
+});
+t('F21-the-owners-own-voice-is-still-checked', () => {
+  // the same words, moved out of the carried pages into the guardian's own constitution, are his and are read
+  const p = filled();
+  carry(p);
+  edit(p, p.rel(p.S.guardian, 'references/about-me.md'), (s) => `${s}\nMy pronouns are she/her.\n`);
+  const r = check(p);
+  return [only(r, 'C8', p.rel(p.S.guardian, 'references/about-me.md')), show(r)];
+});
+t('F21-a-file-that-names-its-source-is-carried-wherever-it-sits', () => {
+  const p = filled();
+  fs.mkdirSync(path.join(p.pot, p.rel(p.S.guardian, 'references/lineage')), { recursive: true });
+  fs.writeFileSync(
+    path.join(p.pot, p.rel(p.S.guardian, 'references/lineage/elder.md')),
+    witnessPage('elder', 'she/her', {
+      extra: `\nMy key in my first garden: fp ${throwawayKey().fingerprint.slice(0, 8)}, still pending its move.\n`,
+    }),
+  );
+  const r = check(p);
+  return [r.code === 0 && /0 finding/.test(r.out), show(r)];
+});
+t('F21-history-is-not-a-gap', () => {
+  // a changelog keeps its history (as C4 already reads it): a stale word in a past entry is not a body left unfilled
+  const p = filled();
+  edit(
+    p,
+    p.rel(p.S.shin, 'references/changelog.md'),
+    (s) => `${s}- **0.8.0** — the mark not yet drawn, keys pending.\n`,
+  );
+  const r = check(p);
+  return [r.code === 0 && /0 finding/.test(r.out), show(r)];
+});
+t('C10-carried-testimony-that-names-no-source', () => {
+  // read past only on its provenance: a page in references/witness/ that says nowhere where it came from is refused
+  const p = filled();
+  const at = carry(p);
+  edit(p, at('references/witness/bo.md'), (s) => s.replace(/^copied-from: .*\n/m, ''));
+  edit(p, at('references/heritage.html'), (s) => s.replace(/^<meta name="copied-from"[^\n]*\n/m, ''));
+  const r = check(p);
+  const f = findings(r).map((x) => x[1]);
+  return [
+    only(r, 'C10') &&
+      f.length === 2 &&
+      f.includes(`${at('references/witness/bo.md')}:1`) &&
+      f.includes(`${at('references/heritage.html')}:1`),
+    show(r),
+  ];
+});
 
 // every refusal (2): fill and --check alike, and nothing written
 function refused(p, mutate, re) {
@@ -630,7 +744,7 @@ t('no-network-and-no-mono', () => {
 
 const L = 'skills/bonsai-garden-keys/lib/fill-bodies.mjs';
 const MUTANTS = [
-  ...['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9'].map((c) => [
+  ...['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'].map((c) => [
     `${c}-disabled`,
     [[L, `  ${c}(M, out) {`, `  ${c}(M, out) { return;`]],
     cases.filter((x) => x.name.startsWith(`${c}-`)).map((x) => x.name),
@@ -675,6 +789,53 @@ const MUTANTS = [
     'choices-of-another-garden-pass',
     [[L, '|| choices.garden !== g.garden) {', ') {']],
     ['refuses-choices-for-another-garden'],
+  ],
+  // F-21: the scope, broken both ways, and each of its two routes in
+  [
+    'carried-read-as-the-owners-voice',
+    [
+      [
+        L,
+        'const carried = (f) => carriedByPlace(f.base) || copiedFrom(f.text) !== null;',
+        'const carried = () => false;',
+      ],
+    ],
+    [
+      'F21-kobuns-fourteen-carried-testimony-reads-clean',
+      'F21-a-file-that-names-its-source-is-carried-wherever-it-sits',
+    ],
+  ],
+  [
+    'everything-carried',
+    [
+      [
+        L,
+        'const carried = (f) => carriedByPlace(f.base) || copiedFrom(f.text) !== null;',
+        'const carried = () => true;',
+      ],
+    ],
+    ['F21-the-owners-own-voice-is-still-checked'],
+  ],
+  [
+    'carried-by-place-alone',
+    [
+      [
+        L,
+        'const carried = (f) => carriedByPlace(f.base) || copiedFrom(f.text) !== null;',
+        'const carried = (f) => carriedByPlace(f.base);',
+      ],
+    ],
+    ['F21-a-file-that-names-its-source-is-carried-wherever-it-sits'],
+  ],
+  [
+    'history-read-as-a-gap',
+    [[L, '.filter((x) => !isChangelog(x)))', '.filter(() => true))']],
+    ['F21-history-is-not-a-gap'],
+  ],
+  [
+    'a-null-read-twice',
+    [[L, 'if (p && present(a.pronouns) && p.toLowerCase()', 'if (p && p.toLowerCase()']],
+    ['C7-a-pronoun-left-blank'],
   ],
 ];
 

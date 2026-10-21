@@ -292,8 +292,11 @@ async function cmdVerify(args) {
  * output and `validate-metadata.py` maps its prefixes to issue codes, so the
  * first token of each line is an interface, not a presentation choice.
  */
-function reportVerdict({ status, meta, open, reason, accepted }, file, sidecarPath) {
+function reportVerdict({ status, meta, open, reason, accepted, sealedAt, foundAt, moved }, file, sidecarPath) {
   const g = (k) => meta?.[k] || '?';
+  // F-12 (2026-10-21): the address is provenance, never a verdict. The first token stays `ok`; the line says where the
+  // bytes were sealed only when they are found elsewhere, and the ok lines name both addresses then.
+  const at = moved ? `  sealed at ${sealedAt}` : '';
   if (status === 'open') {
     console.log(`OPEN     ${file}`);
     console.log(`  reason:   ${open.reason}`);
@@ -315,13 +318,14 @@ function reportVerdict({ status, meta, open, reason, accepted }, file, sidecarPa
     if (meta?.['held-by']) console.log(`  held by:     ${meta['held-by']}`);
     if (meta?.custody) console.log(`  custody:     ${meta.custody}`);
     if (meta?.id) console.log(`  id:          ${meta.id}`);
+    if (moved) console.log(`  sealed at:   ${sealedAt}  (found at ${foundAt ?? 'no seal root'})`);
     if (meta?._key_path) console.log(`  key:         ${meta._key_path}`);
     if (meta?._kanji) console.log(`  kanji:       ${meta._kanji}`);
     console.log(`  fingerprint: ${g('fingerprint')}`);
     console.log(`  timestamp:   ${g('timestamp')}`);
   };
   if (status === 'ok') {
-    console.log(`ok       ${file}`);
+    console.log(`ok       ${file}${at}`);
     okLines();
     return 0;
   }
@@ -330,7 +334,7 @@ function reportVerdict({ status, meta, open, reason, accepted }, file, sidecarPa
     // working — and the verdict is on the first line for every caller that looks.
     // When seal-policy.json flips its key to refuse, this becomes a FAIL everywhere at once.
     // retired-sidecar-name (the dot-prefixed sidecar change phase 3) is the same shape: its reason names the fix.
-    console.log(`ok       ${file}  [${status}]`);
+    console.log(`ok       ${file}  [${status}]${at}`);
     okLines();
     console.error(`WARN     ${file}  [${status}] ${reason}`);
     return 0;
@@ -381,7 +385,7 @@ function verifyInPot(file, args) {
   }
   if (result.status !== 'ok') return reportVerdict({ ...result, accepted: false }, file, result.sidecarPath); // a pot's only yes is pot-ok
   const m = result.meta || {};
-  console.log(`pot-ok  ${file}  keys: pot ${pot.dir}`);
+  console.log(`pot-ok  ${file}  keys: pot ${pot.dir}${result.moved ? `  sealed at ${result.sealedAt}` : ''}`);
   if (result.labSoftened) console.log('pot-ok (lab-preview: custody software-fallback accepted)');
   if (result.sidecarPath) console.log(`  sidecar:     ${result.sidecarPath}`);
   console.log(`  signer:      ${m.signer || '?'}`);

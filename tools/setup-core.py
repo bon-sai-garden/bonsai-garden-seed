@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-09-24
+# updated: 2026-10-21
 # ---
 """
 setup-core.py — get a fresh copy of bonsai-garden-core ready to use, in plain words.
@@ -22,6 +22,12 @@ Safe by construction (the Aruji, 2026-09-24: "dead simple (but safe) for the res
     get it and stops; installing Homebrew is your step.
   - It asks before every install. Say no and nothing happens.
   - Running it twice is harmless.
+  - It never installs a Pillow other than the one requirements.txt pins. That Pillow (13.0.0, the
+    first release past the advisories published against 12.3.0 on 2026-10-20) and numpy need
+    Python 3.11 or newer, so the portrait tools go into .venv/ only with such a Python: this one,
+    or one already on this machine (python3.11 or later on PATH), named before you say yes. With
+    none, nothing is installed, and no older Pillow in its place. A .venv/ that is not at the pins
+    is named as such; one on an older Python is left as it is (removing it is your step).
 
 Python standard library only, so it runs on the Python your Mac already has.
 """
@@ -29,6 +35,8 @@ Python standard library only, so it runs on the Python your Mac already has.
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import shutil
 import subprocess
 import sys
@@ -81,12 +89,92 @@ def venv_python() -> Path:
     return ROOT / ".venv" / "bin" / "python3"
 
 
-def python_libs_ready() -> bool:
+# Pillow 13.0.0 and numpy 2.4.6 need Python 3.11 or newer: requirements.txt as a whole installs only there.
+PY_FLOOR = (3, 11)
+
+# What a Python says about itself: its version, and the version of each named distribution it has (None if not).
+PROBE = """
+import json, sys
+from importlib import metadata
+have = {}
+for name in sys.argv[1:]:
+    v = None
+    for n in (name, name.lower(), name.replace("-", "_")):
+        try:
+            v = metadata.version(n)
+            break
+        except metadata.PackageNotFoundError:
+            pass
+    have[name] = v
+print(json.dumps({"python": list(sys.version_info[:2]), "dists": have}))
+"""
+
+
+def probe(py: str | Path, names: list[str] | None = None) -> dict | None:
+    try:
+        r = subprocess.run([str(py), "-c", PROBE, *(names or [])], capture_output=True, text=True, timeout=60)
+        return json.loads(r.stdout) if r.returncode == 0 else None
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return None
+
+
+def pins() -> dict[str, str]:
+    """requirements.txt's exact pins, {name: version}, in the file's own spelling."""
+    out = {}
+    for line in (ROOT / "requirements.txt").read_text().splitlines():
+        m = re.match(r"^([A-Za-z0-9][A-Za-z0-9_.\-]*)==([^\s;#]+)", line.strip())
+        if m:
+            out[m.group(1)] = m.group(2)
+    return out
+
+
+def ver(t) -> str:
+    return ".".join(map(str, t))
+
+
+def newer_python() -> tuple[str, tuple[int, int]] | None:
+    """A Python at PY_FLOOR or newer already on this machine (python3.11 or later on PATH), newest first."""
+    for minor in range(20, PY_FLOOR[1] - 1, -1):
+        p = shutil.which(f"python3.{minor}")
+        st = probe(p) if p else None
+        if st and tuple(st["python"]) >= PY_FLOOR:
+            return p, tuple(st["python"])
+    return None
+
+
+def portrait_state() -> dict:
+    """The portrait tools in .venv/: needs is None (at the pins), "create" (no .venv), "sync" (a pin differs) or
+    "blocked" (.venv's Python is older than PY_FLOOR: no pinned Pillow installs there)."""
+    want = pins()
     py = venv_python()
     if not py.is_file():
-        return False
-    r = subprocess.run([str(py), "-c", "import PIL, cryptography, c2pa"], capture_output=True)
-    return r.returncode == 0
+        return {"needs": "create"}
+    st = probe(py, list(want))
+    if not st:
+        return {"needs": "blocked", "why": f"{py.relative_to(ROOT)} does not run"}
+    pyv = tuple(st["python"])
+    off = {n: (st["dists"].get(n), v) for n, v in want.items() if st["dists"].get(n) != v}
+    pil = next((st["dists"].get(n) for n in want if n.lower() == "pillow"), None)
+    if pyv < PY_FLOOR:
+        return {"needs": "blocked", "python": pyv, "pillow": pil}
+    return {"needs": "sync" if off else None, "python": pyv, "off": off, "pillow": pil}
+
+
+def off_text(off: dict) -> str:
+    return ", ".join(f"{n} {have or 'missing'} (pinned {want})" for n, (have, want) in off.items())
+
+
+def floor_text() -> str:
+    pv = ver(sys.version_info[:2])
+    return (
+        f"The portrait tools need Python {ver(PY_FLOOR)} or newer: Pillow {pins().get('Pillow', '?')}, the first release "
+        f"past its published advisories, and numpy need it. This is Python {pv}, and no newer Python was found "
+        f"(python{ver(PY_FLOOR)} or later on PATH). Nothing was installed, and no older Pillow in its place.\n"
+        "  Without them: the greeting thumb and a vCard's photo are made on macOS by its own sips (as JPEG); the\n"
+        "  canonical portrait and the concept images say in one line that Pillow is missing and write nothing; the\n"
+        "  crew page needs it too. To add them later, install a newer Python yourself (with Homebrew:\n"
+        "  brew install python@3.12) and run this again."
+    )
 
 
 def main() -> int:
@@ -116,13 +204,38 @@ def main() -> int:
         if js
         else "Optional: the archived lab page's checker isn't installed (jsdom). Kanji marks are checked without it",
     )
-    py = python_libs_ready()
-    say(
-        OK if py else NOTE,
-        "The portrait tools are ready"
-        if py
-        else "Optional: the portrait tools aren't installed. You only need them to make portraits and their thumbnails; run again with --install to add them",
-    )
+    ps = portrait_state()
+    if ps["needs"] is None:
+        say(OK, f"The portrait tools are ready (Pillow {ps['pillow']}, on Python {ver(ps['python'])})")
+    elif ps["needs"] == "sync":
+        say(
+            NO,
+            f"The portrait tools in .venv are not at requirements.txt's pins: {off_text(ps['off'])}. "
+            "Run again with --install to bring them to the pins",
+        )
+    elif ps["needs"] == "blocked":
+        say(
+            NO,
+            (
+                f".venv runs Python {ver(ps['python'])}, and requirements.txt needs {ver(PY_FLOOR)} or newer "
+                f"(Pillow {pins().get('Pillow', '?')}, the first release past its published advisories)"
+                + (f". Its Pillow {ps['pillow']} is not the pinned one" if ps.get("pillow") else "")
+                if "python" in ps
+                else ps["why"]
+            )
+            + ". Nothing here upgrades or removes it: remove .venv yourself, then run again with --install",
+        )
+    else:
+        base = sys.version_info[:2] >= PY_FLOOR or newer_python()
+        say(
+            NOTE,
+            "Optional: the portrait tools aren't installed. You only need them to make portraits and their thumbnails; run again with --install to add them"
+            + (
+                ""
+                if base
+                else f" (they need Python {ver(PY_FLOOR)} or newer: this is {ver(sys.version_info[:2])}, and none newer is on PATH)"
+            ),
+        )
 
     if not a.install:
         if not (major and major >= 20):
@@ -160,17 +273,37 @@ def main() -> int:
         else:
             print("  Skipped jsdom. Kanji marks are still checked; only the archived lab page is not.")
 
-    # 3 · Python libraries for the portrait skill (optional), into .venv/ only
-    if not python_libs_ready() and ask(
-        "Also install the portrait tools into this folder's .venv? Optional, only for making portraits"
-    ):
-        if not venv_python().is_file() and not run([sys.executable, "-m", "venv", ".venv"]):
-            print("\n  Couldn't create .venv. Nothing else was changed.\n")
-            return 1
-        if not run(
-            [str(venv_python()), "-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"]
+    # 3 · Python libraries for the portrait skill (optional), into .venv/ only, and only on a Python the pins install on:
+    # never an older Pillow in the pinned one's place (the advisories of 2026-10-20 are fixed only in Pillow 13.0.0)
+    ps = portrait_state()
+    pip = [str(venv_python()), "-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"]
+    go = False
+    if ps["needs"] == "blocked":
+        print(
+            "\n  The portrait tools are skipped: .venv cannot take requirements.txt's pins (see above). Nothing was\n"
+            "  installed, and no older Pillow in their place. Remove .venv yourself, then run this again."
+        )
+    elif ps["needs"] == "sync":
+        go = ask(f"Bring the portrait tools in .venv to requirements.txt's pins ({off_text(ps['off'])})?")
+    elif ps["needs"] == "create":
+        base = (sys.executable, sys.version_info[:2]) if sys.version_info[:2] >= PY_FLOOR else newer_python()
+        if not base:
+            print("\n  " + floor_text())
+        elif ask(
+            f"Also install the portrait tools into this folder's .venv, with Python {ver(base[1])} ({base[0]})? "
+            "Optional, only for making portraits"
         ):
+            if not run([base[0], "-m", "venv", ".venv"]):
+                print("\n  Couldn't create .venv. Nothing else was changed.\n")
+                return 1
+            go = True
+    if go:
+        if not run(pip):
             print("\n  pip couldn't install requirements.txt. Only .venv/ was touched.\n")
+            return 1
+        ps = portrait_state()
+        if ps["needs"] is not None:
+            print(f"\n  .venv is still not at requirements.txt's pins: {off_text(ps.get('off', {})) or ps['needs']}.\n")
             return 1
         print(f"\n  To use them, run the portrait scripts with {venv_python().relative_to(ROOT)}.")
 

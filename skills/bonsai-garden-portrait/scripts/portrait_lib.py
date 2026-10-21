@@ -52,7 +52,9 @@ from pathlib import Path
 try:
     from PIL import Image
 except ImportError:
-    sys.exit("Pillow is required: pip install --upgrade Pillow")
+    sys.exit(
+        "portrait_lib: Pillow is not installed on this host, and the canonical portrait needs it (its square crop, EXIF and C2PA weave have no sips fallback); nothing written. Install it, on Python 3.11 or later: python3 -m pip install \"Pillow>=13\" (13.0.0 is the first release past the advisories of 2026-10-20; core's requirements.txt pins the set). The greeting thumb alone runs without it on macOS: make-portrait-thumbs.py --format jpeg uses sips."
+    )  # T-10 of the kobun walk: say what is missing and what still runs
 
 
 # ---------------------------------------------------------------------------

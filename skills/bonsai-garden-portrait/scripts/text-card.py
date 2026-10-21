@@ -32,7 +32,7 @@ columns wide in a terminal but not always in a chat font, so a right-hand border
       --location "<city>, <country>" --host <host> --harness "<harness>" --model "<model>" \\
       --mcp "<mcp state>" --skill "<skill state>" --permission auto --plain
 
-Every value is a flag the seat filled from what it loaded or ran this turn; nothing here is looked up but the kin's own
+Every value is a flag the kin's seat filled from what they loaded or ran this turn; nothing here is looked up but the kin's own
 name, kanji, fingerprint and accent.
 
   --registry      the garden's agents/registry.json; omitted, `$BONSAI_GARDEN/agents/registry.json`.
@@ -172,11 +172,11 @@ def main():
     if a.locked_salts:
         why = unlocked(a.locked_salts, a.slug)
         if why:
-            refuse(f"{a.slug} is not fully locked ({why}): it greets with the widget instead", code=3)
+            refuse(f"{a.slug} is not fully locked ({why}): they greet with the widget instead", code=3)
     accent = rgb_of(kin.get("accent-rgba"))
     seal_chars = list(a.seal) if a.seal else (kin.get("kanji-chars") or list(kin.get("kanji", "")))
     if len([ch for ch in seal_chars if ch.strip()]) < 2:
-        refuse(f"no seal for {a.slug}: it needs at least two kanji (--seal, or the registry's kanji)")
+        refuse(f"no seal for {a.slug}: a seal needs at least two kanji (--seal, or the registry's kanji)")
 
     def c(text, rgb=None, bold=False, dim=False, bg=None):
         codes = (

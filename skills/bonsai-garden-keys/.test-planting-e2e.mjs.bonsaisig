@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-19T07:49:36Z",
+  "timestamp": "2026-10-20T16:04:35Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-keys/test-planting-e2e.mjs",
-  "file-hash": "1b46b64e2bdc1f8a13e80a1192a2b01d4575a72a99f1ab73aa4ff10bb2959af4a6d6719a24cbeb18d5b6809991881fa9653b8d9e92a339fbed23213c665470e6",
-  "signature": "yswPpvVY1vhMN6vs2elRZgu08gb8BLPFLA+Aq+WZDcLiYqeJYXm2NcHuQmUT7JxQKhCZ54pz6WsZVXwzW/8XBw=="
+  "file-hash": "14bccb6d3023d9202b56331de204db70443ede3580bf0672c13dfc901d16106af129cba8f84d08083900b7365214b7453f48b84b86a7471a2adecf592783457a",
+  "signature": "e5UZ60QNm63PVZI/ZXkHY3Gq0I16xvtySMOJZ3P3kMBB/fXBTv5PB23XljgGWAS3D2OO+W6SWcjHRsgorW/0BQ=="
 }

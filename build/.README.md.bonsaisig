@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "owner",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-19T09:38:47Z",
+  "timestamp": "2026-10-21T09:23:56Z",
   "algorithm": "ed25519+blake2b512",
   "target": "build/README.md",
-  "file-hash": "eff10e576705e17a1a7a44a6cf16c41cfee57dd8e76670419f3ecaa6c3a703a702f1c406b0c1439a447232c033b6712193a0999179ca0ab393d74fcd75876db3",
-  "signature": "hkAMVWrC52DBMmKn+XuV5AZqj8dp+Ng1azGVogeeMnE3/hYJPZ+vi1pCxgPa/ysrg1NyjijHMjI9ARbpW8y/Cg=="
+  "file-hash": "9ecf802e69db9905ebcdea8eb160968d55f74d4ee9ba51ff9165590966332e4e17abf17a2d39363d3873dc3ab78dc243f8dd66dae0c819400a7555ca5a16b4f1",
+  "signature": "7keLuYf3dsAcFzfONq+iPZs2H74baI+8oTb15TpRM6gicxcvM9Bc64DaHbMvFe3GDXePaEuYyTzAvik/GiV1CA=="
 }

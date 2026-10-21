@@ -6,7 +6,7 @@
  * type: script
  * tended-by: baisai
  * created: 2026-09-24
- * updated: 2026-10-17
+ * updated: 2026-10-21
  * ---
  *
  * The wake-time half of the one builder (package.py, beside this file). Every
@@ -128,7 +128,9 @@ async function main() {
   } catch (e) {
     fail(`MANIFEST.json does not parse (${e.message})`);
   }
-  for (const k of ['slug', 'owner', 'version', 'build', 'source', 'algorithm', 'files']) {
+  // a manifest names what was built, never where from: `source` left the builder's manifests on 2026-10-21 (a shipped
+  // file says nothing of where it was made); an older package carries it, and its own copy of this script asks for it
+  for (const k of ['slug', 'owner', 'version', 'build', 'algorithm', 'files']) {
     if (!(k in m)) fail(`MANIFEST.json has no ${k}`);
   }
   if (m.algorithm !== 'sha256') fail(`MANIFEST.json algorithm is ${m.algorithm}, not sha256`);

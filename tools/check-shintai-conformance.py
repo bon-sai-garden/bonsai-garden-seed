@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-22
-# updated: 2026-10-17
+# updated: 2026-10-21
 # copyright: © 2026 Bonsai Garden · bon-sai.garden
 # ---
 """check-shintai-conformance -- does a shintai match the ratified 3.0 structure?
@@ -237,7 +237,6 @@ def _node_many(jobs: list[tuple[str, Path]]) -> tuple[dict[tuple[str, str], dict
     )
     if why:
         return {}, why, ""
-    import json
 
     # Shintai bodies are garden instances checked on the host that holds their keys, so this gate
     # names the garden key source. Core's own skills are verified by the published keys instead
@@ -284,7 +283,6 @@ def _verify_many(jobs: list[tuple[str, Path]]) -> dict[tuple[str, Path], str]:
     return out
 
 
-MOVED_BY_INSTALL: dict[str, list[str]] = {}  # an installed body's seals at their source path, vouched by the manifest
 RETIRED: list[str] = []  # v1 seals accepted under the warn cutover — reported, never silent
 RETIRED_NAME: list[
     str
@@ -461,32 +459,14 @@ def _seal_problems(agent_dir: Path, about: Path | None, seals: _Seals, manifest:
             v = _png_verify(path)
         else:
             continue
-        if v != "ok" and manifest is not None and "[target-mismatch]" in v and path.suffix == ".bonsaisig":
-            # An installed body: every file sits at another path than the one it was sealed at (agents/<slug>/... becomes
-            # skills/<slug>/...), and a seal binds its path. The signature has held by then (v2Tail checks the address
-            # after it); the bytes are vouched by MANIFEST.json, verified by core, listing every file and refusing extras.
-            # Accepted only when the manifest verifies and the seal names a file of the same name.
-            try:
-                sealed_for = str(json.loads(path.read_text("utf-8")).get("target") or "")
-            except Exception:
-                sealed_for = ""
-            if manifest == "ok" and Path(sealed_for).name == target.name:
-                MOVED_BY_INSTALL.setdefault(str(agent_dir), []).append(rel)
-                continue
-            why = (
-                "the manifest does not verify: " + manifest
-                if manifest != "ok"
-                else f"sealed for {sealed_for or 'nothing'}, another file"
-            )
-            problems.append(f"seal: {v} (an installed body; {why})")
-            continue
         if v != "ok":
             problems.append(f"seal: {v}")
-    if MOVED_BY_INSTALL.get(str(agent_dir)):
-        NOTES.setdefault(str(agent_dir), []).append(
-            f"{len(MOVED_BY_INSTALL[str(agent_dir)])} seal(s) name their source path, not the install's; the signature held "
-            f"and MANIFEST.json (verified by core) vouches for the bytes"
-        )
+    if manifest is not None and manifest != "ok":
+        # An installed body (F-12, 2026-10-21). Each seal holds wherever its bytes are, so the install's moved seals read
+        # ok and need no acceptance (the same-basename rule of 2026-10-14 is gone). What the install must still answer
+        # for is its set: which bytes sit at which path, nothing missing and nothing extra. That is MANIFEST.json's,
+        # verified by core, and a manifest that does not verify is a finding of its own.
+        problems.append(f"manifest: the manifest does not verify: {manifest}")
     if len(RETIRED) > retired_from:
         NOTES.setdefault(str(agent_dir), []).append(
             f"WARN retired-v1: {len(RETIRED) - retired_from} v1 seal(s) accepted only until the cutover "
@@ -659,7 +639,7 @@ _BUILD_TOKEN_RE = re.compile(r"(?<![0-9A-Za-z.])(\d+\.\d+\.\d+\.\d+)(-[A-Za-z][0
 
 def _stamp_version(skill: Path) -> str | None:
     """The full version an installed body's stamp line carries (`3.0.0.7-rc` out of
-    `> Installed build: 3.0.0.7-rc-20261013T1001Z · from …`), or None without a stamp."""
+    `> Installed build: 3.0.0.7-rc-20261013T1001Z · body …`), or None without a stamp."""
     try:
         m = re.match(r"^---\n.*?\n---\n(.*)$", skill.read_text(encoding="utf-8"), re.S)
     except OSError:

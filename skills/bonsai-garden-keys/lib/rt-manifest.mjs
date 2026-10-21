@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-18
+// updated: 2026-10-21
 // ---
 //
 // rt-manifest.mjs — runtime rituals/specs/spec-rt-slice.md §2, §4, §5. The one master of the
@@ -12,7 +12,12 @@
 // (runtime and rt reach it through core, a down edge). It reads bytes and hashes them; it never
 // imports, requires or runs a file it is given.
 //
-//   RT-MANIFEST.json  (in rt)    { format, name, version, upstream: { repo, commit }, files: [{ path, sha256, bytes }] }
+//   RT-MANIFEST.json  (in rt)    { format, name, version, files: [{ path, sha256, bytes }] }: rt-manifest/2, since
+//                     0.9.1-rc. It names no repository and no commit (2026-10-21: a shipped file says nothing of where
+//                     it was made); the commit an rt was made from is in the message of the commit that carries it.
+//                     rt 0.9.0 and before carry rt-manifest/1, which adds the repository and commit it was made from;
+//                     parseManifest reads both (a pot keeps the rt it installed), and a core older than this one
+//                     refuses /2, fail-closed.
 //   .RT-MANIFEST.json.bonsaisig  (in rt)  the manifest's own seal (bonsaisig/2, owner, target RT-MANIFEST.json); the one
 //                     file rt carries that its manifest cannot list
 //   rt-minimum.json   (in core)  { format, name, 'min-version', signers }: the oldest rt this core takes, and whose
@@ -30,7 +35,8 @@ import { v2SchemaProblem } from '../../bonsai-garden-sign/lib/seal-v2.mjs';
 
 export const MANIFEST = 'RT-MANIFEST.json';
 export const MANIFEST_SEAL = `.${MANIFEST}.bonsaisig`; // the manifest's seal, beside it (the hidden sidecar name)
-export const MANIFEST_FORMAT = 'bonsai-garden-rt-manifest/1';
+export const MANIFEST_FORMAT = 'bonsai-garden-rt-manifest/2'; // names no commit it was made from (since 0.9.1-rc)
+export const MANIFEST_FORMAT_V1 = 'bonsai-garden-rt-manifest/1'; // names the commit it was made from (rt 0.9.0 and before)
 export const MINIMUM_FORMAT = 'bonsai-garden-rt-minimum/1';
 export const RECORD_FORMAT = 'bonsai-garden-pot-runtime/1';
 export const HOOKS_DIR = 'tools/hooks/garden'; // the pot's core.hooksPath, inside rt
@@ -60,21 +66,27 @@ export function versionCmp(a, b) {
 }
 export const atLeast = (v, min) => versionCmp(v, min) >= 0;
 
-/** The manifest's bytes for `files` ({ rel: Buffer }): sorted, fixed key order, one trailing newline. */
-export function manifestBytes({ name, version, upstream, files }) {
+/** The manifest's bytes for `files` ({ rel: Buffer }): sorted, fixed key order, one trailing newline. The current shape
+ *  names none; `v1: true` writes the shape rt 0.9.0 and before carry, with the commit (the drift gate regenerates
+ *  an older rt in its own shape). */
+export function manifestBytes({ name, version, upstream = null, files, v1 = false }) {
   const list = Object.keys(files)
     .sort()
     .map((p) => ({ path: p, sha256: sha256(files[p]), bytes: files[p].length }));
   for (const f of list)
     if (!PATH_RE.test(f.path) || f.path === MANIFEST || f.path === MANIFEST_SEAL)
       throw new Error(`not a path a manifest can carry: ${f.path}`);
-  const m = {
-    format: MANIFEST_FORMAT,
-    name,
-    version,
-    upstream: { repo: upstream.repo, commit: upstream.commit },
-    files: list,
-  };
+  if (v1 && !COMMIT_RE.test(upstream?.commit || ''))
+    throw new Error(`${MANIFEST_FORMAT_V1} names the commit it was made from`);
+  const m = v1
+    ? {
+        format: MANIFEST_FORMAT_V1,
+        name,
+        version,
+        upstream: { repo: upstream.repo, commit: upstream.commit },
+        files: list,
+      }
+    : { format: MANIFEST_FORMAT, name, version, files: list };
   return Buffer.from(`${JSON.stringify(m, null, 2)}\n`);
 }
 
@@ -85,11 +97,14 @@ export function parseManifest(buf) {
   } catch {
     throw new Error(`${MANIFEST} is not JSON`);
   }
-  if (!m || m.format !== MANIFEST_FORMAT) throw new Error(`${MANIFEST} is not ${MANIFEST_FORMAT}`);
+  if (!m || (m.format !== MANIFEST_FORMAT && m.format !== MANIFEST_FORMAT_V1))
+    throw new Error(`${MANIFEST} is not ${MANIFEST_FORMAT} (nor ${MANIFEST_FORMAT_V1}, an older rt's)`);
   if (typeof m.name !== 'string' || !VERSION_RE.test(m.version || ''))
     throw new Error(`${MANIFEST} names no rt and version`);
-  if (!m.upstream || !COMMIT_RE.test(m.upstream.commit || ''))
-    throw new Error(`${MANIFEST} carries no upstream commit (the stamp)`);
+  if (m.format === MANIFEST_FORMAT_V1 && (!m.upstream || !COMMIT_RE.test(m.upstream.commit || '')))
+    throw new Error(`${MANIFEST} carries no commit it was made from (${MANIFEST_FORMAT_V1} names one)`);
+  if (m.format === MANIFEST_FORMAT && 'upstream' in m)
+    throw new Error(`${MANIFEST} is ${MANIFEST_FORMAT}, which names no commit it was made from`);
   if (!Array.isArray(m.files) || !m.files.length) throw new Error(`${MANIFEST} lists no files`);
   for (const f of m.files) {
     if (!f || !PATH_RE.test(f.path || '') || !SHA_RE.test(f.sha256 || ''))

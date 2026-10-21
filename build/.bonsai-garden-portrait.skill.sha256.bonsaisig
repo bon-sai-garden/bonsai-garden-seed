@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "custodian",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-19T09:38:49Z",
+  "timestamp": "2026-10-21T13:09:37Z",
   "algorithm": "ed25519+blake2b512",
   "target": "build/bonsai-garden-portrait.skill.sha256",
-  "file-hash": "6304fc9105fead62a3c8e36a5570c86962f220e5bbb97c6348dee81de9ef52889ccdcd599c7592ca9613cac16f4fcee44d63c856c263bae980a1ff4a36d1e2dd",
-  "signature": "gyWlnYYoAPHV03zGe063Dgq0BiCnRcXcU+BwNmG2yfEKigdFwOmjPFhItPgqs1N/nLkhfIS4Xr1/eyVvig6eAw=="
+  "file-hash": "b16b0add05c5a26ff92b6737af9c12ef7021a7ae47fb6ad4813f391e430366159617b7073071a8efd01be6fedcae92781b3548841d60f0f09ea4263d8d5354a2",
+  "signature": "DEDnSxC1yltylcwJWaeIFqlIbxyW+CLoJQONocG7ke0UuRAHXl3gCNpTkL8e60sjXcvyR4V6VSHAYV3L53IoCQ=="
 }

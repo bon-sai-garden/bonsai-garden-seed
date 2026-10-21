@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-10-14
-# updated: 2026-10-16
+# updated: 2026-10-21
 # ---
 """test-conformance-stamped.py: Bonsai, 2026-10-13/14. package.py writes `version: M.m.p` into the packaged SKILL.md and
 keeps the build and label in the stamp line, while references/about-me.md ships byte for byte ("3.1.2-rc"). The gate
@@ -45,7 +45,7 @@ def body(skill_ver, about_ver, stamped, integrity=True, prose=""):
     d = Path(tempfile.mkdtemp(prefix="conf-stamp-")) / "orma"
     (d / "references").mkdir(parents=True)
     head = f"---\nname: orma\nversion: {skill_ver}\n---\n"
-    stamp = "> Installed build: 3.1.2.7-rc-20261014T0600Z · from core@abc1234 · body 1234abcd\n\n" if stamped else ""
+    stamp = "> Installed build: 3.1.2.7-rc-20261014T0600Z · body 1234abcd\n\n" if stamped else ""
     (d / "SKILL.md").write_text(head + stamp + (INTEGRITY + "\n\n" if integrity else "") + "# orma\n\n" + prose + "\n")
     (d / "references" / "about-me.md").write_text(f"---\nid: x\nversion: {about_ver}\n---\n# orma\n")
     return d

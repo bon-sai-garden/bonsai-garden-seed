@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:48:32Z",
+  "timestamp": "2026-10-20T23:26:05Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/test-conformance-installed-seals.py",
-  "file-hash": "3d733f8a70a8aaaff2564da04c9e7a609e4ed291b3316922f10a9524c369e178090bd2bd365cbbf0cdede64fff3034cbe75936f495d9bfb91743ed2074d00dd7",
-  "signature": "KjiUSf+mZv27VdrkRu/qOFiP8C5H+gE5HI9ZKhZLv4r3AWz2wv9payy/HcmnXEnfv29BIMQkU0/z6XGuMKl1BQ=="
+  "file-hash": "42755d4a5cba795074d32f287ccd56b52f3863580f4d8ec957a201d6d5c565146bb1d0cf8bd194172e001a22b31dcb9a78dfaca9401ce6d718410022fde4b641",
+  "signature": "P4fIZewUpAce3tLJlSTTqiLzWpKA0486fJUphzZxHi7dgkNCnwX5R3jl9KXelKgfHkIKvXApObWGeuTFA/00AQ=="
 }

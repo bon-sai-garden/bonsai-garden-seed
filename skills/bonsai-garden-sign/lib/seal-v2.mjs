@@ -4,7 +4,7 @@
 // type: script
 // tended-by: mori-shin
 // created: 2026-09-25
-// updated: 2026-10-06
+// updated: 2026-10-21
 // ---
 /**
  * seal-v2.mjs — the one definition of seal v2 in Node.
@@ -31,7 +31,9 @@
  *     fingerprint  sha256(public key)[:32], hex
  *     timestamp    YYYY-MM-DDTHH:MM:SSZ
  *     algorithm    "ed25519+blake2b512"
- *     target       the file's path relative to its seal root (below), "/"-separated
+ *     target       the file's path relative to its seal root (below), "/"-separated: where it was
+ *                  sealed. Provenance, signed, never a verdict (F-12, from 2026-10-21): a verifier
+ *                  reports it as `sealedAt` beside the file's own address, `foundAt`, and `moved`
  *     file-hash    blake2b-512 of the file's exact bytes, hex — frontmatter and all
  *     open         optional: a signed OPEN declaration (seal-open), documents only
  *     signature    ed25519, base64, over the payload:
@@ -46,9 +48,12 @@
  *
  * SEAL ROOT, for `target`: the nearest directory above the file (symlinks
  * resolved) that holds `.git` or `agents/registry.json`. By marker, never by
- * counting levels; no marker is a refusal, never a basename. A built package
- * carries `agents/registry.json` at its root, so a package's own files have
- * package-relative targets wherever it is unpacked.
+ * counting levels; no marker is a refusal to SEAL, never a basename (provenance
+ * must be named when the seal is made). At verification the same root names
+ * where the file is found, and a file with no root above it is found at none:
+ * that is no verdict either. A built package carries `agents/registry.json` at
+ * its root, so a package's own files have package-relative targets wherever it
+ * is unpacked; which bytes sit at which path in it is its MANIFEST.json's.
  *
  * tools/sign.py (mono) carries the Python twin of every function here;
  * test-seal-v2-parity.mjs holds the two to byte identity.
@@ -338,7 +343,7 @@ function parseUtc(s) {
 }
 
 /**
- * After the signature and target have held: the file's bytes against the seal.
+ * After the signature and the id have held: the file's bytes against the seal.
  * ok · hash-mismatch, or for a sidecar that carries `open`: ok (back at the seal) ·
  * open · open-drift · open-expired · open-malformed. OPEN is its own verdict, never ok.
  */

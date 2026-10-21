@@ -4,7 +4,8 @@ title: "Seal v2 — a detached seal for every file, signed over its bytes and ev
 type: spec
 tended-by: baisai
 created: 2026-09-24
-updated: 2026-09-24
+updated: 2026-10-21
+version: 1.1.1
 status: draft
 related:
   - "references/trust-anchor.md"
@@ -35,7 +36,7 @@ On 2026-09-24 the gardener found that an embedded `sign:` block signs only the b
 | `fingerprint` | `sha256(public key)[:32]` |
 | `timestamp` | `YYYY-MM-DDTHH:MM:SSZ` |
 | `algorithm` | `"ed25519+blake2b512"` |
-| `target` | the file's path relative to its **seal root**: the nearest directory above it, with symlinks resolved, that holds `.git` or `agents/registry.json`. It is found by marker, never by counting levels. If there is no root, nothing is sealed, and a basename is never used instead |
+| `target` | the file's path relative to its **seal root**: the nearest directory above it, with symlinks resolved, that holds `.git` or `agents/registry.json`. It is found by marker, never by counting levels. If there is no root, nothing is sealed, and a basename is never used instead. It is **provenance**: signed, shown, never a verdict (see *Verification*, the rule of 2026-10-21) |
 | `file-hash` | blake2b-512 of the file's exact bytes |
 | `open` | optional; see seal-open below |
 | `signature` | ed25519, base64, over the payload |
@@ -44,11 +45,23 @@ On 2026-09-24 the gardener found that an embedded `sign:` block signs only the b
 
 ## Verification, in order (the contract)
 
-The checks run in this order: schema → the signer's key → fingerprint (first the key's, then the registry's) → the signature over the payload → target → id → bytes. The fingerprint is checked before the hash, as in v1, and the planted wrong-signer fixture holds that order.
+The checks run in this order: schema → the signer's key → fingerprint (first the key's, then the registry's) → the signature over the payload → id → bytes. The fingerprint is checked before the hash, as in v1, and the planted wrong-signer fixture holds that order.
 
-Verdicts: `ok` · `hash-mismatch` · `bad-signature` · `unknown-signer` · `target-mismatch` (the seal names another address: moved, renamed, or copied onto another file) · `id-mismatch` · `bad-sidecar (<why>)` · `no-sidecar` · `open` · `open-drift` · `open-expired` · `open-malformed` · `two-sidecars` · **`retired-v1`** · **`retired-sidecar-name`**.
+**The address is provenance, never a verdict (from 2026-10-21, 1.1.0; F-12).** A seal says: *these exact bytes* (`file-hash`), *sealed by this signer* (the key, its fingerprint, in this role), *as this document* (`id`), *at this time*. That is true wherever the bytes are, so a file passes in whichever repo, in a package, or outside every root. The gardener, 2026-10-20: *"if the bytes don't change a file should pass integrity check regardless of which repo contains it"*. The ruling on the payload is Mori-shin's (her letter of 2026-10-20, design B).
 
-Published path: the client sends `{format, signer, payload, signature}`. The site verifies the signature over those exact bytes against the published key, then checks that the payload's fingerprint is that key's. Its answer is signed with `response_sig` and names `format`, `role`, and the payload's `sha256`, so an answer replayed from another seal by the same signer does not match. Target, id and bytes are checked by the client, because only the client holds the file.
+- `target` stays inside the signed payload, so it cannot be rewritten: an edited `target` still reads `bad-signature`. Sealing still refuses a file with no root above it, because provenance must be named when the seal is made.
+- Every v2 verdict carries `sealedAt` (the seal's `target`), `foundAt` (the file's own address under its seal root, or none when no root is above it) and `moved` (the two differ). The first token stays `ok`; the first line adds `sealed at <target>` only when the file has moved. `sign.py` carries the same as `_sealed_at`, `_found_at`, `_moved`.
+- **The id is judged by the file's name in both places**, where it sits and where it was sealed: if either name carries an id (a document, a script), it must be the seal's. So a seal crafted with another id cannot lose its id check by moving to a name that carries none, and a sealed `.json` found under a `.md` name is refused (`id-mismatch`): the bytes carry no id there.
+- **Where an address must be vouched for, it is the set's, not each file's.** A sealed manifest says which bytes sit at which relative path, with nothing missing and nothing extra: a package's `MANIFEST.json`, rt's `RT-MANIFEST.json`, the seed's `SEED-MANIFEST.json`; for a living checkout, `CODE-MANIFEST.json` (each sealed code file's path to its seal's id, written from the tree by core's `tools/code-manifest.mjs`, then sealed). **The gates that run code read one** (the gardener's pick, 2026-10-20, "2a"; built in the same release, 0.9.1), and they do not meet a missing one alike:
+  - **the MCP's execute gate** runs a module only from its checkout's sealed map. No map, or a map whose seal does not hold, refuses and says so; a module the map does not place, or places under another id, is refused. An installed rt checks its `RT-MANIFEST.json` instead.
+  - **mono's pre-exec hook** requires mono's own map: missing, or its seal broken, is BLOCKED. A sealed script in a checkout that carries no map (core today, a scratch copy) it treats as an unsigned script: **allowed in `report` mode, the default, without a word**, and BLOCKED in `enforce` mode. A script a map does not list: a warning in `report`, BLOCKED in `enforce`. Two limits are known, owed before `enforce`: a command that names `sign-sidecar` anywhere passes whatever the hook finds (the re-signing pass-through), and a script run after a `cd` is resolved against the garden, not the command's own folder.
+
+  That is where the address still decides something, and the only place.
+- No seal is re-sealed for this, no owner reads anything for it, and `seal-policy.json` gains no key: there is no cutover to stage, and a switch would only re-arm the bug on one host.
+
+Verdicts: `ok` · `hash-mismatch` · `bad-signature` · `unknown-signer` · `id-mismatch` · `bad-sidecar (<why>)` · `no-sidecar` · `open` · `open-drift` · `open-expired` · `open-malformed` · `two-sidecars` · **`retired-v1`** · **`retired-sidecar-name`** · `custody-refused`. `target-mismatch` (the seal names another address) left the vocabulary on 2026-10-21. A package installed before that date keeps its bundled verifier, and keeps saying `target-mismatch`, until it is rebuilt and reinstalled.
+
+Published path: the client sends `{format, signer, payload, signature}`. The site verifies the signature over those exact bytes against the published key, then checks that the payload's fingerprint is that key's. Its answer is signed with `response_sig` and names `format`, `role`, and the payload's `sha256`, so an answer replayed from another seal by the same signer does not match. The id and the bytes are checked by the client, because only the client holds the file; the target is reported by it, as on the local path.
 
 ## v1 is retired: the cutover
 
@@ -74,7 +87,11 @@ The OPEN declaration moves inside the seal. `sign.py seal-open` keeps every fiel
 
 ## Packages
 
-A built package carries `agents/registry.json` at its root, so the targets of its own seals (`SKILL.md`, `MANIFEST.json`) are package-relative wherever the package is unpacked. The builder no longer rewrites `target` after sealing: v1 allowed that only because v1 left `target` unsigned. A seal copied into a package from its source does not hold at the package address, by design. The builder verifies each copied seal **at its source**, and checks that the staged bytes match the source.
+A built package carries `agents/registry.json` at its root, so the seals the builder makes for it (`SKILL.md`, `MANIFEST.json`) are package-relative wherever the package is unpacked. Every other file keeps the seal it was made with at its source. The builder never rewrites `target`: v1 allowed that only because v1 left `target` unsigned. It verifies each copied seal **at its source**, and checks that the staged bytes are the source's.
+
+**A copied seal holds where it is installed** (from 2026-10-21): the same bytes, sealed by the same signer as the same document, read `ok` in the package, each verdict naming where the file was sealed (`sealed at agents/bonsai/references/about-me.md`). The seed's plugin, unpacked, reads 479 of 479 `ok` under the published keys, where it read 26.
+
+**The manifest is the set.** `MANIFEST.json` lists every file of the unit with its sha256, refuses an extra file and a missing one, and is sealed by the unit's owner; core's `verify-manifest.mjs` checks it, and the conformance gate reports a stamped body whose manifest does not verify. The same-basename acceptance of a moved seal (2026-10-14) is gone with the verdict it accepted, and nothing reads the package marker's `source-path` any more.
 
 ## Generated files: a proposal, not built
 
@@ -86,10 +103,16 @@ The batch seals the **source** of a generated file (AGENTS.md composed into six 
 
 ## Tests
 
-`test-seal-v2.mjs` asserts every case in both tools: the demonstration's frontmatter edits, the seal's own fields, where the seal sits, crafted-but-signed guards, sealing refusals, seal-open, v1 warn and refuse (with a flipped copy of the policy), and parity over the corpus. `test-seal-v2-mutations.mjs` removes each guard, in a copy, and requires the matching test to stop passing. The site's `worker/test-verify-v2.mjs` covers `/verify` and the published client end to end.
+`test-seal-v2.mjs` asserts every case in both tools: the demonstration's frontmatter edits, the seal's own fields, where the seal sits (moved within a repo, into a second repo, outside every root, a byte-identical copy: `ok` with its provenance; moved beside other bytes or another id: refused), crafted-but-signed guards, sealing refusals, seal-open, v1 warn and refuse (with a flipped copy of the policy), and parity over the corpus. `test-seal-v2-mutations.mjs` removes each guard, in a copy, and requires the matching test to stop passing. The site's `worker/test-verify-v2.mjs` covers `/verify` and the published client end to end.
 
 ## Open
 
-- **Uniqueness of ids** is not checked at seal time, because it is a whole-repo question. `ulid.py check --staged` is that gate. A seal copied to a new address never lends its id to the copy.
+- **Uniqueness of ids** is not checked at seal time, because it is a whole-repo question. `ulid.py check --staged` is that gate, and since 1.1.0 the only one: **a seal copied to a new address lends its id to the copy.** A byte-identical copy with its seal beside it reads `ok` under the seal's id, naming where it was sealed, so two files can read `ok` as one document. (For code, a checkout's map places one id at one path, and a copy elsewhere is not listed.)
 - **The v1 branch of the live `/verify`** stays until the cutover, then comes out in a deploy. The site's `/verify` page shows v1 answers as it always did. Teaching it to show `role` is still owed.
 - **PNG**: `sign` removes a retired BonsaiSign chunk and seals the PNG v2 like any file. Core still reads no chunk, and does not need to.
+
+## Version
+
+- **1.1.1** (2026-10-21) — PATCH: two sentences made true, from Mori-shin's owner read of 0.9.1. A gate with no manifest does not always refuse: the MCP's gate does, mono's pre-exec hook in `report` mode allows a sealed script from a checkout without a map, and the page now says how each gate meets a missing map (and the hook's two known limits). A copied seal now lends its id to the copy; uniqueness is `ulid.py check --staged`'s alone. No verdict changed.
+- **1.1.0** (2026-10-21) — MINOR: the address is provenance, never a verdict (F-12). The order loses `target`; every v2 verdict carries `sealedAt`, `foundAt`, `moved`; the id is judged by both names; `target-mismatch` leaves the vocabulary; *Packages* rewritten (a copied seal holds where it is installed, the manifest is the set). The payload and the format are unchanged. The ruling is Mori-shin's; built by Baisai for the gardener's pick of 2026-10-20 ("2a").
+- 1.0.0 (2026-09-24) — the first form: a detached seal for every file, signed over its bytes and every field of its own.

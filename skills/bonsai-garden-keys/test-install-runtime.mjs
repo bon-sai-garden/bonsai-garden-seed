@@ -97,7 +97,7 @@ const FILES2 = {
 async function writeRt(
   dir,
   files = FILES,
-  { commit = 'a'.repeat(40), version = MIN, seal = OWNER, target = M.MANIFEST, role = 'owner', extra } = {},
+  { commit = 'a'.repeat(40), version = MIN, seal = OWNER, target = M.MANIFEST, role = 'owner', extra, v1 = false } = {},
 ) {
   for (const [rel, b] of Object.entries(files)) {
     fs.mkdirSync(path.dirname(path.join(dir, rel)), { recursive: true });
@@ -105,7 +105,13 @@ async function writeRt(
   }
   fs.writeFileSync(
     path.join(dir, M.MANIFEST),
-    M.manifestBytes({ name: 'bonsai-garden-rt', version, upstream: { repo: 'bonsai-garden-runtime', commit }, files }),
+    M.manifestBytes({
+      name: 'bonsai-garden-rt',
+      version,
+      upstream: { repo: 'bonsai-garden-runtime', commit },
+      files,
+      v1,
+    }),
   );
   if (seal) await W.seal(path.join(dir, M.MANIFEST), seal, { target, role, extra });
 }
@@ -210,6 +216,52 @@ t('an-rt-above-the-minimum-installs-though-core-names-no-hash-of-it', async () =
       asked(OWNER) > before,
     `exit ${r.code}: ${last(r)}`,
   ];
+});
+
+// the manifest's two shapes (2026-10-21: a shipped file says nothing of where it was made): rt 0.9.1-rc on names no
+// commit; an older rt names the one it was made from, and a pot keeps the rt it installed
+t('an-rt-whose-manifest-names-no-commit-installs-and-the-pot-records-none', async () => {
+  setMin();
+  const d = await newer();
+  const m = JSON.parse(fs.readFileSync(path.join(d, M.MANIFEST), 'utf8'));
+  const g = fresh();
+  const r = install(g.pot, d);
+  return [
+    r.code === 0 &&
+      m.format === 'bonsai-garden-rt-manifest/2' &&
+      !('upstream' in m) &&
+      installed(g, shaOf(d)) &&
+      !('upstream' in rec(g.pot)),
+    `exit ${r.code}, format ${m.format}, record ${JSON.stringify(Object.keys(rec(g.pot)))}: ${last(r)}`,
+  ];
+});
+
+t('an-older-rt-whose-manifest-names-its-commit-still-installs-and-the-pot-records-it', async () => {
+  setMin();
+  const d = await newer(undefined, { v1: true });
+  const m = JSON.parse(fs.readFileSync(path.join(d, M.MANIFEST), 'utf8'));
+  const g = fresh();
+  const r = install(g.pot, d);
+  return [
+    r.code === 0 &&
+      m.format === 'bonsai-garden-rt-manifest/1' &&
+      installed(g, shaOf(d)) &&
+      rec(g.pot).upstream?.commit === 'a'.repeat(40),
+    `exit ${r.code}, format ${m.format}: ${last(r)}`,
+  ];
+});
+
+t('a-manifest-of-the-new-shape-that-names-a-commit-is-malformed', async () => {
+  const buf = M.manifestBytes({ name: 'bonsai-garden-rt', version: '0.1.1', files: FILES });
+  const m = JSON.parse(buf);
+  const planted = Buffer.from(JSON.stringify({ ...m, upstream: { repo: 'x', commit: 'a'.repeat(40) } }));
+  let said = '';
+  try {
+    M.parseManifest(planted);
+  } catch (e) {
+    said = e.message;
+  }
+  return [/names no commit it was made from/.test(said), said || 'parsed'];
 });
 
 t('an-rt-below-the-minimum-is-refused-and-never-run', async () => {

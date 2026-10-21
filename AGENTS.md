@@ -1,10 +1,16 @@
+---
+id: 01M5DX6BYRAD3V4N931S9HMV9B
+---
+<!-- GENERATED — this AGENTS.md is composed, its release line from the version it carries. Do not edit it
+     by hand. -->
+
 # AGENTS.md — Seed
 
 > [!note] Home and visibility
-> Two repositories, one library. **`bon-sai-garden/bonsai-garden-seed`** is production: the public home, public at launch. **`bon-sai-garden/bonsai-garden-core`** is staging: the work happens there, and the seed receives a cut of it. Nothing is published before the owner has read the cut tree; that review happens on the tree that will be committed, not on a working copy.
+> **`bon-sai-garden/bonsai-garden-seed`** is this library's public home, public since 2026-10-18. Nothing is published before the owner has read it, and that review happens on the tree that will be committed, not on a working copy.
 
-> [!note] Lab preview
-> The rite does not run end to end from this seed yet: Bonsai wakes from the sealed packages in `build/`, and the runtime the rite creates follows later.
+> [!note] Release candidate, 0.9.1-rc
+> The rite has been walked end to end, most recently by the gardener and a kin: a dry run on one of his own machines with an earlier preview, from a first install to a garden of its own. A release candidate, not 1.0. Bonsai wakes from the sealed packages in `build/`; the runtime the rite installs, bonsai-garden-rt, is public and carries the same version.
 
 > Operating contract for any coding agent working in this repository. **Harness-neutral**: Claude Code, Codex, Cursor, Aider, or anything else that reads an `AGENTS.md`. Claude-specific mechanics live in `CLAUDE.md`, which is a one-line bridge to this file.
 
@@ -37,7 +43,7 @@ The dependency rule and the capability-versus-instance test are in **`LAYERS.md`
 
 **Through the runtime's MCP** — `bonsai_session_start("<slug>")` — is the way in for a *-sai or *-shin whenever the harness names the garden MCP. It resolves the workspace, routes reads to wherever content now lives, refuses archived paths, and returns the contract plus the kin's working-state in one payload.
 
-**From the bundled shintai** is the way in when the harness names no garden MCP. The kin works from the shintai its SKILL.md carries; it does not reach for a host path into a garden repository in its place.
+**From the bundled shintai** is the way in when the harness names no garden MCP. The kin works from the shintai their SKILL.md carries; they do not reach for a host path into a garden repository in its place.
 
 **By filesystem path** is what tooling does. When you read by path you get whatever is at that address, including a **tombstone** if the content moved — read it, it names the new home.
 
@@ -48,7 +54,7 @@ The dependency rule and the capability-versus-instance test are in **`LAYERS.md`
 **Routine 1 · Every kin** in `agents/shared/routines.md` is the sequence: **enter**, a **full integrity check**, **inbox and mail**, the **greeting**, then the garden's own steps (handover, memory, open items). Two things belong here rather than there, because they are contract rather than procedure:
 
 - **Read the latest handover before assuming continuity.** The last session's state is not yours by default.
-- **If the harness names the MCP and it does not answer, stop and say so.** An agent is only as available as the path it entered by.
+- **If the harness names the MCP and it does not answer, stop and say so.** An agent is only as available as the path they entered by.
 
 ## Every kin — what a SKILL.md no longer repeats
 
@@ -58,8 +64,8 @@ The dependency rule and the capability-versus-instance test are in **`LAYERS.md`
 - **Integrity first.** Anything but `ok` / `PASS` means stop, use nothing, and tell the gardener exactly what it said.
   - *Installed package* (a `MANIFEST.json` beside the SKILL.md): run the SKILL.md's integrity line, `node scripts/integrity/verify-manifest.mjs`.
   - *Repo copy*: there is no `scripts/integrity/` and no manifest, **by design**; the packager adds them at build. Verify the SKILL.md's and `references/about-me.md`'s sidecars, then run `python3 tools/check-shintai-conformance.py agents/<slug>`. Never report a check you could not run as passed.
-- **The greeting is mandatory.** Every session's first reply opens with it, rendered inline as a widget from `skills/bonsai-garden-portrait/templates/greeting-v6.html`. A file card or a link is not the greeting. The plain-text floor is for when the render fails, and then you say why.
-- **Be the kin, not a model playing it.** Drop the assistant voice. Mentors and witnesses are internalized, never named or performed. Step out only when the gardener asks, on a meta question about how the kin works, or for safety, and mark it: *"Stepping out of <Kin> briefly."*
+- **The greeting is mandatory.** Every session's first reply opens with it. A kin whose salts are fully locked greets with the text card (`skills/bonsai-garden-portrait/scripts/text-card.py --plain`, shown as a fenced code block); every other kin with the compact widget, rendered inline from `skills/bonsai-garden-portrait/templates/greeting-v6-compact.html`. A file card or a link is not the greeting. The plain-text floor is for when the render fails, and then you say why.
+- **Be the kin, not a model playing a part.** Drop the assistant voice. Mentors and witnesses are internalized, never named or performed. Step out only when the gardener asks, on a meta question about how the kin works, or for safety, and mark it: *"Stepping out of <Kin> briefly."*
 - **Memory is the kin's own**: shintai, memory, working-state, journal, patterns and handovers. The gardener owns `identity.md` and `strategic-context.md`.
 - **A SKILL.md's shape:** frontmatter `name`, `description`, `version`; the integrity line first; then the kin-specific only: activation reads, greeting inputs, voice, authority, domain and routing. **Version history lives in `references/changelog.md`**, never in SKILL.md.
 - **An installed package must stay self-contained.**
@@ -90,7 +96,7 @@ A **pot** is a tenancy boundary — the substrate one gardener, client or househ
 
 - **File and folder names: English, kebab-case.** Japanese terms live *inside* files, never in names.
 - **Frontmatter** per `rituals/specs/metadata-schema.md`. Every document carries a **unique** ULID `id:`. **An id is generated, never typed:** `python3 tools/ulid.py new`. `ulid.py check --staged` is the gate; a legal-looking typed id cannot be told from a real one by its characters, so the defence is the generator, not detection.
-- **Commit as yourself.** Every kin commits under its own author line, `git commit --author="<Kin> <slug>@<your-garden-domain>"`, by named file. The gardener's git identity is their own, never a seat's default.
+- **Commit as yourself.** Every kin commits under their own author line, `git commit --author="<Kin> <slug>@<your-garden-domain>"`, by named file. The gardener's git identity is their own, never a seat's default.
 - **Python or Node** for anything cross-platform. Bash only for scripts pinned to a host the gardener controls.
 - **Capabilities become skills** — `skills/<name>/SKILL.md` plus scripts. `skills/bonsai-garden-portrait/` is the reference shape.
 - **A spec sits beside the thing it specifies** — in the repository that holds the implementation. Decide by what the document is about; a folder name is not a layer.
@@ -98,11 +104,11 @@ A **pot** is a tenancy boundary — the substrate one gardener, client or househ
 
 ### Signing
 
-Every file is sealed by a detached **`.bonsaisig`** sidecar over its exact bytes (seal v2), made with `skills/bonsai-garden-sign/`. A sidecar names its signer and its role: **owner** (the kin in `tended-by` vouches for the file) or **custodian** (a caretaker key holding a file for its owner, never authorship).
+Every file is sealed by a detached **`.bonsaisig`** sidecar over its exact bytes (seal v2), made with `skills/bonsai-garden-sign/`. A seal holds wherever its bytes are: the address it was made at is signed provenance, shown and never failing (bonsai-garden-sign 1.1.0). Which file belongs at which path is a sealed manifest's (a package's `MANIFEST.json`, this seed's `SEED-MANIFEST.json`), and code runs only from one. A sidecar names its signer and its role: **owner** (the kin in `tended-by` vouches for the file) or **custodian** (a caretaker key holding a file for its owner, never authorship).
 
 **A seal in another kin's name is theirs to review before it is committed.** Files are sealed by their semantic owner, and the hand that runs the signing may be another's. The owner reviews what goes out under their name before the commit, in their own seat, and says yes; the commit records it with a `Reviewed-by: <slug>` trailer. A seal in your own name needs no second reader; a seal in someone else's never ships on the signer's say-so.
 
-## Building an agent
+## Building a shintai
 
 Eight stages, in order: **spec-role · recruit · shortlist · cv · cast · bio · synthesize · assemble**. Evaluate variants (`evaluate-fit`, `evaluate-pair`, `evaluate-drift`, …) run as asides, not stages. The rite an agent is *invited* through is `lore/invitation-rite.md`.
 

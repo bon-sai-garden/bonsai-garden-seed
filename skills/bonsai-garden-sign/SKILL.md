@@ -5,7 +5,7 @@ description: >
   private key ever touching disk. HKDF-SHA256 (info "ed25519-agent-key") → Ed25519, with OS-native custody
   (macOS Keychain, Linux Secret Service, Windows DPAPI) behind one interface.
   The signing half of the garden's identity layer — mechanism only, no roster.
-version: 1.0.1
+version: 1.1.0
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 

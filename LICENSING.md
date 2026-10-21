@@ -4,8 +4,8 @@ title: "Licensing: code is Apache 2.0; lore, rites, experience, processes, terms
 type: reference
 tended-by: baisai
 created: 2026-10-10
-updated: 2026-10-18
-version: 3.0.1
+updated: 2026-10-21
+version: 3.0.3
 status: active
 tags: [licence, apache, cc-by-sa, attribution, publication-readiness]
 ---
@@ -37,8 +37,8 @@ The gardener's ruling, 2026-10-16: *"no, SA is what we agreed on. NC (= no comme
 - **Rites**: the kin and what a kin is cultivated from (`agents/`, apart from the code and identity data above: `SKILL.md`, `references/`, `memory/`, `patterns.md`, the codex and routines in `assets/`, `agents/shared/`), `roles/`, `team/`.
 - **Processes, terms and methodologies**: `rituals/` (the specifications, the templates, the records, and the vocabularies and schemas that name things), and the methods the skills describe in their documents.
 - **Experience**: the Garden Walk's pages (`agents/bonsai/assets/garden-walk/*.html`, `src/`, `pages.json`, `notes.md`); the pages `index.html`, `garden.html` and `architecture-walkthrough.html`; the garden's sound, `xp/garden-loop.mp3` and `xp/garden-loop.ogg`, composed by Koe-shin from field recordings credited in [`CREDITS.md`](CREDITS.md).
-- **Our graphics** that are not drawn in KanjiVG strokes: the portraits and their thumbnails and cards (`agents/*/assets/`), `bonsai-garden-logo.svg`, `xp/images/concept/`, the images in `lore/`.
-- **Every other document**: `README.md`, `AGENTS.md`, `CLAUDE.md`, `LAYERS.md`, `OWNERSHIP.md`, `CREDITS.md`, this page, and each skill's `SKILL.md` and reference documents.
+- **Our graphics** that are not drawn in KanjiVG strokes: the portraits and their thumbnails and cards (`agents/*/assets/`), `bonsai-garden-logo.svg` and `bonsai-garden-logo-256.png`, `xp/images/concept/`, the images in `lore/`.
+- **Every other document**: `README.md`, `AGENTS.md`, `CLAUDE.md`, `LAYERS.md`, `CREDITS.md`, this page, and each skill's `SKILL.md` and reference documents.
 
 ShareAlike asks that an adaptation of these go out under the same licence, or one the licence names as compatible.
 
@@ -48,9 +48,9 @@ These carry their sources' share-alike terms, which is not a choice of ours; the
 
 - **The kanji set**, `skills/bonsai-garden-mark/kanji-1024-v1.2.json`: its meanings are adapted from KANJIDIC2 (CC BY-SA 4.0), and the garden's own readings sit in the same file. **CC BY-SA 4.0**, and so is every copy of the set, including the one embedded in `skills/bonsai-garden-mark/identicon.html` (the tool around it stays Apache 2.0).
 - **The stroke-count tables**, `skills/bonsai-garden-mark/references/kanji-to-number.md` and `number-to-kanji.md`: compiled from KANJIDIC2. **CC BY-SA 4.0.**
-- **Every mark drawn in KanjiVG strokes**: `agents/bonsai/assets/bonsai-mark.svg`, and any kin mark, skill mark, seal or identicon the kanji renderer draws. KanjiVG is CC BY-SA 3.0 Unported, and each mark is an adaptation of it: **CC BY-SA 3.0 Unported**, as the mark's own `<desc>` says, or a later version with the same terms, which BY-SA 3.0 allows for adaptations; `LICENSE-CC-BY-SA-4.0` is that version.
+- **Every mark drawn in KanjiVG strokes**: `agents/bonsai/assets/bonsai-mark.svg`, and any kin mark, skill mark, seal or identicon drawn in those strokes. KanjiVG is CC BY-SA 3.0 Unported, and each mark is an adaptation of it: **CC BY-SA 3.0 Unported**, as the mark's own `<desc>` says, or a later version with the same terms, which BY-SA 3.0 allows for adaptations; `LICENSE-CC-BY-SA-4.0` is that version.
 
-The renderers that carry KanjiVG's stroke data are in runtime, and runtime's `LICENSING.md` maps them.
+Nothing here carries KanjiVG's stroke data as data: what is drawn in its strokes ships drawn, in the marks above, and each says its licence in its own `<desc>`.
 
 ### Third-party material
 
@@ -81,4 +81,3 @@ Code is meant to be taken, changed and built on with few strings: Apache 2.0 giv
 
 - **The gardener reads this map before it is published:** it is a public claim.
 - **Specifications and skill documents** are processes and methodologies, so they sit with the lore under CC BY-SA 4.0. If they should travel with the code under Apache 2.0, as OATHS does, it is one line here. The narrower licence holds until then, because a grant can be widened later and not taken back.
-- **`bonsai-garden-seed`**, the distro of core, carries these files with its next delta.

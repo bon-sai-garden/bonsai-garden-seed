@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3BS42WQPZVW4R8B36MFEKDT",
-  "signer": "tasai",
+  "signer": "baisai",
   "role": "custodian",
-  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-07T06:01:27Z",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T12:42:02Z",
   "algorithm": "ed25519+blake2b512",
   "target": "architecture-walkthrough.html",
-  "file-hash": "a9b6fc4198c3d48f5a7226cea03167f38f80fad4ca0d15f80b408081e819ebc29073209b173550a5f9315cab07740c6c278c4a2f5cba6555c41e40dbd12a5979",
-  "signature": "VEYsTFlBIZVfMT0p8fq50wc2Jsv9i4k2yH4v0QiZqNyHg2z8xWFE5cMJoIM2LeYHyY8+iAbo4+Gz86zIjREXBw=="
+  "file-hash": "0871ead6a5ba6d620dc6ee33d949a741df7f195e5366276856b5f44c6cda78dc3ec7f6d92d939bde3563231e860eef87f57f2b0677da003501d28136ec590235",
+  "signature": "9LSojCQW/UagJ4xbopduT0kjFLqSBVjFPtlzW/SQrfIxfoDvzYfP1qoxme+2s85l3s1+VteMNetDdHFvveIUDA=="
 }

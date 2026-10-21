@@ -4,9 +4,9 @@ title: "bonsai-garden-sign — identity"
 type: identity
 tended-by: mori-shin
 created: 2026-09-13
-updated: 2026-09-24
+updated: 2026-10-21
 skill: bonsai-garden-sign
-version: 1.0.0
+version: 1.1.0
 mark: 署技
 mark-meaning: "署 (823) signature + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-sign#1862992"

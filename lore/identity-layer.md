@@ -5,8 +5,8 @@ type: lore
 tended-by: hissai
 author: hissai
 created: 2026-05-16
-updated: 2026-10-10
-version: 0.4.1
+updated: 2026-10-21
+version: 0.4.2
 status: candidate
 related: [01KRQ8XPYPGWZBDYN4JACZZNR0, 01KRRF6FW7WYTGY523E6ZHCVA5, 01KRRCN86WXV3NZPNKXH3VSPQT, 01KS5142QPSA6DV1Y7V00ANWSJ, 01KRRCN8751KMN0BNDRGHMKQ9Y, 01KSZEM0R4H4C9XWGKJE4RGZFQ, 01KTE77S987TFQDYX8E7KSCN7N, 01KS0EMZ845JJP43HT0DJR8YYP, 01KRQX4M6FVCXFQTDPP6E6SXYW, 01M4G6ZP9MZ674B690PPXAK7M1]
 ---
@@ -31,7 +31,7 @@ Every agent in the garden carries these layers. The first six are what the garde
 
 There is no key file. Every key is HKDF-SHA256 of the garden's master salt and the agent's own signing salt, and the Ed25519 private key is derived at the moment of signing and dropped. The master salt lives in the machine's secure custody, and one small program, the signing gate, is the only thing that may read it. An agent's key signs silently through the gate. A person's key signs only when that person is present.
 
-What stays in the open is the public side. Each agent's identity folder holds its public key and its fingerprint, the first 32 hex characters of the key's SHA-256.
+What stays in the open is the public side. Each agent's identity folder holds their public key and its fingerprint, the first 32 hex characters of the key's SHA-256.
 
 ## A seal says who, what and when
 

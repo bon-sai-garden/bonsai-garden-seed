@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01KS7DXSQ54CMAJ1PKKHKCFYEA",
-  "signer": "zensai",
+  "signer": "baisai",
   "role": "custodian",
-  "fingerprint": "03801f1b5238186f88b4bd8853d629c4",
-  "timestamp": "2026-10-16T14:33:11Z",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T08:56:14Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/shared/codex.md",
-  "file-hash": "907be3bc7e50c701052c3a9c74d855570a6fe692ecad445af9e3c21f6c78bb30d2b6173e1fb4796bb64d5492fb29f490627e1da23bd48af27ef9ce64e6fc6e63",
-  "signature": "ylhS7SVaxhHVddcptYDPFsF5lFQZDLKqghukljKy06k2NuzsP3AuRjCW6H/Gu5USyW/rArONd7qz0HCd6vuaDw=="
+  "file-hash": "2d8600447677dcac74731a71f3c0f2e2b00f3c7d510c16d9f13e4844c86ced3d43acc9a650a7fe47aae8c1be72542aadf1f14c3edf0bab39fc096cd482611f98",
+  "signature": "iG4TE2o1VpJ6O8+MRvP3gsUmO0mJAuY3KAYYm9B2FoAOtFJIeJ2gujaXRORHraPXa9C0SzHsd58vp6tBkZ1kDA=="
 }

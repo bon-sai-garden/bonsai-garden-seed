@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-17T11:11:50Z",
+  "timestamp": "2026-10-21T08:56:15Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/check-shintai-conformance.py",
-  "file-hash": "3fe8fef171583d4d97be0f05d8f2c19ed31d6d01a4307e5f28f9b4f7bd1eb12836d701994f086b00d75d01786af0d2b7bcd16393d86c369024acf3b6ea576524",
-  "signature": "A4xSw/UUyKTuBdxQ4pBmPLtpVG8wLTJNo/mY46rJDAAOOks5eW/EojHRQI5LlFbhnqHy5Q2eU2zvMakoQyo/DA=="
+  "file-hash": "1b95df83e7b3355e9a3351f2869b0adb42fc27b101a9f78af3747c8fc045ddf5efb7721fc87b0e5cfd9892b70386028bf2ba7ce69932ed2af27af49ebdd04ca6",
+  "signature": "hFlHXm8vgjrbmGFux2/R7xRs2VmbsP/Lp333y55qM3ylWxNI36wF2MQQrkzhkXVBY2Y283Ql2GogPhOUVrEoDg=="
 }

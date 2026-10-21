@@ -4,9 +4,9 @@ title: "bonsai-garden-vcard — identity"
 type: identity
 tended-by: baisai
 created: 2026-09-03
-updated: 2026-09-24
+updated: 2026-10-21
 skill: bonsai-garden-vcard
-version: 2.0.2
+version: 2.2.1
 mark: 名技
 mark-meaning: "名 (52) name + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-vcard#481925"

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5CZKM3JBAZ1D2A76Y494AB5",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-20T16:03:40Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-vcard/test-without-pillow.py",
+  "file-hash": "6a292990102e33fbb2407a5247071114a0364a10a63da43535ee1b627c1ae65f19691a19b8c7ba8e35228dfe9a521233b9007874402a540d7fd8c87d4265b77e",
+  "signature": "YPhpybj4eN+abE1SAp6aIM3DQzH/X70lUZnJ/wtuFMSe+YZNgOLiKJDSXHulzckQwrRWnlpeczRCyiIkzUo8Cg=="
+}

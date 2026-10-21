@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-19T08:09:43Z",
+  "timestamp": "2026-10-20T22:03:52Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/procedures/planting-runbook.md",
-  "file-hash": "d7f26fba62b821d7ab85c29aef04a38d8f1de7251e28f535514f9656c6ff7d859fc016cc4d810edece9b421b01b858878525eadfb249114f0c5cbadb86a57df9",
-  "signature": "W5nm8ecBJ4koH5ATKWmzDIOvpgsXgbtCh82E6zCQCynVgVD7nKA0yoovOtnAXAwWkmKxMCy1JJIhuFAnGihbBQ=="
+  "file-hash": "eb48a278b43688d31d80e29b9a67ff48a8051f922d6e17f193ee83c6f941d25368af27609f2d1d1f4e0e4d4482cc265389dd2357b6736457c3a9b8c485e2375d",
+  "signature": "Dwef0XOC6KiICT5AhjnRKfkytdTpp+RM8tvSIoRC3uqI2HZnrRcZTs7d5cKmudIiNvVq1MbKvbAUZc87iY90AQ=="
 }

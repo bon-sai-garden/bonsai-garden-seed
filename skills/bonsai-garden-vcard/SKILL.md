@@ -1,13 +1,13 @@
 ---
 name: bonsai-garden-vcard
 description: >
-  Render a vCard 3.0 (.vcf) contact card for one of a garden's kin from its
+  Render a vCard 3.0 (.vcf) contact card for one of a garden's kin from their
   own files: the portrait, about-me.md, and the kin's entry in the garden's
   agents/registry.json when there is one. Handles inline image embedding,
   the kanji secondary name, the fingerprint, and the garden's domain and
   verify link as flags. Use whenever someone asks to create, update, or
   re-render a kin's contact card or .vcf file.
-version: 2.1.0
+version: 2.2.1
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -68,13 +68,13 @@ The script always:
 1. Prefers `portrait-avatar.jpg`, then `portrait-thumb.jpg` (a few KB to about 13 KB as JPEG, a third more as base64), over a full portrait (about 1 MB,
    1.3 MB as base64). Most contacts apps silently discard photos over about 100 KB, and the
    script warns above that size. The `bonsai-garden-portrait` skill makes the thumbnail.
-2. Converts PNG to JPEG on the fly if no JPEG is present (requires Pillow).
+2. Converts PNG to JPEG on the fly if no JPEG is present (Pillow; on macOS without it, `sips`, every metadata block cut from its JPEG).
 3. Folds base64 at 75 octets using real CRLF + SPACE continuation.
 
 **The photo is chosen for the card.** Contacts shows a card photo in a circle, so a full-figure portrait (the figure off to one side, other things in the frame) arrives with the face small and off-centre, though the card's structure is valid. Name the square the card should show: `--photo-crop CX,CY,SIZE`, fractions of the portrait (the square's centre, and its side as a share of the portrait's shorter side), cut from the portrait you pass and resized to 256x256 for the card only; the greeting keeps the whole thumbnail. A kin that carries `assets/portrait-avatar.jpg` needs no flag. A box that leaves the image, a zero side or not three numbers is refused, nothing written.
 
-If the portrait is PNG-only and Pillow is unavailable, the card is written without a photo and
-the reason is printed.
+If the portrait is PNG-only (or `--photo-crop` is asked) and the host has neither Pillow nor `sips` (macOS's own), the card is written without a photo and
+the reason is printed, naming both and the line that installs Pillow.
 
 ### Kanji name
 vCard 3.0 has no native multi-language FN. The kanji is carried as:
@@ -111,7 +111,7 @@ source, don't patch.
 ## Prerequisites
 
 - `python3` (standard library only for JPEG portraits)
-- `Pillow` (`pip install Pillow`), only for PNG-to-JPEG conversion
+- `Pillow` 13 or later (`python3 -m pip install "Pillow>=13"`, on Python 3.11 or later: 13.0.0 is the first release past the advisories of 2026-10-20), only for PNG-to-JPEG conversion and `--photo-crop`; on macOS, `sips` stands in for it (`test-without-pillow.py` hides Pillow from a run and watches both)
 
 ## Files in this skill
 

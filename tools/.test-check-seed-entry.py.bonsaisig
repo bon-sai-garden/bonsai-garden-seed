@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5D8MMVE5TKVFVJ5ZK0V00Q1",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T00:21:08Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/test-check-seed-entry.py",
+  "file-hash": "1c99f83bf926f065186e3a27c4534fb3268c063b0e0c2dcd49490ae9b72cb7c88c7cf13e332becffd950c4339b718abbc82f9fd7cf4bac3e5c17d0e2fb120e61",
+  "signature": "qvJmcLiRJrxR1oom/1J81q1AHM3YVpftt7Uq/2kDR9PKhQlTf3nHglNkWzer52vrx0EGCamyeLKBfkFKXnQhBw=="
+}

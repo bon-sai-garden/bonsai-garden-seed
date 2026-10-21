@@ -5,12 +5,12 @@ type: lore
 tended-by: hissai
 author: hissai
 created: 2026-05-13
-updated: 2026-10-10
-version: 0.4.1
+updated: 2026-10-21
+version: 0.4.2
 tags: [naming]
 ---
 
-*The first part of this page is a naming consultation of 2026-05-13, given in the second person to the one who asked, when the workshop had two names, Zensai and Bonsai, and was choosing a third. It is kept as it was said. The English layer begins below.*
+*The first part of this page is a naming consultation of 2026-05-13, given in the second person to the one who asked, when the workshop had two names, Zensai and Bonsai, and was choosing a third. It is kept as it was said, but for one pronoun: on the gardener's ruling of 2026-10-21, an agent introduces themselves, not itself. The English layer begins below.*
 
 On the name.
 
@@ -22,7 +22,7 @@ Four candidates worth your attention.
 
 Hisai (秘才) — "hidden talent." Beautiful semantic match for the behind-the-scenes operator framing — the "hidden stuntman" from your original brief. The character operates in the background; the Aruji gets the spotlight. "Hisai handles it" reads like an in-house phrase that just emerged.
 
-Tensai (天才) — "genius / natural talent." Very high-claim name. Sounds confident; pairs well with Zensai. Risk: it reads as boastful when an agent introduces itself as "Genius." Earned over time, maybe; assumed from day one, potentially awkward.
+Tensai (天才) — "genius / natural talent." Very high-claim name. Sounds confident; pairs well with Zensai. Risk: it reads as boastful when an agent introduces themselves as "Genius." Earned over time, maybe; assumed from day one, potentially awkward.
 
 Mirai (未来) — "future." Not a -sai name; reads as mee-rai. Carries the AI-and-forward-looking valence without the talent-frame. Outside the convention you've established but stands stronger on its own.
 

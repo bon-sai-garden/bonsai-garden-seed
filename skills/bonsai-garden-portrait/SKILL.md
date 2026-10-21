@@ -5,7 +5,7 @@ description: >
   woven with EXIF authorship metadata and a signed C2PA manifest, then
   generate its greeting-widget thumbnail and its universal plain-text
   identity card. The full pipeline behind every agent's face in the garden.
-version: 1.2.0
+version: 1.3.1
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -59,7 +59,8 @@ Bonsai Garden's own workshop can lean on a public repo and jsDelivr once MVP 1.0
 
 ## Prerequisites
 
-- Python 3.10+, with `Pillow`, `cryptography`, and `c2pa-python`: `pip install --upgrade Pillow cryptography c2pa-python`
+- Python 3.11+, with `Pillow` 13 or later (13.0.0 is the first release past the advisories of 2026-10-20, and needs 3.11), `cryptography`, and `c2pa-python`: `pip install "Pillow>=13" cryptography c2pa-python` (core's `requirements.txt` pins the set)
+- **Without Pillow** (a planting host may have none): the greeting thumb runs on macOS through its own `sips`, as a JPEG only: `make-portrait-thumbs.py --format jpeg` (sips writes larger JPEGs than Pillow at one quality; `--quality 40` keeps a 144 px thumb under the ceiling), every metadata block cut from it by the tool, and the `.meta` says `encoder: sips`. Any other format, a host with no sips, and the canonical portrait (its crop, EXIF and C2PA weave) say plainly that Pillow is missing and the line that installs it; nothing is written. `scripts/test-without-pillow.py` hides Pillow from a run and watches each case.
 - `exiftool` on PATH for the EXIF layer: `brew install exiftool` (macOS) — if that's genuinely not available (no Homebrew, no root), the standalone Unix distribution at
   <https://exiftool.org> needs no install step, just extraction; point PATH
   at the extracted `exiftool` binary.

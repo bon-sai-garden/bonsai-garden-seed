@@ -120,7 +120,15 @@ def to_transparent(src: Path, size: int):
 
 
 def main():
-    from PIL import Image
+    try:
+        import numpy  # noqa: F401 — to_transparent's arithmetic; checked here so a missing one is said before any work
+        from PIL import Image
+    except ImportError as e:  # one plain line, never a traceback (Python 3.11 or later: requirements.txt's floor)
+        print(
+            f"SETUP  {'Pillow' if e.name == 'PIL' else e.name} is not installed: this script needs Pillow and numpy from core's "
+            "requirements.txt (Python 3.11 or later; python3 tools/setup-core.py --install); nothing written"
+        )
+        return 2
 
     ap = argparse.ArgumentParser()
     for k in TITLES:

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:48:24Z",
+  "timestamp": "2026-10-20T16:02:45Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/shared/shared-context-digest.md",
-  "file-hash": "bd579690891261be0cfd9c7b1c35355f2621e0eb3aedf70f53b3783d08b6e89055420f771056ab6cf4395d5344e73ffb47b0e2072b2e4911d66baf57cba7b7b7",
-  "signature": "Oua4C1/wgp98k9/K5xJDN47oNZMyBhyYZfxM/hg7NIKBPVYpmfOMmDcLBWZJ5tiRlAPi65uI7qnj/oY3gJgfAw=="
+  "file-hash": "fba59bdecc8b144f505786d7aaabcdac3b0745c193f11af27e4fe6155465da7ba2a50c906b93128a18d587dabf4ffd09ea35c6477b6b2049a9804a3a1d34cda1",
+  "signature": "iKU1qOm5I/HtbUTqb3mhbylkhaxbQ7uQE3GG7+MlSJ0Oux3powJIdwh8cl1eGrsBCoDoKD1gS0SER40Wopi6Bw=="
 }

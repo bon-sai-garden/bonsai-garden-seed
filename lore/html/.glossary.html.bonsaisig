@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3BS42ZPHG8N84VBAVP8GZ3B",
-  "signer": "baisai",
+  "signer": "hissai",
   "role": "custodian",
-  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T18:03:02Z",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-21T10:33:37Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/html/glossary.html",
-  "file-hash": "cc4277dd6d2ee4404f7beb88f5f9b4665312d0a1a2e9693b3b54315a293dc4ac4956f2f77ccc0a999ac23807ca2f1b808271be04e5c6bdfc4afb6f94f5cc4b65",
-  "signature": "RkO4ZL57d5bOLEG4gLa8vltOZI2sQFSSrBV4n/eZqo05JWFGkVgOtC5H6qEmPZ0l60nC+MWkdrrueGAmerblDQ=="
+  "file-hash": "8b84e8bb1440b568170f71ee9c8e11b79e4a1e323b573fe9ec2093510c4bb56a3359377583806bc333a6cd13e1918d5017cd82bdba9aa74b3b0f0a4e815ca43f",
+  "signature": "WcW3sjgywE+UTy08VGp/+mxdaVotVrIsMWkYMHNLXvL2XGlLR3sXxkvbHA5MZUWgKq0cHe1hrYv/dz811FsXAg=="
 }

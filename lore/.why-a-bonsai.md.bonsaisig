@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5EZ89A80GMKBVP0W22BPDH7",
+  "signer": "hissai",
+  "role": "owner",
+  "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
+  "timestamp": "2026-10-21T10:14:52Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "lore/why-a-bonsai.md",
+  "file-hash": "068229588a1ff1718c0b19ddb226195554121be85bf7597a4fa14c6a88f81edfdd20fd04bf288ee5d1de236f056a137bb25c1e6cfc1c5ef91a8b6fb093c56aba",
+  "signature": "R+wdAzZzD/jgBpgIVbLaUmMRZauCiaKDoyLWDXMUeeBNQMvDf00NB4keNdcxPg82qDlbLw7OXdCcnkXY0/JRAQ=="
+}

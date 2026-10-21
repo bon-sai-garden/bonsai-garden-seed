@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-06
+// updated: 2026-10-20
 // ---
 //
 // garden.mjs — the pot side of spec-gardeners-keys.md §5, §7, §8: garden.json, pot.json,
@@ -26,6 +26,8 @@ export const rootSalt = (garden) => `garden-root@${garden}`;
 /** A garden's companions: garden.json `shins` when it names more than one, else its one `shin` (2026-10-15). */
 export const companionsOf = (g) => (Array.isArray(g.shins) && g.shins.length ? g.shins : [g.shin]).filter(Boolean);
 export const today = () => new Date().toISOString().slice(0, 10);
+/** Whoever's pronouns are not yet known: a kin is never "it" (the gardener, 2026-10-20, F-26 of dry run #4). */
+export const UNKNOWN_PRONOUNS = 'they/them';
 
 /** { raw, hex, b64, fingerprint } of the key `agentSalt` derives from `masterHex`. */
 export function keyOf(masterHex, agentSalt) {

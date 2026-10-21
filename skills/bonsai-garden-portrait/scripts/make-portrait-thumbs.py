@@ -88,14 +88,19 @@ import base64
 import hashlib
 import io
 import json
+import os
+import subprocess
 import sys
+import tempfile
 from datetime import date
 from pathlib import Path
 
 try:
     from PIL import Image
-except ImportError:
-    sys.exit("Pillow is required:  pip install --upgrade Pillow")
+except ImportError:  # T-10 of the kobun walk (2026-10-20): a planting host may have none; see sips_jpeg below
+    Image = None
+
+PILLOW_LINE = 'python3 -m pip install "Pillow>=13" (Python 3.11 or later: 13.0.0 is the first release past the advisories of 2026-10-20, and this line installs no older one)'
 
 
 def _default_repo_root() -> Path:
@@ -172,6 +177,85 @@ def encode(im: Image.Image, fmt: str, quality: int) -> bytes:
     return buf.getvalue()
 
 
+# ---------------------------------------------------------------------------
+# No Pillow on this host: macOS's own sips, for JPEG only (T-10 of the kobun walk, 2026-10-20). The gardener's work
+# Mac had no Pillow, and the walk made its one resize by hand with sips. sips cannot write WebP, and it writes EXIF,
+# Photoshop and XMP blocks into a JPEG, so every APPn (n >= 1) and COM segment is cut from its output below. Its JPEGs
+# run larger than Pillow's at one --quality; the transcription ceiling (FAIL_CHARS) still judges the result.
+# The same fallback lives in bonsai-garden-vcard's build-agent-vcard.py (its own skill, its own copy).
+# ---------------------------------------------------------------------------
+
+
+def sips_bin() -> str | None:
+    """sips, by BONSAI_SIPS when it is set (and then only it), else /usr/bin/sips on macOS; None where there is none."""
+    named = os.environ.get("BONSAI_SIPS")
+    if named is not None:
+        return named if os.path.isfile(named) and os.access(named, os.X_OK) else None
+    return "/usr/bin/sips" if sys.platform == "darwin" and os.path.isfile("/usr/bin/sips") else None
+
+
+def jpeg_without_metadata(data: bytes) -> bytes:
+    """A JPEG with every APP1-APP15 and COM segment cut; the image data is copied as it is."""
+    if data[:2] != b"\xff\xd8":
+        raise ValueError("not a JPEG")
+    out, i = bytearray(data[:2]), 2
+    while i < len(data):
+        if data[i] != 0xFF:
+            raise ValueError(f"not a JPEG marker at byte {i}")
+        m = data[i + 1]
+        if m == 0xFF:  # fill byte
+            i += 1
+            continue
+        if m == 0xDA:  # start of scan: the rest is image data
+            out += data[i:]
+            break
+        if 0xD0 <= m <= 0xD7 or m == 0x01:
+            out += data[i : i + 2]
+            i += 2
+            continue
+        n = int.from_bytes(data[i + 2 : i + 4], "big")
+        if not (0xE1 <= m <= 0xEF or m == 0xFE):
+            out += data[i : i + 2 + n]
+        i += 2 + n
+    return bytes(out)
+
+
+def sips_size(sips: str, src: Path) -> tuple[int, int]:
+    r = subprocess.run([sips, "-g", "pixelWidth", "-g", "pixelHeight", str(src)], capture_output=True, text=True)
+    vals = {k.strip(): v.strip() for k, _, v in (ln.partition(":") for ln in r.stdout.splitlines()[1:]) if v.strip()}
+    if r.returncode or "pixelWidth" not in vals:
+        raise RuntimeError(f"sips could not read {src.name}: {r.stderr.strip() or r.stdout.strip()}")
+    return int(vals["pixelWidth"]), int(vals["pixelHeight"])
+
+
+def sips_jpeg(sips: str, src: Path, size: int, quality: int) -> bytes:
+    """src resized to size x size (as Pillow's resize here: no crop) and written as a JPEG with no metadata, by sips."""
+    with tempfile.TemporaryDirectory(prefix="bonsai-thumb-") as d:
+        out = Path(d) / "thumb.jpg"
+        r = subprocess.run(
+            [
+                sips,
+                "-s",
+                "format",
+                "jpeg",
+                "-s",
+                "formatOptions",
+                str(quality),
+                "-z",
+                str(size),
+                str(size),
+                str(src),
+                "--out",
+                str(out),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if r.returncode or not out.is_file():
+            raise RuntimeError(f"sips could not write the thumb: {r.stderr.strip() or r.stdout.strip()}")
+        return jpeg_without_metadata(out.read_bytes())
+
+
 def strip_check(data: bytes, fmt: str) -> str:
     """Confirm the encoder really did drop the metadata blocks."""
     problems = []
@@ -186,14 +270,17 @@ def strip_check(data: bytes, fmt: str) -> str:
     return "clean" if not problems else "STILL PRESENT: " + ", ".join(problems)
 
 
-def process(slug: str, src: Path, size: int, fmt: str, quality: int, apply: bool):
-    im = Image.open(src)
-    im.load()
-    orig = im.size
-    if im.size != (size, size):
-        im = im.resize((size, size), Image.LANCZOS)
-
-    data = encode(im, fmt, quality)
+def process(slug: str, src: Path, size: int, fmt: str, quality: int, apply: bool, sips: str | None = None):
+    if sips:  # no Pillow on this host: main() has already held the format to jpeg
+        orig = sips_size(sips, src)
+        data = sips_jpeg(sips, src, size, quality)
+    else:
+        im = Image.open(src)
+        im.load()
+        orig = im.size
+        if im.size != (size, size):
+            im = im.resize((size, size), Image.LANCZOS)
+        data = encode(im, fmt, quality)
     b64 = base64.b64encode(data).decode("ascii")
 
     meta = {
@@ -211,6 +298,7 @@ def process(slug: str, src: Path, size: int, fmt: str, quality: int, apply: bool
         "sha256": hashlib.sha256(data).hexdigest(),
         "checksum_fnv1a32": fnv1a32(b64.encode("ascii")),
         "metadata_stripped": True,
+        **({"encoder": "sips"} if sips else {}),
         "note": (
             "Greeting widget MUST verify BOTH before render: (1) decoded "
             "length == bytes, (2) fnv1a32(received base64 string) == "
@@ -263,6 +351,25 @@ def main() -> int:
         print(f"agents/ not found under {REPO}")
         return 1
 
+    sips = None
+    if Image is None:
+        sips = sips_bin()
+        if not sips:
+            print(
+                f"make-portrait-thumbs: Pillow is not installed on this host, and there is no sips (macOS's own image "
+                f"tool) to fall back on; nothing written. Install Pillow: {PILLOW_LINE}"
+            )
+            return 2
+        if args.format != "jpeg":
+            print(
+                f"make-portrait-thumbs: Pillow is not installed on this host; sips (macOS) can write the thumb as JPEG "
+                f"only, not {args.format}; nothing written. Run again with --format jpeg (sips writes larger JPEGs than "
+                f"Pillow at one quality: --quality 40 keeps a 144 px thumb under the ceiling), or install Pillow for "
+                f"{args.format}: {PILLOW_LINE}"
+            )
+            return 2
+        print(f"encoder: sips ({sips}), no Pillow on this host; every metadata block cut from its JPEG by this tool")
+
     # Each body where the registry's own `path` puts it (a nested body such as
     # agents/baisai/fuji-shin was invisible to a plain agents/<slug>/ scan;
     # 2026-09-28), then any agents/<slug>/ the registry does not name.
@@ -299,7 +406,7 @@ def main() -> int:
     worst = "ok"
     for slug, src in targets:
         try:
-            meta, status, strip = process(slug, src, args.size, args.format, args.quality, args.apply)
+            meta, status, strip = process(slug, src, args.size, args.format, args.quality, args.apply, sips)
         except Exception as e:
             print(f"{slug:<12} {'':>11} {'':>7} {'':>7}  {'':<8} ERROR     {e}")
             worst = "TOO LARGE"

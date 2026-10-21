@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-16
+// updated: 2026-10-20
 // ---
 //
 // test-keys.mjs — spec-gardeners-keys.md §13, every refusal planted, never read off the code.
@@ -16,7 +16,7 @@
 //                                                             splits the suite this way; --list honours it
 //   node skills/bonsai-garden-keys/test-keys.mjs --help       this header
 //
-// TIME. Every case plants a world of its own, so the whole suite is slow: 89 cases, about 23 minutes alone on a
+// TIME. Every case plants a world of its own, so the whole suite is slow: 90 cases, about 23 minutes alone on a
 // loaded Mac Studio (1402 s on 2026-10-16, with the declared dependencies), past a 900 s runner limit. A runner
 // that has one gives each shard its own process (--shard k/n); --only runs one case in seconds.
 //
@@ -43,7 +43,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC_SKILL = process.env.KEYS_SKILL_DIR ? path.resolve(process.env.KEYS_SKILL_DIR) : HERE;
@@ -1144,6 +1144,7 @@ function bonsaiEntry(
     unsealed = false,
     editAfter = false,
     name = 'bonsai-seed-entry.json',
+    extra = {},
   } = {},
 ) {
   const f = path.join(W.dir, name);
@@ -1158,6 +1159,7 @@ function bonsaiEntry(
         fingerprint: key.fingerprint,
         'fp-attests': 2,
         source: 'a throwaway fixture',
+        ...extra,
       },
       null,
       2,
@@ -1308,6 +1310,87 @@ t('seed-accepts-a-registry-whose-display-fields-were-filled-and-leaves-them', ()
       after.tagline === 'Walk with me?',
     `exit ${again.code}, display fields kept ${after.name} ${after.pronouns}`,
   ];
+});
+
+// F-26 of dry run #4 (the gardener, 2026-10-20): a kin is never "it", and a kin whose pronouns are not yet known is
+// they/them. A null in the registry is what a careful speaker falls back from, so seed never writes one for someone:
+// every entry but the garden itself reads they/them until the choices (7a) or the gardener say otherwise.
+t('seed-writes-they-them-for-everyone-whose-pronouns-are-not-yet-known-never-a-blank', () => {
+  const { W } = readyToSeed();
+  const r = seedOf(W, bonsaiEntry(W));
+  const reg = r.code === 0 ? regOf(W) : { agents: [] };
+  const g = gardenJson(W.pot);
+  const someone = reg.agents.filter((a) => a.slug !== g.name);
+  const root = reg.agents.find((a) => a.slug === g.name) || {};
+  const ok =
+    r.code === 0 && someone.length === 4 && someone.every((a) => a.pronouns === 'they/them') && root.pronouns === null;
+  return [ok, `exit ${r.code}, ${reg.agents.map((a) => `${a.slug} ${JSON.stringify(a.pronouns)}`).join(', ')}`];
+});
+
+// The origin is someone whose pronouns are known (Bonsai is he/him): when his seed entry states them, his entry in a new
+// pot carries them. The guardian planted from him is a kin of this garden, not the origin, and stays they/them until the
+// gardener's call at 7a says otherwise (the codex, §3: until the kin or the gardener says). 2026-10-20, the 0.9.0-rc prep.
+t('seed-gives-the-origin-the-pronouns-the-seed-entry-states-and-the-guardian-they-them-until-the-gardener-says', () => {
+  const { W } = readyToSeed();
+  const r = seedOf(W, bonsaiEntry(W, { extra: { pronouns: 'he/him' } }));
+  const reg = r.code === 0 ? regOf(W) : { agents: [] };
+  const of = (slug) => reg.agents.find((a) => a.slug === slug)?.pronouns;
+  return [
+    r.code === 0 && of('bonsai') === 'he/him' && of('bonsai-shin') === 'they/them',
+    `exit ${r.code}, bonsai ${JSON.stringify(of('bonsai'))}, bonsai-shin ${JSON.stringify(of('bonsai-shin'))}`,
+  ];
+});
+
+// The entry seed reads is a second copy of fields core's registry states, and nothing held them together: it went without
+// pronouns while every registry said he/him (the gardener, 2026-10-20: "Bonsai has always been „he/him" - from day 1 - so
+// that is a house-keeping miss, let's fix it for good pls"). core's tools/check-seed-entry.py is the gate (the seed cut runs
+// it too); here every keys run asks it of the files core ships, and of a planted copy without pronouns, so a gate that
+// stopped looking could not pass this case.
+t('the-seed-entry-core-ships-says-what-cores-registry-says-of-bonsai-field-for-field', () => {
+  let core = HERE;
+  while (!(fs.existsSync(path.join(core, 'agents', 'registry.json')) && fs.existsSync(path.join(core, 'LAYERS.md')))) {
+    const up = path.dirname(core);
+    if (up === core) return [false, 'no core around this suite: the gate cannot run, and that is not a pass'];
+    core = up;
+  }
+  const gate = path.join(core, 'tools', 'check-seed-entry.py');
+  const ask = (...a) => spawnSync('python3', [gate, ...a], { encoding: 'utf8' });
+  const real = ask('--root', core);
+  const dir = fs.mkdtempSync(path.join(SCRATCH, 'seed-entry-'));
+  const miss = JSON.parse(fs.readFileSync(path.join(core, 'agents/bonsai/identity/bonsai-seed-entry.json'), 'utf8'));
+  delete miss.pronouns;
+  fs.writeFileSync(path.join(dir, 'entry.json'), `${JSON.stringify(miss)}\n`);
+  const planted = ask(
+    '--entry',
+    path.join(dir, 'entry.json'),
+    '--registry',
+    path.join(core, 'agents', 'registry.json'),
+  );
+  return [
+    real.status === 0 && planted.status === 1 && /FAIL {2}pronouns:/.test(planted.stdout),
+    `the files core ships: exit ${real.status} (${(real.stdout || real.stderr || '').trim().split('\n').pop()}); ` +
+      `a copy without pronouns: exit ${planted.status}`,
+  ];
+});
+
+// AGENTS.md: MAJOR.MINOR.PATCH[.BUILD][-LABEL], a -LABEL names a build and never orders it. install-runtime, the doctor and
+// rt's exec gate read core's minimum through this one rule: rt 0.9.0-rc meets a minimum of 0.9.0, 0.8.4 does not, and a new
+// label alone is no newer rt (2026-10-20, the 0.9.0-rc release prep).
+const RTM = await import(pathToFileURL(path.join(SRC_SKILL, 'lib', 'rt-manifest.mjs')).href); // the skill under test
+t('a-label-never-orders-a-version-so-an-rc-meets-its-numbers-minimum-and-no-label-is-an-upgrade', () => {
+  const rows = [
+    ['0.9.0-rc', '0.9.0', 0],
+    ['0.9.0-rc', '0.9.0-rc2', 0],
+    ['0.9.0-zz', '0.9.0-aa', 0],
+    ['0.9.0-rc', '0.8.4', 1],
+    ['0.8.4', '0.9.0', -1],
+    ['0.9.0.1-rc', '0.9.0', 1],
+    ['0.10.0', '0.9.0', 1],
+    ['1.0.0', '0.9.0-rc', 1],
+  ];
+  const bad = rows.filter(([a, b, want]) => Math.sign(RTM.versionCmp(a, b)) !== want).map(([a, b]) => `${a} vs ${b}`);
+  const meets = RTM.atLeast('0.9.0-rc', '0.9.0') && !RTM.atLeast('0.8.4', '0.9.0');
+  return [bad.length === 0 && meets, bad.length ? `misordered: ${bad.join('; ')}` : `meets ${meets}`];
 });
 
 t('seed-refuses-a-registry-whose-key-field-was-changed-or-whose-roster-differs', () => {
@@ -2187,6 +2270,48 @@ t('drill-refuses-an-export-whose-root-signature-fails', () => {
   return [
     r.code === 2 && /signature/.test(r.stderr) && before.equals(fs.readFileSync(path.join(W.pot, 'garden.json'))),
     `exit ${r.code}`,
+  ];
+});
+
+t('envelope-refuses-a-shortened-tag', async () => {
+  // F-17 of the outside review: AES-256-GCM opened without authTagLength takes a tag of 4 to 15 bytes, the
+  // real tag's own prefix included, so a forger needs 32 bits, not 128. Node 26 refuses a short tag by itself;
+  // the floor package.json declares (node >=20) does not, so the behaviour alone is red on the old line only
+  // under an older Node (seen on 22.23.3). The second leg holds on every engine: both sides name 16 themselves.
+  const { sealEnvelope, openEnvelope } = await import(path.join(SKILL, 'lib', 'envelope.mjs'));
+  const garden = '01M5C9HC6R08Q46KEPWSBSSY9R';
+  const raw = crypto.randomBytes(32);
+  const calls = [];
+  const real = { c: crypto.createCipheriv, d: crypto.createDecipheriv };
+  crypto.createCipheriv = (...a) => {
+    calls.push(`cipher ${a[3]?.authTagLength}`);
+    return real.c.apply(crypto, a);
+  };
+  crypto.createDecipheriv = (...a) => {
+    calls.push(`decipher ${a[3]?.authTagLength}`);
+    return real.d.apply(crypto, a);
+  };
+  let env, whole, short;
+  try {
+    env = sealEnvelope(raw, PASS, garden);
+    whole = openEnvelope(env, PASS);
+    const tag = Buffer.from(env.tag, 'base64');
+    short = [4, 8, 12, 15].flatMap((n) => {
+      try {
+        openEnvelope({ ...env, tag: tag.subarray(0, n).toString('base64') }, PASS).fill(0);
+        return [`${n} B opened`];
+      } catch (e) {
+        return e.code === 'BAD_PASSPHRASE' ? [] : [`${n} B: ${e.code}`];
+      }
+    });
+  } finally {
+    crypto.createCipheriv = real.c;
+    crypto.createDecipheriv = real.d;
+  }
+  const pinned = calls.length > 0 && calls.every((a) => / 16$/.test(a));
+  return [
+    Buffer.from(env.tag, 'base64').length === 16 && whole.equals(raw) && short.length === 0 && pinned,
+    `node ${process.version}; short tags: ${short.join(', ') || 'all refused'}; asked: ${[...new Set(calls)].join(', ')}`,
   ];
 });
 

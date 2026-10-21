@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-03
-# updated: 2026-10-12
+# updated: 2026-10-21
 # ---
 """
 build-agent-vcard.py — vCard 3.0 builder for a Bonsai Garden's kin.
@@ -17,7 +17,7 @@ agents/registry.json. Handles:
   - Kanji secondary name (NICKNAME, and X-BONSAI-KANJI)
   - How the name is said, when the kin's files say it (X-PHONETIC-LAST-NAME)
   - Fingerprint and, when given, a key/verify URI
-  - PNG -> JPEG conversion on-the-fly (requires Pillow)
+  - PNG -> JPEG conversion on-the-fly (Pillow; on macOS without it, sips)
 
 Nothing here names one garden. The title, display name, kanji and fingerprint
 come from the kin's own files (registry entry, about-me); the garden's domain,
@@ -36,9 +36,14 @@ from __future__ import annotations
 import argparse
 import base64
 import io
+import os
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
+
+PILLOW_LINE = 'python3 -m pip install "Pillow>=13" (Python 3.11 or later: 13.0.0 is the first release past the advisories of 2026-10-20, and this line installs no older one)'
 
 # Registry fields a title is read from, in order. `title` and `role` are the natural
 # names; `one-line` is the short self-description every registry entry carries.
@@ -133,13 +138,88 @@ def _parse_crop(text: str) -> tuple:
     return cx, cy, size
 
 
+# ── No Pillow on this host: macOS's own sips (T-10 of the kobun walk, 2026-10-20) ────
+# The gardener's work Mac had no Pillow. sips crops, resizes and writes JPEG; it also writes EXIF, Photoshop and XMP
+# blocks into the JPEG, so every APPn (n >= 1) and COM segment is cut from its output. The same fallback lives in
+# bonsai-garden-portrait's make-portrait-thumbs.py (its own skill, its own copy).
+
+
+def _sips_bin() -> str | None:
+    """sips, by BONSAI_SIPS when it is set (and then only it), else /usr/bin/sips on macOS; None where there is none."""
+    named = os.environ.get("BONSAI_SIPS")
+    if named is not None:
+        return named if os.path.isfile(named) and os.access(named, os.X_OK) else None
+    return "/usr/bin/sips" if sys.platform == "darwin" and os.path.isfile("/usr/bin/sips") else None
+
+
+def _jpeg_without_metadata(data: bytes) -> bytes:
+    """A JPEG with every APP1-APP15 and COM segment cut; the image data is copied as it is."""
+    if data[:2] != b"\xff\xd8":
+        raise RuntimeError("sips did not write a JPEG")
+    out, i = bytearray(data[:2]), 2
+    while i < len(data):
+        if data[i] != 0xFF:
+            raise RuntimeError(f"not a JPEG marker at byte {i}")
+        m = data[i + 1]
+        if m == 0xFF:
+            i += 1
+            continue
+        if m == 0xDA:
+            out += data[i:]
+            break
+        if 0xD0 <= m <= 0xD7 or m == 0x01:
+            out += data[i : i + 2]
+            i += 2
+            continue
+        n = int.from_bytes(data[i + 2 : i + 4], "big")
+        if not (0xE1 <= m <= 0xEF or m == 0xFE):
+            out += data[i : i + 2 + n]
+        i += 2 + n
+    return bytes(out)
+
+
+def _sips(sips: str, *args: str) -> str:
+    r = subprocess.run([sips, *args], capture_output=True, text=True)
+    if r.returncode:
+        raise RuntimeError(f"sips failed: {(r.stderr or r.stdout).strip()[:200]}")
+    return r.stdout
+
+
+def _sips_card_photo(sips: str, portrait_path: Path, crop: tuple | None, quality: int) -> bytes:
+    """The portrait as a JPEG by sips: whole, or the square `crop` names resized to the card's size."""
+    with tempfile.TemporaryDirectory(prefix="bonsai-vcard-") as d:
+        cur = portrait_path
+        size_args: list[str] = []
+        if crop:
+            dims = _sips(sips, "-g", "pixelWidth", "-g", "pixelHeight", str(cur)).splitlines()[1:]
+            got = {k.strip(): v.strip() for k, _, v in (ln.partition(":") for ln in dims) if v.strip()}
+            w, h = int(got["pixelWidth"]), int(got["pixelHeight"])
+            cx, cy, size = crop
+            side = round(size * min(w, h))
+            left, top = round(cx * w - side / 2), round(cy * h - side / 2)
+            cut = Path(d) / "crop.png"
+            _sips(sips, "-c", str(side), str(side), "--cropOffset", str(top), str(left), str(cur), "--out", str(cut))
+            cur = cut
+            size_args = ["-z", str(CARD_PHOTO_PX), str(CARD_PHOTO_PX)]
+        out = Path(d) / "photo.jpg"
+        _sips(
+            sips, "-s", "format", "jpeg", "-s", "formatOptions", str(quality), *size_args, str(cur), "--out", str(out)
+        )
+        return _jpeg_without_metadata(out.read_bytes())
+
+
 def _crop_to_card_photo(portrait_path: Path, crop: tuple) -> bytes:
     """A card's photo is chosen for the card (a rehearsal gardener's ask, 2026-10-11): Contacts shows it in a circle, and a full-figure portrait
     leaves the face small and off-centre. Cut the square the caller named and resize it to 256x256, for the card only."""
     try:
         from PIL import Image  # type: ignore
     except ImportError as e:
-        raise RuntimeError("--photo-crop needs Pillow (pip install Pillow)") from e
+        sips = _sips_bin()
+        if sips:
+            return _sips_card_photo(sips, portrait_path, crop, 88)
+        raise RuntimeError(
+            f"--photo-crop needs Pillow, or sips on macOS, and this host has neither: {PILLOW_LINE}"
+        ) from e
     cx, cy, size = crop
     with Image.open(portrait_path) as img:
         img = img.convert("RGB")
@@ -169,9 +249,12 @@ def _load_portrait_jpeg(portrait_path: Path) -> bytes:
         try:
             from PIL import Image  # type: ignore
         except ImportError as e:
+            sips = _sips_bin()
+            if sips:
+                return _sips_card_photo(sips, portrait_path, None, 85)
             raise RuntimeError(
-                f"Portrait is PNG ({portrait_path.name}) but Pillow is not installed.\n"
-                "Install with: pip install Pillow\n"
+                f"Portrait is PNG ({portrait_path.name}), and this host has neither Pillow nor sips (macOS) to make it a JPEG.\n"
+                f"Install Pillow: {PILLOW_LINE}\n"
                 "Or supply a JPEG portrait directly (portrait-thumb.jpg is preferred)."
             ) from e
         with Image.open(portrait_path) as img:

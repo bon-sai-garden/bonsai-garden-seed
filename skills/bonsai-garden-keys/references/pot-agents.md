@@ -4,7 +4,7 @@ title: "The pot's first AGENTS.md: written once by install-runtime when the pot 
 type: template
 tended-by: baisai
 created: 2026-10-14
-updated: 2026-10-19
+updated: 2026-10-20
 ---
 
 # AGENTS.md
@@ -20,7 +20,7 @@ This is a pot: one garden's own substance. Its kin, their memory and their lette
   one is live here too, is not this pot's way in.
 - **If the harness names the MCP and it does not answer, stop and say so.** Do not fall back to reading the pot,
   or any garden repo, by host path in its place.
-- **Without the MCP,** a kin runs from the shintai its own package carries, and says once that it runs without the garden.
+- **Without the MCP,** a kin runs from the shintai their own package carries, and says once that they run without the garden.
 
 ## What holds here
 

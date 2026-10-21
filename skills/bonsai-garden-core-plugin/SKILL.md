@@ -8,7 +8,7 @@ description: >
   to package in a package list kept in its pot; core's own plugin builds from a checkout of
   core alone. Use when asked to build, rebuild or package a skill, a vessel, the core plugin or
   a team plugin.
-version: 2.4.0
+version: 2.6.0
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -23,6 +23,7 @@ python3 scripts/package.py [--salts <locked-salts.json>] [--out DIR]   # core al
 python3 scripts/package.py --list <pot>/builds/package-list.json [--only NAME ...] [--keys published|garden] [--review]
 python3 scripts/package.py --write-integrity-line <SKILL.md> ...
 # either build form takes --counter <the garden's build-counter.json>: one counter per garden, wherever the archive lands
+# and --units: each skill a plugin bundles also written as its own <name>.skill, the plugin's own unit to the byte (2.5.0)
 python3 scripts/test_package.py        # the negative tests, on planted fixtures and a scratch clone of core
 ```
 
@@ -56,7 +57,7 @@ A variation is configuration, not a second logic. The core plugin, Bonsai's carr
 
 ## What every packaged skill folder gets
 
-- **The stamp**, as the first body line of `SKILL.md`: `> Installed build: M.m.p.N[-LABEL]-<UTC>Z · from <repo>@<head> · body <8>`. It is the contract `skill_install.py` reads at every boot; the greeting shows it.
+- **The stamp**, as the first body line of `SKILL.md`: `> Installed build: M.m.p.N[-LABEL]-<UTC>Z · body <8>`, version first, and nothing of where it was built from (that is the release's commit message, never a shipped file). It is the contract `skill_install.py` reads at every boot; the greeting shows it.
 - **The integrity line**, the first line of the body proper (the line above this heading). The builder refuses a source without it. `--write-integrity-line` writes it into a source, and the owner reviews and re-seals.
 - **What the check needs, inside the package**: `scripts/integrity/verify-manifest.mjs`, a byte-for-byte copy of core's verifier (`scripts/integrity/bonsai-garden-sign/`), and the marker `agents/registry.json`, an empty roster, so a root search stops at the package. No signer key travels. The published keys decide (`bonsai-garden-sign/references/trust-anchor.md`).
 - **`MANIFEST.json`**: the sha256 of every shipped byte, sealed by the **owner** (a kin's vessel by that kin, a skill by its `tended-by`). The packaged `SKILL.md` is sealed afresh by the owner too.

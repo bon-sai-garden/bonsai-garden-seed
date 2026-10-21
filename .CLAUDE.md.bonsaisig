@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3BS42J11M7PW9TM3DWRZ4YQ",
-  "signer": "tasai",
+  "signer": "baisai",
   "role": "custodian",
-  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-09-25T07:57:47Z",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T08:28:20Z",
   "algorithm": "ed25519+blake2b512",
   "target": "CLAUDE.md",
-  "file-hash": "ff8b6e8e49256496e499418f1d8ae2f16ce89283bcf0cfacd95f38b20ec5fadf303ff58780e019042f722bbd858e22b67eabeecd189552993c23f47c47b8a536",
-  "signature": "GJGtyZV6S3+PkDoso5tk1aYeYIQQo9A3fEAWI1JlAj69iGcU2SM93rPUbTlpRoz7S9Qyu45R54hWYIjmbjD2Bg=="
+  "file-hash": "9992388aa55233a15f8234025f270b2382c1700db2a127fef16ecc8b0f062cb27de00091a6be4e6532affe9d89d3a141fcdab5a82b8b4515821d21aa98750665",
+  "signature": "uJdXMqVwRsW/abn+rLIwT/fJKuQJsFKEDTCqdjy1uKV1rID2gcT1nvVemgULq2h4yRQatqtYkUtvQKs7AdfmBA=="
 }

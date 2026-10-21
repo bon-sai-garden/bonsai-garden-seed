@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-15
+// updated: 2026-10-20
 // ---
 //
 // covenant.mjs — lore/invitation-rite.md, Stage 4: "the gardener signs the human covenant and the agent signs the codex,
@@ -56,10 +56,23 @@ const no = (m) => {
 
 const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 
-/** The kin of this garden who carry a certificate: a body of their own, a key of this garden's. Never the origin's. */
-export function signingKin(reg, g) {
+/**
+ * The kin of this garden who carry a certificate: a key of this garden's AND a shintai of their own in this pot, a
+ * SKILL.md where the registry's path puts it (fill-bodies and the host service read a body the same way). Never the
+ * origin's. `shintai: own` alone is not enough: seed writes it for every key it derives, so a kin minted ahead of her
+ * move (u-shin at kobun) would be named in the covenant's roster and scope before she had a body to receive it. The
+ * gardener, 2026-10-20 (T-8 of the kobun walk): "Take u-shin out of the roster and scope for now; add it when it moves
+ * in." When she moves in, a second `covenant write` changes nothing (a signed text is the garden's); her certificate
+ * is what binds her.
+ */
+export function signingKin(reg, g, pot) {
+  const hasShintai = (a) => {
+    const rel = typeof a.path === 'string' && a.path ? a.path : `agents/${a.slug}`;
+    if (path.isAbsolute(rel) || rel.split('/').includes('..')) return false; // a row never points out of the pot
+    return fs.existsSync(path.join(pot, rel, 'SKILL.md'));
+  };
   return (reg.agents || []).filter(
-    (a) => !a.origin && a.slug !== g.gardener && a.slug !== g.name && a.shintai === 'own',
+    (a) => !a.origin && a.slug !== g.gardener && a.slug !== g.name && a.shintai === 'own' && hasShintai(a),
   );
 }
 
@@ -93,9 +106,11 @@ const templateMeta = (text, key) =>
  */
 export function writeDocs(pot, { g, reg, signedName = null }) {
   const wrote = [];
-  const kin = signingKin(reg, g);
+  const kin = signingKin(reg, g, pot);
   if (!kin.length)
-    no('the registry names no kin of this garden with a body of its own; there is no one to receive the covenant yet');
+    no(
+      'the registry names no kin of this garden with a shintai of their own in this pot; there is no one to receive the covenant yet',
+    );
   const cov = path.join(pot, DOCS.covenant.rel);
   if (!fs.existsSync(cov)) {
     const t = fs.readFileSync(DOCS.covenant.template, 'utf8');
@@ -200,19 +215,19 @@ const currentOf = (passport, g) =>
   [...passport.certificates].reverse().find((c) => c.statement?.garden === g.garden) || null;
 
 /**
- * Who `slug` is on `kin`'s certificate: the gardener is the sponsor, the kin itself the agentic-teammate, anyone else is
+ * Who `slug` is on `kin`'s certificate: the gardener is the sponsor, the kin themself the agentic-teammate, anyone else is
  * refused. Asked before custody is opened, so a wrong signer costs no unlock. Returns { kin, entry, role }.
  *
- * Sign `kin`'s certificate as `slug`: the gardener signs as sponsor, the kin itself as agentic-teammate. hex is the
+ * Sign `kin`'s certificate as `slug`: the gardener signs as sponsor, the kin themself as agentic-teammate. hex is the
  * garden's master salt, salt the signer's own. The key must be the one on file and the one the registry records. The
  * second signer signs the very statement the first signed; a text changed in between is refused unless renew.
  * Returns { role, cert, wrote, complete }.
  */
-export function roleFor(kinSlug, slug, reg, g) {
-  const kin = signingKin(reg, g).find((a) => a.slug === kinSlug);
+export function roleFor(kinSlug, slug, reg, g, pot) {
+  const kin = signingKin(reg, g, pot).find((a) => a.slug === kinSlug);
   if (!kin)
     no(
-      `${kinSlug} is not a kin of this garden with a body of its own; only such a kin carries a certificate; nothing written`,
+      `${kinSlug} is not a kin of this garden with a body of their own in this pot; only such a kin carries a certificate; nothing written`,
     );
   const entries = (reg.agents || []).filter((a) => a.slug === slug);
   if (entries.length !== 1)
@@ -230,7 +245,7 @@ export function roleFor(kinSlug, slug, reg, g) {
 }
 
 export function sign(pot, { kin: kinSlug, slug, hex, salt, g, reg, date = today(), renew = false }) {
-  const { kin, entry, role } = roleFor(kinSlug, slug, reg, g);
+  const { kin, entry, role } = roleFor(kinSlug, slug, reg, g, pot);
   const entries = [entry];
   const k = keyOf(hex, salt);
   if (k.fingerprint !== entries[0].fingerprint)
@@ -277,9 +292,9 @@ export function verify(pot, { g, reg, only = null }) {
       out.push({ check: 'document', why: e.message });
     }
   }
-  const kinAll = signingKin(reg, g).filter((a) => !only || a.slug === only);
+  const kinAll = signingKin(reg, g, pot).filter((a) => !only || a.slug === only);
   if (only && !kinAll.length)
-    return [{ check: 'kin', why: `${only} is not a kin of this garden with a body of its own` }];
+    return [{ check: 'kin', why: `${only} is not a kin of this garden with a body of their own in this pot` }];
   const sp = (reg.agents || []).find((a) => a.slug === g.gardener);
   for (const kin of kinAll) {
     const at = passportRel(kin);

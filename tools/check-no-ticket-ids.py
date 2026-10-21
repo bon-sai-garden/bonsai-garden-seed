@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-10-13
-# updated: 2026-10-16
+# updated: 2026-10-21
 # ---
 """check-no-ticket-ids.py — core carries no instance ticket id (the gardener, 2026-10-13: "sweep, all of them").
 
@@ -19,7 +19,9 @@ is a hit wherever this text is read, and a copy of this gate under another --roo
         no files: every tracked file, sidecars skipped. --rev reads the files of that commit from git, never the
         working tree: what a distro is cut from is what was committed, and tools/distro/build-distro.mjs runs this
         gate on the commit it cuts (the slice names it under "gates").
-Exit 0 clean; 1 hits (file:line and the id); 2 usage.
+        named files: each read under --root (a relative name against it, never the working folder), and a name that
+        is no file there refuses, exit 2: a gate that passes on nothing is no gate (2026-10-21: it read clean, exit 0).
+Exit 0 clean; 1 hits (file:line and the id); 2 usage, or a named file that is not there or cannot be read.
 """
 
 import re
@@ -53,9 +55,15 @@ def committed(root, rev):
 
 
 def tracked(root, named):
-    """Yield (path, text) for the named files, else for every tracked file of the working tree."""
+    """Yield (path, text) for the named files, else for every tracked file of the working tree. A named file is read
+    under `root` (an absolute name stays itself), and a name that reads no file refuses before anything is read."""
     if named:
-        paths = [Path(a) for a in named]
+        paths = [root / a for a in named]
+        missing = [a for a, p in zip(named, paths) if not p.is_file()]
+        if missing:
+            raise ValueError(
+                f"no such file under {root}: {', '.join(missing)} (a named file that is not there refuses)"
+            )
     else:
         r = subprocess.run(["git", "-C", str(root), "ls-files"], capture_output=True, text=True)
         if r.returncode:
@@ -67,7 +75,11 @@ def tracked(root, named):
         try:
             rp = p.resolve()
             yield str(rp.relative_to(root) if root in rp.parents else p), p.read_text("utf-8")
-        except (UnicodeDecodeError, OSError):
+        except UnicodeDecodeError:
+            continue
+        except OSError as e:
+            if named:  # a file named to the gate and not read is not clean
+                raise ValueError(f"cannot read {p}: {type(e).__name__}") from e
             continue
 
 

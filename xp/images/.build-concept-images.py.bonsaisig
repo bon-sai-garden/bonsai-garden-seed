@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-18T19:08:29Z",
+  "timestamp": "2026-10-20T22:32:30Z",
   "algorithm": "ed25519+blake2b512",
   "target": "xp/images/build-concept-images.py",
-  "file-hash": "45db2e60ed2400fca17aeba19895dd1f491737997991d8c2d4f8c54e060061c788f151a2e6e2201ddf744734cf975707d16788ede11eed1fdedd4da532a57512",
-  "signature": "nhupGOry3nNwcJ+4Bc+QYCgrEYy1rAmQqXatkMeqt4HJhhChp8SdFZ7KLk+FTtlz7L4klJFQJ4BUDhAqVCfKCA=="
+  "file-hash": "3de1ef3e15ce70477a4c8c88e12ed179d732b656097e5acf05e37ad2442891e26e5e889e4c71f980910f1cfd413572ce354f45bff466947456787256118f5b17",
+  "signature": "UOiF5HBXWVst7bpfOH19FbvXN5p5qR7zGJRtvesxVYbukjgWIxjOQXM4Gf3AqPODTdMiJ0/HwxfIy3kNz0+SCw=="
 }

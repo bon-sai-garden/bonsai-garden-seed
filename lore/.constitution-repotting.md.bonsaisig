@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "owner",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T13:35:38Z",
+  "timestamp": "2026-10-21T10:33:35Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/constitution-repotting.md",
-  "file-hash": "de699259b3f75554f0b94f4c06abb29d5424fc132accd3858871623f15ed77f54d4f1e54c84d0b2d229cddd50609d51493d8d82a213cd2de22092614ad2fa986",
-  "signature": "rJtvdUXIKU3qATx4xolfNhDW20kRiizPgak/9RckGKuZS7x8FALfB2pHgqV571rj7rfk6girlNyNJznwbTzTDw=="
+  "file-hash": "41f2b2073936f204dcfa3520f84cc975c722d10db6c1d874e2082ef28ac96dd13da666480975de0abfc3f6eeae721b3712a8376eec924e60221dcaaab7f9c2fe",
+  "signature": "3i/AZOnsqXlPUtDpELEO2pDoXRqUDTons3HHmeKusQTSuW8z6U5pjiSRIcZXyvJucTgxPwblE2VCuMfNOrjiDw=="
 }

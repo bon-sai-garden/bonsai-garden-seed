@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-19T07:49:35Z",
+  "timestamp": "2026-10-20T16:04:35Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-keys/references/pot-agents.md",
-  "file-hash": "d68fa0b69580ad8d3bcd3424e742acfccdf3328c86bd4a8d63b78150209d556bcfe8d53e2d2bb10dd283003df31785dfd801b5ce85c4234d0da3aa0dc6804ca8",
-  "signature": "y1XyA7gv1sMrdk5/7cgBIgzGDXCQPhTIw1hqbwrH4VEYxArPh8MMlCNJEWLbvSagejWuFEbgJCNl/u9uh8C7CQ=="
+  "file-hash": "8b1683c81e5d7efc0e9605dca44e49ab55606142472efcf1e8219142e1c9c26a48d073e5165d079f779f7fe1f247a2602db616176d27ff675da7b62045503e9e",
+  "signature": "2e4+u787lRbBC+Dd5J/EemK7nVmCO6D+5uPePT9ZdhyBR6sITUb5MgkmsF33VBDjonbj9FTjlL4iM/nDZoLWCA=="
 }

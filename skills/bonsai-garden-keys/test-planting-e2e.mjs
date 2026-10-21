@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-19
+// updated: 2026-10-20
 // ---
 //
 // test-planting-e2e.mjs — the verbs wired on 2026-10-15 (covenant write, certificate sign|verify, homes at
@@ -47,6 +47,14 @@ const pot = W.newPot();
 const seeded = await W.seedPot(pot, { attest: false });
 const { gardener, shin } = seeded;
 const has = (rel) => fs.existsSync(path.join(pot, rel));
+/** Planting 7b in one line: a stand-in shintai for each kin (its SKILL.md), so stage 4 has someone to name (T-8). */
+const assemble = (p, slugs) => {
+  for (const s of slugs) {
+    fs.mkdirSync(path.join(p, 'agents', s), { recursive: true });
+    fs.writeFileSync(path.join(p, 'agents', s, 'SKILL.md'), `---\nname: ${s}\nversion: '1.0.0'\n---\n# ${s}\n`);
+  }
+};
+assemble(pot, [shin, 'bonsai-shin']);
 
 t('seed-plants-a-home-for-every-key-holder', () => {
   const ok =
@@ -185,6 +193,7 @@ try {
   }
   for (const slug of ['paar', 'ana', 'bonsai-shin', 'kiko', 'riku']) step(['derive', slug, '--pot', two, ...B]);
   step(['seed', '--pot', two, '--bonsai-entry', await W.bonsaiEntry(), ...B]);
+  assemble(two, ['bonsai-shin', 'kiko', 'riku']);
   step(['covenant', 'write', '--pot', two]);
   for (const kin of ['bonsai-shin', 'kiko', 'riku']) {
     step(['certificate', 'sign', '--pot', two, '--for', kin, '--as', 'ana', ...B]);

@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-18T18:48:44Z",
+  "timestamp": "2026-10-20T17:19:54Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/SKILL.md",
-  "file-hash": "35bcd8783ccd309d1eef49c7dfaf1a73f276bd1933703d6b39edc44432f79895e1f6835fbcd022e1c902867c7f06427614e567fc02554f8b311ca46f7e84073f",
-  "signature": "+x4x8bhOh6MqgKELVUJAdIx1+4Tj1g40giHjVhvo16pcUyFixYYVN4aPtuPxwd7oC4UIobEezrEKFE4CQRuCDQ=="
+  "file-hash": "e31a581428aff22a7bd96b755d775c345e98efa2df634eb5881473040207c2ffe0eef2cce7ceee0778e8aeefdcb87a03cf207600ae0ebac33881ed982ad2e279",
+  "signature": "LvjqCeO2Si8KG+5vfvDZ+Stfu/hvAGgFwPQfRoXYEi88rzgopPmNwEfMuawLxw8jXxNVkY7BMxZKUbZAxxP2Cw=="
 }

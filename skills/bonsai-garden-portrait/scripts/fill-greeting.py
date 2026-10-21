@@ -21,8 +21,8 @@ its identity/registry-entry.json (package.py writes it) and the body is the pack
 kin with no garden on the host greets from the kit the package carries (scripts/greeting/).
 
 Identity, mark, portrait and intro come from the garden's files; the kanji the fingerprint spells comes
-from skills/bonsai-garden-mark/fp-kanji.py; the build, checks and env come from flags the agent filled
-from what it loaded or ran THIS turn. Nothing is typed into the HTML. Any placeholder left → exit 1.
+from skills/bonsai-garden-mark/fp-kanji.py; the build, checks and env come from flags the kin filled
+from what they loaded or ran THIS turn. Nothing is typed into the HTML. Any placeholder left → exit 1.
 
     python3 fill-greeting.py --garden <the garden root> --slug tasai \
       --subtitle "South · operations" --version 3.0.2 --build 3.0.2.1-20260923T0750Z \

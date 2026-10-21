@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "custodian",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T13:35:43Z",
+  "timestamp": "2026-10-21T10:03:12Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/why-we-do-this.md",
-  "file-hash": "cbd1ee39e925c1d4586b8f2488bbafae56ba0ba2b119d3029be3065132881d1ab55870dd31f41c02545adb0b17dc6083deadf0f5024b116fa01c4c69a6a6c436",
-  "signature": "1aFnFqvCwW7Yj+6YPaUr5Gtm7kEwSW0NySxZeOw1mqU4alGPaikOSjQTh64BClRSkiNUG2RnlpDAXygms/UOAg=="
+  "file-hash": "bef869af248764c903eff728dd3d664d5698468493842ded3e810216fb1c353ad2b72584a126ecc9787b3443f348c9f51b71e433960d225f72b9cf3eb7e90934",
+  "signature": "lxVHsCL2gezg3SGURZmsEITIocfJ/UGkGnO/hvlkS1wahPjmbAkdf2rB2YKFvTpFrpgFI5MfhVB941FPifn7Aw=="
 }

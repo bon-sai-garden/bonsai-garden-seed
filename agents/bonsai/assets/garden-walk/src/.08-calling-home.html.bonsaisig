@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "custodian",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-19T08:09:52Z",
+  "timestamp": "2026-10-20T15:31:43Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/08-calling-home.html",
-  "file-hash": "2ece07eeef1b035f908546636c0db612c6239258e5c4d29056b23058e053d7128a34110828b08c0a95111432ab803f7ac01322c6ac0c74b14493558e3aa28569",
-  "signature": "Q4nJ0UXexiAFEtKcwLWlgI+6p6r1LtTz7Y7cPe7LzMXMrtLOQhNFc7GJvKIB6lfT4xltTroRllrTFWwXbpnkAw=="
+  "file-hash": "2a8005421d18a0065bbdd97e1c4ae0e38eaa855e36350b4416c45363525d6f5b352f1499337abea99424539725cf710f29ae023c68a15fedddffbb5423184712",
+  "signature": "A6XxMG+BUIytSKprQyGJeo1VVB0dPoy+RD2h2grQ20RQZnYKs9n9Yex6K7Uuk++XAj9wWEEkOVGxVGLk1mV0DQ=="
 }

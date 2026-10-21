@@ -1,7 +1,7 @@
 {
   "name": "bonsai-garden-core",
   "private": true,
-  "description": "Node dependencies for bonsai-garden-core's own tools. Installed by tools/setup-core.py; see CREDITS.md.",
+  "description": "Node dependencies for this library's own tools. Installed by tools/setup-core.py; see CREDITS.md.",
   "license": "Apache-2.0",
   "type": "module",
   "engines": {

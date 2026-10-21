@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-18
+# updated: 2026-10-21
 # ---
 """package.py — one logical builder. Core holds the capability; the pot says what to package.
 
@@ -23,8 +23,9 @@ WHAT IT TAKES
 WHAT EVERY PACKAGED SKILL FOLDER GETS — the same logic for all four kinds, written once
   SKILL.md    frontmatter translated to name / description / version (three parts, single-quoted
               as the Claude app writes it back on install), then the stamp as the first body line, one blank line, then the source body unchanged. The
-              stamp is `> Installed build: M.m.p.N[-LABEL]-<UTC>Z · from <repo>@<head> · body <8>`
-              — the contract bonsai-garden/tools/bonsai-mcp/skill_install.py reads at every
+              stamp is `> Installed build: M.m.p.N[-LABEL]-<UTC>Z · body <8>`, version first and no
+              provenance (where it was built from is the release's commit message, never a shipped
+              file: the gardener, 2026-10-21) — the contract the garden MCP's skill_install.py reads at every
               boot (split_skill / body_hash below keep to it; test_package.py holds them to it
               whenever that file is checked out).
   integrity   the source body's FIRST line must be INTEGRITY_LINE (below): verify the sealed
@@ -172,7 +173,8 @@ DISTRO_DIR = CORE / "tools" / "distro"  # the old place of the slice and its cut
 SEED_SLICE = DISTRO_DIR / "seed-slice.json"  # what core publishes: seed is core minus its excludes
 CUT_TOOL = DISTRO_DIR / "build-distro.mjs"  # the cut's own selection (--left-out), never a copy of it
 BUILD_PROCESS_SLICE = Path("build-process") / "distro" / "seed-slice.json"  # its new place, in the pot (the strip)
-DISTRO_MANIFEST_FORMAT = "bonsai-garden-distro-manifest/1"  # a cut carries one at its root (seed: SEED-MANIFEST.json)
+# the seed carries one at its root (SEED-MANIFEST.json): the release manifest since 0.9.1-rc, and the older shape before
+CUT_MANIFEST_FORMATS = ("bonsai-garden-release-manifest/1", "bonsai-garden-distro-manifest/1")
 
 CORE_PLUGIN_CONFIG = SKILL_DIR / "assets" / "core-plugin.json"  # core's own plugin: the core-alone build's whole config
 UNSEALED_FIRST = "UNSEALED LOCAL BUILD"  # the output's first line, and the stranger walk reads it (tools/distro/)
@@ -230,10 +232,11 @@ package marker and stays an empty roster: no key and no fingerprint travels as c
 
 def _marker(source_path: str | None) -> str:
     """The package-root marker as written: the empty roster, plus `_meta.source-path`, the path the unit's files were
-    sealed at in their source root (`agents/w`, `skills/bonsai-garden-mark`). A v2 seal names its address, so a
-    shipped seal reads target-mismatch where it is installed (`agents/w/references/about-me.md` found at
-    `references/about-me.md`); the packager declares where they came from, and the mapping is the verifier's
-    (bonsai-garden-sign; W, 2026-10-16, finding 4). A plugin root names none: each skill folder in it has its own."""
+    sealed at in their source root (`agents/w`, `skills/bonsai-garden-mark`). Written for W's finding 4 (2026-10-16),
+    when a shipped seal read target-mismatch where it was installed. Since F-12 (bonsai-garden-sign 1.1.0, 2026-10-21)
+    a seal's address is provenance, never a verdict: a shipped seal reads ok in place and names where it was sealed,
+    and no verifier reads `source-path`. It stays a declaration until a packager change retires it. A plugin root
+    names none: each skill folder in it has its own."""
     meta = dict(MARKER["_meta"])
     if source_path:
         meta["source-path"] = source_path
@@ -428,10 +431,10 @@ def _tracked(p: Path) -> bool:
 
 
 def is_cut(root: Path) -> bool:
-    """A distro's checkout: it carries a distro manifest at its root (`<NAME>-MANIFEST.json`, the cut's own format)."""
+    """A cut's checkout: it carries a cut's manifest at its root (`<NAME>-MANIFEST.json`, in one of the cut's formats)."""
     for m in root.glob("*-MANIFEST.json"):
         try:
-            if json.loads(m.read_text(encoding="utf-8")).get("format") == DISTRO_MANIFEST_FORMAT:
+            if json.loads(m.read_text(encoding="utf-8")).get("format") in CUT_MANIFEST_FORMATS:
                 return True
         except (OSError, ValueError, AttributeError):
             continue
@@ -1076,7 +1079,7 @@ def stage_unit(u: Unit, stage: Path, pl: PackageList, keys: str, review: bool, c
     build_id = f"{version}.{build_num}{label}-{_dt.datetime.now(_dt.timezone.utc).strftime('%Y%m%dT%H%MZ')}"
     body8 = body_hash(repo_skill)[:8]
     tfm = re.match(r"^(---\n.*?\n---\n)(.*)$", translate(src / "SKILL.md", version), re.S)
-    stamped = tfm.group(1) + f"{STAMP_PREFIX} {build_id} · from {source} · body {body8}\n\n" + tfm.group(2)
+    stamped = tfm.group(1) + f"{STAMP_PREFIX} {build_id} · body {body8}\n\n" + tfm.group(2)
     if body_hash(stamped) != body_hash(repo_skill):
         raise Refused(f"{u.name}: packaged SKILL.md body differs from the source's")
     if first_body_line(stamped) != INTEGRITY_LINE:
@@ -1257,10 +1260,10 @@ def stage_unit(u: Unit, stage: Path, pl: PackageList, keys: str, review: bool, c
     sign_root = u.root
     if pl.unsealed:  # the core-alone build with no key named: nothing sealed, and the manifest says so
         fp = "unsealed"
-        manifest = _manifest(stage, u.name, u.owner, version, build_id, source, u.kind, unsealed=UNSEALED_WHY)
+        manifest = _manifest(stage, u.name, u.owner, version, build_id, u.kind, unsealed=UNSEALED_WHY)
     else:
         fp = seal_as_owner(stage / "SKILL.md", u.owner, pl, sign_root, f"{u.name}/SKILL.md", keys, u.root)
-        manifest = _manifest(stage, u.name, u.owner, version, build_id, source, u.kind)
+        manifest = _manifest(stage, u.name, u.owner, version, build_id, u.kind)
         seal_as_owner(manifest, u.owner, pl, sign_root, f"{u.name}/MANIFEST.json", keys, u.root)
 
     # the package's own check, run on the stage exactly as it runs at wake: ok, or (unsealed) UNSEALED, every file matching
@@ -1306,10 +1309,9 @@ def _every_kin(pl: PackageList, review: bool) -> tuple[str, str] | None:
     text = src.read_text(encoding="utf-8")
     m = FM_RE.match(text)
     body = (m.group(2) if m else text).lstrip("\n")
-    head = _git(top, "rev-parse", "--short", "HEAD")
     return dest, (
-        f"<!-- GENERATED by package.py from {top.name}:{os.path.relpath(src, top)} @ {head}."
-        f" Do not edit: edit the fragment. -->\n\n{body.rstrip()}\n{EVERY_KIN_TRAILER}"
+        "<!-- GENERATED by package.py from the garden's every-kin fragment. Do not edit: edit the fragment. -->"
+        f"\n\n{body.rstrip()}\n{EVERY_KIN_TRAILER}"
     )
 
 
@@ -1511,11 +1513,12 @@ def _next_build(counter: Path, name: str, version: str) -> int:
 
 
 def _manifest(
-    stage: Path, slug: str, owner: str, version: str, build_id: str, source: str, kind: str, unsealed: str | None = None
+    stage: Path, slug: str, owner: str, version: str, build_id: str, kind: str, unsealed: str | None = None
 ) -> Path:
     """sha256 of every shipped byte. Lifted; `owner` and `kind` added so a standalone skill and a
     plugin can name whose seal the manifest carries. `unsealed` (the core-alone build with no key): the
-    reason, written into the manifest, so its own check answers UNSEALED and never ok."""
+    reason, written into the manifest, so its own check answers UNSEALED and never ok. It names no source:
+    where a package was built from is the release's commit message, never a shipped file (2026-10-21)."""
     files = {}
     for f in sorted(stage.rglob("*")):
         if f.is_file() and f.relative_to(stage).as_posix() not in (
@@ -1531,7 +1534,6 @@ def _manifest(
         "kind": kind,
         "version": version,
         "build": build_id,
-        "source": source,
         "algorithm": "sha256",
         "files": files,
     }
@@ -1641,7 +1643,7 @@ def package_unit(u: Unit, out: Path, pl: PackageList, keys: str, review: bool) -
     return s
 
 
-def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bool) -> dict:
+def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bool, write_units: bool = False) -> dict:
     """A plugin is configuration over the same units: skills/<name>/ each staged by stage_unit,
     plus plugin.json and named files, plus a root MANIFEST.json sealed by the plugin's owner."""
     cfg = spec
@@ -1745,12 +1747,10 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
     (stage / "agents").mkdir()
     (stage / "agents" / "registry.json").write_text(_marker(None))
     if pl.unsealed:
-        manifest = _manifest(
-            stage, name, owner, pj.get("version", "0.0.0"), build_id, source, "plugin", unsealed=UNSEALED_WHY
-        )
+        manifest = _manifest(stage, name, owner, pj.get("version", "0.0.0"), build_id, "plugin", unsealed=UNSEALED_WHY)
         fp = "unsealed"
     else:
-        manifest = _manifest(stage, name, owner, pj.get("version", "0.0.0"), build_id, source, "plugin")
+        manifest = _manifest(stage, name, owner, pj.get("version", "0.0.0"), build_id, "plugin")
         fp = seal_as_owner(manifest, owner, pl, head_root, f"{name}/MANIFEST.json", keys, head_root)
     probe = next((stage / "skills" / s["name"] / INTEGRITY_DIR / VERIFY_MANIFEST.name for s in summaries), None)
     if probe is None:
@@ -1776,6 +1776,15 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
         archive.unlink(missing_ok=True)
         raise Refused(f"{name}: plugin is {size:,} B, over the {ceiling:,} B ceiling")
     shutil.copy2(archive, out / f"{name}.zip")  # the upload takes .zip only; same bytes
+    # --units (W's A4, 2026-10-18: a sealed bonsai.skill ships as the plugin carries it): each skill the plugin bundles,
+    # written as its own <name>.skill from the plugin's own stage, after the plugin passed every gate. The same bytes,
+    # the same seals: no second stamp, no second build of one unit to drift from the first.
+    unit_archives = []
+    if write_units:
+        for u in units:
+            ua = out / f"{u.name}.skill"
+            _zip(stage / "skills" / u.name, ua, u.name)
+            unit_archives.append(ua.name)
     return {
         "name": name,
         "owner": owner,
@@ -1786,6 +1795,7 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
         "bytes": archive.stat().st_size,
         "files": len(zipfile.ZipFile(archive).namelist()),
         "skills": [s["name"] for s in summaries],
+        "units": unit_archives,
     }
 
 
@@ -1895,6 +1905,12 @@ def main() -> int:
         help="the seed slice (the pot's build-process/distro/seed-slice.json), its cut tool beside it; default: the "
         "list's checkout's build-process/, else core's own tools/distro/",
     )
+    ap.add_argument(
+        "--units",
+        action="store_true",
+        help="with a plugin: also write each skill it bundles as its own <name>.skill, from the plugin's own stage "
+        "(the plugin's unit to the byte, no second stamp)",
+    )
     ap.add_argument("--write-integrity-line", nargs="+", type=Path, metavar="SKILL.md")
     a = ap.parse_args()
     global COUNTER
@@ -1942,7 +1958,7 @@ def main() -> int:
             elif kind == "skill":
                 s = package_unit(resolve_skill(pl, spec["skill"], spec), out, pl, a.keys, a.review)
             else:
-                s = package_plugin(spec, out, pl, a.keys, a.review)
+                s = package_plugin(spec, out, pl, a.keys, a.review, write_units=a.units)
         except Refused as e:
             refused.append(str(e))
             for ext in (".zip", ".skill", ".plugin"):

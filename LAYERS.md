@@ -1,11 +1,11 @@
 ---
 id: 01M37XP600EA9G46JAZE6DXVGP
-title: LAYERS — the multi-repo dependency contract
+title: LAYERS — the dependency contract between a garden's repositories
 type: contract
 tended-by: baisai
 created: 2026-09-14
-updated: 2026-10-17
-version: 1.2.2
+updated: 2026-10-21
+version: 1.2.3
 status: binding
 related:
   - AGENTS.md
@@ -14,7 +14,7 @@ related:
 copyright: © 2026 Bonsai Garden · bon-sai.garden
 ---
 
-# LAYERS — the multi-repo dependency contract
+# LAYERS — the dependency contract between a garden's repositories
 
 **Binding on every Bonsai Garden repo, in every garden.** Settled with the gardener, 2026-09-14.
 
@@ -125,6 +125,6 @@ The seed does not depend on what grows from it: core creates runtime and pot, an
 | `repo_routing.py` | runtime (L2) | resolves a path to its repo; refuses archived and dropped |
 | a registry health check | runtime (L2) | the registry still describes reality |
 | a public-surface check | the garden's sites (L4) | no L3 instance data reaches a published surface |
-| `tools/distro/test-stranger-walk.py` | core (L1), a seed cut's gate | a stranger with a clone of core alone can get Bonsai: README says how, and his plugin builds |
+| the stranger walk | core (L1), a release's gate | a stranger with a clone of core alone can get Bonsai: README says how, and his plugin builds |
 
 A layer violation is not a style complaint. It is a path that will resolve to the wrong repo and report success — the failure this whole contract exists to end.

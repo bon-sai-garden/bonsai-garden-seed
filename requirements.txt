@@ -3,19 +3,29 @@
 # core's own .venv/, never into the system Python, and only after asking. Node has one dependency,
 # jsdom, declared in package.json and installed the same way (the mark skill's verify.mjs).
 #
+# Python 3.11 or later: Pillow 13.0.0 and numpy 2.4.6 install on nothing older, so this file as a whole installs only
+# there, and tools/setup-core.py installs it only there (with this Python, or a newer one already on the machine, named
+# before you say yes). On an older Python nothing from it is installed, and no older Pillow in its place.
+#
 # Pillow — the portrait skill (canonical portraits and thumbnails), the crew page (a portrait turned
 # WebP, and its test), the vCard skill (a PNG portrait turned JPEG, and its test), and
-# xp/images/build-concept-images.py:
-Pillow==11.3.0
+# xp/images/build-concept-images.py. 13.0.0 is the first release past the nine advisories published against 12.3.0 on
+# 2026-10-20 (one critical, in the JPEG decoder; six high; two moderate), and needs Python 3.11 or later. Without
+# Pillow, the greeting thumb and a vCard's photo are made on macOS by its own sips; the canonical portrait and the
+# concept images say in one line that Pillow is missing and write nothing; the crew page needs it too:
+Pillow==13.0.0
 #
 # numpy — xp/images/build-concept-images.py only (the concept renders' background and edge arithmetic), which runs
 # under Python 3.11 or later; numpy 2.4 does not install under 3.10:
 numpy==2.4.6
 #
 # The portrait skill's signed C2PA manifests (cryptography also serves the sign skill's parity test
-# and tools/test-conformance-pot.py):
-cryptography==48.0.0
-c2pa-python==0.9.0
+# and tools/test-conformance-pot.py). 50.0.0 is the first release past every advisory on 48.0.0 (3 high, 1 moderate,
+# F-17 of the outside review):
+cryptography==50.0.0
+# c2pa-python: portrait_lib.sign_c2pa calls Signer.from_callback, Builder and Reader, written against the 0.37 line;
+# 0.9.0, pinned here until 2026-10-20, has no Signer and could not sign at all:
+c2pa-python==0.37.12
 #
 # The validate skill (validate-metadata.py parses each document's frontmatter):
 PyYAML==6.0.3

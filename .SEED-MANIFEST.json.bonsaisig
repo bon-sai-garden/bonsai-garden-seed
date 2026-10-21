@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5FA8W94EHKN3TK99JFFQF01",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T13:26:37Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "SEED-MANIFEST.json",
+  "file-hash": "fe7eded970d70cdcfe37b96a43c85b00d1835d8cd5860a08912f33fa367fe45af8647ba66c23ad5cdff794bb567380bcf4ee00d41eb5ae37fad95a737ba29a61",
+  "signature": "3Tw2FcGUdQKyrvqKJbirRQvnrUbOi8Si/l5sUe2P3vDrBJq+JK7BjIkU8+XpK1qfRKzckoRI2JLEMSVNUUYNAA=="
+}

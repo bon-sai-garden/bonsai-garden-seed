@@ -201,7 +201,7 @@ pino = card("pino")
 check("a kin with only identity locked exits 3", pino.returncode == 3, f"exit {pino.returncode}")
 check("...with nothing on stdout, so no half card is shown", pino.stdout == "")
 check(
-    "...and one line on stderr that says it greets with the widget",
+    "...and one line on stderr that says they greet with the widget",
     len(pino.stderr.strip().splitlines()) == 1 and "widget" in pino.stderr and "pino" in pino.stderr,
     pino.stderr.strip(),
 )

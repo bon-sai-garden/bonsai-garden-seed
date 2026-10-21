@@ -4,9 +4,9 @@ title: "bonsai-garden-portrait — identity"
 type: identity
 tended-by: baisai
 created: 2026-09-12
-updated: 2026-10-16
+updated: 2026-10-21
 skill: bonsai-garden-portrait
-version: 1.2.0
+version: 1.3.1
 mark: 像技
 mark-meaning: "像 (698) statue, picture + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-portrait#446282"

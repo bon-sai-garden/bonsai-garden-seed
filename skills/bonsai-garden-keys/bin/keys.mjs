@@ -5,7 +5,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-19
+// updated: 2026-10-21
 // ---
 //
 // keys.mjs — spec-gardeners-keys.md §2: detect, id, mint, recover, namespace, identity, derive,
@@ -46,6 +46,7 @@ import {
   withinByInode,
   publicMaterialProblems,
   companionsOf,
+  UNKNOWN_PRONOUNS,
 } from '../lib/garden.mjs';
 import { searchSigning, describeEstimate } from '../lib/search-signing.mjs';
 import { transport } from '../lib/call-home.mjs';
@@ -144,10 +145,10 @@ const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs 
   fill-bodies --pot <dir> --choices <choices.json> [--check]
                                                     planting 7c: the registry, garden.json and the gardener's choices written into
                                                     the bodies (tokens, versions, the registry's display fields, .pending on his yes);
-                                                    no seal written. --check: C1–C9, the drift gate before every seal (exit 1)
+                                                    no seal written. --check: C1–C10, the drift gate before every seal (exit 1)
   covenant write  --pot <dir> [--name "<signed>"]   stage 4: lore/covenant.md and lore/codex.md, the garden's own, never overwritten
   certificate sign --pot <dir> --for <kin> --as <the gardener | the kin> [--renew]
-                                                    the kin's certificate in its identity/passport.json: one statement (garden, sponsor,
+                                                    the kin's certificate in their identity/passport.json: one statement (garden, sponsor,
                                                     agentic-teammate, covenant and codex by id and sha256, date), signed by both
   certificate verify --pot <dir> [--for <kin>]      both signatures, both keys the registry's, the texts as they stand (exit 1)
 
@@ -924,6 +925,15 @@ async function cmdSeed(ctx) {
       shintai: a.type === 'gardener' ? 'none' : 'own',
     };
   };
+  // F-26 (the gardener, 2026-10-20): a kin is never "it"; whoever's pronouns are not yet known is they/them, never a
+  // blank a reader falls back from. The garden itself is a place, not someone, and carries none. The origin, Bonsai,
+  // takes the pronouns his seed entry states, when it states them; the choices (7a) fill everyone's own at 7c.
+  const pronounsOf = (a) =>
+    a.slug === g.name
+      ? null
+      : a.slug === 'bonsai' && typeof be.pronouns === 'string' && be.pronouns.trim()
+        ? be.pronouns.trim()
+        : UNKNOWN_PRONOUNS;
   const shaped = (a) => {
     const { kanji, shintai } = shown(a);
     const out = {
@@ -931,7 +941,7 @@ async function cmdSeed(ctx) {
       name: a.slug,
       kanji,
       'kanji-chars': kanji ? [...kanji] : null,
-      pronouns: null,
+      pronouns: pronounsOf(a),
       type: a.type,
       shintai,
       parent: a.parent || null,
@@ -1077,7 +1087,7 @@ async function cmdAttest(ctx) {
   if (late.length) throw refuse(`${late[0].why}; nothing written`);
   const locks = readLocks(ctx.pot);
   const bs = locks.agents['bonsai-shin'];
-  if (!bs) throw refuse('bonsai-shin has no signing salt: it seals the attestation');
+  if (!bs) throw refuse("bonsai-shin has no signing salt, and the attestation is bonsai-shin's to seal");
   const att = P.attestation(ctx.pot);
   if (
     fs.existsSync(att) &&
@@ -1366,7 +1376,7 @@ async function cmdCertificate(ctx, sub) {
   needRoot(g);
   let who;
   try {
-    who = roleFor(kinSlug, slug, reg, g);
+    who = roleFor(kinSlug, slug, reg, g, ctx.pot);
   } catch (e) {
     throw libExit(e);
   }

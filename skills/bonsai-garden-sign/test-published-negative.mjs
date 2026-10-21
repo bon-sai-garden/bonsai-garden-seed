@@ -58,6 +58,8 @@ fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.copyFileSync(path.join(HERE, 'SKILL.md'), target);
 fs.copyFileSync(findSidecar(path.join(HERE, 'SKILL.md')).path, sidecarPathFor(target)); // through the finder; planted at the writer's address
 const seal = realSeal;
+// a signer that is not the seal's, whoever sealed SKILL.md last (a custodian re-seal changes it, 2026-10-21)
+const OTHER_SIGNER = seal.signer === 'baisai' ? 'tasai' : 'baisai';
 const payload = v2Payload(seal);
 const payloadSha = createHash('sha256').update(payload).digest('hex');
 
@@ -192,7 +194,7 @@ await expect(
 await expect(
   'ok, signed, but for a different signer',
   'answer-malformed',
-  json(await signed({ ...goodV2, signer: 'baisai' })),
+  json(await signed({ ...goodV2, signer: OTHER_SIGNER })),
 );
 await expect(
   'ok, signed, but vouching for another payload (a replayed answer)',
@@ -238,11 +240,34 @@ const moved = path.join(tmp, 'elsewhere', 'SKILL.md');
 fs.mkdirSync(path.dirname(moved), { recursive: true });
 fs.copyFileSync(target, moved);
 fs.copyFileSync(sidecarPathFor(target), sidecarPathFor(moved));
-await expect(
-  'the seal copied onto the same bytes at another address, site vouches',
-  'target-mismatch',
+// F-12 (2026-10-21): the address is provenance, never a verdict. The same bytes at another address read ok, and the
+// verdict says where they were sealed (Mori-shin's test 1, on the published path)
+const movedV = await expect(
+  'the seal copied onto the same bytes at another address, site vouches: ok, sealed at its own address',
+  'ok',
   json(await signed(goodV2)),
   { file: moved },
+);
+check(
+  movedV.moved === true &&
+    movedV.sealedAt === seal.target &&
+    typeof movedV.foundAt === 'string' &&
+    movedV.foundAt !== seal.target,
+  `… the verdict carries sealedAt ${seal.target}, foundAt and moved (got ${JSON.stringify([movedV.sealedAt, movedV.foundAt, movedV.moved])})`,
+);
+const inPlace = await expect('… and in place, the same seal reads ok, not moved', 'ok', json(await signed(goodV2)));
+check(
+  inPlace.moved === false && inPlace.sealedAt === seal.target && inPlace.foundAt === seal.target,
+  `… in place: sealedAt = foundAt, moved false (got ${JSON.stringify([inPlace.sealedAt, inPlace.foundAt, inPlace.moved])})`,
+);
+fs.writeFileSync(moved, `${fs.readFileSync(moved, 'utf8')} `);
+await expect(
+  'the moved copy changed, site vouches for the seal: hash-mismatch wherever it sits',
+  'hash-mismatch',
+  json(await signed(goodV2)),
+  {
+    file: moved,
+  },
 );
 fs.appendFileSync(target, ' ');
 await expect('the file changed after sealing, site vouches for the seal', 'hash-mismatch', json(await signed(goodV2)));
@@ -253,7 +278,7 @@ const v1 = { file: v1Target };
 await expect(
   'ok, signed, but for a different signer',
   'answer-malformed',
-  json(await signed({ ...goodV1, signer: 'baisai' })),
+  json(await signed({ ...goodV1, signer: OTHER_SIGNER })),
   v1,
 );
 await expect(
