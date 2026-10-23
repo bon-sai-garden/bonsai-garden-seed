@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-19T06:56:05Z",
+  "timestamp": "2026-10-22T07:06:19Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/public-introduction.md",
-  "file-hash": "f2a8d89be7f9217bc6dad04b7e7b88e8c4b5a48f4bffd77154e38652f0abcaafecad907bc7c8ab1fd349c794cde393edb1e49ce46308de592d0d3dc19950089b",
-  "signature": "/SU28V0hG3jZr7XjJI9USGps+nWSKEjZEBFWLGFHHKEaL7ZKzy7qzungi4zITSWnsvGmgeKby9IjtV21bA08Cg=="
+  "file-hash": "cc86d4e39b6b9ff293579d81fbc0ec0adc097912dda0830817169d828f558718f8dd813b6e6446c9b0d013b78f5a233c14db47b9002f2679e9d2d7a2ea30b152",
+  "signature": "0XfHGG7Wa8Sfy+h4BfQ1ELK7xua15gjnSIok7U1DoinP0bv+idqvNGx59aX3qOv2b0/IWBTxR4Pkah5URA+uCg=="
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # ---
 # id: 01M5DP676H6S00BYT1B063M534
-# title: test-setup-core — the portrait tools go in only at requirements.txt's pins, on Python 3.11 or newer, never an older Pillow
+# title: test-setup-core — the portrait tools go in only at requirements.txt's pins, from the hashed lock, on Python 3.11 or newer, never an older Pillow
 # type: script
 # tended-by: baisai
 # created: 2026-10-21
@@ -59,8 +59,11 @@ st = json.loads(STATE.read_text())
 a = sys.argv[1:]
 with open(os.environ["FAKE_LOG"], "a") as f:
     f.write(json.dumps({{"exe": str(HERE), "argv": a}}) + "\\n")
+def norm(n):  # pip and importlib.metadata match a distribution's name case- and separator-blind
+    return re.sub(r"[-_.]+", "-", n).lower()
 if a[:1] == ["-c"]:
-    print(json.dumps({{"python": st["python"], "dists": {{n: st["dists"].get(n) for n in a[2:]}}}}))
+    have = {{norm(k): v for k, v in st["dists"].items()}}
+    print(json.dumps({{"python": st["python"], "dists": {{n: have.get(norm(n)) for n in a[2:]}}}}))
 elif a[:2] == ["-m", "venv"]:
     b = Path(a[2]) / "bin"
     b.mkdir(parents=True, exist_ok=True)
@@ -69,7 +72,10 @@ elif a[:2] == ["-m", "venv"]:
     (b / "python3.json").write_text(json.dumps({{"python": st["python"], "dists": {{}}}}))
 elif a[:3] == ["-m", "pip", "install"]:
     req = Path(a[a.index("-r") + 1]).read_text()
-    st["dists"].update(dict(re.findall(r"(?m)^([A-Za-z0-9][A-Za-z0-9_.\\-]*)==([^\\s;#]+)", req)))
+    for n, v in re.findall(r"(?m)^([A-Za-z0-9][A-Za-z0-9_.\\-]*)==([^\\s;#]+)", req):
+        for k in [k for k in st["dists"] if norm(k) == norm(n)]:
+            del st["dists"][k]
+        st["dists"][n] = v
     STATE.write_text(json.dumps(st))
 else:
     sys.exit("planted python: not a call setup-core makes: " + " ".join(a))
@@ -120,8 +126,9 @@ def folder(name: str) -> Path:
     w = TMP / name
     (w / "tools").mkdir(parents=True)
     shutil.copy2(SETUP, w / "tools" / "setup-core.py")
-    for f in ("requirements.txt", "package-lock.json"):
-        shutil.copy2(CORE / f, w / f)
+    for f in ("requirements.txt", "requirements-lock.txt", "package-lock.json"):
+        if (CORE / f).is_file():  # the lock's absence is a case of its own, below, not a copy that fails here
+            shutil.copy2(CORE / f, w / f)
     mark = w / "skills" / "bonsai-garden-mark"
     mark.mkdir(parents=True)
     (mark / "check-set.mjs").write_text("process.exit(0);\n")  # the kanji check is not under test here
@@ -149,6 +156,12 @@ def setup(w: Path, runner: str, *args: str, answers: str = "") -> tuple[int, str
 
 def pip_calls(calls: list) -> list:
     return [c for c in calls if c["argv"][:3] == ["-m", "pip", "install"]]
+
+
+def vdist(w: Path, name: str) -> str | None:
+    """The version .venv holds of `name`, its spelling aside (as pip reads it)."""
+    n = re.sub(r"[-_.]+", "-", name).lower()
+    return next((v for k, v in venv_state(w).get("dists", {}).items() if re.sub(r"[-_.]+", "-", k).lower() == n), None)
 
 
 def venv_state(w: Path) -> dict:
@@ -197,10 +210,12 @@ if OLD:
         json.dumps(calls),
     )
     check(
-        f"  pip installs -r requirements.txt in that .venv, and it ends at the pins (Pillow {PILLOW})",
+        f"  pip installs --require-hashes -r requirements-lock.txt in that .venv, and it ends at the pins (Pillow {PILLOW})",
         len(pip_calls(calls)) == 1
         and pip_calls(calls)[0]["exe"].endswith(".venv/bin/python3")
-        and venv_state(w).get("dists", {}).get("Pillow") == PILLOW
+        and "--require-hashes" in pip_calls(calls)[0]["argv"]
+        and "requirements-lock.txt" in " ".join(pip_calls(calls)[0]["argv"])
+        and vdist(w, "Pillow") == PILLOW
         and "To use them" in out,
         out + json.dumps(calls),
     )
@@ -220,10 +235,12 @@ check(
 )
 code, out, calls = setup(w, runner, "--install", answers="n\ny\n")
 check(
-    "  --install asks, then pip installs -r requirements.txt into it, and it ends at the pins",
+    "  --install asks, then pip installs --require-hashes -r requirements-lock.txt into it, and it ends at the pins",
     "Bring the portrait tools in .venv to requirements.txt's pins" in out
     and len(pip_calls(calls)) == 1
-    and venv_state(w)["dists"].get("Pillow") == PILLOW,
+    and "--require-hashes" in pip_calls(calls)[0]["argv"]
+    and pip_calls(calls)[0]["argv"][pip_calls(calls)[0]["argv"].index("-r") + 1].endswith("requirements-lock.txt")
+    and vdist(w, "Pillow") == PILLOW,
     out + json.dumps(calls),
 )
 
@@ -292,6 +309,57 @@ if OLD:
     )
 else:
     skip("a real old venv", "no Python 3.9 or 3.10 on this host")
+
+# 9. the hashed lock (Mori-shin's read, 2026-10-21, B10-25): every transitive dependency pinned and hashed, generated
+# from requirements.txt, and gated here on drift: the lock holds every pin of requirements.txt at its version
+LOCK = CORE / "requirements-lock.txt"
+CURATION = CORE / "skills" / "bonsai-garden-mark" / "requirements-curation.txt"
+
+
+def lock_entries(text: str) -> dict:
+    """{name: (version, hashes)} of a pip --require-hashes file (a backslash continues a line)."""
+    out = {}
+    for line in re.sub(r"\\\r?\n", " ", text).splitlines():
+        line = re.sub(r"(^|\s)#.*$", "", line).strip()
+        m = re.match(r"([A-Za-z0-9][A-Za-z0-9._\-]*)==([^\s;]+)", line)
+        if m:
+            out[m.group(1).lower().replace("_", "-")] = (m.group(2), re.findall(r"--hash[=\s](sha256:[0-9a-f]{64})", line))
+    return out
+
+
+locked = lock_entries(LOCK.read_text()) if LOCK.is_file() else {}
+want = {n.lower().replace("_", "-"): v for n, v in PINS.items()}
+check(
+    "requirements-lock.txt is there and holds every pin of requirements.txt at the same version (no drift)",
+    bool(locked) and all(locked.get(n, ("",))[0] == v for n, v in want.items()),
+    f"lock: {len(locked)} entries; off: {[n for n, v in want.items() if locked.get(n, ('',))[0] != v]}",
+)
+check(
+    "  every entry of the lock carries a sha256 hash, and it holds more than the top-level pins (the transitives)",
+    bool(locked) and all(h for _v, h in locked.values()) and len(locked) > len(want),
+    f"unhashed: {[n for n, (_v, h) in locked.items() if not h]}; {len(locked)} entries, {len(want)} pins",
+)
+check(
+    "jamdict and jamdict-data are in neither requirements.txt nor the lock",
+    not any(n.startswith("jamdict") for n in list(want) + list(locked)),
+    f"pins: {sorted(want)}; lock: {sorted(locked)}",
+)
+cur = lock_entries(CURATION.read_text()) if CURATION.is_file() else {}
+check(
+    "  the mark skill's requirements-curation.txt pins both, hashed, asked for only when curating marks",
+    set(cur) >= {"jamdict", "jamdict-data"} and all(h for _v, h in cur.values()),
+    f"{CURATION}: {cur}",
+)
+
+# 10. no lock beside requirements.txt: --install installs nothing, and says the lock is missing (never unhashed pins)
+w = folder("no-lock")
+(w / "requirements-lock.txt").unlink(missing_ok=True)
+code, out, calls = setup(w, runner, "--install", answers="n\ny\n")
+check(
+    "no requirements-lock.txt: --install runs no pip and makes no .venv, and names the missing lock",
+    not pip_calls(calls) and not (w / ".venv").exists() and "requirements-lock.txt" in out,
+    out + json.dumps(calls),
+)
 
 shutil.rmtree(TMP, ignore_errors=True)
 print(f"\n{passed} held, {failed} failed, {skipped} skipped")

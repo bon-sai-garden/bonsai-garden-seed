@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-20T22:32:29Z",
+  "timestamp": "2026-10-21T20:01:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-portrait/scripts/portrait_lib.py",
-  "file-hash": "814d527986025de8f4cd161bb683ad17a077ba12c20cbdda8582524ec326501abefdd411145e8fdb66c1e4abc9cf033e1ea01a244a869f64f765e4853aa22e8f",
-  "signature": "EqTtODoh2LmT46eTCa26afXMO2dYsbFH57xmCnOwRzsRbYHB9SDtuaSNO5ZJY4yvT40ZczZM3UlzeOgFxq57Cg=="
+  "file-hash": "6e70e18c93bf454beb598bab7b9863b22653a8f0c22a335a830cf8da36815e2ad4b4d8fe8248b3a6299a87afdb180fbb41c2fba8053791c189a636b51cad7e63",
+  "signature": "3IPVixqc5oOTb4nyN/BOwSNXLDeVAMPOp6LlG9f+oQd8IVK5A1Jr4L0/tf0wMK4JE23FnbD7cxl4dcguo03jCg=="
 }

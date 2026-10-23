@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "owner",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T13:35:40Z",
+  "timestamp": "2026-10-22T07:03:29Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/pot-vocabulary.md",
-  "file-hash": "9f1c6ceaaf7df636143236553f41357766aca6ec9068c726506bb462c1b7e30ba8b89ee96b48c1604158832de4c9038c88e7af156fb837b40fd7d73f6b1664ad",
-  "signature": "gJ2dgxcNFCCXF4AMRhqP0UYnRYfIRl70e4j0yUPBCnQuzSvIv97swknBI8P8npYpzlKSX4XAUYtKr138tmiqDg=="
+  "file-hash": "398d4e7a77f1ef28c79d32234b12f0516570b9c88138677225b1d573a0d6fe9a1962adaaef0a48a2e836ddf0331c9de6a60104e808ce136c4288fdc7338d254d",
+  "signature": "rVILh80liDV2x4YCpG2JCRWJ1Lk0lH9BZ/faGdAoE6YSEDnmPTX8Xl3wfY2HdsnNFe8qbl6cgLcV4mXANAneBA=="
 }

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T14:56:00Z",
+  "timestamp": "2026-10-21T17:52:05Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/test-conformance-integrity-line.py",
-  "file-hash": "be458852471e879858e07aabe390b765203890c8b3597e0efa384c44d52a80f956eb1cd4c607c6157c0dd14afad1da4ac55b6c7d01d4e2289b17a42771e47c63",
-  "signature": "Un20upUNuUIwDCRxgxUIGynm2vsqAPInVJfDdTzYXYL5F4R6vt0v0+e08pYdlsyzFw6fTA9ztb6eIiZcJeaLBQ=="
+  "file-hash": "25045938cc76e54381a4395e1f2643dd4d5f73910e24740b43d67c17c6d021580579cffa0395c9324c41e2d9fc54a21dee451a78d09cc28671bf0425bb2dc19a",
+  "signature": "W3J4G83hsOEMRQyzb04Lku1lkp24+fAorP+K3AflJ/zhd5sJxaNQ99N/PwC+0UdVwEjsz7TAEEKWuoP9ZbD9Aw=="
 }

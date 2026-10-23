@@ -106,7 +106,7 @@ PILLOW_LINE = 'python3 -m pip install "Pillow>=13" (Python 3.11 or later: 13.0.0
 def _default_repo_root() -> Path:
     """Run-from-repo-root by convention (matches every other tool in this
     skill), overridable with --repo-root. Deliberately NOT derived from
-    __file__'s nesting depth — this script moved from tools/portraits/ (mono)
+    __file__'s nesting depth — this script moved from the garden's tools/portraits/
     into skills/bonsai-garden-portrait/scripts/ (core) with a different depth, and a
     hardcoded parents[N] silently breaks every time a script's folder moves.
     """

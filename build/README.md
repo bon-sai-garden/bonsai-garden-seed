@@ -1,16 +1,6 @@
----
-id: 01M57VZERDR35MGFA966FFJCS4
-title: "build/ — the library's sealed packages: Bonsai as a skill, the plugin, and every skill it bundles"
-type: readme
-tended-by: tasai
-created: 2026-10-18
-updated: 2026-10-21
-status: active
----
-
 # build/
 
-The library's sealed packages, ready to install. Built by the library's one builder, release 0.9.1-rc, sealed by each owner's key, every package checked from a clean folder before it was committed here.
+The library's sealed packages, ready to install. Built by the library's one builder, release 0.9.2-rc, sealed by each owner's key, every package checked from a clean folder before it was committed here.
 
 **A package is not a copy of its source, by design.** The builder adds an *Installed build* line to each `SKILL.md`, writes its `version` single-quoted (as the Claude app writes it back on install) with any `-label` moved off the version into that line (`3.1.6-rc` becomes `'3.1.6'`, and `-rc` sits in the stamp), and folds a multi-line `description:` onto one quoted line; every other file is byte for byte. What vouches for a package is its own `MANIFEST.json`, sealed by its owner: check that, as below. A file's own seal inside a package holds wherever the package is unpacked: since `bonsai-garden-sign` 1.1.0 the address a seal was made at is provenance, not a verdict, and the verdict rests on the file's bytes, its signer and its id.
 
@@ -36,7 +26,7 @@ Each file has its `.sha256` beside it.
 - **The plugin** (Bonsai and every skill it bundles): upload `bonsai-garden-core.zip` where the app adds a plugin.
 - **Bonsai alone**: upload `bonsai.zip` where the app adds a skill.
 
-In Claude Code from a terminal, the `.plugin` installs through a plugin marketplace; the `.skill` unzips into your skills folder.
+In Claude Code from a terminal, start Claude Code with the plugin folder you checked: `claude --plugin-dir core-plugin` (for that session). A `.skill` unzips into your skills folder (`~/.claude/skills/`); check it there, as above.
 
 Bonsai checks himself again before anything else when he wakes.
 

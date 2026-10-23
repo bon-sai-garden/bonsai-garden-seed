@@ -1,17 +1,16 @@
 // ---
 // id: 01M4KRPW3TZ1G3BR1WDHRDBKQJ
-// title: seal-staged, tested by planting each refusal: a new pot seals and verifies its commits without mono
+// title: seal-staged, tested by planting each refusal: a new pot seals and verifies its commits without the origin's garden
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
 // updated: 2026-10-10
 // ---
 //
-// test-seal-staged.mjs — the rt slice spec §7 (runtime rituals/specs/spec-rt-slice.md) and the runtime split's
-// P2 minimum: in a pot the keys arc seeded, `keys.mjs seal-staged` seals named staged files with the
+// test-seal-staged.mjs — rt's spec §7 and the P2 minimum of the move into core: in a pot the keys arc seeded, `keys.mjs seal-staged` seals named staged files with the
 // key this garden's own salt derives, and `seal-staged --check` refuses what does not verify. Every run
-// is in a scratch world (test-support.mjs) with BONSAI_GARDEN pointing at nothing and no mono beside
-// the core copy: a reach for mono fails loudly. Throwaway salts only.
+// is in a scratch world (test-support.mjs) with BONSAI_GARDEN pointing at nothing and no origin garden beside
+// the core copy: a reach for the origin's tools fails loudly. Throwaway salts only.
 //
 //   node skills/bonsai-garden-keys/test-seal-staged.mjs            every case
 //   node skills/bonsai-garden-keys/test-seal-staged.mjs --list
@@ -67,31 +66,10 @@ function sealArc(p) {
 const cases = [];
 const t = (name, fn) => cases.push({ name, fn });
 
-t('the-world-seeds-without-mono', () => [
+t('the-world-seeds-without-the-origin', () => [
   seedErr === null && !W.siteAsked().network,
-  seedErr || 'the arc ran with BONSAI_GARDEN unreachable and no mono beside core',
+  seedErr || 'the arc ran with BONSAI_GARDEN unreachable and no origin garden beside core',
 ]);
-
-t('runtime-seal-staged-needs-mono-today', () => {
-  // the dependency this slice removes, watched: runtime's seal-staged.py in a layout with no mono
-  const rt = path.resolve(SRC, '..', 'bonsai-garden-runtime', 'tools', 'runtime', 'seal-staged.py');
-  if (!fs.existsSync(rt)) return ['skip', 'no runtime checkout beside this core'];
-  const p = pot();
-  git(p, 'add', 'garden.json');
-  const root = path.join(W.dir, 'no-mono-root');
-  fs.mkdirSync(path.join(root, 'bonsai-garden-core', 'tools'), { recursive: true });
-  fs.copyFileSync(path.join(SRC, 'tools', 'credit.py'), path.join(root, 'bonsai-garden-core', 'tools', 'credit.py'));
-  fs.mkdirSync(path.join(root, 'bonsai-garden-runtime', 'tools', 'runtime'), { recursive: true });
-  fs.copyFileSync(
-    path.join(path.dirname(rt), 'seal-batch.py'),
-    path.join(root, 'bonsai-garden-runtime', 'tools', 'runtime', 'seal-batch.py'),
-  );
-  const r = W.sh('python3', [rt, '--check', '--repo', p, '--repos-root', root]);
-  return [
-    r.code !== 0 && /bonsai-garden\/tools\/sign\.py/.test(r.stderr),
-    `exit ${r.code}: ${r.stderr.trim().split('\n').pop()}`,
-  ];
-});
 
 t('seal-then-check-passes-under-warn', () => {
   const p = pot();

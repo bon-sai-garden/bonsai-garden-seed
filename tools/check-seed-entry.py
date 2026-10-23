@@ -24,8 +24,8 @@ The entry is Bonsai's, under his owner seal (`seed` takes it on no other), so th
 is fixed in his seat, or in the registry if the registry is what is wrong.
 
     python3 tools/check-seed-entry.py [--root <core>] [--rev <rev>] [--entry <file>] [--registry <file>]
-        --rev reads both files of that commit from git, never the working tree: tools/distro/build-distro.mjs runs
-        this gate on the commit it cuts (the slice names it under "gates"). --entry and --registry read those files
+        --rev reads both files of that commit from git, never the working tree: a builder runs this gate on the
+        commit it releases (its list of gates names it). --entry and --registry read those files
         instead (a planted copy, for the gate's own test). --root defaults to the core this file sits in.
 Exit 0 agree; 1 a difference (each field named); 2 cannot run (a check that cannot run is not a pass).
 """

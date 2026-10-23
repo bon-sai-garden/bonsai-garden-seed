@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:48:27Z",
+  "timestamp": "2026-10-21T20:00:56Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-mark/namespace.mjs",
-  "file-hash": "af5e68a67035086719b30df8995165246e27b268dc81615b16f434b89131f6fa0211a36a667da48acbd22b33577c9b284a00b73044d9acf95ddb02ee81966245",
-  "signature": "SLghjHm7FKxoPGkmGaxSuTp035qQbgKEd2ft0m3TRhoDoEt3l+QtrdAF8zVw1+Ociusb2UIO4TF81a767oPbAw=="
+  "file-hash": "238b7ce520a7de76ac76fddbbf406bedef7fd63b69ad456a605b6888d63432c14fcec3148dfb5c10a2166a9a865bee25dab1ab0279033537e0a34cacbbbbe224",
+  "signature": "1kSRrbhI6S6NWslVMxPRLazDGBsB/XV6gOnNw+GOc33T4SS4TdIrSlkePI33h+VKkv5sAblecbQOjFwcCBPkBw=="
 }

@@ -172,7 +172,7 @@ footer{max-width:1180px;margin:0 auto;padding-top:22px;border-top:1px solid var(
 <section id="summary">
   <h2><span class="n">1 · System at a glance</span>What runs, and where state lives</h2>
   <ul>
-    <li><strong>~20 long-lived agents</strong> (project term: <code class="lore">kin</code>). Each has a role, a spec, an ed25519 identity and its own memory. They run as Claude Code / Cowork sessions and as long-running processes on an always-on host.</li>
+    <li><strong>~20 long-lived agents</strong> (project term: <code class="lore">kin</code>). Each has a role, a spec, an ed25519 identity and their own memory. They run as Claude Code / Cowork sessions and as long-running processes on an always-on host.</li>
     <li><strong>One human operator</strong> (<code class="lore">Aruji</code>, "the gardener"). The operator owns approvals, deletions, deploys and product decisions.</li>
     <li><strong>Three kinds of repo:</strong> one <code class="lore">core</code>, one <code class="lore">runtime</code>, and one or more <code class="lore">pot</code>s. A deployment is core + runtime + at least one pot; each pot is one tenant's instance.</li>
     <li><strong>All state is files in git.</strong> Agent definitions, memory, specs, rosters, keys (public halves only), letters between agents. There is no database in the control path.</li>

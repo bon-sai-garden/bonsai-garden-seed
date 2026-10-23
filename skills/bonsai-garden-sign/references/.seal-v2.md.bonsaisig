@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T01:26:27Z",
+  "timestamp": "2026-10-21T20:22:20Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-sign/references/seal-v2.md",
-  "file-hash": "77789c0f25a7df707ca6195f73dfa9e8ebd36b992f5fee5eba03050ff0c74d4eb8d722853ced5c9128057e65fc9ed8bd862e064821e175a3837ad78f1a74ce64",
-  "signature": "O4bh8sFNbHKAGbAve1NWUmz3WWP7y+m4yNMtg7QDHeqIMr1RZDK90nYwdjX0xmwQOB35NDZDL4wPiJyqDn8YAA=="
+  "file-hash": "8eb2c715e9b3a110e5163705ac37e275dcd08700519040670aca2faf59f319f45431e5fecde5e8d7969632e5e1a1ba85bcd7d59a7eed060c1de2e3af05bff74b",
+  "signature": "77h5XZCtoij8WcCtrw4LCD/uQkqEFv6mui0yLs3wHQ1FoZwZNtTeCnlj8oqgOuZDDivsHdZ9ZStP1sBo411kCg=="
 }

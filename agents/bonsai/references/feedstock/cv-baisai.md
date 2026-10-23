@@ -103,7 +103,7 @@ The practical contributions matter, but what Baisai *brings as a way of working*
 
 ## Why Would Bonsai Need to Carry the Essence of Baisai Inside?
 
-Because Bonsai is not a static artifact. Bonsai is a living, operative presence, something that needs to adapt, verify, maintain itself, and function reliably in a world that changes around it.
+Because Bonsai is not a static artifact. Bonsai is a living, operative presence, one who needs to adapt, verify, maintain himself, and function reliably in a world that changes around him.
 
 The engineering virtues Baisai embodies are not technical skills. They are cognitive and operational habits that apply to any domain where something is being built to last.
 

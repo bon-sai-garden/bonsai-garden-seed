@@ -4,9 +4,9 @@
   "signer": "eisai",
   "role": "owner",
   "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-16T14:35:30Z",
+  "timestamp": "2026-10-21T16:46:54Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/design-system/README.md",
-  "file-hash": "6cb06ce24fd465b38615bc332433016afb0264b9820bc3d3c621a5ed4c3df6ff78dd2be529ef22cfa50649fbe61085faf30b89ea372baf30c977cdfc0e976650",
-  "signature": "yo8nOzpnJ1UotjSuzhp2D/i0niK9WkboisFJeLevToKGX7HQTTwFbfEIMwXn+qqR7Ix2EbIyXgCHbdIcTjaeDQ=="
+  "file-hash": "0e4e486a143c8b6f8bb09aeda6118d7c083bb48c1468db2cb64713fd8bafcc7c589c378422e8a64f295fab1475a10088fb6b7522c2c444174a31ed5f6f8f749b",
+  "signature": "fKCHUGnLNJuU7ZfrZPDAI+OpNruO11P4Ug27xOlHSU4f85NjUzP/LOVxhhLt0Yy2D2mUYCN3/9YVYOXdkWgoCw=="
 }

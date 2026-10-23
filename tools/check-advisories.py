@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # ---
 # id: 01M5DP678K27RXK60FNCPXFJR7
-# title: check-advisories — no pinned version a cut ships has a published advisory, and no answer is never a pass
+# title: check-advisories — no pinned version a release ships has a published advisory, and no answer is never a pass
 # type: script
 # tended-by: baisai
 # created: 2026-10-21
@@ -9,16 +9,15 @@
 # ---
 """check-advisories.py — every version a pin file holds, asked of the OSV advisory database (osv.dev) today.
 
-A cut is checked when it is made, and the world moves while it waits: on 2026-10-20 ten advisories were published
-between an audit in the morning and the cuts in the evening (Pillow 12.3.0 in a requirements.txt, certifi 2026.5.20 in
-a uv.lock). This gate asks at the moment of the cut. What goes out is each package's name, ecosystem and version (public
+A release is checked when it is made, and the world moves while it waits: on 2026-10-20 ten advisories were published
+between an audit in the morning and the releases in the evening (Pillow 12.3.0 in a requirements.txt, certifi 2026.5.20 in
+a uv.lock). This gate asks at the moment of the release. What goes out is each package's name, ecosystem and version (public
 data, nothing else); what comes back is the ids of the advisories that affect that version.
 
     python3 tools/check-advisories.py [--root <repo>] [--rev <rev>] [<file>...]
         no files: every tracked pin file. --rev reads that commit's files from git, never the working tree:
-        tools/distro/build-distro.mjs runs a slice's gates as `--root <upstream> --rev <commit>`. Named files (relative
-        to --root) are checked as they are on disk: runtime's build-rt.mjs writes the files a cut ships to a scratch and
-        names them, and a named file that is not a pin file is passed over.
+        a builder runs a gate as `--root <repo> --rev <commit>`. Named files (relative to --root) are checked as they
+        are on disk: a builder that writes the files a release ships to a scratch names them, and a named file that is not a pin file is passed over.
 
 A pin file, by name: requirements*.txt, uv.lock (every fork: each version the lock holds is asked), package-lock.json
 and npm-shrinkwrap.json. Each must be readable as exact versions: a requirement that is a range, an option line other
@@ -230,7 +229,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--root", default=".", type=Path)
     ap.add_argument("--rev")
-    ap.add_argument("--osv-url", default=OSV, help=argparse.SUPPRESS)  # a test's stub; the cut never passes it
+    ap.add_argument("--osv-url", default=OSV, help=argparse.SUPPRESS)  # a test's stub; a release never passes it
     ap.add_argument("files", nargs="*")
     a = ap.parse_args()
     root = a.root.resolve()

@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "owner",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T14:44:48Z",
+  "timestamp": "2026-10-22T17:31:07Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/specs/metadata-schema.md",
-  "file-hash": "bb2cce655432f6ed2cbcfa309dd4258c6e40aef3bfbc53e5a59638a43f0255a4bfdf185f3b972c97c0dc96b73f9d9634a9814af2252d07c280c78389e31723ba",
-  "signature": "YkKpvL3jLa49x1X2lo24wqup0UAlIvo89K/ANe6IuFuw87syD2VOFygTH2znbEUa/AA8e+Yfa3chnM55vkFZBw=="
+  "file-hash": "590de498efa710fb016c807bd10a6fa99376dbc3ae68ded4a2f977392ef2c729d1110d5c7720770b27a3fb78df8f0179b77dd53a5f21ad5f513d4d4a7dfe5428",
+  "signature": "baHZNyuKi2sgwoVJo3ihxXi96LBfM1uF9Ib1LJtgMK6/AAcRahoHJz5Rjloi8h1r6gAVqkc+KEsSs4J2f+DmBA=="
 }

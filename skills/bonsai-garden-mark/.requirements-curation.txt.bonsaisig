@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5G1BGD4NMFQG901DD6ARWH5",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-21T20:10:01Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "skills/bonsai-garden-mark/requirements-curation.txt",
+  "file-hash": "5251ae10529e89cb62736ab7d2414dbd3396c0ed3dffb3239321f58e2f48f5191885d55f0e9fc4728e66695b45f8d81ebdbb262eda771e02c967a68d4bd9171a",
+  "signature": "gRom84JQNuEkZbRirWw0b0uCV8GcRbURwVVcD6CzWNVRRW1il4/lwkyOSohFHB3F+enzMtVV/UD7y9/7tiQuDA=="
+}

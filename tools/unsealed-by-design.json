@@ -5,7 +5,7 @@
   "files": {
     "skills/bonsai-garden-crew-page/fixtures/fake_render.py": "a stand-in renderer the crew page's test (scripts/test_build_crew_data.py) runs in place of the real seal drawing; a seal on a stand-in would say it is the real thing",
     "skills/bonsai-garden-crew-page/fixtures/fake_verify.py": "the stand-in verifier beside it: it answers from a .fakeseal sidecar with no keys, so the test never touches a real seal",
-    "skills/bonsai-garden-sign/fixtures/embedded-v1/synthetic-v1.md": "a synthetic document carrying only a retired embedded v1 seal, the negative fixture of test-sidecar-negative.mjs; a v2 sidecar beside it would make it something else",
+    "skills/bonsai-garden-sign/fixtures/embedded-v1/synthetic-v1.md": "a synthetic document carrying only a retired embedded v1 seal, a negative fixture of the sign skill's tests; a v2 sidecar beside it would make it something else",
     "skills/bonsai-garden-sign/fixtures/embedded-v1/root/agents/fixture-signer/identity/fixture-signer-fingerprint.txt": "the fixture signer's fingerprint, part of the planted root that fixture is verified against; the signer's key exists nowhere, so nothing could seal it",
     "skills/bonsai-garden-sign/fixtures/embedded-v1/root/agents/fixture-signer/identity/fixture-signer-public-key.bin": "the same fixture signer's public key, for the same reason"
   }

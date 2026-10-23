@@ -4,9 +4,9 @@
   "signer": "mori-shin",
   "role": "owner",
   "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
-  "timestamp": "2026-10-16T05:53:03Z",
+  "timestamp": "2026-10-21T21:18:45Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-sign/lib/derive-key.mjs",
-  "file-hash": "f22d46524d64bf756cdb424cc42b42e83ebf8134ddb731aacc889a12f113bbb1762a4cc538b2d6a4249c96df45242ff03230ac103907ceca78a51456821a220e",
-  "signature": "kxZxzv/52f6jcI1zp+kQL6wBrj0Ya71gGzCSp3UcOF4SEkxAPjLOjZGS8zh92UyLIIxxaqdXT7KEUy4NFqHVAg=="
+  "file-hash": "3e3267e83ba4e257f4d9242698e0ea878a1e5089ec00c7aa477d4dc2c3aa1b32bac356b2bb01982d5e5c5739f9c7eed1aebd28767aaca17d18aacb8a94ef4193",
+  "signature": "3RyoT6jnhkloQpqnA/dRCTVdrYAvemN57QHYsTP9xeMp7G0ylQH7y7mSJ5WpI/3KEB5+E9nzTliDL/3dzDsdDw=="
 }

@@ -12,7 +12,7 @@ spec-sidecar-dot-prefix.md, *The third finder*: "the gate for two copies is drif
 
 Plants each layout once, in a fresh temp directory, and asks both copies:
 
-  mono  tools/sign.py                 find_sidecar(target)   target_of_sidecar(sidecar)
+  garden tools/sign.py                find_sidecar(target)   target_of_sidecar(sidecar)
   core  .../scripts/package.py        _sidecar_of(target)    _target_of(sidecar)
 
 Each answer is normalised to a verdict ((status, name)) and held to an EXPECTED value, not only to
@@ -46,8 +46,8 @@ the other copy: two copies that are wrong the same way would agree.
      read as ok; the policy ignored), must then disagree on the plant that catches it. A gate that
      cannot fail is not a gate.
 
-mono's sign.py is found beside core (`../bonsai-garden/tools/sign.py`, by marker). A checkout of
-core alone has no second copy to compare: the test says so and exits 0 (SKIPPED), never PASS.
+The garden's sign.py is found where $BONSAI_GARDEN points (`$BONSAI_GARDEN/tools/sign.py`), or named by
+--signpy; never by a checkout's name beside core. A checkout of core alone has no second copy to compare: the test says so and exits 0 (SKIPPED), never PASS.
 
   python3 test_finder_parity.py [--package PATH] [--signpy PATH]
                                        exit 0 when every expectation holds (or SKIPPED); 1 otherwise
@@ -60,6 +60,7 @@ import importlib.util
 import inspect
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -77,7 +78,8 @@ def _arg(flag: str, default: Path) -> Path:
 
 
 PKG = _arg("--package", HERE / "package.py")
-MONO_SIGN = _arg("--signpy", CORE.parent / "bonsai-garden" / "tools" / "sign.py")
+_GARDEN = os.environ.get("BONSAI_GARDEN", "").strip()
+GARDEN_SIGN = _arg("--signpy", Path(_GARDEN) / "tools" / "sign.py" if _GARDEN else HERE / ".no-garden-named")
 SIGN_LIB = CORE / "skills" / "bonsai-garden-sign" / "lib"
 POLICY = CORE / "skills" / "bonsai-garden-sign" / "seal-policy.json"
 RSN = "retired-sidecar-name"
@@ -344,15 +346,15 @@ def policed_disagreements(answers, copies) -> list[str]:
 
 
 def main() -> int:
-    if not MONO_SIGN.is_file():
+    if not GARDEN_SIGN.is_file():
         print(
-            f"SKIPPED  no mono checkout beside core ({MONO_SIGN} absent): there is no second Python "
-            f"copy of the sidecar rule to compare. Not a pass; run with mono beside core."
+            f"SKIPPED  no garden sign.py ({GARDEN_SIGN} absent; set $BONSAI_GARDEN or --signpy): there is no second "
+            f"Python copy of the sidecar rule to compare. Not a pass; run with the garden named."
         )
         return 0
 
     def fresh():
-        return SignCopy(load(MONO_SIGN, "parity_sign")), PackageCopy(load(PKG, "parity_package"))
+        return SignCopy(load(GARDEN_SIGN, "parity_sign")), PackageCopy(load(PKG, "parity_package"))
 
     with tempfile.TemporaryDirectory(prefix="bonsai-finder-parity-") as t:
         root = Path(t)
@@ -466,7 +468,7 @@ def main() -> int:
     failed = [r for r in RESULTS if not r[1]]
     for name, ok, detail in RESULTS:
         print(f"{'PASS' if ok else 'FAIL'}  {name}" + ("" if ok else f"\n      {detail}"))
-    print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} hold (sign.py: {MONO_SIGN}; package.py: {PKG})")
+    print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} hold (sign.py: {GARDEN_SIGN}; package.py: {PKG})")
     return 1 if failed else 0
 
 

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T12:42:02Z",
+  "timestamp": "2026-10-22T18:15:17Z",
   "algorithm": "ed25519+blake2b512",
   "target": "architecture-walkthrough.html",
-  "file-hash": "0871ead6a5ba6d620dc6ee33d949a741df7f195e5366276856b5f44c6cda78dc3ec7f6d92d939bde3563231e860eef87f57f2b0677da003501d28136ec590235",
-  "signature": "9LSojCQW/UagJ4xbopduT0kjFLqSBVjFPtlzW/SQrfIxfoDvzYfP1qoxme+2s85l3s1+VteMNetDdHFvveIUDA=="
+  "file-hash": "70b470c59c98c852c102ed34d251d1f08de0c867f8fea4f1a04842ea0f4b271c81dbb761cf764898e0aa1b5f9868f21b647ba42563c99a82b978a6d79351c9db",
+  "signature": "1SdlOGhuCtYWx/gcAb0dLExD5kaWeQEswHPxaYLP1WtQAX+h/UQXVZRIPAHWMUMTlzXBPMXZNir368oNm7aRBA=="
 }

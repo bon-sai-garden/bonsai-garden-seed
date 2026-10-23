@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-04
-# updated: 2026-10-15
+# updated: 2026-10-21
 # ---
 """
 validate-metadata.py — the frontmatter heartbeat.
@@ -131,6 +131,12 @@ EXEMPT_GLOBS = (
     "**/node_modules/**",
     "**/dist/**",  # built output — copies of source files, not canonical
 )
+
+# The names that carry no id: a COPY of core's tools/ulid.py NO_ID_NAMES and NO_ID_NAME_RE, because a skill runs from
+# its own folder (test-ulid.py fails on drift). A README is the forge's front page, where a frontmatter block renders as
+# a table: one with no frontmatter is not an error, and its id lives in its seal. SKILL.md's own contract asks for one.
+NO_ID_NAMES = ("SKILL.md", "README.md")
+NO_ID_NAME_RE = re.compile(r"README\.[a-z0-9-]+\.md")
 
 # Trust-bearing types that should carry a non-empty sign: block.
 # Emits a warning (not an error) for types in this set.
@@ -601,6 +607,12 @@ def validate_file(
         result.issues.append(Issue("error", rel_path, 1, "frontmatter-parse", fm_error))
         return result
     if fm is None:
+        name = Path(rel_path).name
+        if name != "SKILL.md" and (name in NO_ID_NAMES or NO_ID_NAME_RE.fullmatch(name)):
+            result.issues.append(
+                Issue("info", rel_path, 1, "readme-no-frontmatter", "a README carries no frontmatter; its id is its seal's")
+            )
+            return result
         result.issues.append(Issue("error", rel_path, 1, "no-frontmatter", "missing YAML frontmatter block"))
         return result
 
@@ -932,7 +944,7 @@ def cross_file_checks(
     # Found 2026-08-19: a kin's retired constitution stayed sealed and live at a
     # second path for five weeks after a new build superseded it. Both verified
     # `ok`; the re-sign sweeps kept re-sealing the orphan; the shipped skill was
-    # built from it, so the kin woke into a self it had already retired.
+    # built from it, so the kin woke into a self they had already retired.
     #
     # Exempt, because they do not claim to be canon: inbox deliveries and
     # release candidates (`/inbox/`), tombstones (`.bak` or `status: retired`),

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T08:56:14Z",
+  "timestamp": "2026-10-21T21:17:31Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/shared/codex.md",
-  "file-hash": "2d8600447677dcac74731a71f3c0f2e2b00f3c7d510c16d9f13e4844c86ced3d43acc9a650a7fe47aae8c1be72542aadf1f14c3edf0bab39fc096cd482611f98",
-  "signature": "iG4TE2o1VpJ6O8+MRvP3gsUmO0mJAuY3KAYYm9B2FoAOtFJIeJ2gujaXRORHraPXa9C0SzHsd58vp6tBkZ1kDA=="
+  "file-hash": "bdb2655784415f0a45062a505eb6a2e6bb383ce97cab28c1cb7dc909064621a1fb976d73d21d46bdb33fe9787d6a55c12f4da9f21575d7d1a23305f3580011d2",
+  "signature": "LwwDAC5rX/sbJC71drqOVTz5GZ1qlfYMNMUdX866CobG5ayBERIZ4dQDJtzxXW2YrhGZ8oEOOqI71yOnlMoCAw=="
 }

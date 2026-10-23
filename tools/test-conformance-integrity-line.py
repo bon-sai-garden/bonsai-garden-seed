@@ -61,7 +61,7 @@ check(
 )
 # Mori-shin's ruling on Orma's SKILL.md credit (2026-10-11): a lean SKILL.md credits what its identity document credits
 # (references/identity.md, else memory/identity.md). A kin with none has a SKILL.md that credits no one, so an owner seal
-# on it silently reads custodian. The gate says so (a note, not a failure: six bodies in mono predate the rule).
+# on it silently reads custodian. The gate says so (a note, not a failure: six bodies in the origin's garden predate the rule).
 LINE = "> **Integrity first.** run the check.\n\n# Orma\n"
 no_id = findings(body(FM + LINE))
 note = [line for line in no_id.splitlines() if "identity document" in line]

@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-07
-// updated: 2026-10-07
+// updated: 2026-10-22
 // ---
 //
 // test-reserved-marks.mjs — every refusal in spec-gardeners-keys.md §6.5 planted, never read off
@@ -50,6 +50,7 @@ const RM = await import(path.join(MARK, 'reserved-marks.mjs'));
 const { makeOrigin } = await import(path.join(MARK, 'origin.mjs'));
 const { canonicalAnswer } = await import(path.join(SIGN_LIB, 'published-keys.mjs'));
 const FAKE = await import(path.join(HERE, 'test-fake-origin.mjs')); // test support: never mutated
+const { newUlid } = await import(path.join(SIGN_LIB, 'ulid-rule.mjs')); // fixture seal ids: generated, never typed
 const SET = JSON.parse(fs.readFileSync(path.join(MARK, 'kanji-1024-v1.2.json'), 'utf8')).kanji;
 const ch = (i) => SET[i].char;
 const SCRATCH = fs.mkdtempSync(path.join(process.env.RESERVED_TEST_TMP || os.tmpdir(), 'reserved-test-'));
@@ -112,9 +113,14 @@ const EXPECTED = () => ({
   B: [...RULE_B],
 });
 
-const ORIGIN = FAKE.throwawaySigner('fixture-origin');
+// The set's owner is pinned to mori-shin (spec 0.7.0, §6.4 points 3c and 4): the fixture's throwaway key carries her slug.
+const ORIGIN = FAKE.throwawaySigner('mori-shin');
 const VERIFIER = FAKE.keypair();
-const STRANGER = FAKE.throwawaySigner('fixture-stranger'); // a key the fake site does not hold
+const STRANGER = FAKE.throwawaySigner('mori-shin'); // her slug, a key the fake site does not hold
+// The release manifest's signers (§6.4 point 3a): a writer core names, a vouched kin who is none, a writer's slug the site holds no key for
+const WRITER = FAKE.throwawaySigner('baisai');
+const KIN = FAKE.throwawaySigner('eisai');
+const WRITER_UNHELD = FAKE.throwawaySigner('baisai');
 
 function identityMd({ name, salt, mark }, { withSalt = true, markOverride = null } = {}) {
   return [
@@ -168,7 +174,7 @@ function world({ roster = ROSTER, skills = SKILLS_FX, extraSkills = [] } = {}) {
   );
   G(core, 'add', '-A');
   G(core, 'commit', '-qm', 'fixture skills');
-  const reg = path.join(dir, 'mono', 'agents', 'registry.json');
+  const reg = path.join(dir, 'origin', 'agents', 'registry.json');
   fs.mkdirSync(path.dirname(reg), { recursive: true });
   fs.writeFileSync(reg, `${JSON.stringify({ $schema: 'fixture', agents: roster }, null, 2)}\n`);
   return { dir, core, reg, file: path.join(core, TARGET) };
@@ -193,7 +199,8 @@ async function baseline(opts = {}) {
   commit(W);
   return W;
 }
-const site = (mode = 'vouch') => FAKE.fakeSite({ signers: [ORIGIN], verifier: VERIFIER, mode, canonicalAnswer });
+const site = (mode = 'vouch') =>
+  FAKE.fakeSite({ signers: [ORIGIN, WRITER, KIN], verifier: VERIFIER, mode, canonicalAnswer });
 const originFor = (s) => makeOrigin({ fetchImpl: s.fetchImpl, pinnedKey: VERIFIER.b64 });
 
 const has = (r, reason, re) => r.problems.some((p) => p.reason === reason && (!re || re.test(p.detail)));
@@ -504,7 +511,7 @@ t('reader-believes-a-vouched-set-and-asks-once', async () => {
     !rule.reserved([100, 7, 9]) &&
     !rule.reserved([7, 1, 9]) &&
     s.calls.length === 1 &&
-    s.calls[0].body.signer === 'fixture-origin';
+    s.calls[0].body.signer === 'mori-shin';
   return [ok, `asked ${s.calls.length}`];
 });
 
@@ -553,13 +560,15 @@ t('reader-refuses-an-open-seal', async () => {
   ];
 });
 
-t('reader-refuses-a-seal-on-another-file', async () => {
+// spec 0.7.0 §6.4 point 3, last line: the seal's target is a path, no verdict (F-12). The reader reads one address
+// only; a seal by mori-shin over these exact bytes holds wherever it was made. (Until 0.9.1: refused.)
+t('reader-takes-the-target-as-a-path-not-a-verdict', async () => {
   const W = world();
   plant(W, EXPECTED());
   await seal(W, { target: 'skills/elsewhere/reserved-marks.json' });
   const s = site();
   const e = await refusal(() => RM.loadReservedSet({ file: W.file, origin: originFor(s) }));
-  return [e && e.reason === 'not the shipped file' && s.calls.length === 0, e ? e.message.slice(0, 120) : 'BELIEVED'];
+  return [e === null && s.calls.length === 1, e ? e.message.slice(0, 120) : `believed, asked ${s.calls.length}`];
 });
 
 t('reader-refuses-a-sealed-set-under-the-floor-offline', async () => {
@@ -607,6 +616,430 @@ t('origin-keeps-the-signed-time-only-when-vouched', async () => {
       n.status === 'signature-vouched' &&
       n.verifiedAt === null,
     `${v.status} ${v.verifiedAt} · ${f.status} ${f.verifiedAt} · ${n.status} ${n.verifiedAt}`,
+  ];
+});
+
+// ── the release manifest (spec 0.7.0, §6.4 points 3 to 5, the table under it) ──────────────────────────────────
+// A seed checkout in a fixture: the set sealed owner by mori-shin's throwaway key, three files of the arc's skills, and
+// SEED-MANIFEST.json over them at its root, sealed owner by a writer's throwaway key. Each row planted, each refusal
+// asserted by its reason and by what it names; the fake site counts every question.
+
+const MANIFEST = 'SEED-MANIFEST.json';
+const SIDE = 'skills/bonsai-garden-mark/.reserved-marks.json.bonsaisig';
+const ARC_FILES = {
+  'skills/bonsai-garden-keys/bin/keys.mjs': '// a fixture of the arc\n',
+  'skills/bonsai-garden-mark/fixture.mjs': '// a fixture of the mark\n',
+  'skills/bonsai-garden-sign/lib/fixture.mjs': '// a fixture of the signer\n',
+};
+const shaOf = (b) => crypto.createHash('sha256').update(b).digest('hex');
+const mfile = (W) => path.join(W.core, MANIFEST);
+const readSeal = (file) => JSON.parse(fs.readFileSync(RM.sidecarOf(file), 'utf8'));
+
+function writeManifest(W, { leave = [], modes = null } = {}) {
+  // modes: null states none (every manifest before 0.9.2); 'disk' states each file's exec bit as it stands; an object
+  // overrides an entry's mode (or, given null, leaves it out: mode on some entries)
+  const rels = [TARGET, SIDE, ...Object.keys(ARC_FILES)].filter((r) => !leave.includes(r)).sort();
+  const files = rels.map((r) => {
+    const b = fs.readFileSync(path.join(W.core, r));
+    const e = { path: r, sha256: shaOf(b), bytes: b.length };
+    if (!modes) return e;
+    const disk = (fs.statSync(path.join(W.core, r)).mode & 0o100) !== 0 ? '100755' : '100644';
+    const m = modes === 'disk' || !Object.hasOwn(modes, r) ? disk : modes[r];
+    return m === null ? e : { ...e, mode: m };
+  });
+  fs.writeFileSync(
+    mfile(W),
+    ser({ format: 'bonsai-garden-release-manifest/1', name: 'bonsai-garden-seed', version: '0.9.2-rc', held: [], files }),
+  );
+}
+/** A real bonsaisig/2 sidecar, built in the envelope's own field order (the optional custody after algorithm). */
+async function sealManifest(W, { by = WRITER, role = 'owner', extra = {}, custody = null } = {}) {
+  if (!custody) return FAKE.sealWith(SIGN_LIB, mfile(W), by, { target: MANIFEST, role, extra });
+  const { buildV2, v2Payload } = await import(path.join(SIGN_LIB, 'seal-v2.mjs'));
+  const obj = buildV2({
+    id: newUlid(),
+    signer: by.slug,
+    role,
+    fingerprint: by.fingerprint,
+    timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+    target: MANIFEST,
+    fileHash: crypto.createHash('blake2b512').update(fs.readFileSync(mfile(W))).digest('hex'),
+    custody,
+  });
+  obj.signature = crypto.sign(null, v2Payload(obj), by.privateKey).toString('base64');
+  fs.writeFileSync(RM.sidecarOf(mfile(W)), ser(obj));
+}
+async function seedWorld({ obj = EXPECTED(), setSigner = ORIGIN, leave = [], modes = null, ...sealOpts } = {}) {
+  const W = world();
+  plant(W, obj);
+  await seal(W, { signer: setSigner });
+  for (const [rel, text] of Object.entries(ARC_FILES)) {
+    fs.mkdirSync(path.dirname(path.join(W.core, rel)), { recursive: true });
+    fs.writeFileSync(path.join(W.core, rel), text);
+  }
+  writeManifest(W, { leave, modes });
+  await sealManifest(W, sealOpts);
+  return W;
+}
+async function attempt(fn) {
+  try {
+    return { rule: await fn(), e: null };
+  } catch (e) {
+    return { rule: null, e };
+  }
+}
+const readSet = (W, s, record = null, more = {}) =>
+  attempt(() => RM.loadReservedSet({ file: W.file, origin: originFor(s), record, ...more }));
+const said = (r) => (r.e ? `${r.e.reason}/${r.e.exit}: ${r.e.detail.slice(0, 110)}` : `BELIEVED (asked ${r.rule.asked})`);
+
+t('m-believed-through-the-manifest-asks-once-and-hands-back-the-record', async () => {
+  const W = await seedWorld();
+  const s = site();
+  const r = await readSet(W, s);
+  const d = r.rule?.release;
+  const ok =
+    !r.e &&
+    r.rule.asked === true &&
+    s.calls.length === 1 &&
+    s.calls[0].body.signer === 'baisai' &&
+    d?.manifest === MANIFEST &&
+    d.sha256 === shaOf(fs.readFileSync(mfile(W))) &&
+    d.version === '0.9.2-rc' &&
+    d.signer === 'baisai' &&
+    d.fingerprint === WRITER.fingerprint &&
+    d['seal-id'] === readSeal(mfile(W)).id &&
+    d.vouched === '2026-10-07T12:00:00.000Z' &&
+    !!r.rule.reserved([100, 1, 9]) &&
+    !r.rule.reserved([100, 7, 9]);
+  return [ok, `${said(r)}; asked ${s.calls.length} (${s.calls.map((c) => c.body.signer)}); record ${JSON.stringify(d)}`];
+});
+
+// the manifest's mode field (Mori-shin's ruling, 2026-10-21): the reader checks the owner's execute bit of each file it
+// reads against the stated mode, a miss refuses before any question is asked, and the rule says what was done of the
+// modes (mode: checked | not-stated | not-checkable), never checked when it was not
+const ARC_KEYS = 'skills/bonsai-garden-keys/bin/keys.mjs';
+t('m-modes-stated-and-held-believed-and-the-rule-says-checked', async () => {
+  const W = await seedWorld({ modes: 'disk' });
+  const r = await readSet(W, site());
+  return [!r.e && r.rule.mode === 'checked', `${said(r)}; mode ${r.rule?.mode}`];
+});
+t('m-a-stated-100755-on-a-file-that-is-not-executable-refuses-naming-it-and-the-fix', async () => {
+  // the bytes hold and the bit does not: `mode`, never a mixed cut (Fuji-shin's round, 2026-10-22: Python's zipfile drops
+  // every exec bit, and the words used to frame that as a mix of two cuts)
+  const W = await seedWorld({ modes: { [ARC_KEYS]: '100755' } });
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === 'mode' &&
+      /keys\.mjs/.test(r.e.detail) &&
+      /chmod \+x/.test(r.e.detail) &&
+      /unpack/.test(r.e.detail) &&
+      !/mix of two/.test(r.e.detail) &&
+      s.calls.length === 0,
+    `${said(r)}; asked ${s.calls.length}`,
+  ];
+});
+t('m-every-lost-exec-bit-of-the-three-skills-is-named-in-one-refusal-with-one-fix', async () => {
+  // an unpack that drops modes loses every bit at once: the stranger gets every file in one answer, not one per run
+  const MARK = 'skills/bonsai-garden-mark/fixture.mjs';
+  const W = await seedWorld({ modes: { [ARC_KEYS]: '100755', [MARK]: '100755' } });
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === 'mode' &&
+      new RegExp(`chmod \\+x \\S*${ARC_KEYS}\\b.*${MARK}|chmod \\+x \\S*${MARK}\\b.*${ARC_KEYS}`).test(r.e.detail) &&
+      s.calls.length === 0,
+    `${said(r)}; asked ${s.calls.length}`,
+  ];
+});
+t('m-a-stated-100644-on-the-set-made-executable-refuses-as-mode', async () => {
+  const W = await seedWorld({ modes: 'disk' });
+  fs.chmodSync(path.join(W.core, TARGET), 0o755);
+  const s = site();
+  const r = await readSet(W, s);
+  return [r.e?.reason === 'mode' && /chmod -x/.test(r.e.detail) && s.calls.length === 0, `${said(r)}; asked ${s.calls.length}`];
+});
+t('m-mode-on-some-entries-is-malformed', async () => {
+  const W = await seedWorld({ modes: { [ARC_KEYS]: null } });
+  const r = await readSet(W, site());
+  return [r.e?.reason === 'not the format' && /mode on some entries/.test(r.e.detail), said(r)];
+});
+t('m-a-manifest-without-modes-is-believed-and-the-rule-says-not-stated', async () => {
+  const W = await seedWorld();
+  fs.chmodSync(path.join(W.core, ARC_KEYS), 0o755);
+  const r = await readSet(W, site());
+  return [!r.e && r.rule.mode === 'not-stated', `${said(r)}; mode ${r.rule?.mode}`];
+});
+t('m-no-execute-bit-to-read-believed-and-the-rule-says-not-checkable', async () => {
+  const W = await seedWorld({ modes: { [ARC_KEYS]: '100755' } });
+  const r = await readSet(W, site(), null, { execBits: false });
+  return [!r.e && r.rule.mode === 'not-checkable', `${said(r)}; mode ${r.rule?.mode}`];
+});
+
+// table row 1, red first: a kin the site vouches who is not a release writer (0.9.1 believes the set on its own seal)
+t('m-sealed-by-a-vouched-kin-who-is-no-writer', async () => {
+  const W = await seedWorld({ by: KIN });
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === 'not a release writer' && r.e.exit === 2 && /eisai/.test(r.e.detail) && s.calls.length === 0,
+    `${said(r)}; asked ${s.calls.length}`,
+  ];
+});
+
+// row 2
+t('m-sealed-by-a-writer-not-owner-or-open', async () => {
+  const now = new Date();
+  const iso = (x) => x.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const open = {
+    reason: 'a release in progress',
+    closer: 'baisai',
+    'ruled-by': 'baisai',
+    'opened-at': iso(now),
+    expires: iso(new Date(now.getTime() + 86400000)),
+    'open-hash': 'ab'.repeat(64),
+  };
+  const out = {};
+  for (const [k, opts] of [
+    ['custodian', { role: 'custodian' }],
+    ['open', { extra: { open } }],
+  ]) {
+    const W = await seedWorld(opts);
+    const s = site();
+    const r = await readSet(W, s);
+    out[k] = r.e?.reason === 'not an owner seal' && s.calls.length === 0 ? 'refused' : said(r);
+  }
+  return [Object.values(out).every((x) => x === 'refused'), JSON.stringify(out)];
+});
+
+// row 3
+t('m-a-software-fallback-seal-is-no-release', async () => {
+  const W = await seedWorld({ custody: 'software-fallback' });
+  const s = site();
+  const r = await readSet(W, s);
+  const W2 = await seedWorld({ custody: 'os-protected' });
+  const r2 = await readSet(W2, site());
+  return [
+    r.e?.reason === 'no release' && s.calls.length === 0 && !r2.e,
+    `fallback: ${said(r)} · os-protected: ${said(r2)}`,
+  ];
+});
+
+// row 4
+t('m-the-manifest-edited-after-its-seal', async () => {
+  const W = await seedWorld();
+  fs.appendFileSync(mfile(W), ' ');
+  const s = site();
+  const r = await readSet(W, s);
+  return [r.e?.reason === 'hash-mismatch' && /SEED-MANIFEST/.test(r.e.detail) && s.calls.length === 0, said(r)];
+});
+
+// point 3b: one format, every entry path, sha256 and bytes, no path twice
+t('m-another-format-or-a-path-twice', async () => {
+  const out = {};
+  for (const [k, edit] of [
+    ['v1 format', (m) => ({ ...m, format: 'bonsai-garden-release-manifest/0' })],
+    ['a path twice', (m) => ({ ...m, files: [...m.files, m.files[0]] })],
+    ['an entry without bytes', (m) => ({ ...m, files: m.files.map((f, i) => (i ? f : { path: f.path, sha256: f.sha256 })) })],
+  ]) {
+    const W = await seedWorld();
+    fs.writeFileSync(mfile(W), ser(edit(JSON.parse(fs.readFileSync(mfile(W), 'utf8')))));
+    await sealManifest(W);
+    const s = site();
+    const r = await readSet(W, s);
+    out[k] = r.e?.reason === 'not the format' && s.calls.length === 0 ? 'refused' : said(r);
+  }
+  return [Object.values(out).every((x) => x === 'refused'), JSON.stringify(out)];
+});
+
+// row 5
+t('m-one-index-changed-the-manifest-not', async () => {
+  const W = await seedWorld();
+  plant(W, { ...EXPECTED(), A: [...EXPECTED_A, 700].sort((x, y) => x - y) });
+  await seal(W); // even re-sealed by mori-shin: the manifest lists other bytes
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === 'not the bytes the manifest lists' &&
+      r.e.detail.startsWith('skills/bonsai-garden-mark/reserved-marks.json ') &&
+      s.calls.length === 0,
+    said(r),
+  ];
+});
+
+// rows 6 and 7: the file and its entry changed, the manifest re-sealed: by a key the site does not hold; by a writer's it holds
+t('m-re-sealed-by-a-writer-slug-whose-key-the-site-does-not-hold', async () => {
+  const W = await seedWorld();
+  plant(W, { ...EXPECTED(), A: [...EXPECTED_A, 700].sort((x, y) => x - y) });
+  await seal(W);
+  writeManifest(W);
+  await sealManifest(W, { by: WRITER_UNHELD });
+  const s = site();
+  const r = await readSet(W, s);
+  return [r.e?.reason === 'rejected' && r.e.exit === 2 && s.calls.length === 1, `${said(r)}; asked ${s.calls.length}`];
+});
+
+t('m-re-sealed-by-a-writer-the-site-holds-is-believed-and-the-floor-still-stands', async () => {
+  const W = await seedWorld();
+  plant(W, { ...EXPECTED(), A: [...EXPECTED_A, 700].sort((x, y) => x - y) });
+  await seal(W);
+  writeManifest(W);
+  await sealManifest(W);
+  const r = await readSet(W, site());
+  // the threat named in point 8, not hidden: a writer's key moves the set; under the floor it still cannot go
+  const W2 = await seedWorld();
+  plant(W2, { ...EXPECTED(), A: EXPECTED_A.slice(0, 32) });
+  await seal(W2);
+  writeManifest(W2);
+  await sealManifest(W2);
+  const s2 = site();
+  const r2 = await readSet(W2, s2);
+  return [
+    !r.e && !!r.rule.reserved([700, 1, 9]) && r2.e?.reason === 'under the floor' && s2.calls.length === 0,
+    `moved: ${said(r)} · A of 32: ${said(r2)}`,
+  ];
+});
+
+// row 8
+t('m-the-sidecar-unlisted-or-not-mori-shins', async () => {
+  const W = await seedWorld({ leave: [SIDE] });
+  const s = site();
+  const r = await readSet(W, s);
+  const W2 = await seedWorld({ setSigner: KIN });
+  const s2 = site();
+  const r2 = await readSet(W2, s2);
+  return [
+    r.e?.reason === 'not in the manifest' &&
+      r.e.detail.includes('.reserved-marks.json.bonsaisig') &&
+      r2.e?.reason === "not the set's owner" &&
+      /eisai/.test(r2.e.detail) &&
+      s.calls.length + s2.calls.length === 0,
+    `unlisted: ${said(r)} · eisai's seal: ${said(r2)}`,
+  ];
+});
+
+// row 9
+t('m-one-file-of-the-three-skills-differs-a-mixed-cut', async () => {
+  const W = await seedWorld();
+  fs.appendFileSync(path.join(W.core, 'skills/bonsai-garden-keys/bin/keys.mjs'), '// another cut\n');
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === 'mixed cut' && r.e.detail.includes('skills/bonsai-garden-keys/bin/keys.mjs') && s.calls.length === 0,
+    said(r),
+  ];
+});
+
+// row 10, red first: no manifest, the set's own seal owner by a kin the site vouches who is not mori-shin (0.9.1 takes it)
+t('no-manifest-the-set-sealed-by-a-vouched-kin-who-is-not-mori-shin', async () => {
+  const W = world();
+  plant(W, EXPECTED());
+  await seal(W, { signer: KIN });
+  const s = site();
+  const r = await readSet(W, s);
+  return [
+    r.e?.reason === "not the set's owner" && r.e.exit === 2 && s.calls.length === 0,
+    `${said(r)}; asked ${s.calls.length}`,
+  ];
+});
+
+// row 11 is reader-believes-a-vouched-set-and-asks-once, above. Row 12, through the manifest:
+t('m-the-site-unreachable-forged-unsigned-rejected-or-timeless', async () => {
+  const W = await seedWorld();
+  const out = {};
+  for (const [mode, reason, exit] of [
+    ['unreachable', 'keys-unreachable', 3],
+    ['http-500', 'keys-unreachable', 3],
+    ['forged', 'answer-forged', 2],
+    ['unsigned', 'answer-unsigned', 2],
+    ['rejected', 'rejected', 2],
+    ['no-time', 'answer-malformed', 2],
+  ]) {
+    const r = await readSet(W, site(mode));
+    out[mode] = r.e?.reason === reason && r.e.exit === exit ? 'ok' : said(r);
+  }
+  return [Object.values(out).every((x) => x === 'ok'), JSON.stringify(out)];
+});
+
+// point 5, the reader's half (the root's seal over the record is the caller's: test-keys.mjs)
+t('m-a-record-stands-in-for-the-question', async () => {
+  const W = await seedWorld();
+  const first = await readSet(W, site());
+  const s = site();
+  const r = await readSet(W, s, first.rule?.release);
+  return [
+    !first.e && !r.e && r.rule.asked === false && s.calls.length === 0 && r.rule.release.vouched === first.rule.release.vouched,
+    `${said(r)}; asked ${s.calls.length}`,
+  ];
+});
+
+t('m-a-record-for-other-bytes-is-asked-again', async () => {
+  const W = await seedWorld();
+  const first = await readSet(W, site());
+  const s = site();
+  const r = await readSet(W, s, { ...first.rule?.release, sha256: 'ab'.repeat(32) });
+  return [!r.e && r.rule.asked === true && s.calls.length === 1, `${said(r)}; asked ${s.calls.length}`];
+});
+
+t('m-a-record-that-disagrees-with-its-manifest-is-a-finding', async () => {
+  const W = await seedWorld();
+  const first = await readSet(W, site());
+  const out = {};
+  for (const [k, v] of [
+    ['signer', 'tasai'],
+    ['seal-id', newUlid()],
+    ['vouched', ''],
+  ]) {
+    const s = site();
+    const r = await readSet(W, s, { ...first.rule?.release, [k]: v });
+    out[k] = r.e?.reason === 'release record' && r.e.detail.includes(k) && s.calls.length === 0 ? 'refused' : said(r);
+  }
+  return [Object.values(out).every((x) => x === 'refused'), JSON.stringify(out)];
+});
+
+t('m-the-files-still-equal-the-manifest-when-the-record-is-taken', async () => {
+  const W = await seedWorld();
+  const first = await readSet(W, site());
+  fs.appendFileSync(path.join(W.core, 'skills/bonsai-garden-sign/lib/fixture.mjs'), '// changed after the answer\n');
+  const s = site();
+  const r = await readSet(W, s, first.rule?.release);
+  return [r.e?.reason === 'mixed cut' && s.calls.length === 0, said(r)];
+});
+
+t('no-manifest-a-record-is-not-read-the-per-file-question-stands', async () => {
+  const W = await baseline();
+  const s = site();
+  const r = await readSet(W, s, {
+    manifest: MANIFEST,
+    sha256: 'ab'.repeat(32),
+    version: '0.9.2-rc',
+    signer: 'baisai',
+    fingerprint: WRITER.fingerprint,
+    'seal-id': newUlid(),
+    vouched: '2026-10-07T12:00:00.000Z',
+  });
+  return [
+    !r.e && r.rule.asked === true && r.rule.release === null && s.calls.length === 1 && s.calls[0].body.signer === 'mori-shin',
+    `${said(r)}; asked ${s.calls.map((c) => c.body.signer)}`,
+  ];
+});
+
+t('m-the-writers-are-the-list-beside-the-reader', async () => {
+  const W = await seedWorld();
+  const only = path.join(W.dir, 'writers-tasai-only.json');
+  fs.writeFileSync(
+    only,
+    ser({ format: 'bonsai-garden-release-writers/1', writers: ['tasai'], manifests: [MANIFEST] }),
+  );
+  const r = await readSet(W, site(), null, { writersFile: only });
+  const r2 = await readSet(W, site(), null, { writersFile: path.join(W.dir, 'absent.json') });
+  const shipped = JSON.parse(fs.readFileSync(path.join(MARK, 'release-writers.json'), 'utf8'));
+  return [
+    r.e?.reason === 'not a release writer' &&
+      r2.e?.reason === 'no writers list' &&
+      JSON.stringify([...shipped.writers].sort()) === '["baisai","tasai"]' &&
+      JSON.stringify(shipped.manifests) === '["SEED-MANIFEST.json"]',
+    `tasai only: ${said(r)} · absent: ${said(r2)} · shipped ${JSON.stringify(shipped.writers)}`,
   ];
 });
 
@@ -865,7 +1298,15 @@ t('check-cli-exits-1-and-names-regenerate-in-core', async () => {
 /** Place the CLI (and only the code it imports) inside a world's core, so its marker finds that core. */
 function withCli(W) {
   const dst = path.join(W.core, 'skills', 'bonsai-garden-mark');
-  for (const f of ['reserved-marks.mjs', 'origin.mjs', 'namespace.mjs', 'engine.js', 'kanji-1024-v1.2.json'])
+  for (const f of [
+    'reserved-marks.mjs',
+    'release-manifest.mjs',
+    'release-writers.json',
+    'origin.mjs',
+    'namespace.mjs',
+    'engine.js',
+    'kanji-1024-v1.2.json',
+  ])
     fs.copyFileSync(path.join(MARK, f), path.join(dst, f));
   fs.cpSync(SIGN_LIB, path.join(W.core, 'skills', 'bonsai-garden-sign', 'lib'), { recursive: true });
   fs.copyFileSync(

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-20T22:32:27Z",
+  "timestamp": "2026-10-21T20:01:01Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-portrait/references/identity.md",
-  "file-hash": "bc6935506a29e27cab7410c883e530c969c31154db19361b60cd2105ba997b90d92ba81af36c56b015609f4fa17dfbae1e9753b003113113d0d7719f1a950f63",
-  "signature": "h8ANN7+VwPTtsCv70EqgvggBCs+HCtsq4dVyijCmxKXO18qfK+YAUojI4rDLbZcuXzYC+/k0cAYqBn+97nuOBA=="
+  "file-hash": "94616e6009230d480320cebb4f0aceac177475c8f6d6ef5b1bf9671372f63526410f5c9ad92e3b5e74b136d982752cbce8bc9d971b856acb20bd7376a7a767fa",
+  "signature": "GtcueopnO+Ir5yvPUWavR7jIh3YVmrsJXy2e4GFFu9Ur8IFnOiSmJn7sAwC9yMqMpRDsA8G9BfNTUgbgIdapCA=="
 }

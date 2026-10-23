@@ -5,7 +5,7 @@
 # type: script
 # tended-by: tasai
 # created: 2026-10-16
-# updated: 2026-10-16
+# updated: 2026-10-21
 # ---
 """test-text-card.py: the text card and the gate on its kanji colours.
 
@@ -115,7 +115,7 @@ SALTS.write_text(
     encoding="utf-8",
 )
 
-PASSING = {"integrity": "pass", "identity": "pass", "files": "pass", "alive": "pass", "fullfp": "pass"}
+PASSING = {"integrity": "pass", "identity": "pass", "files": "pass", "alive": "not-asked", "fullfp": "pass"}  # every check that runs
 FACTS = [
     ("--subtitle", "South · fixture"),
     ("--intro", "Hello from the fixture."),
@@ -169,7 +169,7 @@ plain = card(plain=True)
 check("--plain draws the card (exit 0)", plain.returncode == 0, plain.stderr.strip())
 check("--plain has no escape codes at all", "\x1b" not in plain.stdout)
 check("the ANSI card does have them (the plain test is not vacuous)", "\x1b[" in ansi.stdout)
-check("the card names the kin, its fp8 and the verified mark", "Orma" in plain.stdout and "a1b2c3d4" in plain.stdout)
+check("the card names the kin and its fp8", "Orma" in plain.stdout and "a1b2c3d4" in plain.stdout)
 
 print("The seal")
 rows = kanji_rows(plain.stdout)
@@ -226,47 +226,95 @@ check(
     all(SALT not in r.stdout + r.stderr for r in (ansi, plain, pino, free, notlisted)),
 )
 
-print("Green only when earned")
-fail_first = card(states={**PASSING, "integrity": "fail"}, plain=True)
-check("a failed first check is marked failed", "✗ integrity" in fail_first.stdout)
-check(
-    "...and every later check stays unlit, though each passed",
-    all(f"· {n}" in fail_first.stdout for n in ("identity", "files", "alive", "fp")),
-    fail_first.stdout,
-)
-check("...with no tick anywhere, and no /verify mark", "✓" not in fail_first.stdout)
-fail_mid = card(states={**PASSING, "files": "fail"}, plain=True)
-check(
-    "a failure in the middle lights what came before and not what came after",
-    "✓ integrity" in fail_mid.stdout
-    and "✓ identity" in fail_mid.stdout
-    and "✗ files" in fail_mid.stdout
-    and "· alive" in fail_mid.stdout
-    and "· fp" in fail_mid.stdout,
-)
-missing_mid = card(states={**PASSING, "alive": "missing"}, plain=True)
-check(
-    "a check that is missing leaves the fingerprint unlit even when it passed",
-    "· alive" in missing_mid.stdout and "· fp" in missing_mid.stdout and "/verify" not in missing_mid.stdout,
-)
-missing_then_fail = card(states={**PASSING, "integrity": "missing", "identity": "fail"}, plain=True)
-check(
-    "a failure after a missing check is still marked failed, and nothing is ticked",
-    "· integrity" in missing_then_fail.stdout
-    and "✗ identity" in missing_then_fail.stdout
-    and all(f"· {n}" in missing_then_fail.stdout for n in ("files", "alive", "fp"))
-    and "✓" not in missing_then_fail.stdout,
-    missing_then_fail.stdout,
-)
+print("Said only when it fails")
+
+
+def top(r):
+    """The card's first line, or "" when nothing was drawn (a FAIL, never a traceback)."""
+    return (r.stdout.splitlines() or [""])[0]
+
+
+NAMES = ("integrity", "identity", "files", "alive", "full fingerprint")
 good = plain.stdout
 check(
-    "all five passing gives five ticks and the verify mark",
-    all(f"✓ {n}" in good for n in ("integrity", "identity", "files", "alive", "fp")) and "/verify ✓" in good,
+    "every check that ran passing, alive not asked: nothing said of them, no tick, no loud line",
+    not any(n in good for n in NAMES) and "✓" not in good and "▲" not in good,
+    good,
 )
-GREEN_CODE = "38;2;88;166;92"
-fail_ansi = card(states={**PASSING, "integrity": "fail"})
-check("in colour, a failed card carries no green at all", GREEN_CODE not in fail_ansi.stdout)
-check("...while the all-pass card does", GREEN_CODE in ansi.stdout)
+check("...and nothing of the MCP or the skill while they are current", "fixture current" not in good and "skill" not in good)
+fail_first = card("orma", "--said", "integrity=MISMATCH SKILL.md", states={**PASSING, "integrity": "fail"}, plain=True)
+first_line = top(fail_first)
+check(
+    "a failed check opens the card with one loud line, naming it and what it said",
+    first_line.startswith("▲") and "integrity failed: MISMATCH SKILL.md" in first_line,
+    first_line,
+    show=True,
+)
+check(
+    "...and the checks that passed are not mentioned",
+    not any(n in fail_first.stdout for n in ("identity", "files", "alive", "full fingerprint")),
+)
+check("...and exactly one loud line", fail_first.stdout.count("▲") == 1)
+missing = card(states={**PASSING, "files": "missing"}, plain=True)
+check(
+    "a check that could not run is said, never shown as passed",
+    "files could not run" in top(missing) and "✓" not in missing.stdout,
+    top(missing),
+    show=True,
+)
+both = card(states={**PASSING, "integrity": "missing", "identity": "fail"}, plain=True)
+check(
+    "a missing check and a failed one are both said, in order, on the one line",
+    "integrity could not run · identity failed" in top(both),
+    top(both),
+)
+stale = card("orma", "--mcp", "mcp 84f4c0e5 · STALE · http", plain=True)
+check("an MCP whose line reads STALE is said, though every check passed", "mcp: mcp 84f4c0e5 · STALE" in stale.stdout)
+drift = card("orma", "--skill-state", "warn", plain=True)
+check("a skill marked warn is said", "skill: current" in top(drift))
+quiet = card("orma", "--said", "alive=nothing to say", plain=True)
+check("what a check not asked said is not shown: nothing is worth mentioning", "nothing to say" not in quiet.stdout)
+badsaid = card("orma", "--said", "liveness=x", plain=True)
+check("--said with a check that is not one of the five is refused (exit 2)", badsaid.returncode == 2, badsaid.stderr.strip())
+AMBER_BG = "48;2;224;160;74"
+loud_ansi = card("orma", "--said", "files=松 mismatch", states={**PASSING, "files": "fail"})
+check("in colour, the loud line is black on garden amber", AMBER_BG in loud_ansi.stdout and "38;2;0;0;0" in loud_ansi.stdout)
+check("...and the all-pass card carries no amber ground", AMBER_BG not in ansi.stdout)
+gl = gate(loud_ansi.stdout)
+check("...and a kanji in what a check said passes the gate, black", gl.returncode == 0, gl.stdout.strip().replace("\n", " | "))
+
+print("alive: not asked until the handshake exists")
+NO_ALIVE = {k: v for k, v in PASSING.items() if k != "alive"}
+unasked = card(states=NO_ALIVE, plain=True)
+check(
+    "left out, alive is not asked: the card is drawn, and quiet",
+    unasked.returncode == 0 and "▲" not in unasked.stdout and "alive" not in unasked.stdout,
+    unasked.stderr.strip() or top(unasked),
+)
+for st in ("pass", "fail", "missing"):
+    r = card(states={**PASSING, "alive": st}, plain=True)
+    check(
+        f"--alive {st} is refused until the handshake exists (exit 2): nothing can produce it honestly",
+        r.returncode == 2 and not r.stdout and "handshake" in r.stderr,
+        r.stderr.strip(),
+        show=st == "pass",
+    )
+for name in ("integrity", "identity", "files", "fullfp"):
+    r = card(states={**PASSING, name: "not-asked"}, plain=True)
+    check(
+        f"--{name} not-asked is refused: only alive may be not asked (exit 2)",
+        r.returncode == 2 and not r.stdout and "only alive" in r.stderr,
+        r.stderr.strip(),
+    )
+fg = load(HERE / "fill-greeting.py", "fill_greeting")
+check(
+    "the one place (fill-greeting.py) says it: only alive may be not asked, alive takes nothing else, alive's default",
+    getattr(fg, "MAY_BE_NOT_ASKED", None) == {"alive"}
+    and getattr(fg, "UNTIL_HANDSHAKE", None) == {"alive"}
+    and hasattr(fg, "default_state")
+    and fg.default_state("alive") == "not-asked"
+    and fg.default_state("files") == "missing",
+)
 
 print("The clock, the build, the registry")
 oslo = card("orma", "--tz", "Europe/Oslo", plain=True)

@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-20
+// updated: 2026-10-22
 // ---
 //
 // test-keys.mjs — spec-gardeners-keys.md §13, every refusal planted, never read off the code.
@@ -155,9 +155,9 @@ fs.writeFileSync(path.join(FAKEBIN, 'op'), FAKE_OP, { mode: 0o755 });
 
 // ── the core the binary runs from: copies, each with a planted reserved set and a fake origin ──
 
-const ORIGIN_KEY = FAKE.throwawaySigner('fixture-origin'); // seals the planted reserved sets
+const ORIGIN_KEY = FAKE.throwawaySigner('mori-shin'); // seals the planted reserved sets: the reader pins the set's owner to her (spec 0.7.0 §6.4)
 const BONSAI_KEY = FAKE.throwawaySigner('bonsai'); // stands in for the origin's Bonsai key
-const STRANGER_KEY = FAKE.throwawaySigner('fixture-stranger'); // a key the fake site does not hold
+const STRANGER_KEY = FAKE.throwawaySigner('mori-shin'); // her slug, a key the fake site does not hold: the site's word, not the pin, refuses it
 const VERIFIER = FAKE.keypair();
 const ABOUT = [
   // spec §6.3, copied independently
@@ -333,7 +333,7 @@ function fpIndices(fpHex, n) {
 }
 const markIdx = (s) => fpIndices(crypto.createHash('sha256').update(s, 'utf8').digest('hex'), 3);
 const chars = (idx) => idx.map((i) => SET[i].char).join('');
-// the guardian's pair is drawn, never chosen (spec §7.1): its identity takes no --pair, and the first attempt stands
+// the guardian's pair is drawn, never chosen (spec §7.1): their identity takes no --pair, and the first attempt stands
 const pairArg = (slug, a, b) => (slug === 'bonsai-shin' ? [] : ['--pair', SET[a].char + SET[b].char]);
 
 // The Aruji's rule (spec 0.1.5) at its floor: the wildcard 〇, set B's six, and 33 first kanji in A.
@@ -1131,8 +1131,9 @@ t('derive-refuses-a-slug-without-a-signing-salt', () => {
 /**
  * Bonsai's seed entry, as core ships it (bonsai-garden-seed-entry/1) and sealed owner by the key the
  * fake site holds for `bonsai`: a THROWAWAY stand-in, test material only. Variants plant what seed
- * must refuse: another key (self-consistent, sealed by itself), no seal, a custodian seal, a seal
- * on another address, the file edited after its seal, and a seal by another key than the entry's.
+ * must refuse: another key (self-consistent, sealed by itself), no seal, a custodian seal, another
+ * format, the file edited after its seal, and a seal by another key than the entry's. A seal on another
+ * address is not refused: the target is shown, never a verdict (spec 0.7.0 §8.1, F-12).
  */
 function bonsaiEntry(
   W,
@@ -1343,7 +1344,7 @@ t('seed-gives-the-origin-the-pronouns-the-seed-entry-states-and-the-guardian-the
 
 // The entry seed reads is a second copy of fields core's registry states, and nothing held them together: it went without
 // pronouns while every registry said he/him (the gardener, 2026-10-20: "Bonsai has always been „he/him" - from day 1 - so
-// that is a house-keeping miss, let's fix it for good pls"). core's tools/check-seed-entry.py is the gate (the seed cut runs
+// that is a house-keeping miss, let's fix it for good pls"). core's tools/check-seed-entry.py is the gate (a release runs
 // it too); here every keys run asks it of the files core ships, and of a planted copy without pronouns, so a gate that
 // stopped looking could not pass this case.
 t('the-seed-entry-core-ships-says-what-cores-registry-says-of-bonsai-field-for-field', () => {
@@ -1499,11 +1500,13 @@ t('verify-names-only-keys-pot', () => {
 t('attest-refuses-a-root-key-that-is-not-32-bytes', () => {
   const { W } = seededWorld();
   const g = gardenJson(W.pot);
-  g['root-public-key'] = 'AAAA'; // three bytes; no 64 hex anywhere, so only the length check can refuse
+  g['root-public-key'] = 'AAAA'; // three bytes; no 64 hex anywhere, so only the reader's shape check can refuse
   fs.writeFileSync(path.join(W.pot, 'garden.json'), `${JSON.stringify(g, null, 2)}\n`);
   const r = run(W, ['attest', '--pot', W.pot, '--backends', 'secret-service']);
   return [
-    r.code === 2 && /root-public-key/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.yaml')),
+    r.code === 2 &&
+      /garden\.root-public-key is not 32 bytes/.test(r.stderr) &&
+      !exists(path.join(W.pot, 'garden-attestation.json')),
     `exit ${r.code}`,
   ];
 });
@@ -1517,42 +1520,41 @@ t('attest-refuses-a-secret-shape-in-a-field', () => {
   fs.writeFileSync(regFile, `${JSON.stringify(reg, null, 2)}\n`);
   const r = run(W, ['attest', '--pot', W.pot, '--backends', 'secret-service']);
   return [
-    r.code === 2 && /not public material/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.yaml')),
+    r.code === 2 && /not public material/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.json')),
     `exit ${r.code}: ${r.stderr.trim().split('\n')[0]}`,
   ];
 });
 
 t('attest-refuses-a-fragment-of-the-salt', () => {
-  // the salt's first eight characters in the garden's name: no field is 64 hex, the document is not
+  // the salt's first eight characters in Bonsai's fingerprint as the registry holds it: the one value the envelope
+  // takes from a file as it stands (guardian.parent); since 0.9.2 the body carries no name, so the garden's name, where
+  // this was planted before, can no longer carry it. No field is 64 hex, and the body is one the reader takes.
   const { W, u } = seededWorld();
-  const g = gardenJson(W.pot);
-  g.name = `${g.name}-${ssItem(W, u).slice(0, 8)}`;
-  fs.writeFileSync(path.join(W.pot, 'garden.json'), `${JSON.stringify(g, null, 2)}\n`);
+  const regFile = path.join(W.pot, 'agents', 'registry.json');
+  const reg = JSON.parse(fs.readFileSync(regFile, 'utf8'));
+  reg.agents.find((a) => a.slug === 'bonsai').fingerprint = `${ssItem(W, u).slice(0, 8)}${'a'.repeat(24)}`;
+  fs.writeFileSync(regFile, `${JSON.stringify(reg, null, 2)}\n`);
   const r = run(W, ['attest', '--pot', W.pot, '--backends', 'secret-service']);
   return [
-    r.code === 2 && /master salt, or a fragment/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.yaml')),
+    r.code === 2 && /master salt, or a fragment/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.json')),
     `exit ${r.code}: ${r.stderr.trim().split('\n')[0]}`,
   ];
 });
 
-t('attest-refuses-a-fragment-in-upper-case', () => {
-  // the salt is random: when its first eight are all digits, upper case IS lower case and the case
-  // watches nothing (it passed for the wrong reason once, 2026-10-07, on 8 digits). Plant again then.
-  let W, u;
-  for (let n = 0; n < 6; n++) {
-    ({ W, u } = seededWorld());
-    if (/[a-f]/.test(ssItem(W, u).slice(0, 8))) break;
-  }
-  if (!/[a-f]/.test(ssItem(W, u).slice(0, 8)))
-    return [false, 'six salts in a row began with eight digits; the case cannot watch its guard'];
-  const g = gardenJson(W.pot);
-  g.name = `${g.name}-${ssItem(W, u).slice(0, 8).toUpperCase()}`;
-  fs.writeFileSync(path.join(W.pot, 'garden.json'), `${JSON.stringify(g, null, 2)}\n`);
-  const r = run(W, ['attest', '--pot', W.pot, '--backends', 'secret-service']);
-  return [
-    r.code === 2 && /master salt, or a fragment/.test(r.stderr) && !exists(path.join(W.pot, 'garden-attestation.yaml')),
-    `exit ${r.code}`,
-  ];
+t('attest-refuses-a-fragment-in-upper-case', async () => {
+  // the check reads the salt's fragment in any case. Since 0.9.2 every value of the envelope is lower-case hex, base64,
+  // kanji or a word of its own format, so no planting through the binary reaches this guard: it is watched here, on the
+  // check itself, with a fragment that carries letters (an all-digit one would watch nothing: it passed for the wrong
+  // reason once, 2026-10-07)
+  const { publicMaterialProblems } = await import(path.join(SKILL, 'lib', 'garden.mjs'));
+  const hex = `ab12cd34${'ef'.repeat(28)}`;
+  const p = publicMaterialProblems({
+    g: { name: 'marta' },
+    reg: { agents: [] },
+    doc: `{"x":"${hex.slice(0, 8).toUpperCase()}"}`,
+    hex,
+  });
+  return [p.length === 1 && p[0].check === 'salt' && /master salt, or a fragment/.test(p[0].why), JSON.stringify(p)];
 });
 
 t('attest-document-check-stands-alone', async () => {
@@ -1745,14 +1747,17 @@ process.exit(2);
   ];
 });
 
-t('the-arc-end-to-end-and-the-secret-never-leaks', () => {
+t('the-arc-end-to-end-and-the-secret-never-leaks', async () => {
   const ctx = seededWorld({ fpAttests: '2' });
   const { W, u, pairs } = ctx;
   const name = gardenJson(W.pot).name;
   const a = run(W, ['attest', '--pot', W.pot, '--backends', 'secret-service']);
   const v1 = run(W, ['verify', '--keys', 'pot', '--pot', W.pot, '--file', path.join(W.pot, 'garden.json')]);
   const v2 = run(W, ['verify', '--keys', 'pot', '--pot', W.pot, '--file', path.join(W.pot, 'agents', 'registry.json')]);
-  const v3 = run(W, ['verify', '--keys', 'pot', '--pot', W.pot, '--file', path.join(W.pot, 'garden-attestation.yaml')]);
+  // the call home's envelope carries its signatures inline (bonsai-garden-attestation/1): read by its own reader
+  const ATT = await import(path.join(SKILL, 'lib', 'attestation.mjs'));
+  const envFile = path.join(W.pot, 'garden-attestation.json');
+  const env = fs.existsSync(envFile) ? JSON.parse(fs.readFileSync(envFile, 'utf8')) : null;
   const st = run(W, ['status', '--pot', W.pot]);
   const reg = JSON.parse(fs.readFileSync(path.join(W.pot, 'agents', 'registry.json'), 'utf8'));
   const g = gardenJson(W.pot);
@@ -1771,9 +1776,13 @@ t('the-arc-end-to-end-and-the-secret-never-leaks', () => {
   const root = reg.agents.find((x) => x.slug === name);
   chains =
     chains && root && root.type === 'garden' && root['fp-attests'] === 0 && root.fingerprint === g['root-fingerprint'];
-  const att = fs.existsSync(path.join(W.pot, 'garden-attestation.yaml'))
-    ? fs.readFileSync(path.join(W.pot, 'garden-attestation.yaml'), 'utf8')
-    : '';
+  const read = env
+    ? ATT.envelopeProblems(env, {
+        parent: reg.agents.find((x) => x.slug === 'bonsai')?.fingerprint,
+        need: ['root', 'guardian'],
+      })
+    : [{ reason: 'absent' }];
+  const att = env ? env.body : {};
 
   // §3.5: the hex, its first 8, its base64 and its raw bytes, in every byte any step printed or wrote
   const hex = ssItem(W, u);
@@ -1810,17 +1819,17 @@ t('the-arc-end-to-end-and-the-secret-never-leaks', () => {
     a.code === 0 &&
     v1.code === 0 &&
     v2.code === 0 &&
-    v3.code === 0 &&
+    read.length === 0 &&
     st.code === 0 &&
     chains &&
-    /custody-tier: os-protected/.test(att) &&
-    att.includes(g.namespace.kanji) &&
+    att['custody-tier'] === 'os-protected' &&
+    att.garden?.namespace === g.namespace.kanji &&
     hits.length === 0 &&
     g['recovery-drilled'] &&
     /attest/.test(st.stdout);
   return [
     ok,
-    `attest ${a.code}, verify ${v1.code}/${v2.code}/${v3.code}, chains ${chains}, leaks ${hits.length ? hits.join('; ') : 0}`,
+    `attest ${a.code}, verify ${v1.code}/${v2.code}, envelope ${read.map((x) => x.reason).join(',') || 'clean'}, chains ${chains}, leaks ${hits.length ? hits.join('; ') : 0}`,
   ];
 });
 
@@ -1848,9 +1857,9 @@ t('lab-preview-arc-records-the-tier-everywhere', () => {
   const reg = exists(path.join(W.pot, 'agents', 'registry.json'))
     ? JSON.parse(fs.readFileSync(path.join(W.pot, 'agents', 'registry.json'), 'utf8'))
     : { agents: [] };
-  const att = exists(path.join(W.pot, 'garden-attestation.yaml'))
-    ? fs.readFileSync(path.join(W.pot, 'garden-attestation.yaml'), 'utf8')
-    : '';
+  const att = exists(path.join(W.pot, 'garden-attestation.json'))
+    ? JSON.parse(fs.readFileSync(path.join(W.pot, 'garden-attestation.json'), 'utf8')).body
+    : {};
   const g = gardenJson(W.pot);
   const custodyFile = path.join(W.home, '.bonsai-garden', 'custody', `${u}.salt.sealed`);
   const ok =
@@ -1858,8 +1867,8 @@ t('lab-preview-arc-records-the-tier-everywhere', () => {
     g['custody-tier'] === 'software-fallback' &&
     g['lab-preview'] === true &&
     reg.agents.filter((x) => x.slug !== 'bonsai').every((x) => x['custody-tier'] === 'software-fallback') &&
-    /custody-tier: software-fallback/.test(att) &&
-    /lab-preview: true/.test(att) &&
+    att['custody-tier'] === 'software-fallback' &&
+    att['lab-preview'] === true &&
     exists(custodyFile) &&
     (fs.statSync(custodyFile).mode & 0o077) === 0;
   return [ok, `codes ${[m, e, d, n, s, a].map((x) => x.code).join(',')}`];
@@ -2474,7 +2483,7 @@ t('namespace-asks-the-origin-once-and-proceeds-on-its-word', () => {
   const r = run(W, ['namespace', '--pot', W.pot, '--backends', 'secret-service']);
   const log = fs.readFileSync(W.siteLog, 'utf8').trim().split('\n');
   return [
-    r.code === 0 && !!gardenJson(W.pot).namespace && log.length === 1 && log[0] === 'ASK fixture-origin',
+    r.code === 0 && !!gardenJson(W.pot).namespace && log.length === 1 && log[0] === 'ASK mori-shin',
     `exit ${r.code}; asked ${JSON.stringify(log)}`,
   ];
 });
@@ -2665,15 +2674,34 @@ t('seed-refuses-a-seal-that-is-not-bonsais-owner-seal', () => {
   ];
 });
 
-t('seed-refuses-a-seal-on-another-address', () => {
+t('seed-shows-a-seal-on-another-address-and-asks', () => {
+  // spec 0.7.0 §8.1: the seal's target is shown and is not a verdict (F-12); the signer pin, the owner role, the
+  // entry's format and the fingerprint the site names carry the identity. Before 0.9.2 this was refused unasked.
   const { W } = readyToSeed();
   const r = seedOf(W, bonsaiEntry(W, { target: 'agents/elsewhere/bonsai-seed-entry.json' }));
+  const reg = noRegistry(W)
+    ? { agents: [] }
+    : JSON.parse(fs.readFileSync(path.join(W.pot, 'agents', 'registry.json'), 'utf8'));
+  const b = reg.agents.find((a) => a.slug === 'bonsai') || {};
   return [
-    r.code === 2 &&
-      /agents\/bonsai\/identity\/bonsai-seed-entry\.json/.test(r.stderr) &&
-      noRegistry(W) &&
-      asked(W) === 0,
-    `exit ${r.code}: ${r.stderr.trim().slice(0, 120)}`,
+    r.code === 0 &&
+      /agents\/elsewhere\/bonsai-seed-entry\.json/.test(r.stdout) &&
+      /not a verdict/.test(r.stdout) &&
+      b.fingerprint === BONSAI_KEY.fingerprint &&
+      typeof b.vouched === 'string' &&
+      asked(W) === 1,
+    `exit ${r.code}: ${(r.stdout + r.stderr).trim().split('\n')[0].slice(0, 140)}; asked ${asked(W)}`,
+  ];
+});
+
+t('seed-refuses-an-entry-in-another-format', () => {
+  // with the target no verdict, the entry's format is one of what carries its identity (§8.1): a file Bonsai sealed
+  // owner that states his slug, key and fingerprint in another format is not his seed entry
+  const { W } = readyToSeed();
+  const r = seedOf(W, bonsaiEntry(W, { extra: { format: 'bonsai-garden-identity-card/1' } }));
+  return [
+    r.code === 2 && /bonsai-garden-seed-entry\/1/.test(r.stderr) && noRegistry(W) && asked(W) === 0,
+    `exit ${r.code}: ${r.stderr.trim().split('\n')[0].slice(0, 120)}; asked ${asked(W)}`,
   ];
 });
 

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T15:00:05Z",
+  "timestamp": "2026-10-21T18:15:50Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-keys/test-seal-staged.mjs",
-  "file-hash": "fef66f52dc849721ad94322fa8b06972e53f4f32b1e2d42dcb6f6e4558d637ed40bf6b06c974d2991c8765dc86c705df985db90ac31cfa62df4ef783376cf367",
-  "signature": "9bkaDcPU5Q6EQdScvY/RWjXga8NjWtdUItlE3LTZxlFCpQQghV34Hh6xi7YubcV7CiJ+essLa6kj835NEuafBw=="
+  "file-hash": "862dd5088e984cbefc56dcd0104057981b8da0c0029e97762d4ef70dc8abbb0c236b5c12ecfa98e317e6ca0de9b1036ab947ac4471d9d41193c099ff1bb39ed3",
+  "signature": "dUuuNHHi1dK/mG0j9Y4ZVckMS92DZSkrxni9rnJ6uUrAOQE1LW6WdLmvfKUGr4eIZUrSZkc9qkgyfJ/5v1cdCg=="
 }

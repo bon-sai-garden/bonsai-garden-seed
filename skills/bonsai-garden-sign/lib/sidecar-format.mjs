@@ -33,7 +33,7 @@ export const BONSAI_SIG_EXT = '.bonsaisig';
 export const ALGORITHM_MD = 'ed25519+blake2b512';
 
 /**
- * TWO NAMES, ONE SEAL (the dot-prefixed sidecar change, mono `rituals/specs/spec-sidecar-dot-prefix.md`).
+ * TWO NAMES, ONE SEAL (the dot-prefixed sidecar change, the garden's `rituals/specs/spec-sidecar-dot-prefix.md`).
  * The sidecar of `X` is moving from `X.bonsaisig` to `.X.bonsaisig`: hidden, beside
  * its file, moving with it. Exactly one dot is added on the way out and exactly one
  * removed on the way back, so a hidden file keeps its own: `.gitignore` seals as
@@ -41,7 +41,7 @@ export const ALGORITHM_MD = 'ed25519+blake2b512';
  * signed field, so a rename is not a re-seal.
  *
  * Phase 1a: every READER resolves through `findSidecar` and accepts either name.
- * Phase 1b (2026-10-05, mono `4d9bbc866` for sign.py, this file for Node): every WRITER
+ * Phase 1b (2026-10-05, sign.py and this file for Node): every WRITER
  * writes the hidden name through `writeSealSidecar`, and an old-name sidecar found beside
  * the file is moved onto the hidden name (the same bytes, one rename) before the write, so
  * a re-seal keeps the id it found there and never leaves two. Hand-built

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T13:26:37Z",
+  "timestamp": "2026-10-23T05:17:01Z",
   "algorithm": "ed25519+blake2b512",
   "target": "SEED-MANIFEST.json",
-  "file-hash": "fe7eded970d70cdcfe37b96a43c85b00d1835d8cd5860a08912f33fa367fe45af8647ba66c23ad5cdff794bb567380bcf4ee00d41eb5ae37fad95a737ba29a61",
-  "signature": "3Tw2FcGUdQKyrvqKJbirRQvnrUbOi8Si/l5sUe2P3vDrBJq+JK7BjIkU8+XpK1qfRKzckoRI2JLEMSVNUUYNAA=="
+  "file-hash": "ae785a739617aee5395fbc9459e39de4da013cba23f8a86f05f3777c19e76947038129a0af9cd9c487b7ac0725335df8c435ae9cd1ee706a0c7c367d2f249342",
+  "signature": "ENrvIZNJaLizDUtn4RIcjd2hpzAxpfQtJCzpUJrjmljJ4VkCnjRIlb0Uzx7y3hafuxyneVn0W5/M0ftgdAdgDQ=="
 }

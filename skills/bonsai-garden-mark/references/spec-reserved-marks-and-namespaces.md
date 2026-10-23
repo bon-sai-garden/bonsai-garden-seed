@@ -4,7 +4,7 @@ title: "Reserved marks and garden namespaces — spec"
 type: spec
 tended-by: baisai
 created: 2026-09-24
-updated: 2026-09-24
+updated: 2026-10-21
 version: 0.1.0-draft
 status: draft
 tags: [spec, kanji-identicon, reserved-marks, namespaces, ledger, trust, publication-readiness]
@@ -61,7 +61,7 @@ The classes in use today:
 | class | kanji | index | meaning |
 |---|---|---|---|
 | *-sai (a kin who is a talent) | 才 | 1 | talent, genius |
-| *-shin (a divided body, or a companion body) | 身 | 5 | divided body: a presence of its own, not its vessel |
+| *-shin (a divided body, or a companion body) | 身 | 5 | divided body: a presence of their own, not their vessel |
 | skill | 技 | 582 | skill, art, craft |
 | gardener / the garden itself | 園 | 3 | garden |
 
@@ -182,7 +182,7 @@ don't sign.
 ## 7 · Getting there from today
 
 1. **Merge the registers.** `reserved-hashes-v1.0/1.1`, `locked-salts.json` and `reserved-hashes-skills.json` exist
-   in mono, runtime and pot, and have diverged (reported to Mori-shin 2026-09-22). Merge them into one ledger
+   in three of the garden's other checkouts, and have diverged (reported to Mori-shin 2026-09-22). Merge them into one ledger
    in **pot** (this garden's instance: `identity/marks/`), repoint every writer at it, and leave tombstones.
    Mori-shin's hand; it's a trust root.
 2. **Rename the secret file.** One `locked-salts.json` holds public identicon salts and another holds **secret**

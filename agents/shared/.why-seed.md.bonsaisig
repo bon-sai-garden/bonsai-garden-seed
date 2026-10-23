@@ -4,9 +4,9 @@
   "signer": "zensai",
   "role": "owner",
   "fingerprint": "03801f1b5238186f88b4bd8853d629c4",
-  "timestamp": "2026-10-16T14:33:10Z",
+  "timestamp": "2026-10-22T17:31:33Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/shared/why-seed.md",
-  "file-hash": "c013652ff857767be4f9a419baba172cfe047128eae2ad69aa768b103f8f34c0c6171ee5b7f9963f6cabf518378b24530dddec6ed81469f7c37ce592ac405031",
-  "signature": "NRWWHH41s4vCLFFkp9gMr2jpGmBpSFpp1KUNUldJZT9SxMJoNsWdAyAmvhoCk56D2297aeljT4qarDpIehhyBQ=="
+  "file-hash": "57bd741b173e86b13449dd858f52f812a818f9dff960734d02725d7612d08b59d4a72b71455e2796661331d2e2f66eba5a67bcd482875b92c51ccf44c16ad136",
+  "signature": "t32+sbRBYdZij/VmUIGjDvPMBZaX8xt7il618X6/xaL3S+emFMXaW7mKk8MtIvCnK05wXsK+79fyXDuZmm0sAQ=="
 }

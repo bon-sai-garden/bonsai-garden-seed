@@ -6,7 +6,7 @@
  * type: script
  * tended-by: mori-shin
  * created: 2026-09-13
- * updated: 2026-09-26
+ * updated: 2026-10-21
  * ---
  * `type: script` is a placeholder — pending Baisai's patterns.md proposal
  * (2026-09-13 review); see ../lib/derive-key.mjs's header for the full note.
@@ -26,7 +26,7 @@
  *       the workshop's existing .bonsaisig sidecars (file/signer/algorithm/
  *       timestamp/file_hash/signature/public_key_hex/fingerprint).
  *       <salt> is the agent's own signing salt (e.g. "bonsai-sign#587893")
- *       — the per-agent salt, not the master salt. Per bonsai-garden's own
+ *       — the per-agent salt, not the master salt. Per the origin garden's own
  *       convention (see tools/keyring/setup.mjs's header), an agent's
  *       signing salt is the shareable half; it is not itself a secret.
  *
@@ -222,7 +222,7 @@ function keysMode(args) {
  *             the original: raw bytes against a key the caller already holds.
  *   embedded  --file <x.md> alone
  *             what `python3 tools/sign.py verify <file>` means, and what ~10
- *             live callers in the mono repo actually run (resign-all.sh,
+ *             live callers in the origin garden actually run (resign-all.sh,
  *             resign-delta.sh, post-write-sign.sh, build-w-shintai.sh,
  *             sign-w-constitution.sh, validate-metadata.py, …).
  *
@@ -438,7 +438,7 @@ async function cmdVerifySidecar(args) {
  * garden's 143 `.bonsaisig` files.
  *
  * Differs from sign.py in exactly one respect, and it is deliberate: the signing
- * salt is PASSED IN (`--agent-salt`) rather than looked up in the mono repo's
+ * salt is PASSED IN (`--agent-salt`) rather than looked up in the origin garden's
  * locked-salts.json. sign-service.mjs's header states why core does not read a
  * registry to find key material. That makes the caller name the key it signs
  * with — the property the 2026-08-24 silent-wrong-key report asked for. The

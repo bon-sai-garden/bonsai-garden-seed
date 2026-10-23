@@ -4,11 +4,11 @@
 // type: script
 // tended-by: mori-shin
 // created: 2026-10-11
-// updated: 2026-10-11
+// updated: 2026-10-21
 // ---
 /**
  * pot-keys.mjs — `verify-sidecar <file> --keys pot --pot <dir> [--expect-fp <fp32>]`, the Node half (Mori-shin's ruling of 2026-10-11;
- * the Python half is tools/sign.py `_load_pot_key`, mono 5e1b712a6). A pot's registry vouching for the pot's own files is internal
+ * the Python half is tools/sign.py `_load_pot_key`, in the origin garden). A pot's registry vouching for the pot's own files is internal
  * consistency, not identity, so:
  *
  *   * the pot is NAMED (`--pot`), never inferred from where the file sits: a forged file planted beside its own registry and key

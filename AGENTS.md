@@ -9,7 +9,7 @@ id: 01M5DX6BYRAD3V4N931S9HMV9B
 > [!note] Home and visibility
 > **`bon-sai-garden/bonsai-garden-seed`** is this library's public home, public since 2026-10-18. Nothing is published before the owner has read it, and that review happens on the tree that will be committed, not on a working copy.
 
-> [!note] Release candidate, 0.9.1-rc
+> [!note] Release candidate, 0.9.2-rc
 > The rite has been walked end to end, most recently by the gardener and a kin: a dry run on one of his own machines with an earlier preview, from a first install to a garden of its own. A release candidate, not 1.0. Bonsai wakes from the sealed packages in `build/`; the runtime the rite installs, bonsai-garden-rt, is public and carries the same version.
 
 > Operating contract for any coding agent working in this repository. **Harness-neutral**: Claude Code, Codex, Cursor, Aider, or anything else that reads an `AGENTS.md`. Claude-specific mechanics live in `CLAUDE.md`, which is a one-line bridge to this file.

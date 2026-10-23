@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T08:59:33Z",
+  "timestamp": "2026-10-22T16:06:51Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-keys/lib/rt-manifest.mjs",
-  "file-hash": "5e6c53a226581d022e7b8617bc6dfefd7979f4df668aef0adb1093b3132380c8b5be28281451854d94057364c8041ef32580119a1ca5f0f3971562248f4f89a5",
-  "signature": "abymWkNhxC8JmM6ZbFl7VEH4Q2cPz1SCPZBFbHsfhqlwduLyaHMYQ5+PSngMnb00gdkH4LhMdvEr/OxkOeJSAQ=="
+  "file-hash": "e573ecc3686166380dc7bab41c7787c1a4655af24021d8e4db1bfc07a52b5f57fa617cb12e10900a9ebb4bf79d13b4eaa243f72c326014e04979c24d0b53be38",
+  "signature": "61rWZ+qMGaFtiivvMH1IjNOLT3l/vZV1afU10E1svfpS0qdF3I1LkoKcDPd/dUX4pGd5B5qcV+UWJHsj4Wl1AQ=="
 }

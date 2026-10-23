@@ -23,7 +23,7 @@ fixture salts, so the fixture garden's keys exist nowhere else — which is why 
       09d7b894: the registry names the current key, identity/ holds the old one) → refused,
       under garden keys and under the published keys
   T5  a SKILL.md without the integrity line → the builder refuses; the skill gate FAILs
-  T6  the stamp contract equals skill_install.py's (when a mono checkout is beside core)
+  T6  the stamp contract equals skill_install.py's (when $BONSAI_GARDEN names a garden checkout that holds it)
   T7  an untracked key beside a source is left out; a committed one is refused
   T8  Tasai's case, on a scratch clone of core: ignored *.key / private.* / *.pem planted in a real
       skill folder are left out; a tracked *.key, private*, *.p12 or PEM private-key block is refused
@@ -42,15 +42,14 @@ fixture salts, so the fixture garden's keys exist nowhere else — which is why 
       gate passes it only with --unsealed. --salts through the signing gate → sealed by the owners, wakes ok. --salts
       with no gate → refused, never an unsealed fallback. Another name with no list → refused. M7: a verifier that
       waves an unsealed manifest through is refused by the builder's own wake check.
-  T17 what core does not publish (the gardener, 2026-10-16: those histories "stay in core and leave seed"; Bonsai's F6
-      on the release 7a40497e), on T16's scratch clone, its seed slice excluding a planted file of the kin: the file
-      a tree copy meets is left out of the package and named; a file the plugin names by itself is refused; a slice
-      that cannot answer refuses the build. Where the slice is (2.4.0, the strip): the pot's build-process/, named,
-      answers for core; two slices that differ refuse; a core checkout with no slice and no distro manifest is refused;
-      one that carries a distro manifest (a cut) builds. M8: a builder that does not ask the slice ships the planted
-      file. M9: a builder that reads 'no tools/distro/' as a cut ships it too. T17i (Fuji-shin's phase-1 check, the
-      hold on 2.4.0): the stranger walk's (b), its gate form's cut of the clone built by README's command as written,
-      the walk and its cut tool under test; M10: a walk that materializes the cut without its manifest fails there.
+  T17 what a release leaves out (the gardener, 2026-10-16: those histories "stay in core and leave seed"; Bonsai's F6
+      on the release 7a40497e), on T16's scratch clone, its leave-out list (--leave-out, 2.7.0) naming a planted file
+      of the kin: the file a tree copy meets is left out of the package and named; a file the plugin names by itself
+      is refused; a list that cannot answer (missing, empty, a path outside the checkout, a file it does not track)
+      refuses the build; a checkout with no list and no release manifest at its root is refused; one that carries a
+      release manifest builds with none; a manifest of another format is no release manifest. M8: a builder that does
+      not read the list ships the planted file. M9: a builder that takes no list for nothing left out ships it too.
+      M13: a builder that takes any root manifest for a release manifest builds where T17k refuses.
   T19 the app's install, replayed (W's F-1, dry run 3, 2026-10-18: the Claude app re-emits SKILL.md's frontmatter and
       single-quotes `version`, so the plugin's byte-exact manifest failed on a correct install). The packaged SKILL.md
       says version: 'M.m.p' and a YAML read gives that string; the replay changes no byte of the .skill (ok, no
@@ -66,7 +65,10 @@ is a SKIP, said out loud, exit 0: nothing was checked, and the line says so (202
 
 Its premises come first (2026-10-18): every file it reads from the checkout it sits in, and that checkout a git one.
 A premise that is not there is a FAIL, exit 1, before any SKIP: in a bare home the SKIP hid T16's traceback in the
-seed, which does not carry the cut's generator (Fuji-shin, the round's first user). `--premises` checks them alone.
+seed (Fuji-shin, the round's first user). `--premises` checks them alone.
+
+A build from a checkout that carries no release manifest names its leave-out list (package.py 2.7.0): every build here
+from such a checkout names one, made by LEAVE below, true of the checkout and touching no fixture package.
 
 The signing gate's test mode (2026-10-18): with BONSAI_GATE_TEST_MASTER_SALT (a throwaway) and BONSAI_GATE_BIN in
 its environment, every seal goes through the gate under that salt, the fixture keys are derived from it here by a
@@ -97,8 +99,7 @@ PKG = Path(sys.argv[sys.argv.index("--package") + 1]).resolve() if "--package" i
 CORE = HERE.parents[2]
 SIGN = CORE / "skills" / "bonsai-garden-sign" / "bin" / "sign.mjs"
 SKILL_GATE = CORE / "tools" / "check-skill-conformance.py"
-WALK = CORE / "tools" / "distro" / "test-stranger-walk.py"  # the stranger walk, whose (b) T17i runs
-spec = importlib.util.spec_from_file_location("bonsai_package", PKG)
+spec =importlib.util.spec_from_file_location("bonsai_package", PKG)
 P = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(P)
 
@@ -110,11 +111,13 @@ PREMISES = {
     "verify-manifest.mjs, the wake check it packages": HERE / "verify-manifest.mjs",
     "sign.mjs, through which every seal here goes": SIGN,
     "check-skill-conformance.py, the skill gate": SKILL_GATE,
-    "build-distro.mjs, the cut's selection T16 and T17 copy": CORE / "tools" / "distro" / "build-distro.mjs",
-    "seed-slice.json, the slice T16 and T17 edit": CORE / "tools" / "distro" / "seed-slice.json",
-    "test-stranger-walk.py, the walk whose (b) T17i runs": WALK,
     "a git checkout of core, which T8 and T16 clone": CORE / ".git",
 }
+
+# The leave-out list every build from the builder's own checkout names when that checkout carries no release manifest
+# (package.py 2.7.0: a release makes the real one). Here it only has to be true: it names this suite, a tracked file of
+# the checkout that no fixture package carries. Set by main(); empty in a release checkout, which needs none.
+LEAVE: tuple[str, ...] = ()
 
 # The signing gate's test mode: a throwaway master salt the gate is handed on stdin, and the gate named beside it.
 TEST_SALT = os.environ.get("BONSAI_GATE_TEST_MASTER_SALT", "").strip()
@@ -389,7 +392,7 @@ def list_(g: Path, name: str, roll: str, packages: list[dict]) -> Path:
 
 
 def build(g: Path, lst: str, *extra: str, pkg: Path = PKG) -> tuple[int, str]:
-    return run([sys.executable, str(pkg), "--list", str(g / lst), "--keys", "garden", *extra])
+    return run([sys.executable, str(pkg), "--list", str(g / lst), "--keys", "garden", *LEAVE, *extra])
 
 
 def wake(pkg_dir: Path, g: Path, script: Path | None = None) -> tuple[int, str]:
@@ -482,6 +485,11 @@ def main() -> int:
         if why:
             print(f"SKIP  test_package.py: {why}; nothing was checked (0 of 0 expectations hold: skipped, not passed)")
             return 0
+        global LEAVE
+        if not P.is_release(CORE):
+            own = tmp / "leave-out-own.txt"
+            own.write_text(Path(os.path.relpath(Path(__file__).resolve(), CORE)).as_posix() + "\n", encoding="utf-8")
+            LEAVE = ("--leave-out", str(own))
         g = plant(tmp)
 
         # T0 control
@@ -640,7 +648,7 @@ def main() -> int:
                     out,
                 )
             elif mode == "warn":
-                # The sunset (core 953f542) set the real policy to refuse. A whole build also shells out to the Node
+                # The sunset set the real policy to refuse. A whole build also shells out to the Node
                 # verifier, which reads the REAL policy and never an environment variable, so a scratch warn cannot
                 # carry an old-name seal through it any more. The builder's own warn path stays tested where it
                 # lives: _sidecar_of under a scratch policy, directly.
@@ -801,7 +809,7 @@ def main() -> int:
         # T4b and T8a ask the PUBLISHED keys about v2 seals: they pass only once the v2 /verify
         # is deployed at bon-sai.garden (before it, the live site answers a v2 request 400, which
         # reads keys-unreachable — refused, but not for the reason T4b names)
-        rc, out = run([sys.executable, str(PKG), "--list", str(g / "list-bonsai.json"), "--keys", "published"])
+        rc, out = run([sys.executable, str(PKG), "--list", str(g / "list-bonsai.json"), "--keys", "published", *LEAVE])
         expect(
             "T4b the same under the published keys is refused",
             rc == 1 and "REFUSED" in out and ("rejected" in out or "bad-signature" in out),
@@ -852,12 +860,13 @@ def main() -> int:
         commit(g)
 
         # T8 Tasai's case: a scratch clone of core, key-shaped files planted in a real skill folder
-        mono = CORE.parent / "bonsai-garden"
+        # the garden whose salts seal a real skill: the one $BONSAI_GARDEN names, never a checkout found by its name
+        garden = Path(os.environ["BONSAI_GARDEN"]) if os.environ.get("BONSAI_GARDEN") else None
         if TEST_MODE:
             # T8 packages a real skill, sealed again as its real owner and read back from the published keys: a
             # throwaway salt is no owner's key, so in the gate's test mode it is not checked, and says so
             print("NOT CHECKED  T8 in the gate's test mode: it seals a real skill as its owner, which only custody can")
-        elif (mono / "tools" / "keyring" / "locked-salts.json").is_file():
+        elif garden is not None and (garden / "tools" / "keyring" / "locked-salts.json").is_file():
             clone = tmp / "core-clone"
             run(["git", "clone", "-q", "--local", str(CORE), str(clone)])
             ident = clone / "skills" / "bonsai-garden-portrait" / "identity" / "planted"
@@ -870,9 +879,9 @@ def main() -> int:
             lst.write_text(
                 json.dumps(
                     {
-                        "roots": {"core": str(clone), "mono": str(mono)},
-                        "registries": ["mono", "core"],
-                        "signing-salts": "mono:tools/keyring/locked-salts.json",
+                        "roots": {"core": str(clone), "garden": str(garden)},
+                        "registries": ["garden", "core"],
+                        "signing-salts": "garden:tools/keyring/locked-salts.json",
                         "out": "core:../clone-out",
                         "packages": [
                             {
@@ -884,7 +893,7 @@ def main() -> int:
                     }
                 )
             )
-            rc, out = run([sys.executable, str(PKG), "--list", str(lst)])
+            rc, out = run([sys.executable, str(PKG), "--list", str(lst), *LEAVE])
             arch = tmp / "clone-out" / "bonsai-garden-portrait.zip"
             names = zipfile.ZipFile(arch).namelist() if rc == 0 and arch.exists() else []
             expect(
@@ -915,7 +924,7 @@ def main() -> int:
                         "plant",
                     ]
                 )
-                rc, out = run([sys.executable, str(PKG), "--list", str(lst)])
+                rc, out = run([sys.executable, str(PKG), "--list", str(lst), *LEAVE])
                 expect(
                     f"T8 {label} is refused outright",
                     rc == 1 and "key material reached the stage" in out and f"references/{name}" in out,
@@ -923,11 +932,11 @@ def main() -> int:
                 )
                 run(["git", "-C", str(clone), "reset", "-q", "--hard", "HEAD~1"])
         else:
-            print("NOT CHECKED  T8 needs the mono salts beside core (the portrait skill is sealed by baisai)")
+            print("NOT CHECKED  T8 needs the salts of the garden $BONSAI_GARDEN names (the portrait skill is sealed by baisai)")
 
         # T6 stamp contract parity with skill_install.py
-        si = CORE.parent / "bonsai-garden" / "tools" / "bonsai-mcp" / "skill_install.py"
-        if si.is_file():
+        si = garden / "tools" / "bonsai-mcp" / "skill_install.py" if garden is not None else None
+        if si is not None and si.is_file():
             s2 = importlib.util.spec_from_file_location("skill_install_probe", si)
             SI = importlib.util.module_from_spec(s2)
             s2.loader.exec_module(SI)
@@ -946,7 +955,7 @@ def main() -> int:
                 "T6 the stamp contract equals skill_install.py's", same, f"{len(samples)} samples compared against {si}"
             )
         else:
-            print("NOT CHECKED  T6 skill_install.py is not beside core; the stamp contract parity was not compared")
+            print("NOT CHECKED  T6 no garden named by $BONSAI_GARDEN holds skill_install.py; the parity was not compared")
 
         # T9 bundle: the shared documents every body carries for a session with no garden MCP
         shared = g / "shared"
@@ -1386,7 +1395,7 @@ def main() -> int:
         # T16 core alone: no list, core's own plugin from the checkout the builder sits in. A scratch clone of core,
         # the builder and verifier under test copied in, its registry and core-plugin.json planted with one fixture
         # kin (keys local, so --keys garden), committed.
-        cc = tmp / "core-alone" / "bonsai-garden-core"
+        cc = tmp / "core-alone" / "fixcore"
         run(["git", "clone", "-q", "--local", str(CORE), str(cc)])
         (tmp / "t16").mkdir()
         g16 = plant(tmp / "t16")
@@ -1394,15 +1403,12 @@ def main() -> int:
         shutil.copy2(PKG, ccs / "scripts" / "package.py")
         shutil.copy2(HERE / "verify-manifest.mjs", ccs / "scripts" / "verify-manifest.mjs")
         shutil.copy2(SKILL_GATE, cc / "tools" / "check-skill-conformance.py")
-        cut_tool = cc / "tools" / "distro" / "build-distro.mjs"  # the cut's selection under test (--left-out)
-        shutil.copy2(CORE / "tools" / "distro" / "build-distro.mjs", cut_tool)
         shutil.copytree(g16 / "agents" / "fixkin", cc / "agents" / "fixkin")
-        # T17's plant: a history of the kin's that the clone's seed slice leaves out of seed
-        (cc / "agents" / "fixkin" / "references" / "history.md").write_text("# a history that stays in core\n")
-        slice16 = cc / "tools" / "distro" / "seed-slice.json"
-        sl = json.loads(slice16.read_text(encoding="utf-8"))
-        sl["exclude"] = [*sl.get("exclude", []), "agents/fixkin/references/history.md"]
-        slice16.write_text(json.dumps(sl, indent=2) + "\n", encoding="utf-8")
+        # T17's plant: a history of the kin's that the release leaves out, on the clone's leave-out list (a release
+        # makes the real one; the builder reads a plain list and knows nothing of how it was made)
+        (cc / "agents" / "fixkin" / "references" / "history.md").write_text("# a history that stays home\n")
+        leave16 = tmp / "leave-out-t16.txt"
+        leave16.write_text("agents/fixkin/references/history.md\n", encoding="utf-8")
         shutil.copy2(g16 / "agents" / "registry.json", cc / "agents" / "registry.json")
         shutil.copy2(g16 / "salts.json", cc / "salts.json")
         (cc / "fixcore-plugin.json").write_text(
@@ -1425,8 +1431,11 @@ def main() -> int:
         stranger.mkdir()
         cc_pkg = ccs / "scripts" / "package.py"
 
-        def core_alone(out: str, *extra: str, home: Path | None = None) -> tuple[int, str]:
-            return run([sys.executable, str(cc_pkg), "--keys", "garden", "--out", str(tmp / out), *extra], home=home)
+        def core_alone(
+            out: str, *extra: str, home: Path | None = None, leave_out: Path | None = leave16
+        ) -> tuple[int, str]:
+            lo = ("--leave-out", str(leave_out)) if leave_out is not None else ()
+            return run([sys.executable, str(cc_pkg), "--keys", "garden", "--out", str(tmp / out), *lo, *extra], home=home)
 
         rc, out = core_alone("t16a", home=stranger)
         plug = tmp / "t16a" / "fixcore.plugin"
@@ -1519,7 +1528,7 @@ def main() -> int:
 
         # T19b (W's F-1) the plugin-level check, as build/README.md gives it (a bundled skill's verify-manifest.mjs,
         # --dir the plugin root): its manifest is byte-exact over every bundled SKILL.md, so the app's rewrite failed it
-        # on a correct install (12 changed, core de06d79). Replayed here on the sealed plugin: no byte changes, ok.
+        # on a correct install (12 changed). Replayed here on the sealed plugin: no byte changes, ok.
         def plugin_check(root: Path) -> tuple[int, str]:
             vm = root / "skills" / "fixkin" / "scripts" / "integrity" / "verify-manifest.mjs"
             return run(["node", str(vm), "--dir", str(root), "--keys", "garden"], cc)
@@ -1546,6 +1555,7 @@ def main() -> int:
             try:
                 rc, out = run(
                     [sys.executable, str(m12), "--keys", "garden", "--out", str(tmp / "t19m12"), "--salts", salts]
+                    + ["--leave-out", str(leave16)]
                 )
             finally:
                 m12.unlink()
@@ -1637,7 +1647,7 @@ def main() -> int:
                 rc, out = run(
                     [
                         *(sys.executable, str(m11), "--keys", "garden", "--out", str(tmp / "t18m11")),
-                        *("--salts", str(cc / "salts.json"), "--units"),
+                        *("--salts", str(cc / "salts.json"), "--units", "--leave-out", str(leave16)),
                     ]
                 )
             finally:
@@ -1663,29 +1673,35 @@ def main() -> int:
             out,
         )
 
-        # T17 what core does not publish: the clone's seed slice leaves agents/fixkin/references/history.md out of seed
+        # T17 what a release leaves out: the clone's leave-out list names agents/fixkin/references/history.md
         history = "skills/fixkin/references/history.md"
+
+        def names_of(out_dir: str) -> set[str]:
+            f = tmp / out_dir / "fixcore.plugin"
+            return set(zipfile.ZipFile(f).namelist()) if f.is_file() else set()
+
         rc, out = core_alone("t17a", home=stranger)
-        plug17 = tmp / "t17a" / "fixcore.plugin"
-        names17 = set(zipfile.ZipFile(plug17).namelist()) if plug17.is_file() else set()
+        names17 = names_of("t17a")
         expect(
-            "T17a a file core's seed slice leaves out of seed is left out of the package, and the build names it",
+            "T17a a file the leave-out list names is left out of the package, and the build names it",
             rc == 0
             and history not in names17
             and "skills/fixkin/references/about-me.md" in names17
-            and "left out, as core's seed slice leaves them out of seed: agents/fixkin/references/history.md" in out
-            and "seed slice: " in out,
+            and "left out, as the leave-out list says: agents/fixkin/references/history.md" in out
+            and f"leave-out: 1 file(s) of this checkout ({leave16})" in out,
             out,
         )
-        m8 = mutant(cc_pkg, ccs / "scripts" / ".mutant-package-slice.py", "    if not UNPUBLISHED:\n", "    if True:\n")
+        m8 = mutant(cc_pkg, ccs / "scripts" / ".mutant-package-leave.py", "    if not LEAVE_OUT:\n", "    if True:\n")
         try:
-            rc, out = run([sys.executable, str(m8), "--keys", "garden", "--out", str(tmp / "t17m8")], home=stranger)
+            rc, out = run(
+                [sys.executable, str(m8), "--keys", "garden", "--out", str(tmp / "t17m8"), "--leave-out", str(leave16)],
+                home=stranger,
+            )
         finally:
             m8.unlink()
-        m8_plug = tmp / "t17m8" / "fixcore.plugin"
         expect(
-            "M8 a builder that does not ask the slice ships the planted history (so T17a is what catches it)",
-            rc == 0 and m8_plug.is_file() and history in zipfile.ZipFile(m8_plug).namelist(),
+            "M8 a builder that does not read the list ships the planted history (so T17a is what catches it)",
+            rc == 0 and history in names_of("t17m8"),
             out,
         )
         named = json.loads((ccs / "assets" / "core-plugin.json").read_text(encoding="utf-8"))
@@ -1695,150 +1711,82 @@ def main() -> int:
         commit(cc)
         rc, out = core_alone("t17b", home=stranger)
         expect(
-            "T17b a file the plugin names by itself, and the seed slice leaves out, refuses the plugin",
+            "T17b a file the plugin names by itself, and the leave-out list names, refuses the plugin",
             rc == 1
             and "REFUSED" in out
-            and "core's seed slice leaves it out of seed" in out
+            and "the leave-out list leaves it out" in out
             and not (tmp / "t17b" / "fixcore.plugin").exists(),
             out,
         )
         (ccs / "assets" / "core-plugin.json").write_text(cfg_keep, encoding="utf-8")
-        slice16.write_text("{ not json\n", encoding="utf-8")
         commit(cc)
-        rc, out = core_alone("t17c", home=stranger)
+        # T17c a list that cannot answer refuses the build, nothing written: never built as though it said nothing
+        for label, body, why in (
+            ("is not there", None, "cannot be read"),
+            ("is empty", "\n# nothing\n\n", "names no file"),
+            ("names a path outside the checkout", "../elsewhere/history.md\n", "is not a path inside this checkout"),
+            ("names an absolute path", "/etc/hosts\n", "is not a path inside this checkout"),
+            ("names a file the checkout does not track", "agents/fixkin/references/nowhere.md\n", "does not track"),
+        ):
+            bad = tmp / f"t17c-{len(label)}.txt"
+            if body is not None:
+                bad.write_text(body, encoding="utf-8")
+            rc, out = core_alone(f"t17c{len(label)}", home=stranger, leave_out=bad)
+            expect(
+                f"T17c a leave-out list that {label} refuses the build, nothing written",
+                rc != 0 and why in out and not (tmp / f"t17c{len(label)}" / "fixcore.plugin").exists(),
+                out,
+            )
+        # T17d no list, and no release manifest at the checkout's root: refused, never built with nothing left out
+        for m in cc.glob("*-MANIFEST.json"):  # a clone of a release checkout carries one: the shape under test has none
+            if json.loads(m.read_text(encoding="utf-8")).get("format") == P.RELEASE_MANIFEST_FORMAT:
+                run(["git", "-C", str(cc), "rm", "-q", "-f", m.name])
+        commit(cc)
+        rc, out = core_alone("t17d", home=stranger, leave_out=None)
         expect(
-            "T17c a seed slice that cannot answer refuses the build, nothing written (never as though it said nothing)",
+            "T17d a checkout with no leave-out list and no release manifest at its root is refused",
             rc != 0
-            and "core's seed slice cannot say what it leaves out of seed" in out
-            and not (tmp / "t17c" / "fixcore.plugin").exists(),
-            out,
-        )
-        # T17d-h where the slice is (the builder's 2.4.0, the strip of 2026-10-18): the slice and its cut tool leave
-        # core for the pot's build-process/distro/, and both places work while they move. Two that differ refuse; a
-        # core checkout with neither, and no distro manifest at its root, is refused; one that carries one is a cut.
-        slice16.write_text(json.dumps(sl, indent=2) + "\n", encoding="utf-8")  # the slice that answers, again
-        commit(cc)
-        pot17 = tmp / "t17-pot"
-        bpd = pot17 / "build-process" / "distro"
-        bpd.mkdir(parents=True)
-        run(["git", "init", "-q", str(pot17)])
-        shutil.copy2(CORE / "tools" / "distro" / "build-distro.mjs", bpd / "build-distro.mjs")
-        pot_slice = bpd / "seed-slice.json"
-        pot_slice.write_text(
-            json.dumps({**sl, "exclude": [*sl["exclude"], "agents/fixkin/references/other.md"]}, indent=2) + "\n"
-        )
-        commit(pot17)
-
-        def names_of(out_dir: str) -> set[str]:
-            f = tmp / out_dir / "fixcore.plugin"
-            return set(zipfile.ZipFile(f).namelist()) if f.is_file() else set()
-
-        rc, out = core_alone("t17g", "--seed-slice", str(pot_slice), home=stranger)
-        expect(
-            "T17g two seed slices that differ (core's and the pot's, mid-move) refuse the build: two masters",
-            rc != 0 and "two seed slices that differ" in out and not (tmp / "t17g" / "fixcore.plugin").exists(),
-            out,
-        )
-        shutil.copy2(slice16, pot_slice)  # the move window: the pot's slice is core's bytes
-        commit(pot17)
-        rc, out = core_alone("t17h", "--seed-slice", str(pot_slice), home=stranger)
-        expect(
-            "T17h the same slice in both places builds (the move window), the history left out",
-            rc == 0 and history not in names_of("t17h") and "named by --seed-slice" in out,
-            out,
-        )
-        # T17i the stranger walk's (b), in the builder's own tests (Fuji-shin's phase-1 check, finding 1: the builder
-        # 2.4.0 knows a cut by its distro manifest, the walk's gate form materialized a cut with none, and the walk
-        # failed at (b)). The walk, its cut tool and the builder under test, in the clone; the cut is the walk's own
-        # (tree_from_rev, the gate form), and its (b) runs README's *Building the plugin* as written, in its own seat.
-        # README is planted with --keys garden: the fixture kin's key is published nowhere.
-        walk = cc / "tools" / "distro" / "test-stranger-walk.py"
-        shutil.copy2(WALK, walk)
-        (cc / "README.md").write_text(
-            "# fixcore\n\n## Building the plugin\n\nThe fixture's plugin, from this checkout alone:\n\n```bash\n"
-            "python3 skills/bonsai-garden-core-plugin/scripts/package.py --keys garden\n```\n\nAn unsealed local build.\n",
-            encoding="utf-8",
-        )
-        commit(cc)
-
-        def walk_b(script: Path, name: str) -> tuple[str, set[str], str]:
-            """The walk's gate form up to (b), by the walk in `script`: (b)'s verdict, the package's names, its say."""
-            ws = importlib.util.spec_from_file_location(f"stranger_walk_{name}", script)
-            w = importlib.util.module_from_spec(ws)
-            ws.loader.exec_module(w)
-            base = tmp / name
-            base.mkdir()
-            seat = w.Seat(base)
-            tree = base / "bonsai-garden-seed"
-            tree.mkdir()
-            said = io.StringIO()
-            archive = None
-            with contextlib.redirect_stdout(said):
-                try:
-                    print(w.tree_from_rev(cc.resolve(), "HEAD", tree, seat))
-                    md = (tree / "README.md").read_text(encoding="utf-8")
-                    archive, _first = w.walk_build(tree, w.section(md, "building-the-plugin") or "", seat)
-                except SystemExit as e:
-                    print(f"the walk stopped: {e}")
-            names = set(zipfile.ZipFile(archive).namelist()) if archive and archive.is_file() else set()
-            return w.RESULTS.get("b", "NOT REACHED"), names, said.getvalue()
-
-        verdict, names17i, out = walk_b(walk, "t17i")
-        expect(
-            "T17i the stranger walk's (b): Bonsai's plugin builds from the cut the walk's gate form materializes, by "
-            "README's command as written, the history left out (the builder and the walk agree on what a cut is)",
-            verdict == "PASS" and "skills/fixkin/references/about-me.md" in names17i and history not in names17i,
-            out,
-        )
-        anchor = '"--materialize", str(dest), "--manifest",'
-        if anchor in walk.read_text(encoding="utf-8"):
-            m10 = mutant(walk, walk.with_name(".mutant-walk-no-manifest.py"), anchor, '"--materialize", str(dest),')
-            try:
-                verdict, _n, out = walk_b(m10, "t17m10")
-            finally:
-                m10.unlink()
-            m10_ok = verdict == "FAIL" and "is not a cut (no distro manifest at its root)" in out
-        else:
-            m10_ok, out = False, f"the mutation's anchor is not in the walk under test: {anchor}"
-        expect(
-            "M10 a walk whose gate form materializes the cut without its manifest fails (b): the builder refuses it as "
-            "no cut (so T17i is what catches the two disagreeing)",
-            m10_ok,
-            out,
-        )
-        run(["git", "-C", str(cc), "rm", "-q", "-r", "-f", "tools/distro"])  # core without its slice: the moved shape
-        commit(cc)
-        rc, out = core_alone("t17d", home=stranger)
-        expect(
-            "T17d a core checkout with no seed slice and no distro manifest is refused, never built as a cut",
-            rc != 0
-            and "names no seed slice and is not a cut" in out
+            and "names no leave-out list and carries no release manifest" in out
             and not (tmp / "t17d" / "fixcore.plugin").exists(),
             out,
         )
-        m9 = mutant(
-            cc_pkg,
-            ccs / "scripts" / ".mutant-package-cut.py",
-            "    if is_cut(CORE):\n",
-            "    if not DISTRO_DIR.is_dir():\n",
-        )
+        m9 = mutant(cc_pkg, ccs / "scripts" / ".mutant-package-nolist.py", "        if is_release(CORE):\n", "        if True:\n")
         try:
             rc, out = run([sys.executable, str(m9), "--keys", "garden", "--out", str(tmp / "t17m9")], home=stranger)
         finally:
             m9.unlink()
         expect(
-            "M9 a builder that reads a checkout with no tools/distro/ as a cut builds core as seed, the history "
-            "shipped (so T17d is what catches it)",
+            "M9 a builder that takes no list for nothing left out builds core whole, the history shipped (so T17d is "
+            "what catches it)",
             rc == 0 and history in names_of("t17m9"),
             out,
         )
-        rc, out = core_alone("t17e", "--seed-slice", str(pot_slice), home=stranger)
+        # T17k a root manifest of another format is no release manifest: still refused with no list
+        (cc / "OTHER-MANIFEST.json").write_text(json.dumps({"format": "some-other-manifest/1", "files": []}) + "\n")
+        commit(cc)
+        rc, out = core_alone("t17k", home=stranger, leave_out=None)
         expect(
-            "T17e the slice in the pot's build-process/, named, answers for core: the history is left out, and the "
-            "build says where the slice is",
-            rc == 0 and history not in names_of("t17e") and f"{pot_slice}, named by --seed-slice" in out,
+            "T17k a root manifest in another format is no release manifest: with no list, refused",
+            rc != 0 and "carries no release manifest" in out and not (tmp / "t17k" / "fixcore.plugin").exists(),
             out,
         )
+        m13 = mutant(
+            cc_pkg,
+            ccs / "scripts" / ".mutant-package-anymanifest.py",
+            '.get("format") == RELEASE_MANIFEST_FORMAT',
+            '.get("format") is not None',
+        )
+        try:
+            rc, out = run([sys.executable, str(m13), "--keys", "garden", "--out", str(tmp / "t17m13")], home=stranger)
+        finally:
+            m13.unlink()
+        expect(
+            "M13 a builder that takes any root manifest for a release manifest builds there (so T17k is what catches it)",
+            rc == 0 and (tmp / "t17m13" / "fixcore.plugin").is_file(),
+            out,
+        )
+        run(["git", "-C", str(cc), "rm", "-q", "-f", "OTHER-MANIFEST.json"])
+        # T17f a release checkout (a release manifest at its root, the shape a stranger's clone holds) builds with no list
         (cc / "SEED-MANIFEST.json").write_text(
             json.dumps(
                 {
@@ -1852,10 +1800,10 @@ def main() -> int:
             + "\n"
         )
         commit(cc)
-        rc, out = core_alone("t17f", home=stranger)
+        rc, out = core_alone("t17f", home=stranger, leave_out=None)
         expect(
-            "T17f a checkout that carries a cut's manifest (the release shape, no upstream) builds, and says it holds no slice",
-            rc == 0 and (tmp / "t17f" / "fixcore.plugin").is_file() and "seed slice: none in this checkout" in out,
+            "T17f a checkout that carries a release manifest at its root builds with no list, and says so",
+            rc == 0 and (tmp / "t17f" / "fixcore.plugin").is_file() and "leave-out: none (a release checkout" in out,
             out,
         )
 
@@ -1944,7 +1892,7 @@ def main() -> int:
                 t5.replace(a1, "files = list(src.rglob('*'))", 1).replace(a2, "return True", 1), encoding="utf-8"
             )
             try:
-                rc, out = run([sys.executable, str(m5), "--list", str(tmp / "clone-list.json")])
+                rc, out = run([sys.executable, str(m5), "--list", str(tmp / "clone-list.json"), *LEAVE])
             finally:
                 m5.unlink()
             expect(

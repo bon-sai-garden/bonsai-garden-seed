@@ -5,7 +5,7 @@
  * type: script
  * tended-by: mori-shin
  * created: 2026-09-13
- * updated: 2026-09-26
+ * updated: 2026-10-21
  * ---
  * `type: script` is a placeholder — pending Baisai's patterns.md proposal
  * (2026-09-13 review); see lib/derive-key.mjs's header for the full note.
@@ -21,10 +21,10 @@
  *
  * This is deliberately NOT yet an MCP tool. Per the Aruji's sequencing
  * (2026-09-13): this module is the mechanism, built and reviewable on its
- * own; a runtime-repo MCP surface wrapping it, and its integration into the
- * existing bonsai-garden MCP (the `bonsai_sign` / `bonsai_mint_delegation` /
+ * own; an MCP surface wrapping it, and its integration into the
+ * existing garden MCP (the `bonsai_sign` / `bonsai_mint_delegation` /
  * `bonsai_attest_task` shape sketched in
- * bonsai-garden's rituals/specs/spec-chain-of-trustable-interactions.md §E),
+ * the origin garden's rituals/specs/spec-chain-of-trustable-interactions.md §E),
  * are later steps — Baisai's and Fuji-shin's to review once this mechanism
  * itself is settled. Designed so that step can simply `import` this file
  * rather than re-derive its logic.
@@ -142,7 +142,7 @@ export async function signPayload({ agentSalt, data }) {
   const custody = await getCustodyProvider();
   const masterSaltHex = await custody.getMasterSaltHex();
 
-  // Known limitation, inherited from the original bonsai-garden design, not
+  // Known limitation, inherited from the original keyring design, not
   // introduced here: masterSaltHex is a JS string. Strings are immutable in
   // JS and cannot be zeroed the way a Buffer can — `key-provider.mjs` zeroes
   // the *derived seed* Buffer in its own `finally` block, but this raw

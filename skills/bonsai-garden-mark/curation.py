@@ -28,16 +28,20 @@ from pathlib import Path
 try:
     from jamdict import Jamdict
 except ImportError:
-    print("jamdict not installed. Run: pip install jamdict jamdict-data --break-system-packages", file=sys.stderr)
+    print(
+        "jamdict is not installed. Into a venv of your own, by hash: "
+        "python3 -m pip install --require-hashes -r skills/bonsai-garden-mark/requirements-curation.txt",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 
-REPO = Path("/sessions/blissful-funny-knuth/mnt/bonsai-garden")
-SOURCE = REPO / "lore/signatures/kanji/kanji-to-number.md"
+HERE = Path(__file__).resolve().parent  # the mark skill: its source sits beside it, found from here, never a host path
+SOURCE = HERE / "references" / "kanji-to-number.md"
 # Generator output. Deliberately NOT a live set filename: regenerating must never
 # clobber the canonical set (kanji-1024-v1.2.json) or an archived one (*.json.bak).
 # v1.0 was produced by this script; v1.1 and v1.2 were curated from it by hand.
-OUT = REPO / "tools/kanji-identicon/kanji-1024-REGENERATED.json"
+OUT = HERE / "kanji-1024-REGENERATED.json"  # beside the live set, never its name; untracked, never committed
 TARGET_SIZE = 1024
 
 

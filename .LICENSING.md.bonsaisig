@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T12:42:02Z",
+  "timestamp": "2026-10-21T20:10:06Z",
   "algorithm": "ed25519+blake2b512",
   "target": "LICENSING.md",
-  "file-hash": "e4fc9e16507051ede17a68a19734f8b36a13247ac1a13edff0c38dcc79f7cd7d6d32567437be7086d9fb3801aa08e17769676d4b979ee7ddb5094434f3a02590",
-  "signature": "UX89074y1gshIIqjLBGFWiYZdb80IOu4/azjRxrK7XsgRbVTBHyHutrfoTdMSWLVTKOT6ewWEk2OL84WK3EvDQ=="
+  "file-hash": "db048ec7a07e1531940e5c50d83cb7bd35a6b8ad08f3f49f031d311ab445f39813fa2ed77d88462823163a2d402f4b9a485fd74b258c255fbf544f21bb41e873",
+  "signature": "415RxlMEkJrSdgsymFNOtbz4O65Kz5Kcwokd2f7neaDQbPkgooF1DusE7r7//H5YfspigJ3w3OI068d1Cg9DAw=="
 }

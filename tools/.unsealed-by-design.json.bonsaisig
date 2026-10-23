@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:48:33Z",
+  "timestamp": "2026-10-21T20:22:22Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/unsealed-by-design.json",
-  "file-hash": "cb2e85f77e699e6581e565b0e9ecae954cd8d05497a2e5b34f6eacccdf9a87f28ac145724902fbe0202e76e079072ce1510a356101703fc81cd2df786dd53af5",
-  "signature": "qhkCKIqTueuDMr4deB5q1h2+lo+PVfkeqqepm1EOEvgcHfTVfPrtRcrY5N+fUmXnyvvcnqRxv4pSE0pUH8ywBA=="
+  "file-hash": "85c12867c736a38b6fd68127712d63d9a968ca15b2667fa889ae25dcfe83fd2675d70e81554d91b6e8f5461aadcbe4dfbca479c04662f107ed986aec820392b7",
+  "signature": "sVxKKeUA6Q7zGzcX6EU834bVwktDtZiipGnxvRCecF8eyA3/5g/jXjjNEGg8QI1OaAr/d1N99R8V+jxT1GfWBA=="
 }

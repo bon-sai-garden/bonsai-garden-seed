@@ -4,9 +4,9 @@ title: "bonsai-garden-ledger — identity"
 type: identity
 tended-by: tasai
 created: 2026-09-26
-updated: 2026-10-12
+updated: 2026-10-21
 skill: bonsai-garden-ledger
-version: 0.1.0
+version: 0.2.2
 ---
 
 # bonsai-garden-ledger — identity
@@ -19,7 +19,7 @@ its mark live here instead, sealed as a garden document.
 **New in core, 2026-09-26**, on the gardener's ruling (Tasai, 2026-09-25): the Token
 Ledger becomes a sibling core skill to `bonsai-garden-tokens`, capability only — fetch, data,
 render, with publish left to the instance. Ported from the working instance reader at
-`bonsai-garden` (mono) `rituals/ledger/read-transcript-usage.py`, generalised: no garden slugs,
+the origin garden's `rituals/ledger/read-transcript-usage.py`, generalised: no garden slugs,
 no hardcoded prices, seat attribution behind a pluggable rule.
 
 **Mark: not yet searched.** Open item — a kanji mark (Mori-shin's identicon search, a salt, a

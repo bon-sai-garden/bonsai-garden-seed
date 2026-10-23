@@ -6,7 +6,7 @@
  * test-planted-negative.mjs — two broken seals, planted on purpose, asserted by name.
  *
  * Replaces the corpus test's "named negative fixtures", which were REAL stale seals in the
- * mono repo (a repro script and test.py under tools/bonsai-mcp/). A legitimate edit re-sealed both on
+ * garden's own checkout (a repro script and test.py under tools/bonsai-mcp/). A legitimate edit re-sealed both on
  * 2026-09-22 and the evidence was gone. Planted fixtures live here, beside the verifier, and
  * depend on no other repo staying broken. Mori-shin's ask (2026-09-24): two cases, asserted
  * by name, and the second keeps the check order under test.
@@ -31,7 +31,7 @@
  *
  * Controls: stale-hash with its appended line removed must verify ok, which proves the seal is
  * genuine and the planted tamper is its only defect. For wrong-signer, the control (original
- * label and bytes, verified with baisai's key) runs only with --garden <mono>, where that key lives.
+ * label and bytes, verified with baisai's key) runs only with --garden <the garden's checkout>, where that key lives.
  *
  * With sign.py reachable (--signpy <path>), each verdict is asked of sign.py too, and the two
  * must agree.
@@ -42,7 +42,7 @@
  * genuinely signed. His preference, for later and for Mori-shin: a dedicated test key rather than
  * a kin's key, so a real key never signs text its kin didn't write.
  *
- *   node test-planted-negative.mjs [--garden <mono root>] [--signpy <path/to/sign.py>]
+ *   node test-planted-negative.mjs [--garden <garden root>] [--signpy <path/to/sign.py>]
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -191,7 +191,7 @@ try {
     fs.writeFileSync(sidecarPathFor(wrong), `${JSON.stringify({ ...v1, signer: 'baisai' }, null, 2)}\n`);
     expect('v1 wrong-signer, restored (node)', nodeFirst(wrong, path.resolve(GARDEN)), 'ok [retired-v1]');
   } else {
-    console.log("  -- wrong-signer controls skipped: need --garden <mono>, where baisai's key lives");
+    console.log("  -- wrong-signer controls skipped: need --garden <the garden's checkout>, where baisai's key lives");
   }
 } finally {
   fs.rmSync(tmp, { recursive: true, force: true });

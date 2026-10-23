@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "custodian",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-09-25T07:57:47Z",
+  "timestamp": "2026-10-22T07:06:20Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/identity/retired-09d7b894.md",
-  "file-hash": "676862b1a26980f6cc728bb110c4e034773061085366e5be875614e7a18976cb626080a671795f91ff70e33d9d8b6c3da0a9e9f884195a20b18d757b0580b4bb",
-  "signature": "xaUr7cT242YdNr/m5xuM7VUU4Gvl+U0vx/Lx28y/RSVfopf+RhsMhxeM4aWNOjTO27bufOflXNbrtLwJSiihCA=="
+  "file-hash": "f51aec7f5282b324c12fe1c4dde97678e750a68ecaa84e8fbc0e135c543a3011b8abb6e6d09cf94a0512fd95d33c1b87a52041572bdd85833a61d453dd36f6e3",
+  "signature": "eZFrsFxT1hJj1Aoy3XNH+Qjs960WUaCxD4vA36VAB6tTmG2bzMOeZTl3FbU6Mlf+9jpNUyZG6lilWv6mK6+4DQ=="
 }

@@ -11,7 +11,7 @@ description: >
   the instance. Use whenever a gardener or agent wants to know what a stretch
   of work cost, in tokens, money or another unit — without hand-parsing
   transcripts or hardcoding a garden's own prices or slugs into the answer.
-version: 0.2.1
+version: 0.2.2
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -26,7 +26,7 @@ usage API, not from here).
 
 ## Why this is a core skill, not a one-off script
 
-The test is the one `bonsai-garden-core/LAYERS.md` applies everywhere: *would another garden
+The test is the one `LAYERS.md` applies everywhere: *would another garden
 need this, or is it ours?* Every garden that runs on a token-metered harness needs a way to add
 up what it spent, per day, per model, per seat of work. Nothing about that need is specific to
 one garden — the model names, the prices, the seats, and where the finished page ends up are
@@ -152,8 +152,8 @@ guessed on this skill's own authority.
   record) — a pointer from it to this skill, so a reader who lands there first finds this one
   too, is an open item for its owner, not made here.
 - **A kanji mark has not been searched** for this skill yet (see `references/identity.md`).
-- **This skill's own retirement candidate**: the working instance reader in `bonsai-garden`
-  (mono) `rituals/ledger/read-transcript-usage.py` duplicates this skill's fetch stage, scoped
+- **This skill's own retirement candidate**: the working instance reader in the origin garden's
+  `rituals/ledger/read-transcript-usage.py` duplicates this skill's fetch stage, scoped
   to one garden's own slugs and prices. It was left running, untouched, while this skill was
   built from it; retiring it onto this skill (an instance-side seat rule + price table,
   publishing wherever the pot already publishes to) is a follow-up, not done here.

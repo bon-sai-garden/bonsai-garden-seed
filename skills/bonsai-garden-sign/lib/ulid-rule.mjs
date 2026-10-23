@@ -31,11 +31,16 @@ export const MD_EXT = ['.md'];
 export const SCRIPT_EXT = ['.py', '.sh', '.mjs', '.js'];
 
 // ulid.py NO_ID_NAMES: SKILL.md's frontmatter is the platform's (name, description, version
-// only), so its id lives in its seal, as for any file that cannot carry one.
-export const NO_ID_NAMES = ['SKILL.md'];
+// only), so its id lives in its seal, as for any file that cannot carry one. A README.md is the
+// forge's front page, where a frontmatter block renders as a table, and README.<name>.md a README
+// kept under another name and published as README.md: theirs live in their seals too (ulid.py
+// NO_ID_NAME_RE).
+export const NO_ID_NAMES = ['SKILL.md', 'README.md'];
+export const NO_ID_NAME_RE = /^README\.[a-z0-9-]+\.md$/;
 
 export function carriesId(p) {
-  if (NO_ID_NAMES.includes(p.split(/[\\/]/).pop())) return false;
+  const base = p.split(/[\\/]/).pop();
+  if (NO_ID_NAMES.includes(base) || NO_ID_NAME_RE.test(base)) return false;
   const low = p.toLowerCase();
   return [...MD_EXT, ...SCRIPT_EXT].some((e) => low.endsWith(e));
 }

@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-23
-# updated: 2026-09-24
+# updated: 2026-10-21
 # copyright: © 2026 Bonsai Garden · bon-sai.garden
 # ---
 """
@@ -14,8 +14,8 @@ ulid.py — a document id is generated, never typed. The garden's ULID reference
 A ULID is 26 Crockford base-32 characters: 10 of millisecond timestamp, 16 of
 randomness (https://github.com/ulid/spec). Drafted by Tasai, 2026-09-23; adopted as
 the intended single master after two adversarial passes by Fuji-shin. NOT YET TRUE:
-new-file.py, validate-metadata.py, snapshot-metadata.py and sync-remote-memory.mjs (mono
-and runtime) still carry their own regex, which admits L; rewiring them to import this is
+new-file.py, validate-metadata.py, snapshot-metadata.py and sync-remote-memory.mjs (elsewhere
+in the origin's garden) still carry their own regex, which admits L; rewiring them to import this is
 owed, and until then this file is the reference, not the only copy.
 
     ulid.py new [-n N]              print N fresh ULIDs (monotonic within a ms)
@@ -276,11 +276,18 @@ def id_exempt(text: str, path: str) -> str | None:
 # (spec-canonical-shintai-structure; check-skill-conformance rule 1): it can never carry an
 # id. Its id lives in its seal v2 sidecar instead, as any file's does that cannot carry one
 # (seal v2, 2026-09-24). Before this, every SKILL.md read BAD "no id:" here.
-NO_ID_NAMES = ("SKILL.md",)
+# A README.md is the forge's: GitHub renders a frontmatter block at its top as a table, on the
+# page a stranger reads first, so a README carries none (the gardener, 2026-10-21). A
+# README.<name>.md is a README kept under another name and published as README.md. Their ids
+# live in their seals, as SKILL.md's does. The validator keeps a copy of both; test-ulid.py
+# fails on drift.
+NO_ID_NAMES = ("SKILL.md", "README.md")
+NO_ID_NAME_RE = re.compile(r"README\.[a-z0-9-]+\.md")
 
 
 def _carries_id(path: str) -> bool:
-    if os.path.basename(path) in NO_ID_NAMES:
+    base = os.path.basename(path)
+    if base in NO_ID_NAMES or NO_ID_NAME_RE.fullmatch(base):
         return False
     return path.lower().endswith(MD_EXT + SCRIPT_EXT)
 
@@ -498,7 +505,7 @@ def cmd_staged(repo: str) -> int:
         print(line)
     if bad:
         print(f"\nulid.py: {len(bad)} staged file(s) carry an id that is bad or already used.")
-        print("Generate one:  python3 <bonsai-garden-core>/tools/ulid.py new")
+        print("Generate one:  python3 <core>/tools/ulid.py new")
         return 1
     return 0
 

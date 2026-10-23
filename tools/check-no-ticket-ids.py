@@ -17,8 +17,8 @@ is a hit wherever this text is read, and a copy of this gate under another --roo
 
     python3 tools/check-no-ticket-ids.py [--root <repo>] [--rev <rev>] [<file>...]
         no files: every tracked file, sidecars skipped. --rev reads the files of that commit from git, never the
-        working tree: what a distro is cut from is what was committed, and tools/distro/build-distro.mjs runs this
-        gate on the commit it cuts (the slice names it under "gates").
+        working tree: what a release is made from is what was committed, and a builder runs this gate on the commit
+        it releases (its list of gates names it).
         named files: each read under --root (a relative name against it, never the working folder), and a name that
         is no file there refuses, exit 2: a gate that passes on nothing is no gate (2026-10-21: it read clean, exit 0).
 Exit 0 clean; 1 hits (file:line and the id); 2 usage, or a named file that is not there or cannot be read.

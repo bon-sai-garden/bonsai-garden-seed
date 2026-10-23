@@ -111,7 +111,7 @@ def verify(verb: str, path: Path) -> str:
         return f"cannot verify: {SIGN_CLI} missing"
     # Core alone must be enough: strip every BONSAI_* variable so the verifier cannot borrow keys
     # or a garden root from another checkout. The first version inherited $BONSAI_GARDEN and passed
-    # 6/6 on keys that live in mono; in a clean clone the truth was 1/6 (2026-09-24).
+    # 6/6 on keys that live in the origin's garden; in a clean clone the truth was 1/6 (2026-09-24).
     env = {k: v for k, v in os.environ.items() if not k.startswith("BONSAI_")}
     r = subprocess.run(
         ["node", str(SIGN_CLI), verb, "--file", str(path)],

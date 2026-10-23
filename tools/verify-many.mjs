@@ -12,7 +12,7 @@
 // 20 s, for one body. That cost kept the gate out of bonsai_session_start (Tasai's ask, 2026-09-27).
 // This runs the SAME verdicts in one process: the library functions sign.mjs's own `verify` and
 // `verify-sidecar` call, with the same arguments, and the same first line sign.mjs would print.
-// It decides nothing of its own. test-verify-many.py holds it to the CLI, file by file, on real
+// It decides nothing of its own. A parity test holds it to the CLI, file by file, on real
 // and planted seals.
 //
 //   stdin:  one JSON object per line   {"verb": "verify" | "verify-sidecar" | "find-sidecar" | "target-of", "file": "<path>"}

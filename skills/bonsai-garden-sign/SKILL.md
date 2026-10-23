@@ -5,7 +5,7 @@ description: >
   private key ever touching disk. HKDF-SHA256 (info "ed25519-agent-key") → Ed25519, with OS-native custody
   (macOS Keychain, Linux Secret Service, Windows DPAPI) behind one interface.
   The signing half of the garden's identity layer — mechanism only, no roster.
-version: 1.1.0
+version: 1.1.1
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -75,15 +75,13 @@ Three things a reimplementation gets wrong, all of which these tests exist to ca
 - the frontmatter boundary is `sign.py`'s `_FM_RE`, **not** `core/frontmatter.py`'s — they disagree on CRLF.
 
 ```
-python3 test-parity-vs-signpy.py            28 function-level checks
-python3 test-roundtrip-vs-signpy.py         18 round-trip checks
 node     test-document-format.mjs           14 unit checks
-node     test-sidecar-corpus-vs-signpy.mjs  143 real .bonsaisig files, both tools, same verdict
-node     test-sidecar-negative.mjs          34 checks, every one of them a guard failing
 node     test-published-negative.mjs        14 checks on the published path; --live also asks the site
 ```
 
-The corpus harness is the one to believe. Fixtures are written by the same hand that writes the port, so they agree with its misunderstandings; the 143 sidecars in the mono repo do not. Nine of them carry genuinely stale seals nobody planted, and the port has to flag exactly those nine — passing 134 and disagreeing on the nine that matter is a failure, not a near miss.
+Four more run only where the Python signer sits beside this one: 28 function-level checks and 18 round trips against it, the corpus harness (143 real `.bonsaisig` files, both tools, same verdict), and 34 negative checks, every one of them a guard failing.
+
+The corpus harness is the one to believe. Fixtures are written by the same hand that writes the port, so they agree with its misunderstandings; the 143 sidecars in the origin garden's repository do not. Nine of them carry genuinely stale seals nobody planted, and the port has to flag exactly those nine — passing 134 and disagreeing on the nine that matter is a failure, not a near miss.
 
 ## What it refuses, and why
 
@@ -95,7 +93,7 @@ The guard is narrow. Plain markdown still signs; only a *sealed* document is ref
 
 ## Open
 
-- Two competing `derive-key.mjs` existed, here and in the mono repo. This is the survivor. The mono copy retires with the signing-suite consolidation.
-- **`sign-sidecar` takes the salt; `sign.py` looks it up.** sign.py resolves an agent's signing salt from the mono repo's `locked-salts.json`; this skill will not read a registry to find key material (`sign-service.mjs` says why), so the caller names the salt. Every caller repointed in step 3 of `sign.py`'s retirement has to learn that. It is arguably the better contract — it makes the caller say which key it signs with — but it is a real interface difference, not a detail.
+- Two competing `derive-key.mjs` existed, here and in the origin garden's repository. This is the survivor. The other copy retires with the signing-suite consolidation.
+- **`sign-sidecar` takes the salt; `sign.py` looks it up.** sign.py resolves an agent's signing salt from the origin garden's `locked-salts.json`; this skill will not read a registry to find key material (`sign-service.mjs` says why), so the caller names the salt. Every caller repointed in step 3 of `sign.py`'s retirement has to learn that. It is arguably the better contract — it makes the caller say which key it signs with — but it is a real interface difference, not a detail.
 - **Seal-open has no published contract.** Its second signature is over an open payload, not a body-hash, so it verifies only with `--keys garden` (`references/trust-anchor.md`).
 - **PNG seals have no home in core** and `sign.py` is where they still live. Whoever retires `sign.py` owns that question.

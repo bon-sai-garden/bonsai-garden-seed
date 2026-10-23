@@ -12,12 +12,12 @@
  * sign.py resolves keys from the repo *it lives in* — never from the repo the
  * target file lives in. That is deliberate and load-bearing: two live callers
  * (tools/keyring/register-bonsai-identity.sh, tools/hissai-sign-core-lore.sh)
- * sign files inside bonsai-garden-core using identity bundles that exist only
- * in the mono repo. A resolver that walked up from the *target* would find
+ * sign files inside core using identity bundles that exist only
+ * in the garden's own checkout. A resolver that walked up from the *target* would find
  * core's root, find no identity bundle there, and report `unknown-signer` for
  * a signature that is in fact perfectly good.
  *
- * But this tool no longer lives in the mono repo, so "the repo I live in" is
+ * But this tool no longer lives in the garden's checkout, so "the repo I live in" is
  * the wrong answer here. The garden is located explicitly instead:
  *
  *   1. $BONSAI_GARDEN, if it carries the marker
@@ -125,7 +125,7 @@ export function resolveGardenRoot(targetHint = null) {
   const err = new Error(
     `cannot locate the bonsai garden (marker: ${MARKER}).\n  tried: ` +
       tried.join('\n         ') +
-      `\nSet $BONSAI_GARDEN to the mono checkout. Refusing to guess — a guessed ` +
+      `\nSet $BONSAI_GARDEN to the garden's checkout. Refusing to guess — a guessed ` +
       `root reads the wrong keys and reports the wrong verdict.`,
   );
   err.code = 'NO_GARDEN_ROOT';

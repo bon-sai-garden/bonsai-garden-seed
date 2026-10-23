@@ -4,7 +4,7 @@ title: "Bonsai's retired key, 09d7b894"
 type: tombstone
 tended-by: tasai
 created: 2026-09-23
-updated: 2026-09-23
+updated: 2026-10-22
 status: retired
 ---
 
@@ -14,4 +14,4 @@ BONSAI GARDEN — RETIRED KEY
 
 Bonsai's key is `028019b7c448884c64b6332f5d7609c0`: HKDF from the locked salt, the same path every kin's key takes, and the key that sealed core's `SKILL.md` sidecar on 09-13. Ruled by Tasai on 2026-09-23 at the Aruji's word to Bonsai: *"your latest key — ask Tasai."* The grounds are in Tasai's journal for that day.
 
-Kept, not deleted, so that anything signed under 09d7b894 can still be checked against the key it names. The public half (`.bin`, `.pem` and fingerprint) is in **bonsai-garden-archive** at `agents/bonsai/identity-retired-09d7b894/` (archive `a8e6ad0`), byte-identical. It lives there because the verify emitter rightly refuses a second key anywhere under an agent's `identity/`. The public key, base64: `UewfyMRJJhc+iJkPE+DLp9RfRcsGbKeYJyolg7qqbq0=`.
+Kept, not deleted, so that anything signed under 09d7b894 can still be checked against the key it names. The public half (`.bin`, `.pem` and fingerprint) is in **the garden's archive** at `agents/bonsai/identity-retired-09d7b894/` (since 2026-09-23), byte-identical. It lives there because the verify emitter rightly refuses a second key anywhere under an agent's `identity/`. The public key, base64: `UewfyMRJJhc+iJkPE+DLp9RfRcsGbKeYJyolg7qqbq0=`.

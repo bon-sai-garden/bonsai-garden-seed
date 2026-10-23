@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-07
-// updated: 2026-10-16
+// updated: 2026-10-21
 // ---
 //
 // reserved-marks.mjs — spec-gardeners-keys.md §6.3 to §6.5.
@@ -28,13 +28,21 @@
 //
 // CHECK, the drift gate. Core alone (pre-commit, CI): the shape and the five keys; sorted, unique,
 // in range; the header byte-exact; the floor; only grows against HEAD (with --staged, the index
-// against HEAD); every core skill's first mark kanji in A; the seal's hash. With --registry (mono's
+// against HEAD); every core skill's first mark kanji in A; the seal's hash. With --registry (the origin's
 // pre-commit, when the roster is staged): every roster first kanji in A (stale: regenerate in
 // core), and every index no source derives must already have shipped (hand-added).
 //
-// THE READER, loadReservedSet: reads only the shipped file, found beside this module; checks its
-// seal's file-hash over the exact bytes; and believes it only on bon-sai.garden's signed answer
-// (origin.mjs → published-keys.mjs adjudicatePublishedV2). Unreachable halts (3): no cache, no
+// THE READER, loadReservedSet: reads only the shipped file, found beside this module, and believes
+// it on bon-sai.garden's signed answer (origin.mjs → published-keys.mjs adjudicatePublishedV2) to
+// one of two questions (spec 0.7.0, §6.4 points 3 to 5). Where the checkout it runs from carries a
+// release manifest at its root (release-writers.json names it: the seed's SEED-MANIFEST.json), the
+// question is the manifest's seal: owner by a release writer core names, listing the set and its
+// sidecar at their bytes, the three skills one cut (release-manifest.mjs), and the set's own sidecar
+// still owner by mori-shin. With no manifest, it is the set's own seal, owner by mori-shin. The
+// seal's `target` is a path and no verdict (F-12): the reader reads one address and no other. A
+// caller holding the record of an earlier answer (garden.json `release`, checked under the root's
+// seal by the caller) passes it as `record`, and the reader takes it in place of asking only while
+// the manifest is the same bytes and its files still equal it. Unreachable halts (3): no cache, no
 // offline mode, no flag that names another file. The floor is a constant here, never a field the
 // checked file states about itself.
 
@@ -46,6 +54,19 @@ import { fileURLToPath } from 'node:url';
 import { slice } from './engine.js';
 import { kanjiSet, chars } from './namespace.mjs';
 import { makeOrigin } from './origin.mjs';
+import {
+  WRITERS_FILE,
+  writersList,
+  findManifest,
+  manifestSeal,
+  parseRelease,
+  entryProblem,
+  mixedCut,
+  modeVerdict,
+  execBitReadable,
+  sidecarRel,
+  sha256,
+} from './release-manifest.mjs';
 import { v2SchemaProblem } from '../bonsai-garden-sign/lib/seal-v2.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -65,6 +86,8 @@ export const MIN_A = 33;
 export const FILE_NAME = 'reserved-marks.json';
 export const SHIPPED = path.join(HERE, FILE_NAME);
 export const SHIPPED_TARGET = `skills/bonsai-garden-mark/${FILE_NAME}`;
+/** Whose owner seal the set is believed under, in both questions (spec §6.4 points 3c and 4): until 0.9.1 any vouched kin's. */
+export const SET_OWNER = 'mori-shin';
 
 export const R = Object.freeze({
   HAND: 'hand-added',
@@ -83,6 +106,8 @@ export const R = Object.freeze({
   NOT_SHIPPED: 'not the shipped file',
   MISSING: 'no reserved set',
   INPUT: 'input refused',
+  NOT_SET_OWNER: "not the set's owner",
+  RECORD: 'release record',
 });
 
 export class Refusal extends Error {
@@ -232,8 +257,12 @@ export function ruleOf(sets) {
 export const sidecarOf = (file) => path.join(path.dirname(file), `.${path.basename(file)}.bonsaisig`);
 const blake = (bytes) => createHash('blake2b512').update(bytes).digest('hex');
 
-/** Offline: the sidecar's form, owner, target and file-hash over `bytes`. Returns the sidecar or throws. */
-export function sealProblem(bytes, sideText) {
+/**
+ * Offline: the sidecar's form, owner, target and file-hash over `bytes`. Returns { data } or { reason, detail }.
+ * `place: false` (the reader) leaves the target out: a seal holds wherever its bytes are (F-12), and the reader reads
+ * one address only. The drift gate (`check`) keeps it, since it checks the committed file at its committed path.
+ */
+export function sealProblem(bytes, sideText, { place = true } = {}) {
   if (sideText === null || sideText === undefined) {
     return {
       reason: R.UNSEALED,
@@ -255,7 +284,7 @@ export function sealProblem(bytes, sideText) {
     };
   if ('open' in data)
     return { reason: R.NOT_OWNER, detail: 'an open seal is a declaration of work in progress, not a seal on a rule' };
-  if (data.target !== SHIPPED_TARGET)
+  if (place && data.target !== SHIPPED_TARGET)
     return { reason: R.NOT_SHIPPED, detail: `the seal names ${data.target}, not ${SHIPPED_TARGET}` };
   if (blake(bytes) !== data['file-hash'])
     return { reason: R.HASH, detail: 'the file is not the bytes that were sealed: edited after its seal' };
@@ -263,11 +292,37 @@ export function sealProblem(bytes, sideText) {
 }
 
 /**
- * The reader. Reads `file` (the shipped one; tests plant others) and its hidden sidecar, offline
- * checks first, then asks the origin. Returns the rule, or throws a Refusal (exit 2; 3 unreachable).
+ * The checkout the reader runs from: the directory under which the shipped file's own address resolves to `file`
+ * (found by that address, never by a flag, a variable or a count of directories); null when `file` is not there.
  */
-export async function loadReservedSet({ file = SHIPPED, origin = makeOrigin() } = {}) {
+export function checkoutOf(file) {
+  const abs = path.resolve(file);
+  const tail = path.sep + SHIPPED_TARGET.split('/').join(path.sep);
+  return abs.endsWith(tail) ? abs.slice(0, -tail.length) : null;
+}
+
+/** The record of one signed answer for the set, as garden.json carries it (spec §6.4 point 5): these fields, all strings. */
+export const RECORD_FIELDS = Object.freeze(['manifest', 'sha256', 'version', 'signer', 'fingerprint', 'seal-id', 'vouched']);
+
+/**
+ * The reader. Reads `file` (the shipped one; tests plant others) and its hidden sidecar, offline checks first, then
+ * asks the origin once: the release manifest's seal where the checkout carries one, else the set's own (spec §6.4
+ * points 3 and 4). `record` is garden.json's `release`, passed only by a caller that has checked it under the root's
+ * seal; it stands in for the question while the manifest is the same bytes and its files still equal it (point 5).
+ * Returns the rule with `release` (the record to keep, or null on the per-file question), `asked`, and `mode`: what was
+ * done of the manifest's modes (checked | not-stated | not-checkable; the per-file question has no manifest, so
+ * not-stated), never checked when it was not; or throws a Refusal (exit 2; 3 unreachable). `execBits` false says the
+ * platform has no execute bit to read (the default asks the platform).
+ */
+export async function loadReservedSet({
+  file = SHIPPED,
+  origin = makeOrigin(),
+  record = null,
+  writersFile = WRITERS_FILE,
+  execBits = execBitReadable(),
+} = {}) {
   const wrap = (reason, detail, exit = 2) => new Refusal(reason, detail, exit);
+  const say = (p) => wrap(p.reason, p.detail);
   let bytes;
   try {
     bytes = fs.readFileSync(file);
@@ -280,15 +335,83 @@ export async function loadReservedSet({ file = SHIPPED, origin = makeOrigin() } 
   } catch {
     sideText = null;
   }
-  const s = sealProblem(bytes, sideText);
+  const wl = writersList(writersFile);
+  if (wl.problem) throw say(wl.problem);
+  const root = checkoutOf(file);
+  const found = root ? findManifest(root, wl.manifests) : null;
+  if (found?.problem) throw say(found.problem);
+
+  // point 3, a to d, offline: the manifest's seal and format, the set and its sidecar at their listed bytes
+  let ms = null,
+    listed = null;
+  if (found) {
+    ms = manifestSeal(root, found.name, wl.writers);
+    if (ms.problem) throw say(ms.problem);
+    listed = parseRelease(ms.bytes, found.name);
+    if (listed.problem) throw say(listed.problem);
+    for (const rel of [SHIPPED_TARGET, sidecarRel(SHIPPED_TARGET)]) {
+      const p = entryProblem(root, listed.byPath, rel, found.name, { execBits });
+      if (p) throw say(p);
+    }
+  }
+  // the set's own sidecar, read offline in both questions: owner, by mori-shin, over these bytes (points 3c and 4)
+  const s = sealProblem(bytes, sideText, { place: false });
   if (!s.data) throw wrap(s.reason, s.detail);
+  if (s.data.signer !== SET_OWNER)
+    throw wrap(
+      R.NOT_SET_OWNER,
+      `${FILE_NAME} is sealed owner by ${s.data.signer}; the set is believed only under ${SET_OWNER}'s owner seal`,
+    );
+  if (found) {
+    const mx = mixedCut(root, listed.byPath, found.name, { execBits });
+    if (mx) throw say(mx);
+  }
   const sets = parseReserved(bytes.toString('utf8'));
-  const v = await origin.ask(s.data);
+
+  if (!found) {
+    // point 4: no manifest, the per-file question, pinned to mori-shin; its absence never sends the reader past it
+    const v = await origin.ask(s.data);
+    if (v.status === 'keys-unreachable')
+      throw wrap(v.status, `${v.reason}; the reserved set's seal cannot be checked, so nothing is searched`, 3);
+    if (v.status !== 'signature-vouched')
+      throw wrap(v.status, v.reason || "bon-sai.garden does not vouch for the reserved set's seal");
+    return Object.assign(ruleOf(sets), {
+      release: null,
+      asked: true,
+      via: `${FILE_NAME}'s own seal, by ${SET_OWNER}`,
+      mode: 'not-stated',
+    });
+  }
+
+  const fields = {
+    manifest: found.name,
+    sha256: sha256(ms.bytes),
+    version: listed.manifest.version,
+    signer: ms.seal.signer,
+    fingerprint: ms.seal.fingerprint,
+    'seal-id': ms.seal.id,
+  };
+  const via = `${found.name}, sealed owner by ${ms.seal.signer}`;
+  const mode = modeVerdict(listed, execBits);
+  if (record && record.manifest === fields.manifest && record.sha256 === fields.sha256) {
+    // point 5: the record of the one answer, bound by the manifest's hash (and, by the caller, by the root's seal)
+    const off = RECORD_FIELDS.filter((k) => (k === 'vouched' ? typeof record[k] !== 'string' || !record[k] : record[k] !== fields[k]));
+    if (off.length)
+      throw wrap(
+        R.RECORD,
+        `garden.json's release record says ${off.join(', ')} other than ${found.name}'s seal does: a finding, not a cache miss`,
+      );
+    return Object.assign(ruleOf(sets), { release: { ...fields, vouched: record.vouched }, asked: false, via, mode });
+  }
+  // point 3e: one question, the manifest's seal; a record for other bytes is asked again (point 5)
+  const v = await origin.ask(ms.seal);
   if (v.status === 'keys-unreachable')
-    throw wrap(v.status, `${v.reason}; the reserved set's seal cannot be checked, so nothing is searched`, 3);
+    throw wrap(v.status, `${v.reason}; ${found.name}'s seal cannot be checked, so nothing is searched`, 3);
   if (v.status !== 'signature-vouched')
-    throw wrap(v.status, v.reason || "bon-sai.garden does not vouch for the reserved set's seal");
-  return ruleOf(sets);
+    throw wrap(v.status, v.reason || `bon-sai.garden does not vouch for ${found.name}'s seal`);
+  if (!v.verifiedAt)
+    throw wrap('answer-malformed', `the origin's signed answer for ${found.name} carries no verified_at, the time its record keeps`);
+  return Object.assign(ruleOf(sets), { release: { ...fields, vouched: v.verifiedAt }, asked: true, via, mode });
 }
 
 // ── the generator ────────────────────────────────────────────────────────────

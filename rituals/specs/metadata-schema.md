@@ -5,8 +5,8 @@ type: spec
 tended-by: hissai
 author: hissai
 created: 2026-05-15
-updated: 2026-10-13
-version: 0.6.2
+updated: 2026-10-22
+version: 0.6.3
 status: active
 tags: [metadata, schema]
 related: [01KRNHR9S6NMG9M7JNSVQHJK5A, 01KTE6RKE0AT41808KDH8T9GV7]
@@ -21,19 +21,20 @@ moved-note: >
   recorded here: fix them on Hissai's next edit + re-sign of those files.
   agents/shared/codex-workshop.md WAS updated — its Triu signature was already
   failing before this move, so nothing valid was spent.
+  Paid since: both reading lists now point at rituals/specs/metadata-schema.md.
 moved-on: 2026-09-14
-note: "sign block stripped 2026-06-03 (v0.1.6), 2026-09-04 (v0.5.0), and the core copy's stale 0.4.0 signature dropped 2026-09-14 when core was brought up to mono's v0.5.0 — a signature over an older body is not a newer body. Re-sign owed, host-side, by Hissai: python3 tools/sign.py sign lore/metadata-schema.md --as hissai"
+note: "sign block stripped 2026-06-03 (v0.1.6) and 2026-09-04 (v0.5.0); a stale 0.4.0 signature dropped 2026-09-14, when the body was brought up to v0.5.0 — a signature over an older body is not a newer body. No re-sign is owed: since seal v2 the file is sealed by its sidecar, made again on every edit."
 ---
 
 # Workshop Metadata Schema — v0.1.6
 
-> The workshop-canonical reference for YAML frontmatter on every `.md` file in `bonsai-garden`. *The shape that lets everything else read itself.*
+> The workshop-canonical reference for YAML frontmatter on every `.md` file in the garden. *The shape that lets everything else read itself.*
 
 ---
 
 ## Purpose
 
-Every `.md` file in `bonsai-garden` carries YAML frontmatter. Six required fields, a small optional set, controlled vocabularies for `type` / `tags` / `tended-by`. The schema is the workshop's first design system — Obsidian Dataview reads it, the validator (`tools/validate-metadata`) verifies it, future surfaces (the album, the public site, the AI-UI layer) inherit from it.
+Every `.md` file in the garden carries YAML frontmatter. Six required fields, a small optional set, controlled vocabularies for `type` / `tags` / `tended-by`. The schema is the workshop's first design system — Obsidian Dataview reads it, the validator (`tools/validate-metadata`) verifies it, future surfaces (the album, the public site, the AI-UI layer) inherit from it.
 
 The schema falls out from the four-sibling consultation at `rituals/specs/obsidian-metadata-proposal.md` v0.1.0. The channel was sub-agent spawn per lesson #4 (sai-agent inter-communication). This file is the canonical reference; the proposal is the deliberation that produced it.
 
@@ -69,7 +70,7 @@ updated: 2026-05-15                      # ISO date — last meaningful edit
 
 **Generation:** never hand-typed. The helper at `tools/new-file <type> <slug>` emits frontmatter with `id` pre-filled. Hand-typed ids are forbidden — Fuji-shin warns.
 
-**Uniqueness:** workshop-wide. Two files sharing an id is a uniqueness violation; Fuji-shin signals three *nees* when it sees one.
+**Uniqueness:** workshop-wide. Two files sharing an id is a uniqueness violation; Fuji-shin signals three *nees* when they see one.
 
 **Example:** `01HXVK2T8N4W3PQR5MFNC7BG8H` (leading characters encode the timestamp; trailing 16 characters are random).
 
@@ -506,7 +507,7 @@ Who currently tends the file. Names an ongoing fact, not a historical authorship
 **The agent roster is derived, not hand-listed.** As of v0.1.6, `tools/validate-metadata.py` computes the set of valid `tended-by` values as the union of:
 
 1. the two **structural constants** below (`workshop`, `aruji`), which have no `agents/<slug>/` surface; and
-2. every **agent slug discovered in the `agents/` tree** — any `agents/<slug>/` directory carrying a constitution/skill marker (`about-me.md`, `SKILL.md`, or `agent.md`), including one nested directly under a top-level agent's own directory for the rare shared-body case (currently only Fuji-shin, at `agents/baisai/fuji-shin/` — she has no body of her own; see `agents/registry.json`'s `shintai: shared:baisai`). The legacy `agents/<parent>/sub-agents/<slug>/` shape is still scanned for backward compatibility but is retired as of the sub-agents flatten (Gate 1 of the shintai hardening) and should be empty in a fully-reconciled tree.
+2. every **agent slug discovered in the `agents/` tree** — any `agents/<slug>/` directory carrying a constitution/skill marker (`about-me.md`, `SKILL.md`, or `agent.md`), including one nested directly under a top-level agent's own directory for the rare shared-body case (currently only Fuji-shin, at `agents/baisai/fuji-shin/` — they have no body of their own; see `agents/registry.json`'s `shintai: shared:baisai`). The legacy `agents/<parent>/sub-agents/<slug>/` shape is still scanned for backward compatibility but is retired as of the sub-agents flatten (Gate 1 of the shintai hardening) and should be empty in a fully-reconciled tree.
 
 This means a newly invited *-sai or *-shin becomes a valid tender **the moment its surface lands in the tree** — no edit to this file is required when an agent is invited. The roster table below is a human-readable reference, kept reasonably current, but it is **not** the source of truth; the `agents/` tree is. `agents/shared/` carries no marker and is correctly excluded. (The assemble stage of the team-builder workflow should still add a new agent's row here for human legibility, but a missed edit no longer breaks validation.)
 

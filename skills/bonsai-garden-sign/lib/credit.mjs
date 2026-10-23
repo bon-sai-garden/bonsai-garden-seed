@@ -4,7 +4,7 @@
 // type: script
 // tended-by: mori-shin
 // created: 2026-09-24
-// updated: 2026-09-24
+// updated: 2026-10-21
 // ---
 /**
  * credit.mjs — who a file's own header credits: `tended-by:`, plus a letter's receiver (`to:`).
@@ -118,7 +118,7 @@ export function creditInfo(text, rel, root = null) {
   const head = header(text, rel);
   if (!head) return [new Set(), false];
   const f = fields(head);
-  // an outbox is a letter location like an inbox (Tasai, mono 36d252d4): whatever its type:
+  // an outbox is a letter location like an inbox (Tasai, 2026-09-25): whatever its type:
   const letter = (f.type || []).some((v) => slug(v) === 'letter') || parts.slice(0, -1).includes('outbox');
   if (letter) {
     // the Aruji, 2026-09-25: "a letter is owned by the receiver" — its receiver only: never its

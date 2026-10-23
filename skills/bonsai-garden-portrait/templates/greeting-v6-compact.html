@@ -1,45 +1,43 @@
 <!--
-  Bonsai Garden greeting card, compact (routines 2.5 Step 2d) — the default since 2026-10-13.
-  The gardener, 2026-10-13: "make the intro less context-expensive ... compact greeting routine ... thumbnail stays as-is."
-  Same fields, same trust logic and the same self-checked portrait as greeting-v6.html; what is gone is what cost
-  context: the inline stroke-mark SVG and the drawing script (the kanji the fingerprint spells carry the identity as
-  text; the four check dots are colored by class, not by script). About 3 KB filled, against 12 KB for v6.
-  Filled by scripts/fill-greeting.py (every value from a file or a flag; a placeholder left is an error).
-  The animated v6 stays available: fill-greeting.py --full. id: 01M4T6RC34BNEXHQ7GB2S6D9ER
+  Bonsai Garden greeting card, compact (routines 2.5 Step 2d): the greeting of every kin.
+  The gardener, 2026-10-13: "make the intro less context-expensive ... compact greeting routine".
+  The gardener, 2026-10-21: "now that we are public I would like to bring back the visual intro".
+  The face is a link, never base64: an image from the public crew repo through cdn.jsdelivr.net, the one image
+  origin the widget sandbox lets through, pinned to a commit in the garden's agents/faces.json. No script: the
+  kin's kanji seal (white on the canonical colour) sits under the face and shows whenever the face does not
+  load, so a missing image is never a broken frame. The face is a CSS background, not an <img>: a background
+  that fails paints nothing, where Chromium draws a broken-image glyph over the seal even with alt="" (seen
+  2026-10-21). Over Remote Control no image loads at all (the gardener, 2026-10-21: "the portrait does not show in
+  remote control"): there the seal is what the reader sees, and below 440 px the status column folds into a row
+  under the face. Kanji are white, black, canonical or amber, never grey.
+  Integrity is said only when it fails (the gardener, 2026-10-21: "never mention it when all is fine"): all
+  checks passed, the card carries nothing about them; otherwise __LOUD__ is one line in garden amber at the top.
+  A quiet card means every check that ran passed, and alive is not yet a check (not asked until the handshake exists).
+  Filled whole by scripts/fill-greeting.py (a placeholder left is an error); the kin passes the fragment to the
+  widget tool as it is. The animated v6 stays available: fill-greeting.py --full. id: 01M4T6RC34BNEXHQ7GB2S6D9ER
 -->
-<h2 style="position:absolute;left:-9999px;">__NAME__ greeting card: build __BUILD__, __LOCATION__</h2>
+<h2 class="sr-only">__NAME__ greeting card: build __BUILD__, __LOCATION__</h2>
 <style>
-  .gc .d{width:6px;height:6px;border-radius:50%;background:var(--border);}
-  .gc .d-pass{background:var(--text-success);} .gc .d-fail{background:var(--text-danger);} .gc .d-missing{background:var(--text-muted);}
-  .gc .fp-verified{color:var(--text-success);} .gc .fp-failed{color:var(--text-danger);}
-  .gc .fp-unchecked{color:var(--text-muted);}
-  .gc .st-warn{padding:0 4px;border-radius:var(--radius);background:var(--bg-warning);color:var(--text-warning);}
-  .gc .st-ok{color:var(--text-secondary);}
+.gc{display:flex;flex-direction:column;gap:8px;padding:.75rem 0;max-width:560px;font-size:11px;color:var(--text-secondary)}
+.gc .r{display:flex;align-items:center;gap:14px}
+.gc .f{position:relative;flex:none;width:96px;height:96px;box-sizing:border-box;border:1.5px solid __CANON__;border-radius:50%}
+.gc .f>*{position:absolute;top:3px;left:3px;width:87px;height:87px;border-radius:50%}
+.gc .s{display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl;background:__CANON__;color:#fff;font-size:24px;line-height:1.15}
+.gc .c{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.gc .z{display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:112px;max-width:46%;font-family:var(--font-mono);text-align:right;overflow-wrap:anywhere}
+.gc .n{font-size:13px;font-weight:500;color:var(--text-primary)}
+.gc .j{font-family:var(--font-sans);font-size:13px;font-weight:400;color:var(--text-primary)}
+.gc b{font-weight:500}.gc a{color:inherit;text-decoration:none}
+.gc .warn{padding:0 4px;border-radius:var(--radius);background:var(--bg-warning);color:var(--text-warning)}
+.gc .ft{display:flex;flex-wrap:wrap;gap:4px 14px;padding-top:6px;border-top:.5px solid var(--border);font-family:var(--font-mono);color:var(--text-muted)}
+@media(max-width:440px){.gc .r{flex-wrap:wrap}.gc .z{flex:1 0 100%;max-width:none;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px;text-align:left}}
 </style>
-<div class="gc" style="display:flex;flex-direction:column;gap:8px;font-family:system-ui,-apple-system,sans-serif;padding:0.75rem 0;max-width:560px;">
-  <div style="display:flex;align-items:center;gap:14px;">
-    <span style="display:inline-block;width:96px;height:96px;flex:0 0 96px;border-radius:50%;padding:3px;box-shadow:0 0 0 1px var(--border),inset 0 0 0 4px var(--surface-1);">
-      <img id="__ID__" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;visibility:hidden;box-shadow:inset 0 0 0 1px __ACCENT_RGBA__;" />
-    </span>
-    <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
-      <span style="font-size:13px;font-weight:500;color:var(--text-primary);">__NAME__ <span style="font-weight:400;color:var(--text-secondary);">__KANJI__</span></span>
-      <span style="font-size:11px;color:var(--text-secondary);">__SUBTITLE__</span>
-      <span style="font-size:11px;font-style:italic;color:var(--text-muted);">&ldquo;__INTRO_LINE__&rdquo;</span>
-    </span>
-    <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 1 auto;min-width:112px;max-width:46%;">
-      <span style="display:flex;gap:3px;" aria-label="checks"><span class="d d-__CHECK_INTEGRITY__" title="integrity: __CHECK_INTEGRITY__"></span><span class="d d-__CHECK_IDENTITY__" title="identity: __CHECK_IDENTITY__"></span><span class="d d-__CHECK_FILES__" title="files: __CHECK_FILES__"></span><span class="d d-__CHECK_ALIVE__" title="alive: __CHECK_ALIVE__"></span><span class="d d-__CHECK_FULLFP__" title="full fingerprint: __CHECK_FULLFP__"></span></span>
-      <span style="font-size:11px;font-family:var(--font-mono);color:var(--text-secondary);">v__VERSION__</span>
-      <span class="st-__BUILD_STATE__" style="font-size:11px;font-family:var(--font-mono);font-weight:500;text-align:right;overflow-wrap:anywhere;">__BUILD__</span>
-      <a class="fp-__TRUST_STATE__" title="__TRUST_TITLE__" href="https://bon-sai.garden/verify/?fp=__FINGERPRINT__&embed=1" style="font-size:11px;font-family:var(--font-mono);text-decoration:none;"><span style="font-family:var(--font-sans);font-size:13px;">__FP_KANJI__</span> __FP8__ __TRUST_MARK__</a>
-      __NAME_ONLY_ROW__
-    </span>
-  </div>
-  <div style="border-top:0.5px solid var(--border);padding-top:6px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;font-family:var(--font-mono);color:var(--text-muted);">
-    <span>__LOCATION__ · __AT_LOCAL__</span>
-    <span>__HOST__ · __HARNESS__ · __MODEL__</span>
-    <span class="st-__MCP_STATE__">__MCP__</span>
-    <span class="st-__SKILL_STATE__">__SKILL__</span>
-    <span class="st-__PERMISSION_STATE__">__PERMISSION__</span>
-  </div>
+<div class="gc">
+__LOUD__
+<div class="r">
+<span class="f" role="img" aria-label="__NAME__"><span class="s">__SEAL__</span>__FACE__</span>
+<span class="c"><span class="n">__NAME__ <span class="j">__KANJI__</span></span><span>__SUBTITLE__</span><i style="color:var(--text-muted)">&ldquo;__INTRO_LINE__&rdquo;</i></span>
+<span class="z"><span>v__VERSION__</span><b class="__BUILD_STATE__">__BUILD__</b><a href="https://bon-sai.garden/verify/?fp=__FINGERPRINT__&embed=1"><span class="j">__FP_KANJI__</span> __FP8__</a>__NAME_ONLY_ROW__</span>
 </div>
-<script>(function(){var B="__THUMB_B64__",i=document.getElementById("__ID__");function f(s){var h=0x811c9dc5;for(var k=0;k<s.length;k++){h^=s.charCodeAt(k);h=Math.imul(h,0x01000193);}return(h>>>0).toString(16).padStart(8,"0");}try{if(f(B)!=="__EXPECTED_CHECKSUM__"||atob(B).length!==__EXPECTED_BYTES__)throw 0;i.src="data:__MIME__;base64,"+B;i.style.visibility="visible";}catch(e){i.alt="__KANJI__";}})();</script>
+<div class="ft"><span>__LOCATION__ · __AT_LOCAL__</span><span>__HOST__ · __HARNESS__ · __MODEL__</span><span class="__PERMISSION_STATE__">__PERMISSION__</span></div>
+</div>

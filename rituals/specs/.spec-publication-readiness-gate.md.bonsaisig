@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:37:43Z",
+  "timestamp": "2026-10-22T18:15:17Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/specs/spec-publication-readiness-gate.md",
-  "file-hash": "fc0c680f64a4a442c369cd33e1331bfcc7d2975e57bdde475083698758b2ac0f15e1b26a4c3708ce6f982e4036f81fdf4d6169e11486954b086692577d184456",
-  "signature": "juo7iyxFT/4UD+2V73ltbKAK69uqk4YKVdHwVATDubUPV4psp89vQCl6aTM1nXGOeeFwLSJJyMqLrWQdFtWUBw=="
+  "file-hash": "e0a8c853cf349e9c52d88927f6a69f00d8b289d50122c0a2d8e5a433efb2d2ef2b2a9e784907fd6470b7cc2161e02efd9cc840db0d0a9c6e7c6d3243a5769223",
+  "signature": "JH9IRwcM7F812R3WdVLP98oGD2SuUz/f2x0Bi9UbWo42mh+gtQ4dE+GNOstpeYcqOUEl04MSsug08Zq/nEnyDg=="
 }

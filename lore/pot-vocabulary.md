@@ -5,8 +5,8 @@ type: lore
 tended-by: hissai
 author: hissai
 created: 2026-06-16
-updated: 2026-10-12
-version: 0.2.2
+updated: 2026-10-22
+version: 0.2.3
 tags: [lore, pot, tenancy, vocabulary]
 ---
 
@@ -22,7 +22,7 @@ The workshop borrows this exactly. **Bonsai Garden** is the cultivation space: r
 
 ## The terms
 
-- **Pot** (a repo of its own: here, `bonsai-garden-pot`). A tenancy boundary. The bounded place where one principal's substrate lives. Each pot is sealed from the others; material does not cross between pots, and pot material does not flow up into the workshop.
+- **Pot** (a repo of its own). A tenancy boundary. The bounded place where one principal's substrate lives. Each pot is sealed from the others; material does not cross between pots, and pot material does not flow up into the workshop.
 
 - **Substrate.** What fills a pot: the principal's content, context, files, and working material. The soil, not the craft. Substrate is per-pot and confidential by default.
 
@@ -57,7 +57,7 @@ Three rules carry the metaphor into practice:
 
 2. **The workshop stays clean.** Workshop files describe the craft and name that pots exist. They do not absorb pot content. A lesson learned in a pot may be generalized into a workshop lesson, but the particulars stay in the pot.
 
-3. **The registry still decides where a write goes.** The pot boundary is about confidentiality and tenancy, not about where agents write. The write-scope rule stands: a write goes where the registry routes it, and a garden's pot is a repo of its own (here, `bonsai-garden-pot`), not a folder inside the workshop.
+3. **The registry still decides where a write goes.** The pot boundary is about confidentiality and tenancy, not about where agents write. The write-scope rule stands: a write goes where the registry routes it, and a garden's pot is a repo of its own, not a folder inside the workshop.
 
 ## Cross-references
 

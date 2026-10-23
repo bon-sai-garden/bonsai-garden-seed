@@ -11,15 +11,23 @@
 
 The same facts as the v6 widget (identity, the five checks, build, environment) in a few hundred characters instead of
 eleven thousand: the widget reaches a chat only by being re-typed token by token (measured at 7,000 to 10,000 output
-tokens a greeting); this card is about 350. It is the greeting of a kin whose salts are fully locked, on the
-gardener's word of 2026-10-16: "A) for you and all original bonsai garden crew with fully locked 4 digit salt,
-approved." Any other kin keeps the widget (`fill-greeting.py`).
+tokens a greeting); this card is about 350. From 2026-10-16 it was the greeting of a kin whose salts are fully
+locked ("A) for you and all original bonsai garden crew with fully locked 4 digit salt, approved."). Since the
+gardener's word of 2026-10-21 ("now that we are public I would like to bring back the visual intro") every kin
+greets with the widget (`fill-greeting.py`), and this card is its fallback: no inline widget tool, a fill that
+refuses, a render that fails. --locked-salts still answers who is fully locked; the routine no longer asks it.
 
 The kin's mark is a seal: up to four kanji as two pairs, white on the kin's canonical accent (the registry's
 `accent-rgba`), inside a white outline. When the second pair is two circles (U+3007 twice) they are left out and the first pair
-sits centred. Green only when earned: a check is ticked only while it and every check before it passed; a check that
-failed is red wherever it stands; every other check stays unlit, so after the first check that did not pass nothing is
-ticked again. Kanji take only white, black, the kin's canonical colour or garden amber, never another colour
+sits centred. Integrity is said only when it fails (the gardener, 2026-10-21: "We should only ever talk about
+integrity etc, when it fails (fail loudly), never mention it when all is fine"): when the five checks pass and the
+MCP and the skill are current, the card carries nothing about them, no ticks and no status row. Otherwise one loud
+line opens the card, black on garden amber (`▲` in --plain): each check that failed or could not run, with what it
+said (--said CHECK=TEXT), and an MCP or skill that is not current. A check that could not run is never shown as
+passed. alive is not asked until the handshake exists (Tasai, 2026-10-21; Mori-shin, no veto): silent, never drawn
+as passed, and `--alive pass` is refused. A quiet card means every check that ran passed, and alive is not yet a
+check. The words and the states a check may hold come from fill-greeting.py (one place), so both forms say it alike.
+Kanji take only white, black, the kin's canonical colour or garden amber, never another colour
 and never dimmed (the gardener, 2026-10-16): free text goes through `k()`, which sets every kanji run in amber on its
 own, and `check-kanji-colours.py` is the gate. `--plain` drops every escape code (for a chat, where a terminal colour
 cannot show) and draws the seal as a double frame. The text column is open on the right on purpose: a kanji is two
@@ -28,7 +36,7 @@ columns wide in a terminal but not always in a chat font, so a right-hand border
     python3 text-card.py --registry <garden>/agents/registry.json --slug <slug> \\
       --locked-salts <the garden's locked-salts file> --tz <zone> \\
       --subtitle "South · operations" --intro "<the kin's intro line>" --build 3.1.0.9-rc-20261014T1843Z \\
-      --integrity pass --identity pass --files pass --alive pass --fullfp pass \\
+      --integrity pass --identity pass --files pass --fullfp pass \\
       --location "<city>, <country>" --host <host> --harness "<harness>" --model "<model>" \\
       --mcp "<mcp state>" --skill "<skill state>" --permission auto --plain
 
@@ -47,6 +55,7 @@ greets with the widget instead.
 """
 
 import argparse
+import importlib.util
 import json
 import os
 import re
@@ -59,16 +68,28 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 WHITE, BLACK = (255, 255, 255), (0, 0, 0)
 AMBER = (224, 160, 74)  # garden amber, #E0A04A: the site's amber stage accent
 CJK = re.compile(r"([\u3000-\u303f\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]+)")
-GREEN, RED, DIM = (88, 166, 92), (204, 78, 66), (128, 128, 128)
+DIM = (128, 128, 128)
 SEAL_W = 10  # the seal's width in terminal columns, outline included
 CIRCLE = "\u3007"  # the ideographic zero: a mark with nothing in a place
 LOCK_KEYS = ("identity_locked_at", "signing_locked_at")  # both present: the kin is fully locked
-CHECKS = ("integrity", "identity", "files", "alive", "fp")
+FILL = Path(__file__).resolve().parent / "fill-greeting.py"  # the loud line's words: one master, shared with the widget
 
 
 def refuse(message, code=2):
     print(f"text-card: {message}", file=sys.stderr)
     sys.exit(code)
+
+
+def loud_words():
+    """fill-greeting.py, beside this script: the loud line's words and the one place that says which states a check may
+    hold (alive alone not asked, and nothing else until the handshake exists)."""
+    spec = importlib.util.spec_from_file_location("fill_greeting", FILL)
+    m = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(m)
+    except (OSError, SyntaxError) as e:
+        refuse(f"cannot load the loud line's words from {FILL}: {e}")
+    return m
 
 
 def seal_pairs(chars):
@@ -163,10 +184,20 @@ def main():
     for k in ("subtitle", "intro", "build", "body", "location", "at-local", "host", "harness", "model", "mcp", "skill"):
         ap.add_argument(f"--{k}", default="")
     ap.add_argument("--permission", default="")
+    fg = loud_words()
     for k in ("integrity", "identity", "files", "alive", "fullfp"):
-        ap.add_argument(f"--{k}", choices=["pass", "fail", "missing"], default="missing")
+        ap.add_argument(f"--{k}", choices=fg.STATES, default=fg.default_state(k))
+    ap.add_argument("--mcp-state", choices=("ok", "warn"), default="ok")
+    ap.add_argument("--skill-state", choices=("ok", "warn"), default="ok")
+    ap.add_argument("--said", action="append", default=[], metavar="CHECK=TEXT", help="what a check that did not pass said")
     ap.add_argument("--plain", action="store_true")
     a = ap.parse_args()
+    states = {"integrity": a.integrity, "identity": a.identity, "files": a.files, "alive": a.alive, "fullfp": a.fullfp}
+    try:
+        fg.check_states(states)
+        said = fg.parse_said(a.said)
+    except ValueError as e:
+        refuse(str(e))
 
     kin = find_kin(registry_path(a.registry), a.slug)
     if a.locked_salts:
@@ -191,41 +222,29 @@ def main():
         """Text whose kanji runs are set apart in garden amber, never in the surrounding style (no grey or dimmed kanji)."""
         return "".join(c(part, AMBER) if CJK.fullmatch(part) else c(part, **style) for part in CJK.split(text) if part)
 
-    # green only when earned: ticked while every check so far passed; a failure is red wherever it stands; the rest unlit
-    checks, lit = [], True
-    for name, state in zip(CHECKS, (a.integrity, a.identity, a.files, a.alive, a.fullfp)):
-        if state == "pass" and lit:
-            checks.append(c("✓ " + name, GREEN))
-        elif state == "fail":
-            checks.append(c("✗ " + name, RED, bold=True))
-            lit = False
-        else:
-            checks.append(c("· " + name, DIM))
-            lit = False
-    verified = lit
+    # said only when it fails: nothing about the checks while all is fine; one loud line at the top when not
+    loud = fg.loud_items(states, said, a.mcp, a.mcp_state, a.skill, a.skill_state)
+    fine = not loud
 
     right = [
         "",
         c(kin.get("name", a.slug), accent, bold=True),
         k(a.subtitle, dim=True),
         k(f"“{a.intro}”") if a.intro else "",
-        "  ".join(checks[:4]),
-        checks[4]
-        + "  "
-        + c(kin.get("fp8", ""), accent if verified else DIM)
-        + ("  " + c("/verify ✓", GREEN) if verified else ""),
+        c(kin.get("fp8", ""), accent if fine else DIM),
     ]
     seal = seal_rows(seal_chars, a.plain, c, accent)
     rows = max(len(seal), len(right))
     seal += [" " * SEAL_W] * (rows - len(seal))
     right += [""] * (rows - len(right))
     out = [" " + s_ + "   " + r for s_, r in zip(seal, right)]
+    if loud:  # black on garden amber: kanji in it stay black, one of the four
+        line = "▲ " + " · ".join(loud)
+        out.insert(0, line if a.plain else c(f" {line} ", BLACK, bold=True, bg=AMBER))
 
     when = a.at_local or clock(a.tz)
     env = " · ".join(x for x in (a.host, a.harness, a.model) if x)
-    setup = " · ".join(
-        x for x in (f"mcp {a.mcp}" if a.mcp else "", f"skill {a.skill}" if a.skill else "", a.permission) if x
-    )
+    setup = a.permission  # the MCP and the skill are said only when they are not current: in the loud line
     out.append(c("─" * 48, accent, dim=True))
     build = re.sub(r"[\s_]+", "-", a.build.strip()).removeprefix("v")  # kebab-case, whatever the caller typed
     out.append(

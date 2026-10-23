@@ -4,9 +4,9 @@
   "signer": "fuji-shin",
   "role": "owner",
   "fingerprint": "02005daa83f430ae21122e42cea925a0",
-  "timestamp": "2026-10-07T05:54:24Z",
+  "timestamp": "2026-10-22T09:14:31Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-validate/references/identity.md",
-  "file-hash": "9f25bd6f80147d24e86056461ab3f52b625d9b8c72f1562aa62a57b1042bfafb1d5044642d8b728909632fbbfb38566418e559dc4f70f7970416e229721ba4e1",
-  "signature": "bEomNjQ+bqldtuC24D1q//5blP5gXhUMqSe0l0PggVEmxb+Bqygki7j1PWZ5tIqjUcefK8/1+BdUhAPtOKy1Cw=="
+  "file-hash": "04cf638157fe2cf83c83a8f82bca97582d773dad1bbbc4d286f052399ec876b79a5313557aa3108dbbe3b033e7cdc4feeec6a6bb528bb8ed6207238c8b2ac279",
+  "signature": "dHl+m6mK7CIS3mJrZRToX0rbDZ+8Vmyprg8zO/0h0bqY+XwZ+4L96dDCCzC40clQThAoO0SoM2Wf8yMhCHD4BQ=="
 }

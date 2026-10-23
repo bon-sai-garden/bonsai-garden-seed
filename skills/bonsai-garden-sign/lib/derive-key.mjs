@@ -5,7 +5,7 @@
  * type: script
  * tended-by: mori-shin
  * created: 2026-09-13
- * updated: 2026-09-13
+ * updated: 2026-10-21
  * ---
  * `type: script` is a placeholder — no such type exists yet in
  * rituals/specs/metadata-schema.md's controlled vocabulary. Baisai (2026-09-13
@@ -15,7 +15,7 @@
  * Key Derivation Module — HKDF-SHA256 for deterministic Ed25519 key
  * generation from (master-salt + agent-salt).
  *
- * Ported from bonsai-garden's tools/keyring/derive-key.mjs (Mori-shin,
+ * Ported from the origin garden's tools/keyring/derive-key.mjs (Mori-shin,
  * 2026-09-13) as the foundation of the core-repo signing service. The
  * derivation logic itself has zero OS dependency — it is plain Node
  * `crypto` (HMAC + Ed25519 via a PKCS8 DER wrapper), which runs identically

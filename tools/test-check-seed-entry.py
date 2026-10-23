@@ -156,7 +156,7 @@ class Planted(unittest.TestCase):
         code, out = run(GATE, *args)
         self.assertEqual(code, 2, out)
 
-    # the gate form, as build-distro runs it: --root <upstream> --rev <commit>
+    # the gate form a builder runs: --root <repo> --rev <commit>
     def test_the_gate_form_reads_the_commit_not_the_working_tree(self):
         repo = self.dir / "core"
         (repo / "agents" / "bonsai" / "identity").mkdir(parents=True)

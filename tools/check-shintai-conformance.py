@@ -19,7 +19,7 @@ check. This script inspects a shintai from the outside.
 
 Capability, not instance (LAYERS.md): it takes any shintai's path as an
 argument and knows nothing about which garden it runs in. That is why it
-lives in bonsai-garden-core rather than in a garden's own pot or runtime.
+lives in core rather than in a garden's own pot or runtime.
 
 Two modes
 ---------
@@ -221,7 +221,7 @@ def _node_many(jobs: list[tuple[str, Path]]) -> tuple[dict[tuple[str, str], dict
     and the finder's answers (find-sidecar, target-of). Returns (answers by (verb, file), why it could
     not run at all, the last stderr line). Core's own verifier (parity-tested against sign.py), for
     every seal of a body in ONE node process: verify-many.mjs runs the verdicts sign.mjs's `verify` / `verify-sidecar` run, and
-    test-verify-many.py holds it to the CLI file by file. One process per seal cost 20 s a body
+    a parity test holds it to the CLI file by file. One process per seal cost 20 s a body
     (Baisai, 2026-09-27). Returns 'ok' or the failure line per job. A verifier that cannot run, or
     a job it gave no verdict for, is a failure, never a pass."""
     if not jobs:
@@ -783,8 +783,8 @@ def check_on_disk(agent_dir: Path) -> list[str]:
             pass
         # 1a'. A lean SKILL.md credits what its IDENTITY DOCUMENT credits (credit.mjs, Mori-shin's rule of 2026-09-24): the first of
         # references/identity.md, memory/identity.md. A kin with neither has a SKILL.md that credits no one, so an owner seal on
-        # it silently reads custodian (Bonsai's gap 85, Mori-shin's ruling 2026-10-11). A note, not a failure: six bodies in mono
-        # (six bodies in mono) predate it.
+        # it silently reads custodian (Bonsai's gap 85, Mori-shin's ruling 2026-10-11). A note, not a failure: six bodies in the origin's garden
+        # (six bodies in the origin's garden) predate it.
         if not any((agent_dir / rel).is_file() for rel in ("references/identity.md", "memory/identity.md")):
             NOTES.setdefault(str(agent_dir), []).append(
                 "no identity document (references/identity.md, else memory/identity.md): this SKILL.md credits what its identity "
@@ -1153,7 +1153,7 @@ def main() -> int:
 
     any_fail = False
     for raw in args.targets:
-        # the kin's slug is its body directory's NAME: a bare '.' has none, so name the directory it is (no symlink resolving)
+        # the kin's slug is their body directory's NAME: a bare '.' has none, so name the directory it is (no symlink resolving)
         target = Path(os.path.abspath(raw))
         if pot_refusal:  # refused whole: no seal is read against a pot that cannot stand
             any_fail = True

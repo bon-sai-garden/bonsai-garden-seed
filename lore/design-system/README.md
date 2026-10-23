@@ -1,14 +1,3 @@
----
-id: 01KRQX4M6FVCXFQTDPP6E6SXYW
-title: "Lore — workshop design system v0.1"
-type: lore
-tended-by: eisai
-created: 2026-05-16
-updated: 2026-06-06
-status: draft
-related: [01KRQ9PMVKSRWFXG3MJG8WAKD0, 01KRT9Y2E5C5NX3CZTNX187Y2F, 01KT6QCMB7YRBFBMF4M9QW9DZP]
----
-
 # Bonsai-Garden Design System
 
 ---

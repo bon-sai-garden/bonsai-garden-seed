@@ -4,9 +4,9 @@ title: "bonsai-garden-mark — identity"
 type: identity
 tended-by: baisai
 created: 2026-09-14
-updated: 2026-10-07
+updated: 2026-10-21
 skill: bonsai-garden-mark
-version: 1.3.0
+version: 1.3.2
 mark: 印技
 mark-meaning: "印 (405) stamp, seal + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-mark#368906"

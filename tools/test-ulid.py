@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-23
-# updated: 2026-10-15
+# updated: 2026-10-21
 # copyright: © 2026 Bonsai Garden · bon-sai.garden
 # ---
 """test-ulid.py — drives tools/ulid.py (or another copy via --ulid) through throwaway
@@ -437,6 +437,38 @@ check(
     "the validator's ULID shape is the generator's (no I, L, O or U)",
     bool(m_ul) and m_ul.group(1) == U.ULID_RE.pattern,
     f"validator {m_ul and m_ul.group(1)}, generator {U.ULID_RE.pattern}",
+)
+
+# a README is the forge's front page (GitHub renders a frontmatter block as a table): like SKILL.md, it carries no id,
+# and its id lives in its seal (the gardener, 2026-10-21). README.<name>.md is a README kept under another name and
+# published as README.md.
+FD = T / "front-door"
+FD.mkdir()
+subprocess.run(["git", "init", "-q", str(FD)], check=True)
+(FD / "README.md").write_text("# A front door\n\nbody\n")
+(FD / "docs").mkdir()
+(FD / "docs" / "README.md").write_text("# docs\n")
+(FD / "README.rt.md").write_text("# rt\n")
+subprocess.run(["git", "-C", str(FD), "add", "-A"], check=True)
+rc, out = run("check", "--staged", "--repo", str(FD))
+check("staged: a README.md and a README.<name>.md without frontmatter pass, at the root and below", rc == 0, out[-160:])
+check(
+    "… none of them is an id carrier; SKILL.md still is not",
+    not any(U._carries_id(p) for p in ("README.md", "docs/README.md", "README.rt.md", "a/SKILL.md")),
+)
+check(
+    "… and the rule did not widen: README.MD, READMEX.md, README..md, README.a.b.md, notes.md still carry an id",
+    all(U._carries_id(p) for p in ("README.MD", "READMEX.md", "README..md", "README.a.b.md", "notes.md")),
+)
+# the validator keeps a COPY of the names that carry no id (a skill runs from its own folder); any drift fails
+m_nn = re.search(r"^NO_ID_NAMES = (\([^)]*\))", vsrc, re.M)
+m_nr = re.search(r'^NO_ID_NAME_RE = re\.compile\(r"([^"]+)"\)', vsrc, re.M)
+check(
+    "the validator's no-id names are the generator's (NO_ID_NAMES and NO_ID_NAME_RE)",
+    bool(m_nn and m_nr)
+    and ast.literal_eval(m_nn.group(1)) == U.NO_ID_NAMES
+    and m_nr.group(1) == getattr(U, "NO_ID_NAME_RE", re.compile("")).pattern,
+    f"validator {m_nn and m_nn.group(1)} {m_nr and m_nr.group(1)}",
 )
 
 print(f"\n{sum(results)}/{len(results)} pass")

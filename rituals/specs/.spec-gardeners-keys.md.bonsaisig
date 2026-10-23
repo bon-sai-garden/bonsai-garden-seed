@@ -4,9 +4,9 @@
   "signer": "mori-shin",
   "role": "owner",
   "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
-  "timestamp": "2026-10-16T14:43:30Z",
+  "timestamp": "2026-10-21T21:18:43Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/specs/spec-gardeners-keys.md",
-  "file-hash": "bde6a2cf2ffc476f6f835bd5e74fa49906394b629c94982e32fd2fee5b82ba0e8ec1726d578653cd3761a3979c7b142c26f7f8a087baa8ed50781ed113f3949d",
-  "signature": "3eQ9dR/DZQxe2qb8dxICQ/RjTyx2oM2EgCO8OS2CgcrrixHOexK1+4mh37e7p+CQF86RoOJpQZen2m7MGb0kAw=="
+  "file-hash": "d7694cae15b164bba1e852ecb2318f6cda07e787202e2a80f477ea1aed2bad7399f06a0a3632080e72847d6abe7c0668f6c51a1f5b80bd91ecdc5b564cf7c835",
+  "signature": "Vvfh77OOz/SrOep4ksAId0ogfHA2TRBgqln0F6FJdjsurbQjP5QizpgHxU96PaBWJb/3068K7PugH/BpcseACw=="
 }

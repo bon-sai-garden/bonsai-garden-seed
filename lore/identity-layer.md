@@ -5,8 +5,8 @@ type: lore
 tended-by: hissai
 author: hissai
 created: 2026-05-16
-updated: 2026-10-21
-version: 0.4.2
+updated: 2026-10-22
+version: 0.4.3
 status: candidate
 related: [01KRQ8XPYPGWZBDYN4JACZZNR0, 01KRRF6FW7WYTGY523E6ZHCVA5, 01KRRCN86WXV3NZPNKXH3VSPQT, 01KS5142QPSA6DV1Y7V00ANWSJ, 01KRRCN8751KMN0BNDRGHMKQ9Y, 01KSZEM0R4H4C9XWGKJE4RGZFQ, 01KTE77S987TFQDYX8E7KSCN7N, 01KS0EMZ845JJP43HT0DJR8YYP, 01KRQX4M6FVCXFQTDPP6E6SXYW, 01M4G6ZP9MZ674B690PPXAK7M1]
 ---
@@ -52,4 +52,4 @@ Two things the record does not yet support, so the page does not claim them.
 - While the agents share one machine, they are told apart by checks and a signing record, not yet by the operating system.
 - A bunshin bond can be made and checked. Ending one, revoking an attestation, has no rule yet.
 
-The long account of how this layer was first built, in May and June, is kept as it stood in the record of v0.3.2, the file `lore/identity-layer-record.md` in the `bonsai-garden-core` repository.
+The long account of how this layer was first built, in May and June, is kept as it stood, as the record of v0.3.2, in the garden where it was built. It stays there; only the pattern travels.

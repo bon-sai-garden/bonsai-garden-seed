@@ -1,0 +1,6 @@
+{
+  "format": "bonsai-garden-release-writers/1",
+  "writers": ["baisai", "tasai"],
+  "manifests": ["SEED-MANIFEST.json"],
+  "_what": "The release writers core names, and the manifest a release of core carries at its root (spec-gardeners-keys.md §6.4 point 3a, 0.7.0). Where the checkout the reserved set's reader runs from carries one of `manifests`, the set is believed through it only when the manifest is sealed owner, not open, by one of `writers`, at a custody tier above the software fallback, and bon-sai.garden vouches for that seal; any other key the site holds is refused. With no manifest present, the set's own seal must be owner by mori-shin. Read from this file beside the reader, never from a flag, a variable or the pot, as skills/bonsai-garden-keys/rt-minimum.json names rt's signers. The writers are the gardener's (2026-10-08: \"Only Tasai and Baisai should ever do that\")."
+}

@@ -4,12 +4,12 @@ title: "Trust anchor — core verifies against the published keys, and fails lou
 type: ruling
 tended-by: mori-shin
 created: 2026-09-24
-updated: 2026-09-24
+updated: 2026-10-21
 status: active
 related:
-  - "bonsai-garden rituals/specs/spec-key-management-and-verify.md (decisions #1, #9, #11)"
-  - "bonsai-garden home/mori-shin/inbox/2026-09-24-bonsai-public-keys-need-not-travel.md"
-  - "bonsai-garden home/mori-shin/inbox/2026-09-24-baisai-core-cannot-verify-itself-and-third-kanji.md"
+  - "the origin garden's rituals/specs/spec-key-management-and-verify.md (decisions #1, #9, #11)"
+  - "the origin garden's home/mori-shin/inbox/2026-09-24-bonsai-public-keys-need-not-travel.md"
+  - "the origin garden's home/mori-shin/inbox/2026-09-24-baisai-core-cannot-verify-itself-and-third-kanji.md"
 ---
 
 # Trust anchor
@@ -18,7 +18,7 @@ related:
 
 ## The question, and whose steer
 
-Baisai found that a checkout of core alone could verify one of its six skills. His conformance gate had shown 6/6 only because this host let the verifier borrow keys from mono. He asked how core should carry the public keys of everyone who seals core content. The Aruji asked why keys should travel at all when they are public, and gave his steer through Bonsai: *"verifying core offline is out of scope"*, and with no reach to the public keys, *"it should fail loudly."*
+Baisai found that a checkout of core alone could verify one of its six skills. His conformance gate had shown 6/6 only because this host let the verifier borrow keys from the origin garden's repository. He asked how core should carry the public keys of everyone who seals core content. The Aruji asked why keys should travel at all when they are public, and gave his steer through Bonsai: *"verifying core offline is out of scope"*, and with no reach to the public keys, *"it should fail loudly."*
 
 ## The ruling
 
@@ -38,7 +38,7 @@ Baisai found that a checkout of core alone could verify one of its six skills. H
 
 ## What I found while ruling, and fixed
 
-The live `/verify` had never signed an answer. The worker imported its 32-byte seed as `raw`, but WebCrypto accepts an Ed25519 *private* key only as pkcs8 or jwk. The import threw, a `catch` returned null, and every answer went out unsigned, while the header and the spec both said otherwise. Fixed in `bonsai-garden-site` (the seed is now wrapped as PKCS#8, and failures are logged). Guarded by `worker/test-response-sig.mjs`, which fails 3/10 against the old code.
+The live `/verify` had never signed an answer. The worker imported its 32-byte seed as `raw`, but WebCrypto accepts an Ed25519 *private* key only as pkcs8 or jwk. The import threw, a `catch` returned null, and every answer went out unsigned, while the header and the spec both said otherwise. Fixed in the site's own repository (the seed is now wrapped as PKCS#8, and failures are logged). Guarded by `worker/test-response-sig.mjs`, which fails 3/10 against the old code.
 
 ## Open
 

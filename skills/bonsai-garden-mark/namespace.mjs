@@ -14,7 +14,7 @@
 //   node namespace.mjs identity  --slug <slug> --garden <romaji> --pair 〇〇
 //   node namespace.mjs check-locks <pot>/locked-salts.json
 //
-// Pure: SHA-256 of a salt string, sliced as engine.js slices it (10 bits per kanji, MSB first).
+// Pure: SHA-256 of a salt string, read as engine.js reads it (10 bits per kanji, MSB first).
 // No secret is involved in a mark, so nothing here reads custody; the signing salt, which needs
 // the master salt, is searched by bonsai-garden-keys (lib/search-signing.mjs).
 //

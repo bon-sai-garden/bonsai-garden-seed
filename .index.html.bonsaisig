@@ -4,9 +4,9 @@
   "signer": "eisai",
   "role": "custodian",
   "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-14T10:21:24Z",
+  "timestamp": "2026-10-21T16:50:20Z",
   "algorithm": "ed25519+blake2b512",
   "target": "index.html",
-  "file-hash": "25bdaa9403c68066ce96b440d3349f6407f9ff1073acb398b8ba424b0dbcdb7ad671b08d217373f4c2528407e267cf565f3a35757bc9fb2dc4c55884f5d3358d",
-  "signature": "CjMSLz7WHEuGf33p3Q2JPCryhHdCo9FCLwgy4k3h3of3Tm1wTETA0plqDs3xfyFueeKdnUzuDRD7w8eRWvzCCA=="
+  "file-hash": "87dcb2a81565f545b0f01f7bf19a582469c3db8ee4d3841ec98eca8d1d6b0015db9668c67901f1493d558105f39ec5651062770cbc1e086b33f7d90fe07189d4",
+  "signature": "/quLVRj3xouVkX07OoTiBCR8SwOG72oua09LPbxwRw8YGll+VlBg0tWa77YMsHMytgk9AMZcEaOdNwLHZ8qbAg=="
 }

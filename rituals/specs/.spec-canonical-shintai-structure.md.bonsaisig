@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:37:40Z",
+  "timestamp": "2026-10-22T18:15:16Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/specs/spec-canonical-shintai-structure.md",
-  "file-hash": "71eec562804e92b092d44f41b973da2ba20e6814ac4cbc7f72b2d7b0dc327ccc8d9263efeecec672a2a1299cbc4d402579bebaf5fcfd2fa95e74667ca86ce2d8",
-  "signature": "FhXy6tVNLmq6BBSSlrqKoJnG4BVxdRonDZRXYI/PMCBWIcEoZPJOxYrUG8DNV3rzq22OkiXzmK2G7KVaS//pAA=="
+  "file-hash": "2fcf719f7cbb5ff509e137f2eca8fd86c1515ffe231e4732ab524a68abc7182f642461aedb28c39717396a4e20831b674af66d1aded55fa05011f7347c644228",
+  "signature": "sQzxkCf0xT60b3IJSuU5kNtAlxgT52VHi/AuBXGHmJw2MZ7MsEavT5jsdQFOg68an7CLIxM/uDprIXhit6+rDA=="
 }

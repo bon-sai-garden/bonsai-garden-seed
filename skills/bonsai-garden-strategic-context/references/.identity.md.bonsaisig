@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "custodian",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-07T06:01:30Z",
+  "timestamp": "2026-10-21T21:14:41Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-strategic-context/references/identity.md",
-  "file-hash": "dbc52225795421b39840136c01a08ec9c792e664f4d29c5833a3608a80a42be24f8f2ce17b0f18789c869c4b76028c34f1b679cc14b74c803410f983b6681a3e",
-  "signature": "ZbsSAAqkKmGa0v+DFddUlBOVJAWGk2ypxuydBq+LNsG8AZzNuJ6M7VJsyzKu7+K25mDcaU5Il/g1QQK+0rP4DQ=="
+  "file-hash": "cb09029dcbc4eace1f5672150847f0159f76656fb5ac44c24f6cbcb7b3337141f3d16a8f14e183c38741df2b32f4d4d8849de4217246628c9c1b05bc6178e16d",
+  "signature": "1u7A+poL9bKPG8UBCb1TQU9eGvElZtEBZ1BS5xml5ytYhUTgOtKMB1E2oofl2+UaDrpPR26gy/Cl1ChRYrFWAA=="
 }

@@ -5,7 +5,7 @@
 # type: script
 # tended-by: eisai
 # created: 2026-10-06
-# updated: 2026-10-09
+# updated: 2026-10-21
 # ---
 """test_build_crew_data.py — a guard is not trusted until it has been watched to fail.
 
@@ -115,7 +115,7 @@ def make_garden(root: Path) -> tuple[Path, dict]:
             "slug": "gamma",
             "name": "Gamma",
             "kanji": fpk.kanji(fps["gamma"]),
-            "type": "gardener",  # the registry's word for a person since mono 216e1bd73; "aruji" before it
+            "type": "gardener",  # the registry's word for a person since 2026-10-15; "aruji" before it
             "fingerprint": fps["gamma"],
             "path": "agents/gamma",
             "accent-rgba": None,
@@ -440,7 +440,7 @@ with tempfile.TemporaryDirectory() as td:
 
     case("a fingerprint that does not spell the registry's kanji stops the build", t_decode)
 
-    # A person is typed "gardener" since the registry's rename (mono 216e1bd73); an older registry still says "aruji".
+    # A person is typed "gardener" since the registry's rename (2026-10-15); an older registry still says "aruji".
     # Both words are a person, and each is planted here: on 2026-10-15 the guard knew only the old word, so for a
     # person typed "gardener" it had gone quiet with nothing to say so (Jisai's registry review, through Tasai).
     PERSON_WORDS = ("gardener", "aruji")

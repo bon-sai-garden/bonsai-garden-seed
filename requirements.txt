@@ -3,6 +3,12 @@
 # core's own .venv/, never into the system Python, and only after asking. Node has one dependency,
 # jsdom, declared in package.json and installed the same way (the mark skill's verify.mjs).
 #
+# What setup-core installs is requirements-lock.txt, generated from this file: every package these pull in, each at
+# one version and each by its sha256 (pip --require-hashes), so a stranger's install is the bytes it was checked as.
+# Change a pin here, then regenerate the lock (its first lines say how); tools/test-setup-core.py fails on any drift.
+# The mark skill's curation script (rebuilding the kanji set from KANJIDIC2, rarely needed) has its own file, asked
+# for only when curating: skills/bonsai-garden-mark/requirements-curation.txt.
+#
 # Python 3.11 or later: Pillow 13.0.0 and numpy 2.4.6 install on nothing older, so this file as a whole installs only
 # there, and tools/setup-core.py installs it only there (with this Python, or a newer one already on the machine, named
 # before you say yes). On an older Python nothing from it is installed, and no older Pillow in its place.
@@ -29,7 +35,3 @@ c2pa-python==0.37.12
 #
 # The validate skill (validate-metadata.py parses each document's frontmatter):
 PyYAML==6.0.3
-#
-# The mark skill's curation script (rebuilding the kanji set from KANJIDIC2 — rarely needed):
-jamdict==0.1a11.post2
-jamdict-data==1.5

@@ -7,7 +7,7 @@
 // updated: 2026-10-21
 // ---
 //
-// install-runtime.mjs — runtime rituals/specs/spec-rt-slice.md §5 and §6, the verb behind
+// install-runtime.mjs — rt's spec, §5 and §6, the verb behind
 // `keys.mjs install-runtime --pot <dir> --from <path|url> [--into <dir>] [--upgrade]`. It lives in core because
 // it runs before any runtime exists (the gardener, 2026-10-06: the rite clones or downloads runtime).
 //
@@ -101,7 +101,7 @@ async function vouch(ctx, seal, where, { refuse, halt }) {
 const recordOf = (a, root, verifiedAt) => ({
   name: a.manifest.name,
   version: a.manifest.version,
-  ...(a.manifest.upstream ? { upstream: a.manifest.upstream } : {}), // an older rt's manifest names where it was made; 0.9.1-rc on, none
+  ...(a.manifest[M.V1_FROM] ? { [M.V1_FROM]: a.manifest[M.V1_FROM] } : {}), // an older rt's manifest names where it was made; 0.9.1-rc on, none
   'rt-commit': headOf(root),
   'manifest-sha256': a.manifestSha,
   'sealed-by': { signer: a.seal.signer, fingerprint: a.seal.fingerprint },

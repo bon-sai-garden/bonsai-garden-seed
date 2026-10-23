@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T18:02:27Z",
+  "timestamp": "2026-10-21T20:10:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-mark/curation.py",
-  "file-hash": "0cfd9363a02a5fb3cbeaf9d40b071c58ac120f732463d6715d82955f4e922ab092defbe1a31659ca6d50111c0c3264d8c07be34e8f8eae93890ad15f9b697b7a",
-  "signature": "Ay5zh6kAxdLDwckIe4TLNJCASo9R4vELppjq+VGSVgNK5T0bxxqy3kt3nqnNO6Nkhx4B9kCdr3T7iANBHVW0DQ=="
+  "file-hash": "9b4f1b49659194df53efb0d1cdac12ca7cfe175e411c7aaa37a64fedc2c5982507d61b17c2acf521a4ab8f97fe1c0e5ab34f19be2c92100cbc9f2c86603672ba",
+  "signature": "FHYVsleTYOCQhN1BS2RRt9WaNJoRoa88zbv5OtmNpeWvXjLoVwdPxcg4B4EuHaCZVLk2y2Pi8ufC4UZqHRgTDw=="
 }

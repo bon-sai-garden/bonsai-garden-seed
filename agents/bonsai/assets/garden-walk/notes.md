@@ -5,9 +5,9 @@ description: "The walk as ten full pages, one per stage from the gate to calling
 type: spec-draft
 tended-by: eisai
 created: 2026-10-06
-updated: 2026-10-06
+updated: 2026-10-21
 status: draft
-version: 0.6.0
+version: 0.6.1
 tags: [garden-walk, mockups, stage-pages, bonsai, public-site, eisai]
 related:
   - "[[agents/bonsai/assets/gardener-about-me-template]]"
@@ -58,7 +58,7 @@ Rebuilt at Bonsai's request, 2026-10-07, to rules 6.5 to 6.10 and 7.4 of the rul
 
 ## Audit against the old synth app (0.4)
 
-The Aruji, 2026-10-06: *look at the old synth app and see what input elements, like primary language, we have missed.* The old app (nine steps: Start, Brief, Feedstock, Dossier, Canon, Heritage, Compose, Synthesize, Plugin; archived at `bonsai-garden-archive/sites/entrance/.../front-office/shin/`, specs `spec-uijin-start-entry-points.md` and `synth-workflow-v1-ux.md` in mono) asked for these. What the new chain does with each:
+The Aruji, 2026-10-06: *look at the old synth app and see what input elements, like primary language, we have missed.* The old app (nine steps: Start, Brief, Feedstock, Dossier, Canon, Heritage, Compose, Synthesize, Plugin; archived in the origin garden at `sites/entrance/.../front-office/shin/`, with its specs `spec-uijin-start-entry-points.md` and `synth-workflow-v1-ux.md`) asked for these. What the new chain does with each:
 
 | Old input | In the new chain | |
 |---|---|---|
@@ -134,7 +134,7 @@ core  agents/bonsai/assets/garden-walk/
         walk.css, walk.js       one stylesheet, one small script
         build.py                writes the ten pages, index.html and pages.json
                                 build.py --check: drift and guards
-site  bonsai-garden-site/tools/build-walk-pages.py
+site  tools/build-walk-pages.py
         reads core's rendered pages and pages.json, writes
           sites/bon-sai-garden/app/src/pages/walk/**        (Astro, no site header)
           sites/bon-sai-garden/app/src/styles/walk.css      (core's, without the base tokens)

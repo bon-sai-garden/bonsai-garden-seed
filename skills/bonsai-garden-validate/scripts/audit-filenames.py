@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-05
+# updated: 2026-10-22
 # ---
 """
 audit-filenames.py — the file-name convention scanner.
@@ -102,7 +102,7 @@ def exempt(fn: str, at_root: bool, allow: set[str], parent: str = "") -> bool:
 
 
 # The finder, asked rather than copied (the dot-prefixed sidecar change, Mori-shin's ruling: no fourth copy of the sidecar
-# rule). Core's checkout holds it at skills/bonsai-garden-sign/lib/; an installed package carries the
+# rule). The library's own tree holds it at skills/bonsai-garden-sign/lib/; an installed package carries the
 # same file at scripts/integrity/bonsai-garden-sign/lib/. Found by walking up from here, by marker.
 FINDER_REL = (
     Path("skills/bonsai-garden-sign/lib/sidecar-format.mjs"),

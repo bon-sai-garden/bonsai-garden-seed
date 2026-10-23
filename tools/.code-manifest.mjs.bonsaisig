@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T00:10:28Z",
+  "timestamp": "2026-10-21T18:10:46Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/code-manifest.mjs",
-  "file-hash": "4323e9b192bf70cf3768fee80b74072ac6fca4a6f8900996f16718eb49800fa9361d5d8f27116c224af3d3ea7fbc42f42aa4f0c106f4606908a24610bcde8586",
-  "signature": "onA83lT18+CLLWs8dGCv9XiTURpiTqY4pzvFNGryoYly3VQbueM75WcJzTGst4mmDe7/l7ueZ3XCvYwYnPQiCA=="
+  "file-hash": "d0852491a484fb23398a2a5899237dd7647e24e1d01b8ce8dd576c152a06e76e71bf8089f6ab9dad0975ddca973535ddce519e38566cc6512bb979f7a9687ef4",
+  "signature": "KeP+PXYCAozAl/9UAIcQAmg0kQrNelVI6MOn7gLHRXoWe6BVfY89YwMmj4CDkBOG+aS0cVMA+8nARYoybqJHAw=="
 }

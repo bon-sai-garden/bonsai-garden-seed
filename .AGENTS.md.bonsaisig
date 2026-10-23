@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T08:29:41Z",
+  "timestamp": "2026-10-22T17:44:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/distro/seed/AGENTS.md",
-  "file-hash": "3b3ce9d9a80eb295ac8c26e3b300967dd60dee50d5e91dfe420e12c31c3a771daf7af048e930bb6b804dea93ff117b73c97b54fe66a5150ce0562f79a2466664",
-  "signature": "6Jp5TO9RooFIqKIK7o4WepDhG0vYzmb5xRLgcJVUBqystPlTaVmRVq59YxGTOaGT4UZfzkCGU6sW20vTXQY9Aw=="
+  "file-hash": "1c26579cf007c5704a48bd586b781a47cb184db0c9211a4627f16991c7310e7983d88f55906dfdfb30e60c09b614efa10f5124eeb79e23628a92f44b2ba9c6df",
+  "signature": "Fj/iYWUQKDxMRg19bT2q9ymeU528t6I9wvDENf0ZGsrEorQBvxyn+vvLOC/XgaQCOQ0APVW8LrK3t01kiRsQBg=="
 }

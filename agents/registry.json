@@ -2,7 +2,7 @@
   "$schema": "https://bon-sai.garden/schemas/agent-registry-v1.json",
   "_meta": {
     "id": "agent-registry-v1-core",
-    "description": "bonsai-garden-core — minimal registry, Bonsai's own entry only. Built to test-drive skills/bonsai-garden-portrait/scripts/make-identity-cards.py (stage 3) against this repo's single resident agent. Not synced from bonsai-garden's monorepo registry; hand-derived from agents/bonsai/SKILL.md.",
+    "description": "Minimal registry, Bonsai's own entry only. Built to test-drive skills/bonsai-garden-portrait/scripts/make-identity-cards.py (stage 3) against this repo's single resident agent. Not synced from the origin garden's registry; hand-derived from agents/bonsai/SKILL.md.",
     "version": "0.1.0",
     "created": "2026-09-12",
     "tended-by": "baisai"

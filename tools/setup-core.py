@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # ---
 # id: 01M394XJV2DDYD6T66JZ8M3287
-# title: Set up bonsai-garden-core — check, explain, and install only with consent
+# title: Set up the seed — check, explain, and install only with consent
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
 # updated: 2026-10-21
 # ---
 """
-setup-core.py — get a fresh copy of bonsai-garden-core ready to use, in plain words.
+setup-core.py — get a fresh copy of the seed ready to use, in plain words.
 
     python3 tools/setup-core.py            look around and explain; changes nothing
     python3 tools/setup-core.py --install  do what is missing, asking before each step
@@ -16,7 +16,8 @@ setup-core.py — get a fresh copy of bonsai-garden-core ready to use, in plain 
 Safe by construction (the Aruji, 2026-09-24: "dead simple (but safe) for the rest of us"):
   - It writes only inside this folder: node_modules/ and .venv/. Nothing system-wide, no sudo.
   - It installs only exact versions from files you can read: package-lock.json (every package
-    with its sha512 checksum) and requirements.txt (exact versions).
+    with its sha512 checksum) and requirements-lock.txt (every Python package requirements.txt
+    pulls in, each by its sha256: pip --require-hashes). No lock, no Python install.
   - npm runs with --ignore-scripts, so no package can run its own install code.
   - It never downloads and runs a script. If Homebrew itself is missing, it tells you where to
     get it and stops; installing Homebrew is your step.
@@ -44,7 +45,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent  # core's folder, found by marker below
 if not (ROOT / "package-lock.json").is_file() or not (ROOT / "skills").is_dir():
-    sys.exit("This doesn't look like a bonsai-garden-core folder (no package-lock.json or skills/). Stopping.")
+    sys.exit("This doesn't look like a copy of the seed (no package-lock.json or skills/). Stopping.")
 
 OK, NO, NOTE = "  ✓", "  ✗", "  ·"
 
@@ -276,9 +277,17 @@ def main() -> int:
     # 3 · Python libraries for the portrait skill (optional), into .venv/ only, and only on a Python the pins install on:
     # never an older Pillow in the pinned one's place (the advisories of 2026-10-20 are fixed only in Pillow 13.0.0)
     ps = portrait_state()
-    pip = [str(venv_python()), "-m", "pip", "install", "--disable-pip-version-check", "-r", "requirements.txt"]
+    # the hashed lock, generated from requirements.txt: every transitive package by its sha256 (Mori-shin's read, B10-25)
+    lock = ROOT / "requirements-lock.txt"
+    pip = [str(venv_python()), "-m", "pip", "install", "--disable-pip-version-check", "--require-hashes"]
+    pip += ["-r", "requirements-lock.txt"]
     go = False
-    if ps["needs"] == "blocked":
+    if ps["needs"] in ("sync", "create") and not lock.is_file():
+        print(
+            "\n  The portrait tools are skipped: requirements-lock.txt is not beside requirements.txt, and only the\n"
+            "  hashed lock is installed, never the pins without their hashes. Nothing was installed."
+        )
+    elif ps["needs"] == "blocked":
         print(
             "\n  The portrait tools are skipped: .venv cannot take requirements.txt's pins (see above). Nothing was\n"
             "  installed, and no older Pillow in their place. Remove .venv yourself, then run this again."
@@ -299,7 +308,7 @@ def main() -> int:
             go = True
     if go:
         if not run(pip):
-            print("\n  pip couldn't install requirements.txt. Only .venv/ was touched.\n")
+            print("\n  pip couldn't install requirements-lock.txt. Only .venv/ was touched.\n")
             return 1
         ps = portrait_state()
         if ps["needs"] is not None:

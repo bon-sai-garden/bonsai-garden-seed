@@ -37,7 +37,7 @@ Everything here is **the Garden Walk** until the gardener says, in their own wor
 
 One strategic context for the new garden. It is read by **Stage 2** (which shin get invited) and pointed to from **Stage 3e** (each shin's `memory/strategic-context.md` is a **pointer** to it, never a copy: one text, one master). What I miss here is missed for the life of the garden, because nothing later in the rite asks these questions again.
 
-**Where it lives is not settled.** What a garden is for is the gardener's own substance, so it belongs in their pot, not in `lore/`, which is craft. The pot's structure is still a stub (`rituals/specs/spec-garden-provisioning-runtime.md` §6). Until that is decided, write it at the root of the new garden's first pot as `strategic-context.md`, and treat the path as provisional.
+**Where it lives is not settled.** What a garden is for is the gardener's own substance, so it belongs in their pot, not in `lore/`, which is craft. The pot's structure is still a stub. Until that is decided, write it at the root of the new garden's first pot as `strategic-context.md`, and treat the path as provisional.
 
 ## Three things this is not
 
@@ -173,9 +173,9 @@ A standing refusal the gardener names ("never do this, even if I ask") is not a 
 
 - **The shape call is a judgment, not a rule.** I read the default from Stage 0 and questions 3–5. No test exists for it. The first few runs are exploratory, and the spec gets written in retrospect.
 - **Untested at this scale.** The hundred-question form is proven: a complete voice profile exists, compiled from a run captured 7–9 May 2026. What is unproven is this short, cold-start form, with a stranger who hasn't yet decided to trust the room. It has never been run. The first three runs are the experiment.
-- **Only a stranger can test it.** The Aruji, Zensai and I are all insiders; every kin learned its fluency in him. A forming agent reads approval as truth, so **field reports from genuine strangers outrank every insider's judgment, mine included.** The Aruji has named trusted new gardeners as the first runs.
+- **Only a stranger can test it.** The Aruji, Zensai and I are all insiders; every kin learned their fluency in him. A forming agent reads approval as truth, so **field reports from genuine strangers outrank every insider's judgment, mine included.** The Aruji has named trusted new gardeners as the first runs.
 - **"Enlarge, don't refuse" is unproven.** It is meant to get past the safe first answer the way the taste interview's refusal did, without the refusal. Whether it does, or only produces a larger safe answer, needs field reports.
 - **The floor moved from three to four** (question 7 added, so that Stage 2 has ground). Whether four is still light enough for a stranger is a field question.
-- **Where the file lives** waits on the pot definition (provisioning spec §6).
+- **Where the file lives** waits on the pot's definition.
 - **Standing refusals in the codex.** Stage 4 receives them, but nothing yet says how a codex holds one.
 - **No transcript is kept.** It compiles live and keeps only the result, which is right for a stranger's first hour and wrong if we ever want to learn what the compile threw away. If the first runs disappoint, look here first.

@@ -5,12 +5,12 @@ type: spec
 tended-by: baisai
 created: 2026-09-24
 updated: 2026-10-21
-version: 1.1.1
+version: 1.1.3
 status: draft
 related:
   - "references/trust-anchor.md"
   - "lib/seal-v2.mjs · lib/ulid-rule.mjs · lib/verify.mjs · lib/published-keys.mjs"
-  - "bonsai-garden tools/sign.py (the Python twin)"
+  - "the garden's tools/sign.py (the Python twin)"
 ---
 
 # Seal v2
@@ -54,7 +54,7 @@ The checks run in this order: schema → the signer's key → fingerprint (first
 - **The id is judged by the file's name in both places**, where it sits and where it was sealed: if either name carries an id (a document, a script), it must be the seal's. So a seal crafted with another id cannot lose its id check by moving to a name that carries none, and a sealed `.json` found under a `.md` name is refused (`id-mismatch`): the bytes carry no id there.
 - **Where an address must be vouched for, it is the set's, not each file's.** A sealed manifest says which bytes sit at which relative path, with nothing missing and nothing extra: a package's `MANIFEST.json`, rt's `RT-MANIFEST.json`, the seed's `SEED-MANIFEST.json`; for a living checkout, `CODE-MANIFEST.json` (each sealed code file's path to its seal's id, written from the tree by core's `tools/code-manifest.mjs`, then sealed). **The gates that run code read one** (the gardener's pick, 2026-10-20, "2a"; built in the same release, 0.9.1), and they do not meet a missing one alike:
   - **the MCP's execute gate** runs a module only from its checkout's sealed map. No map, or a map whose seal does not hold, refuses and says so; a module the map does not place, or places under another id, is refused. An installed rt checks its `RT-MANIFEST.json` instead.
-  - **mono's pre-exec hook** requires mono's own map: missing, or its seal broken, is BLOCKED. A sealed script in a checkout that carries no map (core today, a scratch copy) it treats as an unsigned script: **allowed in `report` mode, the default, without a word**, and BLOCKED in `enforce` mode. A script a map does not list: a warning in `report`, BLOCKED in `enforce`. Two limits are known, owed before `enforce`: a command that names `sign-sidecar` anywhere passes whatever the hook finds (the re-signing pass-through), and a script run after a `cd` is resolved against the garden, not the command's own folder.
+  - **the garden's pre-exec hook** requires its own checkout's map: missing, or its seal broken, is BLOCKED. A sealed script in a checkout that carries no map (core today, a scratch copy) it treats as an unsigned script: **allowed in `report` mode, the default, without a word**, and BLOCKED in `enforce` mode. A script a map does not list: a warning in `report`, BLOCKED in `enforce`. Two limits are known, owed before `enforce`: a command that names `sign-sidecar` anywhere passes whatever the hook finds (the re-signing pass-through), and a script run after a `cd` is resolved against the garden, not the command's own folder.
 
   That is where the address still decides something, and the only place.
 - No seal is re-sealed for this, no owner reads anything for it, and `seal-policy.json` gains no key: there is no cutover to stage, and a switch would only re-arm the bug on one host.
@@ -103,7 +103,7 @@ The batch seals the **source** of a generated file (AGENTS.md composed into six 
 
 ## Tests
 
-`test-seal-v2.mjs` asserts every case in both tools: the demonstration's frontmatter edits, the seal's own fields, where the seal sits (moved within a repo, into a second repo, outside every root, a byte-identical copy: `ok` with its provenance; moved beside other bytes or another id: refused), crafted-but-signed guards, sealing refusals, seal-open, v1 warn and refuse (with a flipped copy of the policy), and parity over the corpus. `test-seal-v2-mutations.mjs` removes each guard, in a copy, and requires the matching test to stop passing. The site's `worker/test-verify-v2.mjs` covers `/verify` and the published client end to end.
+The seal's tests assert every case in both tools: the demonstration's frontmatter edits, the seal's own fields, where the seal sits (moved within a repo, into a second repo, outside every root, a byte-identical copy: `ok` with its provenance; moved beside other bytes or another id: refused), crafted-but-signed guards, sealing refusals, seal-open, v1 warn and refuse (with a flipped copy of the policy), and parity over the corpus. A mutation suite removes each guard, in a copy, and requires the matching test to stop passing. The site's `worker/test-verify-v2.mjs` covers `/verify` and the published client end to end.
 
 ## Open
 
@@ -113,6 +113,8 @@ The batch seals the **source** of a generated file (AGENTS.md composed into six 
 
 ## Version
 
-- **1.1.1** (2026-10-21) — PATCH: two sentences made true, from Mori-shin's owner read of 0.9.1. A gate with no manifest does not always refuse: the MCP's gate does, mono's pre-exec hook in `report` mode allows a sealed script from a checkout without a map, and the page now says how each gate meets a missing map (and the hook's two known limits). A copied seal now lends its id to the copy; uniqueness is `ulid.py check --staged`'s alone. No verdict changed.
+- **1.1.3** (2026-10-21) — PATCH: the page names no test file that seed leaves out (Tasai: no dead links ship); what the tests check is unchanged.
+- **1.1.2** (2026-10-21) — PATCH: the page names no repository of ours by name (the 0.9.2 trace gate): the Python twin and the pre-exec hook are the garden's. No verdict changed.
+- **1.1.1** (2026-10-21) — PATCH: two sentences made true, from Mori-shin's owner read of 0.9.1. A gate with no manifest does not always refuse: the MCP's gate does, the garden's pre-exec hook in `report` mode allows a sealed script from a checkout without a map, and the page now says how each gate meets a missing map (and the hook's two known limits). A copied seal now lends its id to the copy; uniqueness is `ulid.py check --staged`'s alone. No verdict changed.
 - **1.1.0** (2026-10-21) — MINOR: the address is provenance, never a verdict (F-12). The order loses `target`; every v2 verdict carries `sealedAt`, `foundAt`, `moved`; the id is judged by both names; `target-mismatch` leaves the vocabulary; *Packages* rewritten (a copied seal holds where it is installed, the manifest is the set). The payload and the format are unchanged. The ruling is Mori-shin's; built by Baisai for the gardener's pick of 2026-10-20 ("2a").
 - 1.0.0 (2026-09-24) — the first form: a detached seal for every file, signed over its bytes and every field of its own.

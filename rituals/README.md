@@ -1,11 +1,3 @@
----
-id: 01KRNRJTY523XAQRKE14T4SBXF
-title: Rituals
-type: readme
-tended-by: workshop
-created: 2026-05-12
-updated: 2026-05-12
----
 # Rituals
 
 > *The rituals are how the garden is tended. Specs clarify intent. Tasks track motion. Lessons prevent decay.*

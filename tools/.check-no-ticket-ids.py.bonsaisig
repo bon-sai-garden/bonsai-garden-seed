@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T01:29:56Z",
+  "timestamp": "2026-10-21T17:52:01Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/check-no-ticket-ids.py",
-  "file-hash": "624031f9387b0dbb3a73bc487450383bded11d8a8a6fe1e22815b7528c857d9ce2fc253117ec9d918893676de02bd5c9e8d0f3493e7606e4da7b6282a29b3d76",
-  "signature": "vmT5TvhTM1R2Yos5XBAksazw6iXg9ZVkV01tK2pB4+diNr+q7h96gxy99mRtG97OS3Xjf6tDVA5OiX+jDmjMCg=="
+  "file-hash": "b133a6408379e30496027a8e7c452e3d543bd88c34b9a32b76c8b65a0205ae88d3589de33c4a9c1d1875dbb46350d4d1b667bd6bccce01d8c2358dc190ff2244",
+  "signature": "wXgr7a9UK3K2NnieCLSzY/8CBg3HV0SjQ7slrbUO5V+M7HhiFB7jQJ+gfSOE/2AYWlN+5QmI5YHtWZuEDPLuCg=="
 }

@@ -51,7 +51,7 @@
         "roles/guardian": "core:roles/guardian/*.md"
       },
       "include-why": "references/lore carries the lore Bonsai's own SKILL.md names in its reference material (core lore/: cosmology, invitation-rite, human-covenant, sayings, north-star), not the whole library: the Claude app refuses a skill of more than 200 files, and lore/*.md made his unit 210 (the gardener, 2026-10-18 ~18:50). His codex is his own assets/codex.md, so lore/the-codex.md stays out.",
-      "initial-memory-why": "Bonsai, 2026-09-26: core now carries his initial state (core b5d2b93): working-state holds WS-001 the Garden Walk and WS-002 the first stranger with no garden particulars, strategic-context is an empty seed; the lived record lives in the pot. So his real initial memory ships instead of the builder's skeleton. (Until then, 2026-09-24: identity only, because working-state and strategic-context still held this garden's forming-ritual particulars.)"
+      "initial-memory-why": "Bonsai, 2026-09-26: core now carries his initial state: working-state holds WS-001 the Garden Walk and WS-002 the first stranger with no garden particulars, strategic-context is an empty seed; the lived record lives in the pot. So his real initial memory ships instead of the builder's skeleton. (Until then, 2026-09-24: identity only, because working-state and strategic-context still held this garden's forming-ritual particulars.)"
     }
   ],
   "skills": [

@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-16T14:33:54Z",
+  "timestamp": "2026-10-22T07:06:20Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-strategic-context/SKILL.md",
-  "file-hash": "70a91b17c1cb794b185c7d51787f25025a060af781df03a8f1dbe4655d01eb9d73e70dee118f175ff359f9359b5b5ff4f3823014a819600f22f93661141b278a",
-  "signature": "j81a75SDxvMMN1DdaaMjiI52THQo6fOzMyd+jwzpiwwGNuJst4UTWmIhVMbSl4k+KmjZLKe7a8gBBj+auO9PCA=="
+  "file-hash": "aec4bd7c8cbbfa57bc97dc48e1961c51a32f000eff003a31f4273aa95d2558c1bdbd4dd6ab2b34f59087716c781dd851572e807d345b151924f8686b42d04eb5",
+  "signature": "zFNyRUi5Vk6jt+T26Sz5W5e4vd/lcwLjiCzD+H+0lgxeKWDdgVacIgBc0qoQEjnreFXcdgodjCxZsLxv7RTNBg=="
 }

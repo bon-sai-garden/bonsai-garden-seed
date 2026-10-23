@@ -5,12 +5,11 @@ type: contract
 tended-by: baisai
 created: 2026-09-14
 updated: 2026-10-21
-version: 1.2.3
+version: 1.2.4
 status: binding
 related:
   - AGENTS.md
   - CREDITS.md
-  - OWNERSHIP.md
 copyright: © 2026 Bonsai Garden · bon-sai.garden
 ---
 

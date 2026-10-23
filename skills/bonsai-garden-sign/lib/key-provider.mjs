@@ -5,14 +5,14 @@
  * type: script
  * tended-by: mori-shin
  * created: 2026-09-13
- * updated: 2026-09-13
+ * updated: 2026-10-21
  * ---
  * `type: script` is a placeholder — pending Baisai's patterns.md proposal
  * (2026-09-13 review); see lib/derive-key.mjs's header for the full note.
  *
  * KeyProvider — the structural per-agent signing-key isolation boundary.
  *
- * Ported and lightly adapted from bonsai-garden's tools/keyring/key-provider.mjs
+ * Ported and lightly adapted from the origin garden's tools/keyring/key-provider.mjs
  * (Mori-shin, 2026-09-13). Like derive-key.mjs, this module is pure — it takes
  * a masterSaltHex and an agentSalt string as plain arguments and holds no
  * platform-specific code anywhere. Where the master salt itself comes from is
@@ -33,9 +33,9 @@
  *
  * Adapted from the original: `mintKeyProviderForAgent` here resolves against
  * a plain `{ [agentId]: { signing_salt } }` map passed in by the caller,
- * not against bonsai-garden's `agents-registry.mjs` (a different repo's
+ * not against the origin garden's `agents-registry.mjs` (a different repo's
  * registry shape). Core is meant to stand alone — it should not reach back
- * into bonsai-garden's registry module to mint a key for its own resident
+ * into the origin garden's registry module to mint a key for its own resident
  * agent. Full registry-backed validation (unknown-id refusal, etc.) is left
  * to whatever wires this into core's own registry, later, alongside Baisai.
  */
@@ -95,9 +95,9 @@ export function mintKeyProvider(masterSaltHex, agentSalt) {
 /**
  * Mint a KeyProvider for a core-resident agent by id, resolving its signing
  * salt from a plain `{ [agentId]: { signing_salt } }` map (the same shape as
- * the `.agents` map in bonsai-garden's `locked-salts.json`, deliberately —
+ * the `.agents` map in the origin garden's `locked-salts.json`, deliberately —
  * so a salt entry can be copied across without reshaping it, but core never
- * imports bonsai-garden's own registry module to do the copying).
+ * imports the origin garden's own registry module to do the copying).
  *
  * @param {string} agentId - e.g. "bonsai"
  * @param {string} masterSaltHex - host-side master salt (never from a repo file)

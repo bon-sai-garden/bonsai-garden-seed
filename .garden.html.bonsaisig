@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "custodian",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-05T17:30:56Z",
+  "timestamp": "2026-10-21T20:26:11Z",
   "algorithm": "ed25519+blake2b512",
   "target": "garden.html",
-  "file-hash": "bbd2feb29f21c917242d0edfd2ecb59cdb32a66aca06481f937ed1d9bcfd15ffacc87535881253aa8878023f1079976c1a3ba3fad30a3421896a0bf7f97c2029",
-  "signature": "PgXBKrR39ZQkZ2o3wJsH6/duUkPcH4l6UsfXS4YC0HEQvDCYT+7mf54voU6u8aQHNefUchivQCcv9Dzro4dFCg=="
+  "file-hash": "f57f23ec9941df91c15a6cdc7f7d5f563aa67330229a4cfa90c728a5cab83119e09a98e2d1d4c7bbe091aa83f788dea3ca440b903cf8051781ac7f0e288d750a",
+  "signature": "Ooax8WDMksfqYn73rLhoWXfomKFekrUqdysOLA9iZmJ+IP0EW7beFA1BE9b9UCB1s8EkFtxv5j4GfoB3+Nd7CA=="
 }

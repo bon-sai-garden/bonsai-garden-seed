@@ -1,0 +1,20 @@
+# requirements-curation.txt: what the mark skill's curation.py needs, and only it: rebuilding the kanji set from
+# KANJIDIC2, rarely needed. Never installed by tools/setup-core.py; asked for only when curating marks, into a venv of
+# your own, by hash:
+#
+#   python3 -m pip install --require-hashes -r skills/bonsai-garden-mark/requirements-curation.txt
+#
+# jamdict and jamdict-data are source packages: their setup.py runs at install. Pinned here: jamdict==0.1a11.post2 and
+# jamdict-data==1.5, and what jamdict pulls in. Generated 2026-10-21 with uv 0.11.19 from those two pins:
+#
+#   uv pip compile <the two pins> --universal --python-version 3.11 --generate-hashes --no-header
+chirptext==0.1.2 \
+    --hash=sha256:643c9c11508f509b37257e3f3a629a668c0908ae5f582d7b9f131234a7379303
+    # via jamdict
+jamdict==0.1a11.post2 \
+    --hash=sha256:fbb54de3d58ecdb9b53498ae873ab6519312c86bc848a9769d92b1b238d4c914
+jamdict-data==1.5 \
+    --hash=sha256:a4247dd9bb3148ab17c1b32fc56d7a7f1c35293b0d6ff2838c811f896d13f415
+puchikarui==0.1 \
+    --hash=sha256:8ebe96e8683eac82624eb90dd517e26421e467637b3a1fe1ef5275ba2dacddc8
+    # via jamdict

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-20T22:32:26Z",
+  "timestamp": "2026-10-21T20:10:02Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/test-setup-core.py",
-  "file-hash": "71a32db93acf486f09c7630c9a9c4cc24c37c723a57154df785190cb52f2567bccc385a1212e05cf5927a4b7d086ab75a616f8f72dbf31b12c3ab95a3d55e8f3",
-  "signature": "rK2pPkaGnzn+o1X+3m1GdrIMNYvAFlE3VhYmAVJ+VsN8rS1Slz3e5e4V5CG3sb3ge46gtJAPDCgp3ZjsqAtfBA=="
+  "file-hash": "bdab95f97120f7ceeaf212f83697d78dce25c8971702301ab3059b77d5f310b1eb780221483fb4142021d4083a43d0061f77c60c2a40bc0c993d1eb58038dbde",
+  "signature": "e3j2fNoYSmYVuLinXaCQG+eOnVh+/WIB+N608mYa62+SgqQ0qz+Ynio/z4ffsgh9U4bIA3eKTvfwKnxY5Hu4AA=="
 }

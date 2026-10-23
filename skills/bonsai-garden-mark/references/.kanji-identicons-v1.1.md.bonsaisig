@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-16T14:37:48Z",
+  "timestamp": "2026-10-21T20:10:05Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-mark/references/kanji-identicons-v1.1.md",
-  "file-hash": "7734fe7cf81c77ac8733dc73b01df7ad98801a4d4922ada321e1058b3c5d860437d2e76426a03d89488105bfb532e49655d55b71ab438e3ef2a809819f4a8081",
-  "signature": "wf7fXv/6M02li4yXikWYtvxD4HnEbXQQgzCVHQszFx/y0nJF8XahDUC/b1aG6c0yNEjIAAY/E1+azCsGI9YwDg=="
+  "file-hash": "644a642f6e6cb331844f4d27aeb22ec70ee5e7739ac686659075202098df17530007323e3969cbf870ff63889ea568368217e206133663ed3dd533764f5ff021",
+  "signature": "TtKsR4uP/sotyP/7sAxw256uVgOlMoH2FxldI1SKWlZhUl24S+sUonWuopkNoHP1cn2KLZEPw7ajXxhqo5CKDw=="
 }

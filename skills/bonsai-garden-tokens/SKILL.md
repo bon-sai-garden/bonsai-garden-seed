@@ -77,12 +77,12 @@ guardrail stop looking like they conflict:
 > sub-agent.** No *-sai and no *-shin may run on Haiku, because a *-sai's
 > or *-shin's work *is* voice, register, and judgment, and Haiku erodes
 > exactly those. Fuji-shin is the sole exception, and the exception is
-> narrow on purpose: his entire designed function -- running checks,
+> narrow on purpose: their entire designed function -- running checks,
 > verifying builds, fast deterministic passes -- carries no character and no
-> judgment to erode. He is not exempt because he is cheap or because he is
-> a sub-agent; he is exempt because there is nothing in his work for Haiku
+> judgment to erode. They are not exempt because they are cheap or because they are
+> a sub-agent; they are exempt because there is nothing in their work for Haiku
 > to flatten. **No other *-shin inherits this by default** -- a new *-shin
-> earns its own model floor from its own contract, the same way Fuji-shin's
+> earns their own model floor from their own contract, the same way Fuji-shin's
 > was earned rather than assumed.
 
 Applied when spawning any sub-invocation, *-shin or otherwise:

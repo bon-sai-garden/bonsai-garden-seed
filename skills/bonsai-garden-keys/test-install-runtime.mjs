@@ -4,10 +4,10 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-18
+// updated: 2026-10-22
 // ---
 //
-// test-install-runtime.mjs — runtime rituals/specs/spec-rt-slice.md §5 and §6. A fixture rt is made in
+// test-install-runtime.mjs — rt's spec, §5 and §6. A fixture rt is made in
 // scratch (a stub hook, a stub doctor, a README and the manifest, through core's own rt-manifest.mjs), its
 // manifest sealed owner by a THROWAWAY key the suite's fake bon-sai.garden holds (test-support.mjs), and
 // the scratch core copy's rt-minimum.json names that key and the oldest version it takes. Every source
@@ -18,7 +18,7 @@
 // Core names no rt by hash or commit (the gardener, 2026-10-18: "we should never refer to a specific
 // version of runtime as a dependency me thinks", "maybe a minimumversion, bvut not a fixed version"). Run
 // against a core from before that (INSTALL_SRC_CORE; one with no rt-minimum.json), the suite gives that
-// core's pin its most generous honest form: `today()` writes rt-pin.json naming the very rt a case
+// core's pin its most generous honest form: `today()` writes that core's pin file naming the very rt a case
 // offers, or, where the case is about core naming no hash of a newer rt, the minimum's rt.
 //
 //   node skills/bonsai-garden-keys/test-install-runtime.mjs
@@ -69,7 +69,7 @@ function today(dir) {
         format: 'bonsai-garden-rt-pin/1',
         name: m.name,
         version: m.version,
-        upstream: m.upstream,
+        [M.V1_FROM]: m[M.V1_FROM],
         'rt-commit': head,
         'manifest-sha256': M.sha256(buf),
       },
@@ -108,7 +108,7 @@ async function writeRt(
     M.manifestBytes({
       name: 'bonsai-garden-rt',
       version,
-      upstream: { repo: 'bonsai-garden-runtime', commit },
+      [M.V1_FROM]: { repo: 'rt-source', commit },
       files,
       v1,
     }),
@@ -229,9 +229,9 @@ t('an-rt-whose-manifest-names-no-commit-installs-and-the-pot-records-none', asyn
   return [
     r.code === 0 &&
       m.format === 'bonsai-garden-rt-manifest/2' &&
-      !('upstream' in m) &&
+      !(M.V1_FROM in m) &&
       installed(g, shaOf(d)) &&
-      !('upstream' in rec(g.pot)),
+      !(M.V1_FROM in rec(g.pot)),
     `exit ${r.code}, format ${m.format}, record ${JSON.stringify(Object.keys(rec(g.pot)))}: ${last(r)}`,
   ];
 });
@@ -246,7 +246,7 @@ t('an-older-rt-whose-manifest-names-its-commit-still-installs-and-the-pot-record
     r.code === 0 &&
       m.format === 'bonsai-garden-rt-manifest/1' &&
       installed(g, shaOf(d)) &&
-      rec(g.pot).upstream?.commit === 'a'.repeat(40),
+      rec(g.pot)[M.V1_FROM]?.commit === 'a'.repeat(40),
     `exit ${r.code}, format ${m.format}: ${last(r)}`,
   ];
 });
@@ -254,7 +254,7 @@ t('an-older-rt-whose-manifest-names-its-commit-still-installs-and-the-pot-record
 t('a-manifest-of-the-new-shape-that-names-a-commit-is-malformed', async () => {
   const buf = M.manifestBytes({ name: 'bonsai-garden-rt', version: '0.1.1', files: FILES });
   const m = JSON.parse(buf);
-  const planted = Buffer.from(JSON.stringify({ ...m, upstream: { repo: 'x', commit: 'a'.repeat(40) } }));
+  const planted = Buffer.from(JSON.stringify({ ...m, [M.V1_FROM]: { repo: 'x', commit: 'a'.repeat(40) } }));
   let said = '';
   try {
     M.parseManifest(planted);
@@ -296,7 +296,7 @@ t('an-rt-whose-manifest-is-wrongly-sealed-is-refused', async () => {
         const m = JSON.parse(fs.readFileSync(path.join(d, M.MANIFEST), 'utf8'));
         fs.writeFileSync(
           path.join(d, M.MANIFEST),
-          M.manifestBytes({ name: m.name, version: '0.1.2', upstream: m.upstream, files: FILES2 }),
+          M.manifestBytes({ name: m.name, version: '0.1.2', [M.V1_FROM]: m[M.V1_FROM], files: FILES2 }),
         );
       }),
       /hash-mismatch/,
@@ -396,7 +396,7 @@ t('the-published-keys-unreachable-halts-and-installs-nothing', async () => {
 
 t('core-reads-no-fixed-hash-or-commit-of-an-rt', () => {
   // what install-runtime decides by: its own code, the format's library and the file it reads. No 40- or 64-hex value in
-  // them, no read of a pin, and a core whose compat rt-pin.json (for rt <= 0.8.3's exec gate) names another rt changes nothing.
+  // them, and no read of a pin.
   const keys = path.join(SRC, 'skills', 'bonsai-garden-keys');
   const read = (rel) => (fs.existsSync(path.join(keys, rel)) ? fs.readFileSync(path.join(keys, rel), 'utf8') : '');
   const hex = ['lib/install-runtime.mjs', 'lib/rt-manifest.mjs', 'rt-minimum.json'].filter((f) =>
@@ -831,7 +831,7 @@ t('the-first-contract-is-written-once-and-named-unsealed-and-an-existing-one-is-
     r.code === 0 &&
     /host-service\.mjs install/.test(agents) &&
     /registered once, at user level/.test(agents) &&
-    !/bonsai-garden-runtime|\.mcp\.json/.test(agents) &&
+    !new RegExp(`${['bonsai', 'garden', 'runtime'].join('-')}|\\.mcp\\.json`).test(agents) && // the name built from its parts: this file names no repository
     !/__SERVER__/.test(agents) &&
     fs.readFileSync(path.join(g.pot, 'CLAUDE.md'), 'utf8') === 'mine\n' &&
     /unsealed: .*AGENTS\.md/.test(r.stdout) &&

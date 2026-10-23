@@ -5,7 +5,7 @@
 # type: script
 # tended-by: eisai
 # created: 2026-10-06
-# updated: 2026-10-09
+# updated: 2026-10-21
 # ---
 """build_crew_data.py — everything a garden's crew pages show, read from where it lives. Never typed.
 
@@ -63,7 +63,7 @@ from pathlib import Path
 PORTRAIT_PX = 360  # shown at up to 180 css px; 2x for dense screens
 WEBP_QUALITY = 80
 
-# A person, not kin. The registry's word since mono 216e1bd73 is "gardener"; a registry from before it says "aruji".
+# A person, not kin. The registry's word since 2026-10-15 is "gardener"; a registry from before it says "aruji".
 # Both are a person, so the held-key guard and the frame hold for either. Matched on the old word alone, the guard had
 # gone quiet for a person typed "gardener", and nothing said so (2026-10-15, Jisai's registry review, through Tasai).
 PERSON_TYPES = frozenset({"gardener", "aruji"})

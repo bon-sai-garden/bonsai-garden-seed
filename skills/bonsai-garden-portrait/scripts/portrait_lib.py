@@ -5,7 +5,7 @@
 """
 portrait_lib.py — shared identity/signing library for the bonsai-garden-portrait skill.
 
-Everything here exists because the historical approach (bonsai-garden's
+Everything here exists because the historical approach (the garden's
 tools/weave-in/, built 2026-05-20) turned out to be quietly broken against the
 c2pa-python version actually available today (0.37.x). This module is a
 from-scratch, empirically-verified rewrite of the two hard parts:
@@ -292,7 +292,7 @@ def check_c2pa() -> str | None:
     except ImportError:
         return None
     # A namespace-package shadow (a bare `c2pa/` directory earlier on
-    # sys.path, e.g. bonsai-garden's own orphaned c2pa/ experiment) imports
+    # sys.path, e.g. the garden's own orphaned c2pa/ experiment) imports
     # "successfully" but has no __file__ and none of the real API — catch it
     # here rather than let signing fail later with a confusing AttributeError.
     if getattr(c2pa, "__file__", None) is None or not hasattr(c2pa, "Builder"):

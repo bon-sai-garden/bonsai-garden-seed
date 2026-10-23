@@ -4,9 +4,9 @@ title: "Tombstone — Bonsai's public introduction lives in the garden's pot"
 type: tombstone
 tended-by: bonsai
 created: 2026-10-19
-updated: 2026-10-19
+updated: 2026-10-22
 status: retired
-moved-to: bonsai-garden-pot/home/bonsai/misc/public-introduction.md
+moved-to: "the garden's pot, home/bonsai/misc/public-introduction.md"
 moved-id: 01M48DNAASSJ2N172WX97D7TDV
 ---
 
@@ -16,8 +16,8 @@ A garden's introduction of its Bonsai belongs to that garden, so it lives in the
 
 In the garden where this body was dreamed, the master is:
 
-**bonsai-garden-pot** · `home/bonsai/misc/public-introduction.md` · id `01M48DNAASSJ2N172WX97D7TDV`
+**the garden's pot** · `home/bonsai/misc/public-introduction.md` · id `01M48DNAASSJ2N172WX97D7TDV`
 
-That is the copy its crew page reads. The older draft that stood here is in this repo's git history (`0192044`). It is not the approved text.
+That is the copy its crew page reads. The older draft that stood here (2026-10-06) is not the approved text, and this body does not carry it.
 
 This tombstone carries its own id, so that one id names one document. **Do not edit it.** Its job is to be found at the old address and to send you to the new one.

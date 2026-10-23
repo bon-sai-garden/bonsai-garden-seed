@@ -5,7 +5,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-21
+// updated: 2026-10-22
 // ---
 //
 // keys.mjs — spec-gardeners-keys.md §2: detect, id, mint, recover, namespace, identity, derive,
@@ -18,9 +18,12 @@
 // written outside custody and the sealed export, or put on a command line (test-keys.mjs greps).
 //
 // Two verbs believe something they did not make, and ask the origin for it: namespace
-// and identity read the shipped reserved-marks.json, pinned by its seal and believed only on
-// bon-sai.garden's signed answer (spec §6.4; there is no flag that names another file); seed
-// confirms Bonsai's entry the same way before it writes (§8.1). Unreachable halts (3): no cache,
+// and identity read the shipped reserved-marks.json, believed only on bon-sai.garden's signed
+// answer for the sealed release manifest that carries it, or with none for the set's own seal by
+// mori-shin (spec §6.4; there is no flag that names another file). One question per planting:
+// namespace keeps the answer's record in garden.json under the root's seal, identity takes it
+// under that seal (and, before it locks, under the key custody gives), and seed spends it.
+// Seed confirms Bonsai's entry with its own question before it writes (§8.1). Unreachable halts (3): no cache,
 // no offline mode, no --trust-file. The question goes through bonsai-garden-mark's origin.mjs;
 // cli(argv, { origin }) takes another one only from a caller in process (the suites' fake site),
 // never from a flag, a file or the environment.
@@ -28,6 +31,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import readline from 'node:readline';
 import { backends, offered, detect, RANK, FLOOR, CustodyError, randomSalt } from '../lib/custody.mjs';
 import { sealEnvelope, openEnvelope, envelopePayload } from '../lib/envelope.mjs';
 import {
@@ -45,15 +49,25 @@ import {
   fpIndices,
   withinByInode,
   publicMaterialProblems,
+  rootSealProblem,
   companionsOf,
   UNKNOWN_PRONOUNS,
 } from '../lib/garden.mjs';
 import { searchSigning, describeEstimate } from '../lib/search-signing.mjs';
 import { transport } from '../lib/call-home.mjs';
+import {
+  FORMAT as ATTESTATION,
+  signedBytes,
+  canonical,
+  bodyProblems,
+  envelopeProblems,
+  shinOrder,
+} from '../lib/attestation.mjs';
 import { fileURLToPath } from 'node:url';
 import { searchNamespace, pairOf, chars, bonFirst, attempts, GUARDIAN } from '../../bonsai-garden-mark/namespace.mjs';
-import { loadReservedSet } from '../../bonsai-garden-mark/reserved-marks.mjs';
-import { makeOrigin } from '../../bonsai-garden-mark/origin.mjs';
+import { loadReservedSet, checkoutOf, SHIPPED } from '../../bonsai-garden-mark/reserved-marks.mjs';
+import { releaseOf } from '../../bonsai-garden-mark/release-manifest.mjs';
+import { makeOrigin, countProblem } from '../../bonsai-garden-mark/origin.mjs';
 import { v2SchemaProblem } from '../../bonsai-garden-sign/lib/seal-v2.mjs';
 import { signData, verifySignature } from '../../bonsai-garden-sign/lib/derive-key.mjs';
 import { potVerdict, NOT_LAB_NOTE, labNote } from '../lib/pot-verdict.mjs';
@@ -131,7 +145,8 @@ const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs 
   derive   --all --pot <dir>                        the root and every locked entity, custody opened once
   seed     --pot <dir> --bonsai-entry <file>         the pot's agents/registry.json, in order, once the origin vouches
   verify   --keys pot --pot <dir> --file <path>     a seal against the pot's own registry
-  attest   --pot <dir>                              the call home: one public document, sealed
+  attest   --pot <dir>                              the call home: one envelope, no names, signed by the root and the guardian
+  attest   consent --pot <dir>                      the gardener's own signature, at his own terminal, after he types the pair back
   status   --pot <dir>                              where the arc stands, from the pot's files alone
   custody  status --pot <dir>                       the same table as detect
   seal-staged --pot <dir> --as <slug> -- <path> ... seal THESE staged files with <slug>'s key from this garden's salt
@@ -266,13 +281,53 @@ function context(f, deps = {}) {
   const names = f.backends ? f.backends.split(',').filter(Boolean) : offered();
   for (const n of names)
     if (!all[n]) throw usage(`unknown custody backend ${n} (known: ${Object.keys(all).join(', ')})`);
-  return { pot, f, pp, all, names, origin: deps.origin || makeOrigin() };
+  return {
+    pot,
+    f,
+    pp,
+    all,
+    names,
+    origin: deps.origin || makeOrigin(),
+    // attest consent's terminal and the call home's transport: another one only from a caller in process (the
+    // suites), never from a flag, a file or the environment, as for the origin
+    terminal: deps.terminal || realTerminal(),
+    transport: deps.transport || transport(),
+  };
 }
 
-/** The shipped reserved set, pinned by its seal and the origin's word (spec §6.4). Refuses 2, halts 3. */
-async function reservedRule(ctx) {
+/** The gardener's own terminal: interactive only when stdin and stdout both are (spec §10, attest consent). */
+function realTerminal() {
+  return {
+    interactive: process.stdin.isTTY === true && process.stdout.isTTY === true,
+    say: (line) => console.log(line),
+    ask: (q) =>
+      new Promise((resolve) => {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        rl.question(`${q} `, (a) => {
+          rl.close();
+          resolve(a);
+        });
+      }),
+  };
+}
+
+/** garden.json's shin, as one list (spec §5.1); both fields at once are two masters, refused. */
+function shinsOf(g) {
   try {
-    return await loadReservedSet({ origin: ctx.origin });
+    return companionsOf(g);
+  } catch (e) {
+    if (e.code === 'SHINS') throw refuse(`${e.message}; nothing written`);
+    throw e;
+  }
+}
+
+/**
+ * The shipped reserved set, believed on the origin's word (spec §6.4). `record` is garden.json's release record, passed
+ * only once its root seal has been checked; the reader takes it while the manifest is the same bytes. Refuses 2, halts 3.
+ */
+async function reservedRule(ctx, record = null) {
+  try {
+    return await loadReservedSet({ origin: ctx.origin, record });
   } catch (e) {
     if (e && e.code === 'RESERVED_REFUSED') {
       const m = `no reserved set to search against: ${e.message}`;
@@ -282,15 +337,21 @@ async function reservedRule(ctx) {
   }
 }
 
-/** Where core ships Bonsai's seed entry; the seal must name it. */
+/**
+ * Where core ships Bonsai's seed entry. A seal naming another place is shown, never refused: the target is no verdict
+ * (spec 0.7.0 §8.1, F-12). The signer pin, the owner role, the entry's format and the fingerprint the site names carry
+ * the identity.
+ */
 const SEED_TARGET = 'agents/bonsai/identity/bonsai-seed-entry.json';
+const SEED_FORMAT = 'bonsai-garden-seed-entry/1';
 
 /**
  * Spec §8.1: the file supplies, the origin confirms. Offline first (the seal's form, an owner seal by
- * bonsai, the address, the bytes, the fingerprint the entry states), then bon-sai.garden's signed
- * answer. Returns the answer's own verified_at, which the registry records as `vouched`.
+ * bonsai, the bytes, the fingerprint the entry states; the address shown), then bon-sai.garden's signed
+ * answer. Returns the answer's own verified_at, which the registry records as `vouched`. It is its own
+ * question at every seed: the release record answers for the reserved set only, never for this entry.
  */
-async function vouchBonsai(ctx, file, be) {
+async function vouchBonsai(ctx, file, be, count = null) {
   const side = path.join(path.dirname(file), `.${path.basename(file)}.bonsaisig`);
   let data;
   try {
@@ -309,8 +370,8 @@ async function vouchBonsai(ctx, file, be) {
     );
   }
   if (data.target !== SEED_TARGET)
-    throw refuse(
-      `the seal names ${data.target}, not ${SEED_TARGET}, the address core ships Bonsai's entry at; nothing written`,
+    console.log(
+      `Bonsai's entry: the seal names ${data.target}, not ${SEED_TARGET}, where core ships it; shown, not a verdict (spec §8.1)`,
     );
   if (crypto.createHash('blake2b512').update(fs.readFileSync(file)).digest('hex') !== data['file-hash']) {
     throw refuse("hash-mismatch: Bonsai's entry is not the bytes that were sealed; nothing written");
@@ -320,7 +381,16 @@ async function vouchBonsai(ctx, file, be) {
       `the seal's fingerprint ${data.fingerprint} is not the fingerprint the entry states (${be.fingerprint}); nothing written`,
     );
   }
-  const v = await ctx.origin.ask(data);
+  const v = await ctx.origin.ask(data, { count });
+  console.log(
+    v.counted
+      ? `counted: ${v.counted.event} · ${v.counted.release}${v.counted['lab-preview'] ? ' · lab preview' : ''}; the site keeps the event, the time, the release and the rehearsal mark, nothing of this garden (spec §8.1)`
+      : `not counted: ${
+          !count
+            ? 'this checkout carries no release manifest, a workshop and no release'
+            : countProblem(count) || `the site counts only a seal it vouches for, and this one is ${v.status}`
+        }`,
+  );
   if (v.status === 'keys-unreachable')
     throw halt(`keys-unreachable: ${v.reason}; Bonsai's entry cannot be confirmed; nothing written`);
   if (v.status !== 'signature-vouched')
@@ -473,13 +543,13 @@ async function cmdId(ctx) {
   if (pj) throw refuse(`${P.pot(pot)} already names garden ${pj.garden}`);
   const ulid = newUlid();
   if (whyBad(ulid)) throw halt(`the generated id ${ulid} fails the ULID rule (${whyBad(ulid)})`);
-  // `shin` stays the first companion, as every reader of a one-companion garden expects (null: none); `shins` only for more
+  // spec 0.8.0 §5.1: `shins`, always an array, [] for none; one field for one fact (a file from before 0.8 with one
+  // `shin` string still reads as one, and one with both is refused: lib/garden.mjs companionsOf)
   writeJson(P.garden(pot), {
     garden: ulid,
     name: f.name,
     gardener: f.gardener,
-    shin: shins[0] ?? null,
-    ...(shins.length > 1 ? { shins } : {}),
+    shins,
     namespace: null,
     'root-fingerprint': null,
     'root-public-key': null,
@@ -656,6 +726,9 @@ async function cmdNamespace(ctx) {
   const { hex } = await readMaster(ctx, g);
   const at = new Date().toISOString();
   g.namespace = { kanji: r.kanji, indices: r.indices, salt: r.salt, locked_at: at };
+  // spec §6.4 point 5: the one answer for the set, recorded under the root's seal for the rest of the arc
+  if (ex.release) g.release = ex.release;
+  else delete g.release;
   writeJson(P.garden(ctx.pot), g);
   const locks = readLocks(ctx.pot);
   locks._garden = { name: g.name, garden: g.garden, salt: r.salt, indices: r.indices, kanji: r.kanji, locked_at: at };
@@ -665,6 +738,9 @@ async function cmdNamespace(ctx) {
   writeJson(P.pot(ctx.pot), pj);
   for (const p of [P.garden(ctx.pot), P.locks(ctx.pot), P.pot(ctx.pot)]) sealRoot(hex, g, p);
   console.log(`namespace: ${r.kanji}   ${r.salt}   ${JSON.stringify(r.indices)}`);
+  console.log(
+    `reserved set: believed through ${ex.via}${ex.release ? '; the answer is recorded in garden.json for the arc' : ''}`,
+  );
 }
 
 async function cmdIdentity(ctx, slug) {
@@ -690,7 +766,14 @@ async function cmdIdentity(ctx, slug) {
   }
   if (ctx.f.candidates && pick) throw usage('--candidates only prints the five; --pick locks one: not both');
   let pair = null;
-  const ex = await reservedRule(ctx);
+  // spec §6.4 point 5: namespace's record of the one answer, while the arc runs, believed under the root's seal first
+  const rec = g.release && !g.release.spent ? g.release : null;
+  if (rec) {
+    const why = rootSealProblem(P.garden(ctx.pot), g, Buffer.from(g['root-public-key'] || '', 'base64'));
+    if (why)
+      throw refuse(`garden.json's release record is not under the root's seal: ${why}. A finding; nothing written`);
+  }
+  const ex = await reservedRule(ctx, rec);
   if (guardian) {
     if (ctx.f.pair)
       throw refuse(
@@ -741,6 +824,14 @@ async function cmdIdentity(ctx, slug) {
   const id = pick ? five[pick - 1] : five[0];
   pair = id.pair;
   const { hex } = await readMaster(ctx, g);
+  // point 5 (i): a record taken in place of the question holds under the key custody gives, or nothing is locked
+  if (rec && !ex.asked) {
+    const why = rootSealProblem(P.garden(ctx.pot), g, keyOf(hex, rootSalt(g.garden)).raw);
+    if (why)
+      throw refuse(
+        `garden.json's release record is not under the root key custody gives: ${why}. A finding; nothing written`,
+      );
+  }
   const say = (e) => console.log(describeEstimate(e));
   let sg;
   try {
@@ -867,6 +958,8 @@ async function cmdSeed(ctx) {
   } catch (e) {
     throw refuse(`${ctx.f['bonsai-entry']} cannot be read (${e.code || 'not JSON'})`);
   }
+  if (be?.format !== SEED_FORMAT)
+    throw refuse(`the Bonsai entry is not ${SEED_FORMAT} (it says ${be?.format ?? 'nothing'}); nothing written`);
   const beRaw = Buffer.from(be['public-key'] || '', 'base64');
   if (
     be.slug !== 'bonsai' ||
@@ -875,7 +968,11 @@ async function cmdSeed(ctx) {
   ) {
     throw refuse('the Bonsai entry is not a slug "bonsai" with a 32-byte public key whose fingerprint it states');
   }
-  const vouched = await vouchBonsai(ctx, ctx.f['bonsai-entry'], be);
+  // §8.1, said openly: this question is also the origin's count of plantings that reach seed. Beside the seal it
+  // carries the release this checkout is and whether the garden is a rehearsal; nothing of the garden
+  const release = releaseOf(checkoutOf(SHIPPED));
+  const count = release ? { event: 'seed', release, 'lab-preview': g['lab-preview'] === true } : null;
+  const vouched = await vouchBonsai(ctx, ctx.f['bonsai-entry'], be, count);
   const locks = readLocks(ctx.pot);
   const { hex } = await readMaster(ctx, g);
   const tier = g['custody-tier'];
@@ -910,7 +1007,7 @@ async function cmdSeed(ctx) {
       vouched,
     },
     entry('bonsai-shin', 'shin', { parent: 'bonsai' }),
-    ...companionsOf(g).map((s) => entry(s, 'shin')),
+    ...shinsOf(g).map((s) => entry(s, 'shin')),
   ];
   // The gardener's ruling, 2026-10-11 ("option 2"): a garden keeps ONE registry, in the origin's shape; the key fields
   // seed writes live inside each entry, and the display fields (name, pronouns, accent, one-line, tagline …) are
@@ -1010,6 +1107,13 @@ async function cmdSeed(ctx) {
   if (!bOn) writeKey(ctx.pot, 'bonsai', beRaw, be.fingerprint);
   if (!keep) writeJson(P.registry(ctx.pot), reg);
   sealRoot(hex, g, P.registry(ctx.pot));
+  // spec §6.4 point 5: the record is spent once the registry is written; a verb after the arc asks again
+  if (g.release && !g.release.spent) {
+    g.release.spent = new Date().toISOString();
+    writeJson(P.garden(ctx.pot), g);
+    sealRoot(hex, g, P.garden(ctx.pot));
+    console.log('release record: spent; a verb after the arc asks bon-sai.garden again');
+  }
   for (const a of agents)
     console.log(
       `${a.slug.padEnd(14)} ${a.type.padEnd(9)} ${a.fingerprint}  attests ${a['fp-attests']}${a.origin ? "  (the origin's key, an input)" : ''}`,
@@ -1052,66 +1156,184 @@ async function cmdVerify(ctx) {
   throw new Exit(1, null);
 }
 
-async function cmdAttest(ctx) {
+/**
+ * Spec §10: the body this garden's files make, and the salt behind each key it names. No name and no slug goes in:
+ * the keys of the body say the role, the public key says who. `created` is kept from an envelope already written.
+ */
+function attestationBody(ctx, g, reg, locks, created = null) {
+  const bonsai = (reg.agents || []).find((a) => a.slug === 'bonsai');
+  if (!bonsai?.fingerprint)
+    throw refuse("the registry holds no fingerprint for Bonsai, the guardian's parent: run seed first");
+  const salts = [[g.name, rootSalt(g.garden), g['root-public-key']]];
+  const entity = (slug) => {
+    const l = locks.agents[slug];
+    if (!l?.identity_kanji_full || !l.signing_salt)
+      throw refuse(`${slug} has no ID in this pot: run identity ${slug} first`);
+    const on = keyOnFile(ctx.pot, slug);
+    if (!on) throw refuse(`no key on file for ${slug}: run derive ${slug} first`);
+    const b64 = on.raw.toString('base64');
+    salts.push([slug, l.signing_salt, b64]);
+    return { id: l.identity_kanji_full, fingerprint: on.fingerprint, 'public-key': b64, 'fp-attests': l.fp_attests };
+  };
+  const guardian = {
+    ...entity(GUARDIAN),
+    parent: bonsai.fingerprint,
+    picked: locks.agents[GUARDIAN].picked === 'default' ? 'default' : 'gardener',
+  };
+  const body = {
+    garden: {
+      id: g.garden,
+      namespace: g.namespace?.kanji ?? null,
+      'root-fingerprint': g['root-fingerprint'],
+      'root-public-key': g['root-public-key'],
+    },
+    guardian,
+    gardener: entity(g.gardener),
+    shin: shinOrder(shinsOf(g).map(entity)), // ordered by fingerprint: one set of shin, one body (§10)
+    'custody-tier': g['custody-tier'],
+    'lab-preview': g['lab-preview'] === true,
+    rite: 'bunshin',
+    created: created || today(),
+  };
+  return { body, salts, parent: bonsai.fingerprint };
+}
+
+/** The envelope on file, or null; a file that is not JSON is refused, never overwritten. */
+function envelopeOnFile(file) {
+  if (!fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch {
+    throw refuse(`${file} exists and is not an envelope (not JSON); nothing written`);
+  }
+}
+const sameBody = (a, b) => {
+  try {
+    return canonical(a) === canonical(b);
+  } catch {
+    return false;
+  }
+};
+
+async function cmdAttest(ctx, sub) {
+  if (sub === 'consent') return cmdAttestConsent(ctx);
+  if (sub)
+    throw usage(`attest --pot <dir>, then attest consent --pot <dir> at the gardener's own terminal; not ${sub}`);
   const g = garden(ctx);
   needRoot(g);
   const reg = readJson(P.registry(ctx.pot));
   if (!reg) throw refuse('no registry in this pot: run seed first');
   const early = publicMaterialProblems({ g, reg });
   if (early.length) throw refuse(`${early[0].why}; nothing written`);
-  if (Buffer.from(g['root-public-key'] || '', 'base64').length !== 32)
-    throw refuse("garden.json's root-public-key is not 32 bytes of base64");
-  const pick = (slug) => {
-    const a = reg.agents.find((x) => x.slug === slug);
-    if (!a) throw refuse(`the registry has no ${slug}`);
-    return `    - { slug: ${a.slug}, fingerprint: ${a.fingerprint}, fp-attests: ${a['fp-attests']}${a.parent ? `, parent: ${a.parent}` : ''} }`;
-  };
-  const doc = [
-    'garden-attestation:',
-    `  garden: ${g.garden}`,
-    `  name: ${g.name}`,
-    `  namespace: ${g.namespace ? g.namespace.kanji : ''}`,
-    `  root-fingerprint: ${g['root-fingerprint']}`,
-    `  custody-tier: ${g['custody-tier']}`,
-    `  lab-preview: ${g['lab-preview'] === true}`,
-    '  keys:',
-    pick(g.gardener),
-    pick('bonsai-shin'),
-    ...companionsOf(g).map(pick),
-    '  rite: bunshin',
-    `  created: ${today()}`,
-    '',
-  ].join('\n');
-  const { hex } = await readMaster(ctx, g);
-  const late = publicMaterialProblems({ g, reg, doc, hex });
-  if (late.length) throw refuse(`${late[0].why}; nothing written`);
+  // a root key that is not 32 bytes of base64 is the reader's to refuse (lib/attestation.mjs, the one place that rules
+  // it), below, before any salt is read: a second copy of the rule here was a guard nobody would miss (2026-10-22)
+  const file = P.attestation(ctx.pot);
+  const was = envelopeOnFile(file);
   const locks = readLocks(ctx.pot);
-  const bs = locks.agents['bonsai-shin'];
-  if (!bs) throw refuse("bonsai-shin has no signing salt, and the attestation is bonsai-shin's to seal");
-  const att = P.attestation(ctx.pot);
-  if (
-    fs.existsSync(att) &&
-    fs.readFileSync(att, 'utf8').replace(/created: .*\n/, '') !== doc.replace(/created: .*\n/, '')
-  ) {
-    throw refuse(`${att} already exists with other content`);
-  }
-  if (!fs.existsSync(att)) fs.writeFileSync(att, doc);
-  const sidecar = sealWith(hex, bs.signing_salt, 'bonsai-shin', att, { custody: g['custody-tier'] });
-  const sc = JSON.parse(fs.readFileSync(sidecar, 'utf8'));
-  writeJson(P.countersign(ctx.pot), {
-    format: 'bonsai-garden-countersign/1',
-    countersigns: path.basename(att),
-    'seal-id': sc.id,
-    'seal-hash': crypto.createHash('blake2b512').update(fs.readFileSync(sidecar)).digest('hex'),
+  const { body, salts, parent } = attestationBody(ctx, g, reg, locks, was?.body?.created);
+  // attest writes no body its reader would refuse, so a refusal by the reader names a body another tool made
+  const bp = bodyProblems(body, { parent });
+  if (bp.length) throw refuse(`${[...new Set(bp.map((x) => x.reason))].join(', ')}: ${bp[0].detail}; nothing written`);
+  if (was && !sameBody(was.body, body))
+    throw refuse(
+      `${file} already exists with other content, a body this garden's files no longer make; nothing written`,
+    );
+  const { hex } = await readMaster(ctx, g);
+  for (const [slug, salt, b64] of salts)
+    if (keyOf(hex, salt).b64 !== b64)
+      throw refuse(`the key on file for ${slug} does not derive from this garden's salt; nothing signed`);
+  const bytes = signedBytes(body);
+  const sig = (by, salt, fingerprint) => ({
+    by,
+    fingerprint,
+    signature: signData(hex, salt, bytes).toString('base64'),
   });
-  sealRoot(hex, g, P.countersign(ctx.pot));
-  const sent = await transport().send([att, sidecar, P.countersign(ctx.pot)]);
-  console.log(`attestation: ${att}  sealed by bonsai-shin, countersigned by the root (${g.name})`);
+  const signatures = [
+    sig('root', rootSalt(g.garden), body.garden['root-fingerprint']),
+    sig('guardian', locks.agents[GUARDIAN].signing_salt, body.guardian.fingerprint),
+  ];
+  // his signature is kept when it is already there and holds over this body; it is never made here
+  const his = Array.isArray(was?.signatures) ? was.signatures.find((s) => s?.by === 'gardener') : null;
+  if (his && !envelopeProblems({ format: ATTESTATION, body, signatures: [...signatures, his] }, { parent }).length)
+    signatures.push(his);
+  const text = jsonText({ format: ATTESTATION, body, signatures });
+  const late = publicMaterialProblems({ g, reg, doc: text, hex });
+  if (late.length) throw refuse(`${late[0].why}; nothing written`);
+  if (!was || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);
+  console.log(`attestation: ${file}  ${ATTESTATION}: no names; signed by the root and the guardian`);
   console.log(`custody-tier: ${g['custody-tier']}${g['lab-preview'] ? '  (LAB PREVIEW)' : ''}`);
+  console.log(
+    signatures.length === 3
+      ? 'the gardener has signed it: all three signatures'
+      : `awaiting the gardener: attest consent --pot ${ctx.pot}, at a terminal of his own; nothing is signed in his name here`,
+  );
+  console.log(
+    'not sent: attest sends nothing; attest consent offers the envelope once it carries all three signatures',
+  );
+}
+
+/**
+ * Spec §10: the gardener's own signature, the one act this arc guards. Only at an interactive terminal; the body shown
+ * in plain words; signed only after he types the guardian's pair back; then all three checked, and the envelope offered
+ * to the transport (unwired today: not sent).
+ */
+async function cmdAttestConsent(ctx) {
+  const term = ctx.terminal;
+  if (!term.interactive)
+    throw refuse(
+      "attest consent is the gardener's own hand: it runs only at an interactive terminal (stdin and stdout), and a seat's shell is not one; nothing signed",
+    );
+  const g = garden(ctx);
+  needRoot(g);
+  const reg = readJson(P.registry(ctx.pot));
+  if (!reg) throw refuse('no registry in this pot: run seed first');
+  const file = P.attestation(ctx.pot);
+  const env = envelopeOnFile(file);
+  if (!env) throw refuse(`no envelope at ${file}: run attest first`);
+  const locks = readLocks(ctx.pot);
+  const { body, parent } = attestationBody(ctx, g, reg, locks, env.body?.created);
+  if (!sameBody(env.body, body))
+    throw refuse(`${file} is not the body this garden's files make: run attest again; nothing signed`);
+  const ready = envelopeProblems(env, { parent, need: ['root', 'guardian'] });
+  if (ready.length) throw refuse(`${ready[0].reason}: ${ready[0].detail}; nothing signed`);
+  if (!env.signatures.some((s) => s.by === 'gardener')) {
+    const fp8 = (fp) => fp.slice(0, 8);
+    term.say('The envelope your garden sends home, in plain words. It names no one; its keys say who.');
+    term.say(`  garden     ${body.garden.namespace}  ${body.garden.id}  root ${fp8(body.garden['root-fingerprint'])}`);
+    term.say(
+      `  guardian   ${body.guardian.id}  ${body.guardian.fingerprint}  divided from Bonsai ${fp8(body.guardian.parent)}  (${body.guardian.picked === 'gardener' ? 'you picked it' : 'the first of the five, by default'})`,
+    );
+    term.say(`  you        ${body.gardener.id}  ${body.gardener.fingerprint}`);
+    term.say(
+      `  shin       ${body.shin.length ? body.shin.map((s) => `${s.id} ${fp8(s.fingerprint)}`).join(', ') : 'none'}`,
+    );
+    term.say(`  custody    ${body['custody-tier']}${body['lab-preview'] ? '  (LAB PREVIEW)' : ''}`);
+    term.say('Your signature says: I invited this guardian into my garden.');
+    const typed = String(
+      (await term.ask("Type the guardian's pair, the first two kanji of their ID, to sign; anything else stops:")) ?? '',
+    ).trim();
+    if (typed !== [...body.guardian.id].slice(0, 2).join(''))
+      throw refuse("what was typed is not the guardian's pair; nothing signed");
+    const { hex } = await readMaster(ctx, g);
+    const salt = locks.agents[g.gardener].signing_salt;
+    if (keyOf(hex, salt).b64 !== body.gardener['public-key'])
+      throw refuse(`the key on file for ${g.gardener} does not derive from this garden's salt; nothing signed`);
+    env.signatures.push({
+      by: 'gardener',
+      fingerprint: body.gardener.fingerprint,
+      signature: signData(hex, salt, signedBytes(body)).toString('base64'),
+    });
+  }
+  const all = envelopeProblems(env, { parent });
+  if (all.length) throw refuse(`${all[0].reason}: ${all[0].detail}; not sent`);
+  const text = jsonText(env);
+  if (fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);
+  console.log(`attestation: ${file}  signed by the root, the guardian and the gardener`);
+  const sent = await ctx.transport.send([file]);
   console.log(sent.sent ? `sent: ${sent.where}` : `not sent: ${sent.why}`);
 }
 
-// ── seal-staged: a commit's seals, with this garden's own keys (rt slice spec §7; the move down into core) ──
+// ── seal-staged: a commit's seals, with this garden's own keys (rt's spec §7; the move into core) ──
 
 function gitIn(pot, args) {
   const r = spawnSync('git', ['-C', pot, ...args], { encoding: 'utf8' });
@@ -1421,6 +1643,25 @@ async function cmdCovenant(ctx, sub) {
   );
 }
 
+/** status's attest line: the envelope and how many of its three signatures it carries; the transport is open. */
+function attestStep(pot) {
+  const env = readJson(P.attestation(pot));
+  if (!env)
+    return [
+      'attest',
+      false,
+      fs.existsSync(P.retiredAttestation(pot))
+        ? "only 0.2.0's retired form (garden-attestation.yaml): run attest again"
+        : 'no attestation',
+    ];
+  const by = Array.isArray(env.signatures) ? env.signatures.map((s) => s?.by) : [];
+  return [
+    'attest',
+    true,
+    `${by.length} of 3 signatures (${by.join(', ') || 'none'})${by.includes('gardener') ? '' : '; awaiting the gardener: attest consent'}; transport open`,
+  ];
+}
+
 function cmdStatus(ctx) {
   const pot = ctx.pot;
   const g = readJson(P.garden(pot));
@@ -1432,7 +1673,8 @@ function cmdStatus(ctx) {
   }
   const locks = readLocks(pot);
   const reg = readJson(P.registry(pot));
-  const slugs = [g.name, g.gardener, 'bonsai-shin', ...companionsOf(g)];
+  const shins = shinsOf(g);
+  const slugs = [g.name, g.gardener, 'bonsai-shin', ...shins];
   const derived = slugs.filter((s) => keyOnFile(pot, s));
   const steps = [
     ['id', true, `${g.garden} · ${g.name}`],
@@ -1447,18 +1689,14 @@ function cmdStatus(ctx) {
     ['namespace', !!g.namespace, g.namespace ? g.namespace.kanji : 'none'],
     [
       'identity',
-      [g.gardener, ...companionsOf(g)].every((s) => locks.agents[s]) && !!locks.agents['bonsai-shin'],
+      [g.gardener, ...shins].every((s) => locks.agents[s]) && !!locks.agents['bonsai-shin'],
       Object.entries(locks.agents)
         .map(([s, e]) => `${s} ${e.identity_kanji}`)
         .join(', ') || 'none',
     ],
     ['derive', derived.length === slugs.length, derived.join(', ') || 'none'],
     ['seed', !!reg, reg ? `${reg.agents.length} entries` : 'no registry'],
-    [
-      'attest',
-      fs.existsSync(P.attestation(pot)),
-      fs.existsSync(P.attestation(pot)) ? 'attestation written and sealed (transport open)' : 'no attestation',
-    ],
+    attestStep(pot),
   ];
   for (const [w, d, x] of steps) line(d, w, x);
   const next = steps.find(([, d]) => !d);
@@ -1508,7 +1746,7 @@ async function main(argv, deps = {}) {
       await cmdVerify(ctx());
       break;
     case 'attest':
-      await cmdAttest(ctx());
+      await cmdAttest(ctx(), rest[0]);
       break;
     case 'status':
       cmdStatus(ctx());

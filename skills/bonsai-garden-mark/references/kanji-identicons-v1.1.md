@@ -4,7 +4,7 @@ title: Kanji-Identicon System v1.1
 type: document
 tended-by: baisai
 created: 2026-05-28
-updated: 2026-05-28
+updated: 2026-10-21
 ---
 # Kanji-Identicon System v1.1
 
@@ -26,7 +26,7 @@ A deterministic identity system that represents any named entity as a visual gly
 
 1. **Input:** A text string (name/identifier + optional nonce)
 2. **Hash:** SHA-256 digest
-3. **Extract:** 10-bit slices from the digest
+3. **Extract:** 10-bit groups from the digest
 4. **Map:** Each 10-bit slice → index into a 1,024-character frozen kanji set
 5. **Output:** Visual kanji sequence
 

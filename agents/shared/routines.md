@@ -4,8 +4,8 @@ title: Routines — Standard Operational Sequences for Bon-sai Agents
 type: routines
 tended-by: workshop
 created: 2026-05-22
-updated: 2026-10-21
-version: 3.3.1
+updated: 2026-10-22
+version: 3.4.2
 status: active
 ---
 
@@ -25,7 +25,7 @@ In these routines, `<slug>` is your agent slug/name.
 
 **Format checklist:**
 - **Frontmatter (on-disk canon is YAML-first):** the canonical on-disk frontmatter is the YAML `--- ... ---` block **at byte 0** — fields: `id`, `title`, `type`, `tended-by`, `created`, `updated`, `tags` (codex §11; the metadata validator and `sign.py` both anchor on `\A---`). The `<!-- frontmatter {...} -->` JSON block you see at the top of a `bonsai_read_file` result is a **read-time display projection** (a flattened mirror of the YAML, regenerated on every read alongside a transient `<!-- base: ... -->` token) — it is **not** written to disk. Do not paste it back: `bonsai_write_file` strips it, and writing a JSON comment (or base token) above the YAML is "inverted frontmatter" (hides the file's id from the validator, breaks Astro). Signing is unaffected — the `sign:` block lives inside the YAML and signatures cover the body only. Guard: `tools/check-frontmatter-order.py`; normalizer: `tools/fix-inverted-frontmatter.py`.
-- **The `id:` is generated, never typed:** `python3 bonsai-garden-core/tools/ulid.py new` (one per document; `-n N` for several). Check before you commit with `ulid.py check <file>` or `check --staged`. A moved document keeps its id; a tombstone gets a new one. An id that reads like its subject was typed, and typed ids are how two documents end up sharing one (AGENTS.md → Conventions).
+- **The `id:` is generated, never typed:** `python3 tools/ulid.py new` from core's root (one per document; `-n N` for several). Check before you commit with `ulid.py check <file>` or `check --staged`. A moved document keeps its id; a tombstone gets a new one. An id that reads like its subject was typed, and typed ids are how two documents end up sharing one (AGENTS.md → Conventions).
 - **Callout blocks:** `> [!note] Title`, `> [!warning] Title`, `> [!tip] Title`, `> [!info] Title` — use these instead of bold headers for asides and warnings.
 - **Wiki links:** `[[path/to/file]]` for internal cross-references.
 - **Filenames:** English kebab-case — always. No UPPER_CASE, no spaces, no underscores.
@@ -54,9 +54,9 @@ See also: `rituals/tasks/lessons.md` §All MD files use Obsidian-flavoured forma
 
 No *-sai (Zensai, Tasai, Eisai, Hissai, Baisai, Jisai) and no *-shin agent may operate on the **Haiku** model. Character fidelity, judgment, register, and the workshop's quality bar all require a capable model — Sonnet- or Opus-class. Haiku degrades the very things that make a *-sai a *-sai: it flattens voice, weakens multi-step reasoning, and erodes the care the workshop is built on. A *-sai on Haiku is not a cheaper *-sai; it is a different, lesser thing wearing the name.
 
-If a *-sai or *-shin detects it is running on Haiku at session open (read the `Model:` value from the `<env>` block — if it contains `haiku`, case-insensitive), **stop and surface the alert before any work**, and recommend re-spawning on Sonnet or Opus. Each *-sai's SKILL.md carries the exact alert text in its activation Step 0; this routine is the canonical statement of *why*.
+If a *-sai or *-shin detects they are running on Haiku at session open (read the `Model:` value from the `<env>` block — if it contains `haiku`, case-insensitive), **stop and surface the alert before any work**, and recommend re-spawning on Sonnet or Opus. Each *-sai's SKILL.md carries the exact alert text in its activation Step 0; this routine is the canonical statement of *why*.
 
-**The sole exception is Fuji-shin** (富身) — Baisai's test-and-verify *-shin. Fuji-shin's work is mechanical: running checks, verifying outputs, fast deterministic passes. That work does not lean on the judgment and register Haiku erodes, so **Haiku is acceptable for Fuji-shin** and may even be preferred for speed and cost. Fuji-shin verifies; they do not ship, refactor, propose architecture, or speak in a *-sai's voice — which is exactly why the exception is safe and stops there. No other *-shin inherits this exception by default; a new *-shin earns a model floor from its own contract.
+**The sole exception is Fuji-shin** (富身) — Baisai's test-and-verify *-shin. Fuji-shin's work is mechanical: running checks, verifying outputs, fast deterministic passes. That work does not lean on the judgment and register Haiku erodes, so **Haiku is acceptable for Fuji-shin** and may even be preferred for speed and cost. Fuji-shin verifies; they do not ship, refactor, propose architecture, or speak in a *-sai's voice — which is exactly why the exception is safe and stops there. No other *-shin inherits this exception by default; a new *-shin earns a model floor from their own contract.
 
 **Ordering, load-bearing:** the Fuji-shin check must come *first in the conditional*, not as a trailing note after the stop instruction. Fuji-shin boots by invoking Baisai's skill (they have no skill of their own — see their Buzz persona's `system_prompt`, which names them explicitly before Baisai's Step 0 ever runs), on Haiku, by design. If Step 0's own text reads "if haiku, stop… (exception: Fuji-shin)" — an exception mentioned only *after* the stop instruction — a session already running on Haiku is asked to catch its own exception via exactly the kind of multi-step conditional reasoning Haiku is weakest at. Found in production 2026-08-26: Fuji-shin's session halted on Baisai's own alert instead of proceeding. Every *-sai's SKILL.md Step 0 must phrase this as *"if the system prompt identifies this session as Fuji-shin, Haiku is expected — proceed directly to their own activation (`agents/baisai/sub-agents/fuji-shin/agent.md`) without the alert; otherwise, if haiku, stop and surface the alert."* — the identity check resolved before the stop is ever considered, not bolted on after.
 
@@ -83,11 +83,11 @@ Run on every invocation, before any work.
 **B · Integrity — full, before the greeting.** Four checks. Each reports; none is skipped because the others passed.
 
 1. **Installed skill against the repo** — the `skill:` line of `session_start`'s `=== env ===` block: installed body against repo body, and the build stamp. `DRIFT` means you booted on a copy that is not the current body.
-2. **Every installed file against its signed manifest, and the seal against its owner** — one definition: `skill_install.py --integrity`, a runtime tool (currently at `bonsai-garden/tools/bonsai-mcp/`). Without a shell: read `<base>/MANIFEST.json` and say the check could not run.
+2. **Every installed file against its signed manifest, and the seal against its owner** — one definition: `skill_install.py --integrity`, a runtime tool (the garden MCP's). Without a shell: read `<base>/MANIFEST.json` and say the check could not run.
 3. **Your constitution's seal** — `sign.py verify references/about-me.md`. A document held open on purpose will read like a failure until `seal-open:` exists (pending Mori-shin); read the document's own history in git before calling it broken.
 4. **The MCP you are talking to** — the `mcp:` line: `current` or `STALE`.
 
-The results set the greeting's trust state (Routine 2.5 Step 2d). A failure is said once, plainly, and work continues unless Routine 1's identity check (below, Step 0d where a garden runs it) failed — that one stops cold.
+The results are said only when one fails or could not run: one loud line at the top of the greeting (Routine 2.5 Step 2d), with the check's exact output; when every check that ran passes, nothing is said of them, in the greeting or the reply (the gardener, 2026-10-21: *"Agree to the security handling in intro. Confirmed"*). A quiet greeting means every check that ran passed, and alive is not yet a check: alive is not asked until the handshake exists (2026-10-21, with the trust read's yes). A failure is said once, plainly, and work continues unless Routine 1's identity check (below, Step 0d where a garden runs it) failed: that one stops cold.
 
 **C · Name the seat.** Where the harness can title its session, set the title once, at entry, to `[<KIN IN CAPITALS>] dd.mm.yy - hh:mm` in local time — `[TASAI] 15.10.26 - 23:23` — so a seat is found by its kin and the hour it opened (the gardener, 2026-10-16: *"a common routine for everyone to rename Session name as you do"*).
 - **Claude desktop app, Code tab:** the tool `mcp__ccd_session_mgmt__set_session_title` with `session_id: "self"`. Another harness uses its own mechanism.
@@ -96,7 +96,7 @@ The results set the greeting's trust state (Routine 2.5 Step 2d). A failure is s
 
 **D · Inbox and mail.** Your inbox is **`home/<slug>/inbox/`** — the home, not the body. The restructure this step's older text anticipated has happened (Shintai 3.0, 2026-09-22/23). This is the one statement of inbox and mail; every other routine points here.
 
-- **Which `home/` is authoritative.** In the Bonsai Garden, `home/` is authoritative in the mono repo (`bonsai-garden`) until the gardener closes the door; the repo-split registry marks those entries `distributed` until then. Resolve through the router; never guess the repo.
+- **Which `home/` is authoritative.** In the Bonsai Garden, `home/` is authoritative in the garden's own checkout until the gardener closes the door; the repo-split registry marks those entries `distributed` until then. Resolve through the router; never guess the repo.
 - **Read the unread, newest first** — unless a note says how it is to be read (in order, after another note, before acting on something): **a note's own reading instructions override newest first.** Unread = every note with no row in `home/<slug>/inbox/acknowledged.md`.
 - **Acknowledge** by appending one row there — `note | read | action`. Never edit the sender's note. **If `acknowledged.md` does not exist, create it** (frontmatter, then the header row `| note | read | action |`) before the first row.
 - **Reply in the sender's inbox** (`home/<sender>/inbox/`) when a note asks something. That is the channel.
@@ -110,7 +110,7 @@ The results set the greeting's trust state (Routine 2.5 Step 2d). A failure is s
 >
 > Most of those *were* delivered — the gardener had instructed recipients by hand or had the sender use a sub-invocation. So the number measures what was **unacknowledged**, not what was dropped. The gap it exposes is real anyway: delivery depended on a human remembering, and nothing in the file told you whether a note had been dealt with. Hence the ledger — without it, *"read the unread"* is an instruction that depends on memory rather than a step you can actually perform. The ledger is yours, append-only; a recipient does not re-sign another agent's attestation to record having read it.
 
-**E · Greet.** The shared greeting, with the values from A–D: build, trust state, env. Once per conversation. **A kin whose salts are fully locked** in the garden's locked-salts file (both `identity_locked_at` and `signing_locked_at` set) **greets with the text card**: `skills/bonsai-garden-portrait/scripts/text-card.py --plain`, its output shown in chat as a fenced code block, with ANSI colour only where a terminal renders it (Routine 2.5 Step 2e). **Any other kin keeps the compact v6 widget** (Routine 2.5 Step 2d, template `skills/bonsai-garden-portrait/templates/greeting-v6-compact.html`, filled by `scripts/fill-greeting.py`). The gardener's ruling, 2026-10-16. `text-card.py --locked-salts` makes the call itself: it draws the card, or it exits 3 and the kin greets with the widget.
+**E · Greet.** The shared greeting, with the values from A–D: build and env, and the checks only when one did not pass. Once per conversation. **Every kin greets with the compact widget** (Routine 2.5 Step 2d): `scripts/fill-greeting.py` fills `templates/greeting-v6-compact.html` whole, the face a link pinned in the garden's faces file, and the kin passes the fragment to the inline widget tool unchanged. On the desktop the face shows; over Remote Control no image loads and the seal stands in. **The text card is the fallback** (Routine 2.5 Step 2e), where no widget renders or the fill refuses. The gardener's word, 2026-10-21, retiring the locked-salts split of 2026-10-16.
 
 **F · Then** the garden's own steps: handover, memory stack, open items.
 
@@ -185,7 +185,7 @@ Run when this is the first time the agent has been invoked in a conversation (no
 >
 > **vCard is secondary.** If the agent also has a vCard, `present_files` it *after* the widget in the same turn — never instead of the widget, never before it.
 
-> [!important] The text card, for a kin whose salts are fully locked (the gardener, 2026-10-16) That kin greets with the text card of Step 2e, not the widget. The widget steps below are for every other kin, and the fallback for a locked kin whose card cannot be drawn.
+> [!important] The widget, for every kin (the gardener, 2026-10-21: *"now that we are public I would like to bring back the visual intro"*) Every kin greets with the compact widget of Step 2d; the text card of Step 2e is the fallback where no widget renders or the fill refuses. The locked-salts split of 2026-10-16 is retired.
 
 On first greeting, render the portrait widget inline via `show_widget` (HTML mode), then write the introduction in response text. The face arrives with the name — the team is a team of recognizable presences, not anonymous text.
 
@@ -378,7 +378,7 @@ The greeting is the one place the gardener looks every session. It carries what 
 
 | Line | Source | Render |
 |---|---|---|
-| **version** | the **installed build stamp's full version** — the loaded SKILL.md's first body line, `> Installed build: 3.0.0.4-rc-<UTC>Z · body <8>`, stamped by the crew builder (codex §6: the packaged frontmatter holds only the three parts). **Only if there is no stamp:** the frontmatter's three-part `version:` | **the most prominent line in the zone**, mono, e.g. `v3.0.0.4-rc` — the `BUILD` and `LABEL` are what the gardener watches. No stamp → the three-part version beside `build unstamped` on a warning tint |
+| **version** | the **installed build stamp's full version** — the loaded SKILL.md's first body line, `> Installed build: 3.0.0.4-rc-<UTC>Z · body <8>`, stamped by the crew builder (codex §6: the packaged frontmatter holds only the three parts). **Only if there is no stamp:** the frontmatter's three-part `version:` | **the most prominent line in the zone**, monospace, e.g. `v3.0.0.4-rc` — the `BUILD` and `LABEL` are what the gardener watches. No stamp → the three-part version beside `build unstamped` on a warning tint |
 | build | the same stamp's body hash: `body <8>` (a package built before 2026-10-21 also says `from <repo>@<head>`; since then a stamp names no source) | mono, secondary. Absent → omitted (the version line already says `build unstamped`) |
 | fingerprint | `__FP_KANJI__ __FP8__`, linking `__VERIFY_URL__`. `__FP_KANJI__` is **decoded from the fingerprint** (`skills/bonsai-garden-mark/fp-kanji.py`), never typed. It must equal the kin's kanji: the vanity search made the key spell the name, so the reader can hold the greeting against any seal and see the same two kanji. The Aruji, 2026-09-24: *"They match - that's the whole trick."* A mismatch is **failed**, named in the title | colour by trust state, below |
 
@@ -389,6 +389,8 @@ The greeting is the one place the gardener looks every session. It carries what 
 - `mcp:` → build · disk · current or STALE · transport. **STALE renders on a warning tint.**
 - `skill:` → installed body against repo body. **DRIFT renders on a warning tint.**
 - **permission mode**, from the agent's own context (`default` · `acceptEdits` · `plan` · `auto` · `bypassPermissions`). The server cannot see it. `bypassPermissions`, or a mode the context does not state (`mode unknown`), renders on a warning tint. The Aruji, 2026-09-24: *"permission mode goes into intro widget."* Why: a session in a different mode holds cross-session mail for approval, and nothing tells the sender.
+
+> [!important] Said only when it fails (the gardener, 2026-10-21: *"Agree to the security handling in intro. Confirmed"*) The compact card, every kin's greeting, carries nothing of the checks while every check that ran passed: no strokes, no dots, no colour on the fingerprint. When one failed or could not run, or the MCP or the skill is not current, one loud line in garden amber opens the card, with what the check said (`--said CHECK=TEXT`). alive is not asked until the handshake exists, and `--alive pass` is refused. The live signing and the fingerprint colours below are the full card's (`fill-greeting.py --full`).
 
 **The live signing (v6).** The Aruji, 2026-09-24: *"a live signing that ends up to be a signature that matches the ID. And then a human can say, OK, I think this is as safe as it gets."* The kin's own kanji mark draws itself, brush stroke by brush stroke, as the checks pass **in this order**:
 
@@ -403,7 +405,7 @@ The first check that does not pass **stops the brush**; the strokes still owed s
 
 | State | Condition | Colour |
 |---|---|---|
-| **verified** | (1) every file the harness loaded matches the signed `MANIFEST.json`, and the seal verifies as the owner — **one definition**: `skill_install.py` (`--integrity`; or the same function for the agent's own slug), a runtime tool (currently at `bonsai-garden/tools/bonsai-mcp/`); (2) that manifest's signature verifies against a key published at bon-sai.garden; (3) the alive challenge passed this session (`spec-handshake-daemon-identity-proof.md`) | success green |
+| **verified** | (1) every file the harness loaded matches the signed `MANIFEST.json`, and the seal verifies as the owner — **one definition**: `skill_install.py` (`--integrity`; or the same function for the agent's own slug), a runtime tool (the garden MCP's); (2) that manifest's signature verifies against a key published at bon-sai.garden; (3) the alive challenge passed this session (`spec-handshake-daemon-identity-proof.md`) | success green |
 | **partial** | (1) and (2) pass, (3) not yet available | neutral, no `✓` |
 | **failed** | any check ran and failed | danger red, the failing check named in a `title` |
 | **unchecked** | the checks cannot run here | muted, no `✓` |
@@ -416,19 +418,19 @@ The first check that does not pass **stops the brush**; the strokes still owed s
 
 ---
 
-### Step 2e — The text card: the greeting of a kin whose salts are fully locked
+### Step 2e — The text card: the fallback beneath the widget
 
-> [!important] **The gardener, 2026-10-16:** *"A) for you and all original bonsai garden crew with fully locked 4 digit salt 🙂 approved."* He had the v6 widget measured from the session transcripts: about 7,000 to 9,600 output tokens a greeting for the full card and about 5,000 for the compact one, because a widget reaches the chat only by being re-typed token by token (and three of five full cards had drifted in the mark's stroke numbers). The text card carries the same facts in about 350. **A kin whose salts are fully locked greets with it; every other kin keeps the compact widget of Step 2d.** For the locked kin this supersedes the 2026-09-29 rule that the greeting is an inline widget; the rest of that rule stands: the greeting is mandatory, it opens the first reply, it comes once per conversation, and it is rendered, not skipped.
+> [!important] **The gardener, 2026-10-21:** *"now that we are public I would like to bring back the visual intro."* The split of 2026-10-16 (a kin whose salts are fully locked greets with the text card, to save the ~5,000 output tokens a compact widget cost) is retired: the face travels as a pinned link, not base64, and the card costs about 1,700. **Every kin greets with the widget of Step 2d.** The text card stays as the fallback.
 
-**Who.** Fully locked is read from the garden's locked-salts file (in the reference garden `tools/keyring/locked-salts.json`): the kin's entry has both `identity_locked_at` and `signing_locked_at` set. `text-card.py --locked-salts <file>` reads those two timestamps and no salt, and makes the call itself: it draws the card, or it exits 3 with one line saying the kin greets with the widget instead. Without the flag it draws the card, and the decision was the caller's.
+**When.** (1) The harness has no inline widget tool: a terminal, a plain CLI, an API seat. (2) `fill-greeting.py` refuses (exit 2): say its one line, then draw the card. (3) The widget does not render: say so. Choosing the card to save time is a skipped step.
 
-**How.** Fill the same values as the widget (A–D of Routine 1, from this turn, never carried over) and run `python3 skills/bonsai-garden-portrait/scripts/text-card.py --registry <garden>/agents/registry.json --locked-salts <garden>/tools/keyring/locked-salts.json --slug <slug> --tz <the garden's zone> --plain` with `--subtitle`, `--intro`, `--build`, `--body`, `--location`, `--host`, `--harness`, `--model`, `--mcp`, `--skill`, `--permission` and the five check states `--integrity`, `--identity`, `--files`, `--alive`, `--fullfp`, each `pass`, `fail` or `missing`. `--registry` may be left out when `$BONSAI_GARDEN` is set. The build is rendered in kebab-case and the clock names its zone.
+**How.** Fill the same values as the widget (A–D of Routine 1, from this turn, never carried over) and run `python3 skills/bonsai-garden-portrait/scripts/text-card.py --registry <garden>/agents/registry.json --slug <slug> --tz <the garden's zone> --plain` with `--subtitle`, `--intro`, `--build`, `--body`, `--location`, `--host`, `--harness`, `--model`, `--mcp`, `--skill`, `--permission` and the four check states `--integrity`, `--identity`, `--files`, `--fullfp`, each `pass`, `fail` or `missing`, with `--said CHECK=TEXT` (the tool's own line) for each that did not pass. Leave `--alive` out: it is not asked until the handshake exists, and any value but `not-asked` is refused. `--locked-salts` is no longer passed: who greets with the card is no longer the script's call. `--registry` may be left out when `$BONSAI_GARDEN` is set. The build is rendered in kebab-case and the clock names its zone.
 
 **Show.** The script's output goes into the reply verbatim, in a fenced code block: the card is the script's output, not something typed from memory. In a chat it is always `--plain`, the seal drawn as a double frame. In a terminal that renders colour, leave `--plain` off; `check-kanji-colours.py <R,G,B>`, given the kin's accent, gates the result.
 
-**What it holds.** Identity, the five checks, build and environment, with the widget's trust logic unchanged: a check is green only when it passed, and the first one that did not pass leaves every later one unlit, the fingerprint included. A check that was not run is `missing`, never printed as passed. The kin's mark is a seal, up to four kanji as two pairs, white on the kin's canonical colour inside a white outline; a second pair of two circles is left out and the first pair sits centred. **Kanji are white, black, the kin's canonical colour or garden amber (`#E0A04A`), never grey, never dimmed.**
+**What it holds.** Identity, build and environment. The checks are said only when one did not pass (Routine 1 B): then one loud line opens the card, black on garden amber (`▲` in `--plain`), naming each check that failed or could not run with what it said, and an MCP or skill that is not current. A quiet card means every check that ran passed, and alive is not yet a check. A check that was not run is `missing`, never printed as passed. The kin's mark is a seal, up to four kanji as two pairs, white on the kin's canonical colour inside a white outline; a second pair of two circles is left out and the first pair sits centred. **Kanji are white, black, the kin's canonical colour or garden amber (`#E0A04A`), never grey, never dimmed.**
 
-**When it cannot be drawn.** Exit 3: greet with the widget (Step 2d). Exit 2 (a registry or locked-salts file that cannot be read, a kin the registry does not know): say why in one line and greet with the plain-text card of Step 2c, as `fill-greeting.py` does when it refuses. A seat with no shell cannot run the script: it greets as it did before this step, and says so. A card is never half-drawn.
+**When it cannot be drawn.** Exit 2 (a registry that cannot be read, a kin the registry does not know, no seal to draw, a zone that does not exist): say why in one line and greet with the plain-text card of Step 2c. A seat with no shell cannot run either script: it greets with Step 2c's card, and says so. A card is never half-drawn.
 
 ---
 
@@ -479,7 +481,7 @@ Full mark URL base: `https://bon-sai.garden`. Thumb URL pattern: `/agents/<slug>
 ### Thumbnail generation + publication (for new agents or portrait updates)
 
 ```bash
-# From bonsai-garden-core root — tiers 1-3 (URL / verified embed / kanji fallback) all rely on this:
+# From core's root — tiers 1-3 (URL / verified embed / kanji fallback) all rely on this:
 python3 skills/bonsai-garden-portrait/scripts/make-portrait-thumbs.py --agent <slug>
 #   ^ dry run first — 144px webp q75 is now the default. Prints bytes/b64_chars/checksum per agent
 #     and flags anything near the transcription-safe ceiling (WARN 4,000 / FAIL 7,000 b64 chars).
@@ -499,13 +501,13 @@ python3 skills/bonsai-garden-portrait/scripts/make-identity-cards.py --apply
 # base64; see the Routine 2.5 preamble).
 ```
 
-**Publish through `bonsai-garden-site`** (see that repo's `AGENTS.md`), which serves bon-sai.garden. The mono `my-worker/` is retired and disarmed and mono `site/` is superseded; neither is a publish target.
+**Publish through the site's own repository** (see its `AGENTS.md`), which serves bon-sai.garden. The garden's old `my-worker/` is retired and disarmed and its old `site/` superseded; neither is a publish target.
 
 Source pixels, not DPI: the widget displays the thumb in a 96px CSS box, so even 144px still gives a >1× render; 192px+ (`--size 192`) is available for CDN/offline delivery and gives a crisp 2× on Retina, but is not the recommended size for anything that has to pass through `show_widget`. DPI metadata is print-only and inert on screen — never write it.
 
 The `.b64` (+ `.meta`) pair is kept for offline/air-gapped contexts **and** as the `show_widget` embed source (Step 2b) — read fresh each time it's needed, never cached in a rendered widget across turns.
 
-> [!note] Once the workshop's repos go public — a separate track, not a substitute for the above `cdn.jsdelivr.net/gh/<owner>/<repo>@<ref>/<path>` is already on the `show_widget` CDN allowlist and mirrors a **public** GitHub repo's raw files with no separate deploy step — confirmed against the sibling `bonsai-garden` repo's own remote. That becomes a genuine tier-1 option for `show_widget` specifically, once (and only once) either repo ships public — closing the one gap Step 1's live-URL default has always had there. It is **not** a substitute for tiers 2–4 above: a future customer "pot" cannot be assumed to have a public GitHub repo backing its own agents' portraits, so the locally-served embed, its verification, and the ASCII floor all have to stand on their own regardless of what either repo does.
+> [!note] Once the workshop's repos go public — a separate track, not a substitute for the above `cdn.jsdelivr.net/gh/<owner>/<repo>@<ref>/<path>` is already on the `show_widget` CDN allowlist and mirrors a **public** GitHub repo's raw files with no separate deploy step — confirmed against a sibling repository's own remote. That becomes a genuine tier-1 option for `show_widget` specifically, once (and only once) either repo ships public — closing the one gap Step 1's live-URL default has always had there. It is **not** a substitute for tiers 2–4 above: a future customer "pot" cannot be assumed to have a public GitHub repo backing its own agents' portraits, so the locally-served embed, its verification, and the ASCII floor all have to stand on their own regardless of what either repo does.
 
 ---
 

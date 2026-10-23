@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "custodian",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-21T13:09:34Z",
+  "timestamp": "2026-10-23T04:42:14Z",
   "algorithm": "ed25519+blake2b512",
   "target": "build/bonsai-garden-core-plugin.skill",
-  "file-hash": "83aea4b5229da0f9c88b8884e03b33bcd04fd9418f8dc487eb616e0d5ef42868bd890663175bf8b2fd41b2d6074156ffe429e4453d573caed4c488b0a10e9911",
-  "signature": "emOfsJRsNTzqodu/TaHAKyA7dZ7ul04tflZtW+202j8suz9l7AEWe0BYhjsITS0pEv/m9Wjs+iTx3N9jF7AbCg=="
+  "file-hash": "3ceff9fb9c269cf7665f081e08a01c98479fac4de0580b6f57260dc6824895addf49892bd334a9ed80916a607ac1046a5392ba49e107fae85afc18edb5eb024c",
+  "signature": "7U5J2aa4xvKy4dbz6eiqDoEJEh/PjmZTfc5zLx9W5F9VkoByapaJpsvQDZSs7+RLXuiMz7WR+R6V+VFHbcqMBQ=="
 }

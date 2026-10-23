@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-20
+// updated: 2026-10-21
 // ---
 //
 // garden.mjs — the pot side of spec-gardeners-keys.md §5, §7, §8: garden.json, pot.json,
@@ -18,13 +18,34 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { derivePublicKey, signData } from '../../bonsai-garden-sign/lib/derive-key.mjs';
+import { derivePublicKey, signData, verifySignature } from '../../bonsai-garden-sign/lib/derive-key.mjs';
 import * as seal from '../../bonsai-garden-sign/lib/seal-v2.mjs';
 import { writeSealSidecar } from '../../bonsai-garden-sign/lib/sidecar-format.mjs';
 
 export const rootSalt = (garden) => `garden-root@${garden}`;
-/** A garden's companions: garden.json `shins` when it names more than one, else its one `shin` (2026-10-15). */
-export const companionsOf = (g) => (Array.isArray(g.shins) && g.shins.length ? g.shins : [g.shin]).filter(Boolean);
+/**
+ * A garden's shin, as one list (spec 0.8.0 §5.1; Mori-shin's ruling of 2026-10-21): garden.json `shins`, an array,
+ * `[]` for a garden with none. A file from before 0.8 with one `shin` string reads as a list of one, and `shin: null`
+ * as none. A file that carries both is refused: two fields for one fact are two masters. Throws; the binary refuses.
+ */
+export function companionsOf(g) {
+  const has = (k) => Object.hasOwn(g ?? {}, k) && g[k] !== null && g[k] !== undefined;
+  const bad = (why) => Object.assign(new Error(why), { code: 'SHINS' });
+  if (has('shins') && has('shin'))
+    throw bad(
+      'garden.json carries both shin and shins: two fields for one fact are two masters (spec §5.1); keep shins, drop shin',
+    );
+  const ok = (s) => typeof s === 'string' && s.length > 0;
+  if (has('shins')) {
+    if (!Array.isArray(g.shins) || !g.shins.every(ok)) throw bad("garden.json's shins is not a list of slugs");
+    return [...g.shins];
+  }
+  if (has('shin')) {
+    if (!ok(g.shin)) throw bad("garden.json's shin is not a slug");
+    return [g.shin];
+  }
+  return [];
+}
 export const today = () => new Date().toISOString().slice(0, 10);
 /** Whoever's pronouns are not yet known: a kin is never "it" (the gardener, 2026-10-20, F-26 of dry run #4). */
 export const UNKNOWN_PRONOUNS = 'they/them';
@@ -52,6 +73,32 @@ export function sealWith(masterHex, agentSalt, signer, file, { custody = null, r
   return writeSealSidecar(file, { ...obj, signature });
 }
 
+/**
+ * Null when `file`'s seal is an owner seal by the garden's root over its exact bytes that verifies under `raw` (the
+ * root's public key, 32 bytes); else why not. Spec §6.4 point 5 (i): a verb believes garden.json's release record only
+ * under the root's seal, and under the key custody gives before it locks.
+ */
+export function rootSealProblem(file, g, raw) {
+  let d;
+  try {
+    d = JSON.parse(fs.readFileSync(path.join(path.dirname(file), `.${path.basename(file)}.bonsaisig`), 'utf8'));
+  } catch {
+    return `${path.basename(file)} carries no seal beside it`;
+  }
+  const p = seal.v2SchemaProblem(d);
+  if (p) return `its seal is not a bonsaisig/2 seal (${p})`;
+  if (d.role !== 'owner' || 'open' in d) return 'its seal is not an owner seal';
+  if (d.signer !== g.name) return `it is sealed by ${d.signer}, not by the root (${g.name})`;
+  if (!Buffer.isBuffer(raw) || raw.length !== 32) return 'no 32-byte root key to check it under';
+  if (d.fingerprint !== crypto.createHash('sha256').update(raw).digest('hex').slice(0, 32))
+    return "its seal names another fingerprint than the root key's";
+  if (crypto.createHash('blake2b512').update(fs.readFileSync(file)).digest('hex') !== d['file-hash'])
+    return 'hash-mismatch: it was edited after its seal';
+  if (!verifySignature(raw.toString('hex'), seal.v2Payload(d), d.signature))
+    return 'its signature does not hold under the root key';
+  return null;
+}
+
 // ── pot files ────────────────────────────────────────────────────────────────
 
 export const P = {
@@ -60,8 +107,8 @@ export const P = {
   locks: (pot) => path.join(pot, 'locked-salts.json'),
   registry: (pot) => path.join(pot, 'agents', 'registry.json'),
   idDir: (pot, slug) => path.join(pot, 'agents', slug, 'identity'),
-  attestation: (pot) => path.join(pot, 'garden-attestation.yaml'),
-  countersign: (pot) => path.join(pot, 'garden-attestation.countersign.json'),
+  attestation: (pot) => path.join(pot, 'garden-attestation.json'), // bonsai-garden-attestation/1 (spec §10)
+  retiredAttestation: (pot) => path.join(pot, 'garden-attestation.yaml'), // 0.2.0's form, read by status only
 };
 
 export const readJson = (p) => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : null);
@@ -100,7 +147,7 @@ export function writeKey(pot, slug, raw, fingerprint) {
   fs.writeFileSync(path.join(d, `${slug}-fingerprint.txt`), `${fingerprint}\n`);
 }
 
-/** fp → its first n kanji indices, as engine.js slices a digest. */
+/** fp → its first n kanji indices, as engine.js reads a digest. */
 export function fpIndices(fpHex, n) {
   const b = Buffer.from(fpHex, 'hex');
   const out = [];
@@ -142,7 +189,11 @@ export function withinByInode(dir, start) {
  */
 export function publicMaterialProblems({ g, reg, doc = null, hex = null }) {
   const out = [];
-  const fields = [...secretShapedFields(g, 'garden.json'), ...secretShapedFields(reg, 'registry')];
+  // the release record's sha256 is the hash of a public manifest (spec §6.4 point 5), 64 hex by its nature
+  const fields = [
+    ...secretShapedFields(g, 'garden.json').filter((f) => f !== 'garden.json.release.sha256'),
+    ...secretShapedFields(reg, 'registry'),
+  ];
   if (fields.length)
     out.push({
       check: 'fields',
@@ -150,6 +201,13 @@ export function publicMaterialProblems({ g, reg, doc = null, hex = null }) {
     });
   if (doc !== null && SECRET_SHAPE.test(doc))
     out.push({ check: 'document', why: 'the attestation would carry a value shaped like a master salt' });
+  if (
+    hex &&
+    JSON.stringify(g ?? {})
+      .toLowerCase()
+      .includes(hex)
+  )
+    out.push({ check: 'fields', why: 'not public material: garden.json carries the master salt' });
   if (doc !== null && hex && (doc.toLowerCase().includes(hex) || doc.toLowerCase().includes(hex.slice(0, 8)))) {
     out.push({ check: 'salt', why: 'the attestation would carry the master salt, or a fragment of it' });
   }

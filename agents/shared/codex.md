@@ -5,13 +5,13 @@ type: codex
 tended-by: workshop
 created: 2026-05-22
 updated: 2026-10-21
-version: 1.5.1
+version: 1.5.2
 status: active
 ---
 
 # The Codex
 
-> **Two scopes, stated once. No exceptions within either.** §4–§8 bind **every kin** — every *-sai and *-shin in any garden, workshop-internal or external-agency — and every bon-sai agent: file naming, the saying, versioning, metadata, and the Empty-Chair tripwire. §1–§3 are the **external-agency specifics** (register, confidentiality and character discipline toward a principal); §3's last rule, *how a kin is spoken of*, is the one rule among them that binds every kin, and everyone who speaks of one. A workshop kin takes their own garden's versions of §1–§3 from `codex-workshop.md`, which lives in **`bonsai-garden-pot`** (`agents/shared/codex-workshop.md`), not in core. For §6 (versioning) and §8 (the Empty-Chair tripwire) this file is the one statement, and a garden's own codex points here rather than restating it.
+> **Two scopes, stated once. No exceptions within either.** §4–§8 bind **every kin** — every *-sai and *-shin in any garden, workshop-internal or external-agency — and every bon-sai agent: file naming, the saying, versioning, metadata, and the Empty-Chair tripwire. §1–§3 are the **external-agency specifics** (register, confidentiality and character discipline toward a principal); §3's last rule, *how a kin is spoken of*, is the one rule among them that binds every kin, and everyone who speaks of one. A workshop kin takes their own garden's versions of §1–§3 from `codex-workshop.md`, which lives in the garden's **pot** (`agents/shared/codex-workshop.md`), not in core. For §6 (versioning) and §8 (the Empty-Chair tripwire) this file is the one statement, and a garden's own codex points here rather than restating it.
 
 ---
 

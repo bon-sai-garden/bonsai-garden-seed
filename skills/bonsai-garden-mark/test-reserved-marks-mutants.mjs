@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-07
-// updated: 2026-10-07
+// updated: 2026-10-22
 // ---
 //
 // test-reserved-marks-mutants.mjs — a guard is not trusted until it has been watched to fail.
@@ -38,6 +38,7 @@ const M = 'bonsai-garden-mark/reserved-marks.mjs';
 const O = 'bonsai-garden-mark/origin.mjs';
 const N = 'bonsai-garden-mark/namespace.mjs';
 const K = 'bonsai-garden-keys/bin/keys.mjs';
+const D = 'bonsai-garden-mark/release-manifest.mjs';
 
 // [name, [[file, find, replace], ...], [cases that must go red]]
 const MUTANTS = [
@@ -289,11 +290,22 @@ const MUTANTS = [
     [
       [
         M,
-        "  if (v.status !== 'signature-vouched')\n    throw wrap(v.status, v.reason || \"bon-sai.garden does not vouch for the reserved set's seal\");",
-        '  if (false) throw wrap(v.status, v.reason || "bon-sai.garden does not vouch for the reserved set\'s seal");',
+        "    if (v.status !== 'signature-vouched')\n      throw wrap(v.status, v.reason || \"bon-sai.garden does not vouch for the reserved set's seal\");",
+        '    if (false) throw wrap(v.status, v.reason || "bon-sai.garden does not vouch for the reserved set\'s seal");',
       ],
     ],
     ['a-seal-the-site-does-not-vouch-for'],
+  ],
+  [
+    'manifest-reader-believes-any-answer',
+    [
+      [
+        M,
+        "  if (v.status !== 'signature-vouched')\n    throw wrap(v.status, v.reason || `bon-sai.garden does not vouch for ${found.name}'s seal`);",
+        "  if (false) throw wrap(v.status, v.reason || `bon-sai.garden does not vouch for ${found.name}'s seal`);",
+      ],
+    ],
+    ['m-the-site-unreachable-forged-unsigned-rejected-or-timeless', 'm-re-sealed-by-a-writer-slug-whose-key-the-site-does-not-hold'],
   ],
   [
     'unreachable-refuses-instead-of-halting',
@@ -311,8 +323,8 @@ const MUTANTS = [
     [
       [
         O,
-        "      return {\n        status: v.status,\n        reason: v.reason || null,\n        verifiedAt: v.status === 'signature-vouched' ? verifiedAt : null,\n      };",
-        '      return { status: v.status, reason: v.reason || null, verifiedAt };',
+        "        verifiedAt: v.status === 'signature-vouched' ? verifiedAt : null,\n",
+        '        verifiedAt,\n',
       ],
     ],
     ['origin-keeps-the-signed-time-only-when-vouched'],
@@ -328,18 +340,22 @@ const MUTANTS = [
         'if (!s.data) { if (sideText) await origin.ask(JSON.parse(sideText)); throw wrap(s.reason, s.detail); }',
       ],
     ],
-    ['edited-after-its-seal', 'reader-refuses-a-custodian-seal', 'reader-refuses-a-seal-on-another-file'],
+    ['edited-after-its-seal', 'reader-refuses-a-custodian-seal', 'reader-refuses-an-open-seal'],
   ],
   [
     'reader-skips-the-floor',
     [
       [
         M,
-        "const sets = parseReserved(bytes.toString('utf8'));\n  const v = await",
-        'const sets = ((d) => ({ wildcard: new Set(d.wildcard || []), A: new Set(d.A || []), B: new Set(d.B || []) }))(JSON.parse(bytes));\n  const v = await',
+        "const sets = parseReserved(bytes.toString('utf8'));\n\n  if (!found) {",
+        'const sets = ((d) => ({ wildcard: new Set(d.wildcard || []), A: new Set(d.A || []), B: new Set(d.B || []) }))(JSON.parse(bytes));\n\n  if (!found) {',
       ],
     ],
-    ['reader-refuses-a-sealed-set-under-the-floor-offline', 'reader-refuses-a-sealed-pair-list-offline'],
+    [
+      'reader-refuses-a-sealed-set-under-the-floor-offline',
+      'reader-refuses-a-sealed-pair-list-offline',
+      'm-re-sealed-by-a-writer-the-site-holds-is-believed-and-the-floor-still-stands',
+    ],
   ],
   [
     'unsealed-read-as-a-seal',
@@ -362,16 +378,107 @@ const MUTANTS = [
     ],
     ['reader-refuses-an-open-seal'],
   ],
+  // F-12 (spec 0.7.0 §6.4 point 3): the reader takes the target as a path, no verdict; the drift gate keeps it
   [
-    'any-target-believed',
-    [
-      [
-        M,
-        '  if (data.target !== SHIPPED_TARGET)\n    return { reason: R.NOT_SHIPPED, detail: `the seal names ${data.target}, not ${SHIPPED_TARGET}` };',
-        '  if (false) return { reason: R.NOT_SHIPPED, detail: `the seal names ${data.target}, not ${SHIPPED_TARGET}` };',
-      ],
-    ],
-    ['reader-refuses-a-seal-on-another-file'],
+    'reader-refuses-on-the-target-again',
+    [[M, 'const s = sealProblem(bytes, sideText, { place: false });', 'const s = sealProblem(bytes, sideText, { place: true });']],
+    ['reader-takes-the-target-as-a-path-not-a-verdict'],
+  ],
+  // spec 0.7.0 §6.4 points 3 to 5: the release manifest, each guard broken alone
+  [
+    'any-vouched-kin-may-seal-the-set',
+    [[M, '  if (s.data.signer !== SET_OWNER)\n', '  if (false)\n']],
+    ['no-manifest-the-set-sealed-by-a-vouched-kin-who-is-not-mori-shin', 'm-the-sidecar-unlisted-or-not-mori-shins'],
+  ],
+  [
+    'the-manifest-is-never-read',
+    [[M, '  const found = root ? findManifest(root, wl.manifests) : null;', '  const found = null;']],
+    ['m-sealed-by-a-vouched-kin-who-is-no-writer', 'm-believed-through-the-manifest-asks-once-and-hands-back-the-record'],
+  ],
+  [
+    'any-vouched-kin-may-seal-the-manifest',
+    [[D, '  if (!writers.includes(seal.signer))\n', '  if (false)\n']],
+    ['m-sealed-by-a-vouched-kin-who-is-no-writer', 'm-the-writers-are-the-list-beside-the-reader'],
+  ],
+  [
+    'manifest-custodian-believed',
+    [[D, "  if (seal.role !== 'owner') return no(", '  if (false) return no(']],
+    ['m-sealed-by-a-writer-not-owner-or-open'],
+  ],
+  [
+    'manifest-open-believed',
+    [[D, "  if ('open' in seal)\n", '  if (false)\n']],
+    ['m-sealed-by-a-writer-not-owner-or-open'],
+  ],
+  [
+    'a-fallback-seal-is-a-release',
+    [[D, '  if (seal.custody === NO_RELEASE_TIER)\n', '  if (false)\n']],
+    ['m-a-software-fallback-seal-is-no-release'],
+  ],
+  [
+    'manifest-bytes-unchecked',
+    [[D, "  if (blake(bytes) !== seal['file-hash'])\n", '  if (false)\n']],
+    ['m-the-manifest-edited-after-its-seal'],
+  ],
+  [
+    'manifest-any-format',
+    [[D, '  if (!m || m.format !== RELEASE_FORMAT)\n', '  if (!m)\n']],
+    ['m-another-format-or-a-path-twice'],
+  ],
+  [
+    'manifest-a-path-twice',
+    [[D, '    if (byPath.has(e.path)) return no(', '    if (false) return no(']],
+    ['m-another-format-or-a-path-twice'],
+  ],
+  [
+    'the-set-and-its-sidecar-unlisted',
+    [[M, '    for (const rel of [SHIPPED_TARGET, sidecarRel(SHIPPED_TARGET)]) {', '    for (const rel of []) {']],
+    ['m-one-index-changed-the-manifest-not', 'm-the-sidecar-unlisted-or-not-mori-shins'],
+  ],
+  [
+    'no-mixed-cut',
+    [[M, '    if (mx) throw say(mx);', '    if (false) throw say(mx);']],
+    ['m-one-file-of-the-three-skills-differs-a-mixed-cut', 'm-the-files-still-equal-the-manifest-when-the-record-is-taken'],
+  ],
+  [
+    'mixed-cut-reads-one-skill',
+    [[D, "export const ARC_SKILLS = Object.freeze(['bonsai-garden-keys', 'bonsai-garden-mark', 'bonsai-garden-sign']);", "export const ARC_SKILLS = Object.freeze(['bonsai-garden-mark']);"]],
+    ['m-one-file-of-the-three-skills-differs-a-mixed-cut', 'm-the-files-still-equal-the-manifest-when-the-record-is-taken'],
+  ],
+  [
+    'a-lost-exec-bit-reads-as-a-mixed-cut',
+    [[D, '    if (p && p.reason !== M.MODE) return { reason: M.MIXED,', '    if (p) return { reason: M.MIXED,']],
+    ['m-a-stated-100755-on-a-file-that-is-not-executable-refuses-naming-it-and-the-fix'],
+  ],
+  [
+    'a-lost-exec-bit-names-only-the-first',
+    [[D, '    if (p) off.push(rel);', '    if (p && !off.length) off.push(rel);']],
+    ['m-every-lost-exec-bit-of-the-three-skills-is-named-in-one-refusal-with-one-fix'],
+  ],
+  [
+    'manifest-unreachable-refuses',
+    [[M, "seal cannot be checked, so nothing is searched`, 3);\n  if (v.status !== 'signature-vouched')\n    throw wrap(v.status, v.reason || `bon-sai.garden", "seal cannot be checked, so nothing is searched`, 2);\n  if (v.status !== 'signature-vouched')\n    throw wrap(v.status, v.reason || `bon-sai.garden"]],
+    ['m-the-site-unreachable-forged-unsigned-rejected-or-timeless'],
+  ],
+  [
+    'manifest-answer-without-its-time',
+    [[M, '  if (!v.verifiedAt)\n    throw wrap(', '  if (false)\n    throw wrap(']],
+    ['m-the-site-unreachable-forged-unsigned-rejected-or-timeless'],
+  ],
+  [
+    'a-record-is-never-taken',
+    [[M, '  if (record && record.manifest === fields.manifest && record.sha256 === fields.sha256) {', '  if (false) {']],
+    ['m-a-record-stands-in-for-the-question'],
+  ],
+  [
+    'a-record-for-other-bytes-is-taken',
+    [[M, '  if (record && record.manifest === fields.manifest && record.sha256 === fields.sha256) {', '  if (record && record.manifest === fields.manifest) {']],
+    ['m-a-record-for-other-bytes-is-asked-again'],
+  ],
+  [
+    'a-record-taken-unchecked',
+    [[M, '    if (off.length)\n      throw wrap(\n        R.RECORD,', '    if (false)\n      throw wrap(\n        R.RECORD,']],
+    ['m-a-record-that-disagrees-with-its-manifest-is-a-finding'],
   ],
   [
     'missing-set-is-empty',

@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "custodian",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-09-25T07:57:48Z",
+  "timestamp": "2026-10-21T16:45:52Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/README.md",
-  "file-hash": "df1d8b1aa37b80e50ff6fae9be3b121c223f35bfa4801a7c1e4880af4fd708538172428515eb783eb9e1ce52606a828d0eb869f60b027c6d62db979661117892",
-  "signature": "RGnc2b6EevnS+H/aGM/qM47olejbQeJ22mQTJUz8D9Q5JKgKCX8/xHbnYbCj9hMuK1dx7gRfDRAC5Lzh0xexDg=="
+  "file-hash": "34258c9e2cd28ff196b9c6a0e4c4aeb7e967379cb84f446c3747b8efabf551a5dee591d9309b3360cec646668d3d3b7d6d0f8966e789e3f3b551a2a1ffe080c4",
+  "signature": "y36Fo/ma6ARzNUobmKNDoYiSvMGDR+cvFFJW+KS+rllT0N/NsFowMRqEM9ZcrKmWODxrOOwyjG6r9KsgOVQ1Cg=="
 }

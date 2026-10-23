@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "owner",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-20T16:17:10Z",
+  "timestamp": "2026-10-21T15:33:11Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-portrait/scripts/text-card.py",
-  "file-hash": "d20df29fb9c7910970ea145e6eba7756e6bbb31c4b425bc2a98adcf98732f7e6aef4174fd3e112c86e71931bd0b4813c909f16dbba9f034c01776ddf55dad00b",
-  "signature": "R/hwwz4lZVH28dZ6tum2l91p/TDvi8nK7Su00XiGxzSY/D5z4+9enWeASMZydg7dJIc6KJ1Kr+V4eGyrnuBbBQ=="
+  "file-hash": "1dbbcc2607bd73696dd1469de1cb200e6a140a5c5777da8762da45f0e0ef681afa5d969045883931da723b3b3744bc6748b94c1954476d05cd1e0cd760e8c693",
+  "signature": "c5qnI2WjOuPNACYI9baTJvx3l84VpcawLi9FVYRAL8YaKALQumlRs5OHC3Z2kRZqoKfidM0s2mnOc5KabgGHDQ=="
 }

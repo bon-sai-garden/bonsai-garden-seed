@@ -8,7 +8,7 @@ description: >
   rewriting a number. Use at stage 3c of a planting, after a draft body exists. Not a sourcing audit.
 version: 0.2.2-draft
 ---
-> **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json`. Anything but `ok` means stop: use nothing here, and tell the gardener exactly what it said.
+> **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
 > **Audience (advice, not a gate).** Bonsai runs this in a planting. Another kin's session stops here, says so in one line, and names who to ask.
 

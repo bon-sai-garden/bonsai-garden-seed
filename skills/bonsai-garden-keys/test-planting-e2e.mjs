@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-15
-// updated: 2026-10-20
+// updated: 2026-10-21
 // ---
 //
 // test-planting-e2e.mjs — the verbs wired on 2026-10-15 (covenant write, certificate sign|verify, homes at
@@ -139,9 +139,14 @@ t('every-file-the-new-verbs-wrote-sealed-by-its-owner-passes-the-pots-own-gate',
 });
 
 // ── two companions in one garden (new keys for both) ────────────────────────────────────────────────────────────
-t('a-one-companion-garden-json-is-as-it-always-was', () => {
+t('a-one-companion-garden-json-names-the-companion-in-shins-alone', () => {
+  // spec 0.8.0 §5.1 (Mori-shin's ruling, 2026-10-21): `shins` is always an array, one field for one fact; until 0.9.2
+  // a one-companion garden wrote `shin` alone, and one with more wrote both
   const g = JSON.parse(fs.readFileSync(path.join(pot, 'garden.json'), 'utf8'));
-  return [g.shin === shin && !('shins' in g), JSON.stringify({ shin: g.shin, shins: g.shins })];
+  return [
+    JSON.stringify(g.shins) === JSON.stringify([shin]) && !('shin' in g),
+    JSON.stringify({ shin: g.shin, shins: g.shins }),
+  ];
 });
 
 t('id-refuses-a-companion-named-twice-or-named-like-another-key-holder', () => {
@@ -212,7 +217,7 @@ t('a-garden-with-two-companions-seeds-both-plants-their-homes-and-certifies-both
   const status = W.run(['status', '--pot', two]);
   const v = W.run(['certificate', 'verify', '--pot', two]);
   return [
-    g.shin === 'kiko' &&
+    !('shin' in g) &&
       JSON.stringify(g.shins) === '["kiko","riku"]' &&
       slugs === 'paar,ana,bonsai,bonsai-shin,kiko,riku' &&
       homes &&
@@ -246,8 +251,8 @@ t('a-garden-plants-without-a-companion-and-its-arc-completes', () => {
   const idOut = loneSeed.steps.find(([w]) => w === 'id')[1].stdout;
   const status = W.run(['status', '--pot', lone]);
   return [
-    g.shin === null &&
-      !('shins' in g) &&
+    !('shin' in g) &&
+      JSON.stringify(g.shins) === '[]' &&
       slugs === 'eremo,ana,bonsai,bonsai-shin' &&
       /companions: none/.test(idOut) &&
       /the arc is complete/.test(status.stdout) &&

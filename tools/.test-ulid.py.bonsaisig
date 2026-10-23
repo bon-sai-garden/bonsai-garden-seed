@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T14:56:04Z",
+  "timestamp": "2026-10-21T15:03:53Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/test-ulid.py",
-  "file-hash": "6efccddc1ee21dcf6192094fce900632b93b214cc92c8cf35e2f491b790afe265864e3d79724c54ce73e9f082b6beda99e931c2cc0b664e3a3a025c5a0055650",
-  "signature": "kXiUmAndHFLQw/od5GAFNN6t25xwdvTuwnKWupq6IBkXGqVzbrbHl10srB5f7VD9LdLSXhlqyMsyPF4fcsrKBg=="
+  "file-hash": "7786560237c356ec6af16c27292ebc925b8dab8c9b983e04cbbd80c3be643fce60073a5008e129306fc9a325a397c8ebe8a0a0c31c3d7d746b238931bc3b434d",
+  "signature": "KPIUFEvEwRQQ5cQ+d2LegIUNRjbU+/QZbBA9m5dhBzGUPYq3zYHL/u6R13mx+abBwRDKt5CBlg7uMdviLLIHBg=="
 }

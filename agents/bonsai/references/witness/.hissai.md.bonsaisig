@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "owner",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T14:38:57Z",
+  "timestamp": "2026-10-22T07:03:29Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/witness/hissai.md",
-  "file-hash": "1e6eb4b006f8d13b975b1de78d7bcdeaa3af2e1bdaf410acfe74424fac31ae9e3933020ff402c2356d3bed2647c6f66131e21d6ea5b4965b98bc8f6fb4d27d1d",
-  "signature": "fz7LYHoHNuBcuMUpdL1rMptNCSoagVe/yhUHBGUKB8pMDzjbakxrSaszPhBhW1Q0CGvdqzE1s3Jx1pr49v7FDA=="
+  "file-hash": "6fea3e8278ae8a8ea23e61bddf3dbd4c85b9a6f5a602612c2670f07df3da9480c6ab532d3d6e3e5177c4ad082a9952dda59a12910734d928c585e14269f8955e",
+  "signature": "Ies3zKHHPOwc0m92FpIhbybKCD9tdobdhd3VQj0gktuPAUNVln3cuJTgU69QXQZEjspkk8x6Ti91RcQk/QBPDg=="
 }

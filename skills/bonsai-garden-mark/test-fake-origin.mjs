@@ -10,7 +10,7 @@
 // test-fake-origin.mjs — TEST SUPPORT, never imported by anything a gardener runs.
 //
 // fakeSite() is a stand-in for bon-sai.garden's POST /verify, built from the worker's contract
-// (bonsai-garden-site sites/bon-sai-garden/worker/src/index.js, successVerify): it holds a table
+// (the site's worker, its successVerify): it holds a table
 // of throwaway signer keys, verifies a bonsaisig/2 signature over the exact payload it is sent,
 // and answers signed by a THROWAWAY verifier key (never the workshop's). Modes model the failures
 // published-keys.mjs names: vouch (an honest site), rejected (ok:false), forged (signed by another

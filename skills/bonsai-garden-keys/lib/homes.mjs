@@ -14,7 +14,7 @@
 //
 // Every registry entry but the origin's (it lives in its own garden) and the garden's own (no body) gets
 // home/<slug>/inbox/acknowledged.md: letters land in inbox/, and the ledger is what makes an inbox a record. A kin with
-// a body of its own also gets home/<slug>/memory/working-state.md. Each file carries a minted id and names its owner;
+// a body of their own also gets home/<slug>/memory/working-state.md. Each file carries a minted id and names its owner;
 // none is ever overwritten. Written unsealed: each owner seals their own at the commit (seal-staged --as <slug>).
 
 import fs from 'node:fs';

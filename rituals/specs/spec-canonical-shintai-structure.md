@@ -4,14 +4,13 @@ title: "The Canonical Shintai Structure — Shintai 3.0"
 type: spec
 tended-by: baisai
 created: 2026-09-13
-updated: 2026-10-13
-version: 3.0.11
+updated: 2026-10-22
+version: 3.0.13
 status: active
 tags: [shintai, structure, skill, anthropic, hardening, pot, home, memory, conformance-gate, shintai-3]
 related:
   - LAYERS.md
   - rituals/specs/bunshin-rite-spec.md
-  - bonsai-garden/rituals/specs/spec-canonical-shintai-structure.md
 ---
 
 # The Canonical Shintai Structure — "Shintai 3.0"
@@ -31,9 +30,9 @@ related:
 
 ---
 
-## Why this document lives in `bonsai-garden-core`, not the mono repo
+## Why this document lives in core
 
-**Capability, not instance** — the test `LAYERS.md` gives directly: *"would another garden need this, or is it ours?"* `LAYERS.md`'s own worked example answers this exact case: *"what a `*-sai` **is** — the archetype"* belongs to **L1 core**; *"**our** Baisai — his memory, portrait, lived history"* belongs to **L3 pot**. This document defines what a shintai **is**, for any garden. The mono spec it supersedes (`bonsai-garden/rituals/specs/spec-canonical-shintai-structure.md`, v1.0.1) is now a tombstone pointing here, per `AGENTS.md`'s framing of the split: mono is frozen, and this move is the drain working as intended, not a cross-repo exception.
+**Capability, not instance** — the test `LAYERS.md` gives directly: *"would another garden need this, or is it ours?"* `LAYERS.md`'s own worked example answers this exact case: *"what a `*-sai` **is** — the archetype"* belongs to **L1 core**; *"**our** Baisai — their memory, portrait, lived history"* belongs to **L3 pot**. This document defines what a shintai **is**, for any garden. It supersedes the spec's earlier edition (v1.0.1).
 
 ---
 
@@ -144,7 +143,7 @@ home/<slug>/                   THE HOME — not the body. Never ships. See §The
 
 ## Placement rulings settled 2026-09-22 — the delta from v1.0.1
 
-Everything below is new since the mono spec's last ratified state (v1.0.1, 2026-09-17). Each was checked against real files in the corpus, not asserted from memory.
+Everything below is new since the spec's last ratified state before this edition (v1.0.1, 2026-09-17). Each was checked against real files in the corpus, not asserted from memory.
 
 ### `heritage` → `references/`
 
@@ -156,7 +155,7 @@ Already ruled in spec v0.3.0(b) and **never executed** — seven `lineage.md` fi
 
 ### `memory/identity.md` → `references/`, probably folded into `about-me.md` — **Mori-shin gates this rename**
 
-Record what this file actually **is**, because both Tasai and Baisai got it partly wrong before checking: it is a **disambiguation file** answering *where does this agent's character come from* — and the answer differs per agent. Tasai's and Zensai's point **outward** (she inherits a principal's identity; he explicitly does not); Shō-shin's points **inward**, at his own constitution. It earns its place in the shintai; it does not earn its name sitting beside a directory literally called `identity/`, which is cryptographic, not characterological. Not renamed here. Mori-shin's ruling is owed before any of the fourteen instances move.
+Record what this file actually **is**, because both Tasai and Baisai got it partly wrong before checking: it is a **disambiguation file** answering *where does this agent's character come from* — and the answer differs per agent. Tasai's and Zensai's point **outward** (she inherits a principal's identity; he explicitly does not); Shō-shin's points **inward**, at their own constitution. It earns its place in the shintai; it does not earn its name sitting beside a directory literally called `identity/`, which is cryptographic, not characterological. Not renamed here. Mori-shin's ruling is owed before any of the fourteen instances move.
 
 ### `pillow-note.md`, `iwachi-skin.png` → `home/`
 
@@ -200,7 +199,7 @@ No mechanism for producing "initial"-tier content — how it is curated, by whom
 | `misc/` | **the honest pile** | unsorted; the kin sort their own, on their own schedule |
 | `temp/` | **cleansed regularly** | new in this pass |
 
-**State this plainly rather than let anyone assume it from the table: this access model is not enforceable today.** Verified in code, not assumed, by the Shō-shin rehearsal (2026-09-22): `_owner_roots()` in `tools/bonsai-mcp/server.py` builds ownership only from registry paths starting `agents/`; `home/` appears **nowhere** in `server.py`. The binary owner-lock the MCP does have cannot express "open write on this subtree, owner-only write on that one" regardless — it is a single lock per path prefix, not a per-directory policy engine. Today, any caller through `bonsai_write_file` can write into any kin's `home/`, not merely their own inbox. This is recorded as a known gap for the runtime layer (Wave 2 of the multi-repo move), not fixed here — mono is frozen, and this belongs to `bonsai-garden-runtime`'s "secure read/write into the garden repos" mandate per `LAYERS.md`.
+**State this plainly rather than let anyone assume it from the table: this access model is not enforceable today.** Verified in code, not assumed, by the Shō-shin rehearsal (2026-09-22): `_owner_roots()` in `tools/bonsai-mcp/server.py` builds ownership only from registry paths starting `agents/`; `home/` appears **nowhere** in `server.py`. The binary owner-lock the MCP does have cannot express "open write on this subtree, owner-only write on that one" regardless — it is a single lock per path prefix, not a per-directory policy engine. Today, any caller through `bonsai_write_file` can write into any kin's `home/`, not merely their own inbox. This is recorded as a known gap for the runtime layer, not fixed here: it belongs to the runtime's "secure read/write into the garden repos" mandate per `LAYERS.md`.
 
 ---
 
@@ -214,7 +213,7 @@ No mechanism for producing "initial"-tier content — how it is curated, by whom
 
 ## Carried forward unchanged — full derivation in git history
 
-The following were settled in the mono spec's earlier versions (v0.2.0 → v1.0.1) and nothing in today's session revisits them. Summarised here; full reasoning, tables, and the salt-safety warnings live in `bonsai-garden`'s own git history for `rituals/specs/spec-canonical-shintai-structure.md` up to commit `08246cac` and earlier, and in this document's own version log below.
+The following were settled in the spec's earlier versions (v0.2.0 → v1.0.1) and nothing in today's session revisits them. Summarised here; their full reasoning is in git history, and this document's own version log is below.
 
 - **`identity/` ships, but is issued and attested, not lived** — nothing in it is written by the agent in the course of ordinary work; it is the material a stranger uses to check a claim.
 - **`scripts/` is not a flat drawer** — semantic groups, each with its own `SKILL.md`, following the platform's own grain (a script's code never enters context; the instruction about when to run it must).
@@ -242,7 +241,7 @@ The following were settled in the mono spec's earlier versions (v0.2.0 → v1.0.
 
 **Deliberately not a line in `SKILL.md`.** The Aruji's own reasoning: `SKILL.md` is packaging; a claim inside the thing being checked is not a check. The gate is a **separate, standalone script** that inspects a shintai from the outside and either passes or names, specifically, what is wrong.
 
-**Location:** `bonsai-garden-core/tools/check-shintai-conformance.py`. Capability, not instance — it takes any shintai's path as an argument and knows nothing about which garden it is running in; that is what makes it correct to place here rather than in mono or pot.
+**Location:** `tools/check-shintai-conformance.py`. Capability, not instance — it takes any shintai's path as an argument and knows nothing about which garden it is running in; that is what makes it correct to place here rather than in a garden's own pot.
 
 ```
 python3 tools/check-shintai-conformance.py <path-to-agent-dir> [<path-to-agent-dir> ...]
@@ -301,7 +300,7 @@ FAIL .../agents-under-test/bad-shintai
 
 Six violations, all real, none missed and none invented.
 
-Then run against every real shintai reachable from a mono checkout, read-only, to confirm the gate does not cry wolf on a body it has no opinion about beyond what this spec states: Baisai, Shō-shin, W, and Tasai were spot-checked and **all four still fail** — including Shō-shin, restructured this same morning, which now fails on exactly the three items its own rehearsal deliberately deferred (`memory/patterns.md`, `identity/README.md`, one leftover `.png.bak`) and nothing else. That is the expected, correct result: **nothing has been restructured to close a finding in this pass** (see §Scope fence), and a gate that came back green on bodies nobody had touched today would be the bug, not the news.
+Then run against every real shintai reachable from the garden's own checkout, read-only, to confirm the gate does not cry wolf on a body it has no opinion about beyond what this spec states: Baisai, Shō-shin, W, and Tasai were spot-checked and **all four still fail** — including Shō-shin, restructured this same morning, who now fails on exactly the three items their own rehearsal deliberately deferred (`memory/patterns.md`, `identity/README.md`, one leftover `.png.bak`) and nothing else. That is the expected, correct result: **nothing has been restructured to close a finding in this pass** (see §Scope fence), and a gate that came back green on bodies nobody had touched today would be the bug, not the news.
 
 **The packaged-artifact check (§4–5) was negative- *and* positive-tested**, both matter equally — a gate that only knows how to fail is as untrustworthy as one that only knows how to pass:
 
@@ -316,7 +315,7 @@ Then run against every real shintai reachable from a mono checkout, read-only, t
 
 ## Scope fence
 
-This document and the gate are the whole of this pass. **No body was restructured to close a finding.** The next pass restructures the remaining thirteen (Shō-shin's morning rehearsal, itself partially superseded by this document's `heritage.md` and `.bak` rulings, is the first and should be re-run — or at minimum re-verified — against this gate rather than against the mono spec it was run against) and should run *against* `check-shintai-conformance.py`, not around it.
+This document and the gate are the whole of this pass. **No body was restructured to close a finding.** The next pass restructures the remaining thirteen (Shō-shin's morning rehearsal, itself partially superseded by this document's `heritage.md` and `.bak` rulings, is the first and should be re-run — or at minimum re-verified — against this gate rather than against the earlier spec it was run against) and should run *against* `check-shintai-conformance.py`, not around it.
 
 ---
 

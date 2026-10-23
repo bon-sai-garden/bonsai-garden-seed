@@ -444,7 +444,7 @@ t('the-report-is-the-hash-diff', () => {
 
 t('pending-removed-only-with-yes-and-keys-on-file', () => {
   const p = build();
-  // the guardian says yes but its key is not on file; the shin says yes with keys; the third kin has no body and no .pending
+  // the guardian says yes but his key is not on file; the shin says yes with keys; the third kin has no body and no .pending
   editChoices(p, (c) => {
     c.kin[p.S.guardian]['pending-removal'] = 'yes';
   });

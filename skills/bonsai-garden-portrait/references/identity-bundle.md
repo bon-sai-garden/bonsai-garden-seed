@@ -7,7 +7,7 @@ Generated cert chains, one folder per agent slug — `<slug>/{ca.key, ca.crt, pr
 
 ## Why self-signed
 
-Phase 1, same as `bonsai-garden/tools/weave-in/`'s own precedent: a workshop-local root CA signs each agent's leaf cert. `c2pa-python` requires a chain (it rejects a bare self-signed end-entity cert), so every agent gets a two-level chain rooted in its own private CA — not one shared workshop-wide CA, so one agent's chain can rotate without touching any other's.
+Phase 1, same as the origin garden's own precedent in `tools/weave-in/`: a workshop-local root CA signs each agent's leaf cert. `c2pa-python` requires a chain (it rejects a bare self-signed end-entity cert), so every agent gets a two-level chain rooted in its own private CA — not one shared workshop-wide CA, so one agent's chain can rotate without touching any other's.
 
 **What this buys:** a genuine, verifiable cryptographic signature over the portrait — tamper-evident, independently checkable with `c2patool` or this skill's own `portrait_lib.sign_c2pa` read-back.
 

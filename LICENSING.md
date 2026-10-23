@@ -5,7 +5,7 @@ type: reference
 tended-by: baisai
 created: 2026-10-10
 updated: 2026-10-21
-version: 3.0.3
+version: 3.0.4
 status: active
 tags: [licence, apache, cc-by-sa, attribution, publication-readiness]
 ---
@@ -28,7 +28,7 @@ The gardener's ruling, 2026-10-16: *"no, SA is what we agreed on. NC (= no comme
 - **`tools/`**, all of it: the gates, scripts and tests, and their fixtures and example configs, including fixtures written as documents.
 - **`skills/*/`**: every script, module and library (`.py`, `.mjs`, `.js`, `.sh`), the test vectors and fixtures, the page and component templates a script fills (`skills/bonsai-garden-portrait/templates/`, `skills/bonsai-garden-ledger/templates/`, `skills/bonsai-garden-crew-page/templates/`), the stylesheets, and the data a script reads (`*.json` policies, reserved lists, package configurations). `skills/bonsai-garden-mark/identicon.html` is a tool and is code; the kanji set it embeds is not (see *CC BY-SA, by the source*).
 - **The scripts and styles of the pages**: `agents/bonsai/assets/garden-walk/build.py`, `walk.js`, `walk-early.js`, `walk.css`; `xp/bonsai-core.css`; `xp/images/build-concept-images.py`.
-- **Manifests and configuration**: `package.json`, `package-lock.json`, `requirements.txt`, `.gitignore`, and `agents/registry.json` (the roster a script reads).
+- **Manifests and configuration**: `package.json`, `package-lock.json`, `requirements.txt`, `requirements-lock.txt`, `skills/bonsai-garden-mark/requirements-curation.txt`, `.gitignore`, and `agents/registry.json` (the roster a script reads).
 - **Seals and identity data**: every `.bonsaisig`, and the public keys, fingerprints and seed entries under `agents/*/identity/`. They are published so that anyone can check a signature.
 
 ### CC BY-SA 4.0: our lore, rites, experience, processes, terms and methodologies, and the rest that is not code

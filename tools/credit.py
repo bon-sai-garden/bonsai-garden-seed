@@ -15,7 +15,7 @@ header's `tended-by:` (one slug, an inline list, or `- item` lines), plus its re
 `cc:` (a copy is a custodian's; Mori-shin) — when the file is a letter (the Aruji, 2026-09-25: "a letter is owned by the receiver") (`type: letter`, or under an `inbox/`). Headers are read like ulid.py reads them: a
 .md's frontmatter, or a script's `# ---` block within its first 60 lines.
 
-Used by: sign.py (mono) to infer `owner` when no --role is given, and to refuse otherwise;
+Used by: the origin's sign.py to infer `owner` when no --role is given, and to refuse otherwise;
 check-seal-owner.py, seal-batch.py and ulid-remap.py (runtime). The Node twin is
 skills/bonsai-garden-sign/lib/credit.mjs; test-credit.py holds the cases both must answer alike.
 
@@ -118,7 +118,7 @@ def credit_info(text: str, rel: str, root: str | Path | None = None) -> tuple[se
     if not head:
         return set(), False
     f = fields(head)
-    # an outbox is a letter location like an inbox (Tasai, mono 36d252d4): anything in one is a
+    # an outbox is a letter location like an inbox (Tasai, 2026-09-25): anything in one is a
     # letter whatever its type:, and its to: decides (many receivers: the sender holds it)
     letter = any(slug(v) == "letter" for v in f.get("type", [])) or "outbox" in parts[:-1]
     if letter:
@@ -183,7 +183,7 @@ def seal_role(text: str, rel: str, signer: str, root: str | Path | None = None, 
 
 
 def is_letter(text: str, rel: str) -> bool:
-    """A letter: under an inbox/ or an outbox/ (Tasai, mono 36d252d4), or `type: letter`."""
+    """A letter: under an inbox/ or an outbox/ (Tasai, 2026-09-25), or `type: letter`."""
     if {"inbox", "outbox"} & set(Path(rel).parts[:-1]):
         return True
     head = header(text, rel)

@@ -55,7 +55,7 @@
  * its root, so a package's own files have package-relative targets wherever it
  * is unpacked; which bytes sit at which path in it is its MANIFEST.json's.
  *
- * tools/sign.py (mono) carries the Python twin of every function here;
+ * tools/sign.py (in the origin garden) carries the Python twin of every function here;
  * test-seal-v2-parity.mjs holds the two to byte identity.
  */
 

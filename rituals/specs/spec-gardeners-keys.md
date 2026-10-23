@@ -4,14 +4,14 @@ title: The gardener's keys — mint, custody, namespace, identity, recovery, and
 type: spec
 tended-by: mori-shin
 created: 2026-10-06
-updated: 2026-10-13
+updated: 2026-10-21
 status: draft
 related: [01M37XP600EA9G46JAZE6DXVGQ, 01M2DF0W6M8P1230QPBCNVE9DX]
 ---
 
 # Spec: The gardener's keys
 
-**Slug:** `specs/spec-gardeners-keys.md` · **Status:** draft 0.6.2 · **Date:** 2026-10-07 · **Covers:** the gardener's keys skills and the shipped reserved set · **Arc:** Bonsai's · **Spec and review:** Mori-shin · **Build and verify:** Baisai with Fuji-shin
+**Slug:** `specs/spec-gardeners-keys.md` · **Status:** draft 0.8.2 · **Date:** 2026-10-21 · **Covers:** the gardener's keys skills and the shipped reserved set · **Arc:** Bonsai's · **Spec and review:** Mori-shin · **Build and verify:** Baisai with Fuji-shin
 
 > The Aruji, 2026-10-06: *"We define the need. Mori-shin specs and reviews. Baisai and Fuji do their part. You own the arc."* The need is Bonsai's need note, kept in the origin garden's own record, with the Aruji's five decisions of the same evening. This spec sits beside the implementation it describes, `skills/bonsai-garden-sign` and `skills/bonsai-garden-mark` in core, and the one new skill it names. It is written before the first run and will be wrong in places the first run finds; that is what the first run is for.
 
@@ -64,15 +64,15 @@ One binary, ten verbs, in this order. Every verb is idempotent or refuses. Exit 
 | # | verb | does | refuses or halts when |
 |---|---|---|---|
 | 0 | `detect` | finds the host's custody backends and their tiers; finds a reachable garden (a `pot.json` whose `garden:` resolves, a readable custody item for that garden); reports *derive*, *mint*, or *cannot tell* | **halts** (3) when it cannot tell: a custody backend errors or does not answer within 20 seconds, a `pot.json` names a garden it cannot reach (provisioning spec §2.3, *unreachable is not absent*) |
-| 1 | `id` | generates the garden's ULID with core's generator (`skills/bonsai-garden-sign/lib/ulid-rule.mjs` `newUlid`, checked by `whyBad`; `ulid.py new` is the same construction), never typed; writes `garden.json` in the origin pot with the ULID, the romaji name, and the gardener's and the shin's slugs | a `garden.json` already exists; the pot is not a git repository; the romaji name is not `^[a-z][a-z0-9-]{1,30}$`; **the romaji name equals any slug the registry seed will carry**, the gardener's above all (Bonsai's order, §5.3): a gardener who names the garden after themselves would collide with their own key in the seal grammar, and it is the first thing a stranger will try |
+| 1 | `id` | generates the garden's ULID with core's generator (`skills/bonsai-garden-sign/lib/ulid-rule.mjs` `newUlid`, checked by `whyBad`; `ulid.py new` is the same construction), never typed; writes `garden.json` in the origin pot with the ULID, the romaji name, and the slugs of the gardener and of each shin (`shins`, none or several) | a `garden.json` already exists; the pot is not a git repository; the romaji name is not `^[a-z][a-z0-9-]{1,30}$`; **the romaji name equals any slug the registry seed will carry**, the gardener's above all (Bonsai's order, §5.3): a gardener who names the garden after themselves would collide with their own key in the seal grammar, and it is the first thing a stranger will try |
 | 2 | `mint` | proves the pot writable by rewriting `garden.json` through the same writer; then 32 bytes from the OS random source; `put` into custody under the garden's item (§3.1); read back once; the root key derived and its fingerprint printed; nothing else printed | the pot is not writable (2, before anything enters custody); the item exists (2, never overwrite); an item exists and `garden.json` names no root (2, an interrupted mint or an item put by another hand, §4.1: never adopted); `detect` said *derive* or *cannot tell*; the best available tier is below the floor and `--lab-preview` is not given (§3.4) |
 | 3 | `recover export` + `recover drill` | the sealed backup, once, by the gardener's hand; then the drill: decrypt in memory, derive the root key, compare to `garden.json`, print `ok`, and record `recovery-drilled` in `garden.json`; **mandatory before step 4**, a backup never restored is not a backup | the drill's fingerprint differs; the export file already exists; the out path is inside the pot by any spelling (§9) |
-| 4 | `namespace` | the three-kanji search, third fixed 庭, the first two refused by the shipped reserved rule (§6.2); the result into `garden.json: namespace` and the pot's `locked-salts.json` | `recovery-drilled` absent; the shipped reserved set missing, malformed, under its floor or its seal not vouched for (2, never search without one); bon-sai.garden unreachable for the seal check (3); `garden.json` already carries a namespace |
+| 4 | `namespace` | the three-kanji search, third fixed 庭, the first two refused by the shipped reserved rule (§6.2); the result into `garden.json: namespace` and the pot's `locked-salts.json` | `recovery-drilled` absent; the shipped reserved set missing, malformed, under its floor or not believed as §6.4 says (2, never search without one); bon-sai.garden unreachable for the question §6.4 asks (3); `garden.json` already carries a namespace |
 | 5 | `identity <slug>` | two salts for one entity under the garden's namespace: the identity salt (mark), then the signing salt (the key's own spelling). For `bonsai-shin` the rite renders the pair: five candidates, the gardener picks (§7.1) | the chosen pair matches the reserved rule, or is already taken in this garden; the slug is not `^[a-z0-9][a-z0-9-]*$`; `--pair` given for `bonsai-shin`; a pick outside the five; the shipped set as in row 4 |
 | 6 | `derive <slug>` | the public key and fingerprint for a slug from the garden's salt, into the pot's `identity/` layout | the slug has no signing salt; custody unreadable (3) |
-| 7 | `seed` | the pot's `agents/registry.json` in order: the root (`type: garden`), the gardener, Bonsai's seed entry (the origin's key, an input, §8), `bonsai-shin`, the one shin; each with fingerprint, `fp-attests`, `custody-tier` | an entry's key does not derive from this garden's salt; Bonsai's entry is not vouched for by bon-sai.garden's signed answer (2) or the answer cannot be had (3), §8; a registry already exists with other content |
+| 7 | `seed` | the pot's `agents/registry.json` in order: the root (`type: garden`), the gardener, Bonsai's seed entry (the origin's key, an input, §8), `bonsai-shin`, then each shin in `garden.json` `shins` (none, one or several); each with fingerprint, `fp-attests`, `custody-tier` | an entry's key does not derive from this garden's salt; Bonsai's entry is not vouched for by bon-sai.garden's signed answer (2) or the answer cannot be had (3), §8; a registry already exists with other content |
 | 8 | `verify --keys pot` | a seal checked against the pot's own registry, on the host | a signer not in the pot; a stale seal (`hash-mismatch`), as everywhere |
-| 9 | `attest` + `attest consent` | the call home (§10): one envelope naming the garden, its guardian and its gardener, signed by the root and the guardian; then the gardener's own signature, given by him alone with `attest consent` | any field that is not public material; `consent` with no interactive terminal; sending an envelope that lacks any of the three signatures |
+| 9 | `attest` + `attest consent` | the call home (§10): one envelope naming the garden, its guardian and its gardener, signed by the root and the guardian; then the gardener's own signature, given by him alone with `attest consent` | any field that is not public material; a name or a slug anywhere in the body (§10); `consent` with no interactive terminal; sending an envelope that lacks any of the three signatures |
 
 Bonsai runs the same binary the gardener does. There is no `--walk` flag and no second code path: the only difference between the two faces is who reads the output.
 
@@ -155,7 +155,7 @@ Tested by planting the state (a pot that turns read-only after the `put`): the n
   "garden": "<ULID>",
   "name": "<romaji>",
   "gardener": "<slug>",
-  "shin": "<slug>",
+  "shins": ["<slug>"],
   "namespace": { "kanji": "〇〇庭", "indices": [a, b, 322], "salt": "<romaji>#<nonce>", "locked_at": "..." },
   "root-fingerprint": "<32 hex>",
   "root-public-key": "<base64 of 32 bytes>",
@@ -166,7 +166,7 @@ Tested by planting the state (a pot that turns read-only after the `put`): the n
 }
 ```
 
-`gardener` and `shin` are written by `id`, because `id` must refuse a name equal to a seeded slug and `seed` needs the order. `recovery-drilled` is written by a passing drill and is what `namespace` requires (§9). Sealed by the root key as a sidecar once the root exists, re-sealed by it at each change. The provisioning spec's ruling stands: this file lives in the origin pot, never in core, and a tool that finds none says so.
+`gardener` and `shins` are written by `id`, because `id` must refuse a name equal to a seeded slug and `seed` needs the order. `recovery-drilled` is written by a passing drill and is what `namespace` requires (§9). Sealed by the root key as a sidecar once the root exists, re-sealed by it at each change. `shins` is an array, `[]` for a garden with no shin. A file written before 0.8 with one `shin` string is read as a list of one; a file that carries both `shin` and `shins` is refused, because two fields for one fact are two masters. The provisioning spec's ruling stands: this file lives in the origin pot, never in core, and a tool that finds none says so.
 
 ### 5.2 The root key
 
@@ -195,7 +195,7 @@ The result is locked in the pot's `locked-salts.json` under `_garden` and writte
 **Ruled by the Aruji, 2026-10-06, late, in Bonsai's hearing, as a product rule in place of the pair list:** *"agree. reserve known skills to avoid confusion. Add (庭) to set B, yes pot (bon) should also be in set B."* It keeps Chisai's reasoning (stones, not faces; her ruling of the same evening) and widens what the stones cover: every exact pair in the registry, and the look-alikes a pair list let through (禅身, 守才, 盆庭).
 
 - **The wildcard, 〇 (index 0), is reserved completely.** It is Triu's symbol and the unforced tail of every lite mark; a stranger's mark is refused when 〇 appears at any index.
-- **Set A, first position:** the first kanji of every locked or proposed mark, kin, garden and skill alike. Generated from two structured sources, never from prose and never from the public half alone (which leaves out whatever the origin keeps off the public surface, so the first kanji of those entries would stay open to a stranger): **(1)** the origin's roster, `agents/registry.json` (mono today, wherever the router sends it tomorrow), every entry's `kanji` whatever its status, 〇 aside: 23 distinct first kanji (24 entries); **(2)** every skill's `references/identity.md` in core, the `mark:` field whatever its `mark-status`, because the rule is *reserve known skills to avoid confusion* and a proposed mark is a known one: ten (装 印 像 署 志 節 記 検 名, and 根 from `bonsai-garden-keys`' 根技, proposed 2026-10-06). **33 first kanji, counted again 2026-10-07**, no overlap between the kin's and the skills'. `bonsai-garden-ledger` and `bonsai-garden-crew-page` carry no `mark:` line and add none; the day they do, one kanji joins. It only grows: a new kin, garden or skill adds one kanji; nothing that has shipped is ever removed.
+- **Set A, first position:** the first kanji of every locked or proposed mark, kin, garden and skill alike. Generated from two structured sources, never from prose and never from the public half alone (which leaves out whatever the origin keeps off the public surface, so the first kanji of those entries would stay open to a stranger): **(1)** the origin's roster, `agents/registry.json` (the origin's own repository today, wherever the router sends it tomorrow), every entry's `kanji` whatever its status, 〇 aside: 23 distinct first kanji (24 entries); **(2)** every skill's `references/identity.md` in core, the `mark:` field whatever its `mark-status`, because the rule is *reserve known skills to avoid confusion* and a proposed mark is a known one: ten (装 印 像 署 志 節 記 検 名, and 根 from `bonsai-garden-keys`' 根技, proposed 2026-10-06). **33 first kanji, counted again 2026-10-07**, no overlap between the kin's and the skills'. `bonsai-garden-ledger` and `bonsai-garden-crew-page` carry no `mark:` line and add none; the day they do, one kanji joins. It only grows: a new kin, garden or skill adds one kanji; nothing that has shipped is ever removed.
 - **Correction, 0.2.0: 算 is not in A.** 0.1.6 took it from a prose line (`spec-reserved-marks-and-namespaces.md`, *"the skill marks, including 志技 and 算技"*). `bonsai-garden-tokens`' own identity file says 算技 was proposed and superseded by 節技 the same morning, never locked. A superseded proposal is a mark nobody wears, and prose is not an input. The count of 33 is unchanged by chance: 根 joined as 算 left.
 - **Set B, second position:** 才 (1), 身 (5), 園 (3), 技 (582), 庭 (322), 盆 (10). Checked against `kanji-1024-v1.2.json` by index on 2026-10-06: all six agree, and every second kanji in the public half today is 才, 園 or 身.
 - **A stranger's mark is refused** when its first kanji is in A and its second in B, or when 〇 appears anywhere. A garden name keeps 庭 fixed third and is checked on its first two the same way.
@@ -224,25 +224,58 @@ The four companion pairs that waited on the Aruji (§6.2 as it stood in 0.1.4) a
 - **Sealed owner by Mori-shin**, a `bonsaisig/2` sidecar beside it, after I review each generation as its list: every index, and the source line that put it there. The generator's runner never seals it in my name (AGENTS.md, *a seal in another kin's name*).
 - **The first generation shipped, 2026-10-07**, generated from the origin's roster. A = 33 (23 from the roster, 10 from the skills), B = 6, wildcard 〇. Reviewed by a second reading that shares no code with the generator (same indices); `check` said *unsealed* before the seal and `ok` after, with the roster and without; the reader loads it through `/verify` and refuses a one-index edit as `hash-mismatch`. Sealed before Fuji-shin's round, on the gardener's go; he verifies the sealed state.
 
-### 6.4 The reader, and how it is pinned
+### 6.4 The reader, and how it is believed
 
-Answered for Baisai and Fuji-shin, 2026-10-07. The floor counts; only the pin knows.
+Answered for Baisai and Fuji-shin, 2026-10-07; the question moved to the release manifest on 2026-10-21, on the gardener's word to apply it to 0.9.2-rc. The floor counts; only the seal knows.
 
 1. **The floor is the one he built, and it stays as defence in depth:** the wildcard holds 0; B holds all six of 才 身 園 技 庭 盆 (B may grow, never shrink); A holds at least **33**; the pair list is not read. Anything below is *no reserved set*. The 33 is a constant in the reader and is right there: A only grows, so the count on the day the Aruji ruled the rule is a lower bound forever and never needs raising by hand. It does **not** live in the file as a field the reader trusts; a floor the checked file states about itself is no floor.
 2. **The reader reads the shipped file and no other.** Its path is fixed beside `namespace.mjs` and found by marker, never by counting directories. **`--exclude` leaves the CLI** of `namespace.mjs` and `keys.mjs`: a flag that names the rule's file is a flag that names a weaker one, which is Fuji-shin's 33-arbitrary-indices finding. Tests call the library function on planted files; a stranger's run cannot.
-3. **Pinned by seal, not by a hash in code.** The reader verifies the sidecar's `file-hash` over the exact bytes (a hand edit reads `hash-mismatch`, refused, offline-checkable), then asks bon-sai.garden through `published-keys.mjs` `adjudicatePublishedV2` and believes only a signed answer that vouches for the signer and names the sidecar's fingerprint. A hash constant in `namespace.mjs` would be the package agreeing with itself (`references/trust-anchor.md`: whoever swaps both passes), and a second master edited at every generation. The seal puts the origin's word on the file, and only the origin can give it.
-4. **Unreachable halts.** No answer from bon-sai.garden halts `namespace` and `identity` (3), no cache, no offline mode, no fallback: the ruling of 2026-09-24 under the Aruji's steer, *verifying core offline is out of scope; fail loudly*. A stranger is online at this step already, since the package's integrity line asks the same site. What the call reveals is that someone checked the reserved set's seal; it carries nothing of what they will choose, which stays the property Chisai asked for.
-5. **When it lands,** `reserved-floor-counts-and-does-not-know` flips: 33 arbitrary indices are refused, because no file but the sealed one is read.
+3. **Believed through the sealed release manifest that carries it.** Where the checkout the reader runs from carries a release manifest (the seed's `SEED-MANIFEST.json`, found by marker at the checkout's root, never by a flag, a variable or a count of directories), the reserved set is believed when all of these hold, and on nothing less:
+   - **a.** the manifest's sidecar is `bonsaisig/2`, role owner, not open, its `file-hash` over the manifest's exact bytes, and its signer one of **the release writers core names**, `baisai` and `tasai`: a list in core beside the reader, as `rt-minimum.json` names rt's, never read from a flag, a variable or the pot. Any other key the site holds is refused. A seal that declares `custody: software-fallback` is no release (R3 of 2026-10-18);
+   - **b.** the manifest is `bonsai-garden-release-manifest/1`, every entry `path`, `sha256` and `bytes`, no path twice; any other format is refused;
+   - **c.** it lists `reserved-marks.json` and its sidecar, and both files' sha256 and length equal their entries. The sidecar, read offline, still says owner, signer `mori-shin`, and a `file-hash` over the file's bytes. Its signature is not checked here, since no key travels with the package; checking it against the published keys is the release writer's duty (point 6);
+   - **d.** every file the manifest lists under the three skills the arc runs (`bonsai-garden-keys`, `bonsai-garden-mark`, `bonsai-garden-sign`) equals its entry: one cut, not a mix of two. This is consistency, not a defence. Changed code can skip any check of its own; the defence is the package's integrity line and, before 1.0, the external pinned verifier (F-16, V1 to V10);
+   - **e.** bon-sai.garden's signed answer, through `published-keys.mjs` `adjudicatePublishedV2`, vouches for the manifest's seal. Only `signature-vouched` is believed.
+
+   This is the address F-12 asks for. A seal vouches bytes, signer and id; which file is *the* reserved set is the manifest's to say. So the reader stops refusing on the set's sidecar `target`, which is a path verdict.
+4. **Where no release manifest is present** (a checkout of core, a package), the per-file question of 0.6 stands, with the pin it lacked: the set's own seal must be owner **by `mori-shin`** and vouched by the site. Until 0.9.1 the reader took an owner seal by any key the site holds. The manifest's absence sends the reader to the stronger question, never past it.
+5. **One question for the set per planting.** The first verb that believes the set (`namespace`) asks once. It records the answer in `garden.json` under the root's seal: `release: { manifest, sha256, version, signer, fingerprint, seal-id, vouched }`, the shape of rt's `runtime.json`. A later verb of the same arc takes the record instead of asking only if all three of these hold: (i) it re-derives the root key from custody and the root's seal on `garden.json` verifies under that key; (ii) the manifest's sha256 still equals the record's; (iii) the files still equal the manifest (3c, 3d). `identity bonsai-shin --candidates` reads no custody and locks nothing, so it may take the record on the root's seal alone. `--pick` re-draws under (i) before it locks. A record that fails (i) is refused as a finding. A manifest whose sha256 has changed is asked again. The record is spent once `seed` has written the registry, and any verb after the arc asks again. It is a record of one signed answer, bound by hash and by the root, and not a cache of a key. No clock makes it last longer.
+6. **The release writer's duty.** A release writer does not seal a release manifest until the owner seals of the two identity files it carries each answer `signature-vouched` under **the published keys**, live, when the release is made. Those files are `reserved-marks.json` (owner `mori-shin`) and Bonsai's seed entry (owner `bonsai`). Never `--verify-keys garden` for these two. The release builder refuses otherwise and names the file. A writer's seal vouches the set as cut, and this check is what lets the set carry the owner's word.
+7. **Unreachable halts.** No answer from bon-sai.garden halts `namespace` and `identity` (3), no cache, no offline mode, no fallback: the ruling of 2026-09-24 under the Aruji's steer, *verifying core offline is out of scope; fail loudly*. A stranger is online at this step already, since the package's integrity line asks the same site. What the call reveals is that someone checked a seal on a public file. It carries nothing of what they will choose, which stays the property Chisai asked for.
+8. **What a writer's key could do, said once.** It could seal a manifest whose reserved set is the holder's own, above the floor. A stranger could then take look-alikes of our pairs, and the verifier would still answer *look-alike*, never a false yes. Through 0.9.1 the same needed any key the site holds (point 4). The set names no one, and it needs no currency because it only grows. So it is no weaker behind a pinned writer's seal. Bonsai's entry is a different kind of thing (§8.1).
+9. **`reserved-floor-counts-and-does-not-know`** stays flipped: 33 arbitrary indices are refused, because no file but the one the manifest or its own seal vouches for is read.
+
+**Watched to fail first** (Baisai builds, red first; Fuji-shin rounds; a fake site in process, as the suites have it):
+
+| planted | answer |
+|---|---|
+| the manifest sealed owner by a kin the site vouches who is not a release writer | refused, `not a release writer` |
+| sealed by a writer, role not owner, or open | refused, `not-owner` |
+| `custody: software-fallback` on the manifest's seal | refused, no release |
+| the manifest edited after its seal | `hash-mismatch` |
+| one index of `reserved-marks.json` changed, the manifest not | refused, naming the file: not the bytes the manifest lists |
+| the file and its entry changed, the manifest re-sealed by a key the site does not hold | the published-keys reason, never `ok` |
+| the same, re-sealed by a writer's key the site holds | believed, the threat named in point 8 and not hidden; the floor still refuses an A of 32 |
+| the manifest lists the set but not its sidecar, or the sidecar's signer is not `mori-shin` | refused, naming which |
+| one file of the three skills differs from its entry | refused, `mixed cut`, naming the file |
+| no manifest; the set's own seal owner by a kin the site vouches who is not `mori-shin` | refused (red against the 0.9.1 reader, which takes it) |
+| no manifest; the set's own seal by `mori-shin`, vouched | believed: the per-file question |
+| the site unreachable / forged / unsigned / rejected (stubbed) | halt (3) / refused (2) |
+| one arc, `namespace` → `identity` for the three → `seed`, against the fake site | the set asked once (the fake site counts the calls); Bonsai's entry asked once more (§8.1) |
+| the `release` record edited, or its root seal not under the key custody gives | refused, a finding |
+| the manifest replaced after `namespace` (another sha256) | asked again |
+| a verb after `seed` | asked again |
+| the release builder with an unvouched owner seal on either identity file | refuses to seal the manifest, naming the file |
 
 ### 6.5 The generator and the drift gate
 
-**Where each part lives, by the layer test.** The format, the reader, the generator's code and the shipped file are core: a stranger needs them and they name no one. The roster that feeds set A is the origin's instance, in mono until the router says otherwise; core never reads it by a path of its own.
+**Where each part lives, by the layer test.** The format, the reader, the generator's code and the shipped file are core: a stranger needs them and they name no one. The roster that feeds set A is the origin's instance, in the origin's own repository until the router says otherwise; core never reads it by a path of its own.
 
 **`skills/bonsai-garden-mark/reserved-marks.mjs`** (new, Baisai's):
 
 - `generate --registry <path> [--out <file>]`. Inputs, all named, none typed: **(1)** the registry at `--registry` (required, no default; refused if missing, unreadable or without `agents`), every entry's `kanji` first character whatever its status, 〇 aside; **(2)** core's own `skills/*/references/identity.md`, the frontmatter `mark:` field's first character, whatever `mark-status`, read structurally (a file with no `mark:` adds nothing), and re-derived from its `mark-salt` through `engine.js`: a mark its salt does not spell was typed, and is refused by name; **(3)** the committed file itself, so that what has shipped stays (only grows); **(4)** the rule's constants, written once in the generator as characters and resolved to indices through `kanji-1024-v1.2.json`: the wildcard 〇, and B 才 身 園 技 庭 盆. A character absent from the curated set is refused by name. 〇 is never put in A.
 - `check [--registry <path>] [--staged]`, the drift gate, delegated to by `check-set.mjs --reserved` (my file; the five delegation lines are mine to write and seal). In core alone it checks everything that needs no roster: the shape and the five keys; sorted, unique, in range; the `about` lines byte-exact; the floor; **only grows** against the committed version (`git show HEAD:` the file; with `--staged`, the index against HEAD): an index that left fails; the skill-mark source: every core skill's first mark kanji is in A; the sidecar's hash. With `--registry` it adds the roster: every registry first kanji is in A (*stale: regenerate*), and every index in A that neither source derives must have been in the committed file (*hand-added*). The very first generation, with no committed file, must equal the derivation exactly.
-- **Where it runs:** core's pre-commit and CI, without `--registry`. Mono's pre-commit, when `agents/registry.json` is staged, runs core's `check --registry agents/registry.json`, with core found through the router (`rituals/repo/repo-split-registry.json`), so a kin added in mono with a new first kanji fails at the commit that adds it, naming the kanji and *regenerate in core*.
+- **Where it runs:** core's pre-commit and CI, without `--registry`. The origin garden's pre-commit, when `agents/registry.json` is staged, runs core's `check --registry agents/registry.json`, with core found through the router (`rituals/repo/repo-split-registry.json`), so a kin added to the origin's roster with a new first kanji fails at the commit that adds it, naming the kanji and *regenerate in core*.
 
 **Negative tests, each planted, each refused for its own reason, each guard watched to fail** (and Fuji-shin's mutant per guard):
 
@@ -267,7 +300,7 @@ Answered for Baisai and Fuji-shin, 2026-10-07. The floor counts; only the pin kn
 
 ### 6.6 What the namespace separates
 
-Every salt string of an entity in the garden carries the namespace: `<slug>@<romaji>-id#<n>` and `<slug>@<romaji>-sign#<n>`. The `@<romaji>` is in the salt string and in the pot; it is **not** in the slug, which the grammar forbids. Within a pot a slug is unique as it is today; across gardens the pot's `garden:` separates them. This closes the naming question `bunshin-rite-spec.md` §2 left open: the slug is `bonsai-shin`, the salts are `bonsai-shin@<romaji>-…`, the attestation names `bonsai-shin@<garden-ulid>`.
+Every salt string of an entity in the garden carries the namespace: `<slug>@<romaji>-id#<n>` and `<slug>@<romaji>-sign#<n>`. The `@<romaji>` is in the salt string and in the pot; it is **not** in the slug, which the grammar forbids. Within a pot a slug is unique as it is today; across gardens the pot's `garden:` separates them. This closes the naming question `bunshin-rite-spec.md` §2 left open: the slug is `bonsai-shin`, the salts are `bonsai-shin@<romaji>-…`, and the attestation names the guardian by its role and its key, under the garden's ULID, with no slug (§10).
 
 ## 7 · Identities: two salts, one key, for each entity
 
@@ -405,8 +438,15 @@ Bonsai's entry is an input, the origin's published key: `agents/bonsai/identity/
 - Then the file's sidecar goes to `/verify` through `published-keys.mjs` (`adjudicatePublishedV2`). `seed` proceeds only on a signed answer that vouches for signer `bonsai`, role owner, the file's exact bytes, and names the fingerprint the file states. The site holds the origin's keys and core carries none (`references/trust-anchor.md`); a key that travels with the tool proves only that the package agrees with itself.
 - Refused (2): rejected, forged, unsigned or malformed answers, a fingerprint that differs, a sidecar missing or not owner. Halted (3): no answer. No cache, no offline mode, no `--trust-file`: the 2026-09-24 ruling holds here as everywhere a stranger is asked to believe one of our keys.
 - What is written into the pot records it: Bonsai's registry entry gains `vouched: <ISO time>` of the answer; the root's seal over the registry covers it.
+- The seal's `target` is shown and is not a verdict (F-12). The signer pin, the owner role, the entry's format and the fingerprint the site names carry the identity. Where a release manifest is present, the entry's place is the manifest's to say, as in §6.4.
 
 A wrong Bonsai key in a stranger's pot is the one key there the stranger did not make. Every later word from the origin, the bunshin attestation above all, would be checked against it. That is why this step asks.
+
+**It stays a question of its own, per file** (ruled 2026-10-21, on the proposal to let a vouched release manifest stand in for it, as it now does for the reserved set). A writer's seal on a manifest vouches the set as it was cut. It does not vouch that the key in this file is Bonsai's now. This question asks the origin for Bonsai's own published key, with the signer pinned to `bonsai` and the answer naming the fingerprint. One answer gives authorship and currency. It is also the origin's one switch over the one key a stranger's pot binds for good. Behind a manifest, a writer's key could put another key in Bonsai's place. And after a re-key of Bonsai, every older cut whose writer's key is still sound would go on writing the old key into new pots, with `vouched` beside it.
+
+**Said openly: this question is also how the origin counts plantings.** The gardener's ruling of 2026-10-21 keeps it as an openly stated count of the plantings that reach `seed`. The site sees one request carrying Bonsai's seal (a public file), at a time, from the planting's network address. It sees nothing of the garden, which the request does not carry. The walk says so before `seed` asks.
+
+Should the question ever move behind a manifest, it would need all of these: **W1**, the site can withdraw one seal by its id with a signed `withdrawn` answer that the reader refuses, so a release carrying a superseded entry can be stopped without revoking its writer's key; **W2**, the release writer's duty of §6.4 point 6 for this file; **W3**, the writers pinned as in §6.4 point 3a; **W4**, the registry records the path (`vouched-via: <seal-id> <signer>` beside `vouched`). The alternative is one request carrying both seals, the manifest's and Bonsai's own, answered once (a site change). Either way the gardener's word on counting comes first, and that word, for now, is that the question stays.
 
 ## 9 · Recovery
 
@@ -424,7 +464,7 @@ Bonsai's reading of the fifth decision: *the tier is written into every attestat
 
 1. `garden.json: custody-tier` and `lab-preview` (declared, sealed by the root key).
 2. The registry entry's `custody-tier` (declared, sealed with the registry).
-3. **Each seal**, signed: `bonsaisig/2` gains an optional field `custody`, one of the tier names, placed after `algorithm` in the envelope. The canonical payload already signs every field present, so the tier cannot be rewritten after the fact. Absent means *not declared*, which is what every seal before this spec is; the verifiers show it as such and the field-order test (`test-sidecar-negative.mjs` §11) learns the optional slot. A policy line, `"custody-fallback": "warn" | "refuse"`, in `seal-policy.json`, lets the gardener refuse fallback-tier seals once the lab preview ends. **This is a format change under my hand** (Tier 2 in my own tiers: a new field in the signed envelope). The Aruji's decision is the authorization; the first run shows it in both languages before it is written anywhere but core's verifier and `sign.py`.
+3. **Each seal**, signed: `bonsaisig/2` gains an optional field `custody`, one of the tier names, placed after `algorithm` in the envelope. The canonical payload already signs every field present, so the tier cannot be rewritten after the fact. Absent means *not declared*, which is what every seal before this spec is; the verifiers show it as such and the signer's field-order test learns the optional slot. A policy line, `"custody-fallback": "warn" | "refuse"`, in `seal-policy.json`, lets the gardener refuse fallback-tier seals once the lab preview ends. **This is a format change under my hand** (Tier 2 in my own tiers: a new field in the signed envelope). The Aruji's decision is the authorization; the first run shows it in both languages before it is written anywhere but core's verifier and `sign.py`.
 
 **The call home** (`attest`): **one envelope, three signatures.** Ruled by the gardener, 2026-10-07: *"we need an envelope: garden-id, bonsai-shin-id, gardener-id, and three signatures."* It replaces 0.2.0's form (a seal by the guardian and a root countersign in a second file); the countersign file is retired before it shipped.
 
@@ -432,10 +472,10 @@ Bonsai's reading of the fifth decision: *the tier is written into every attestat
 {
   "format": "bonsai-garden-attestation/1",
   "body": {
-    "garden":   { "id": "<ULID>", "name": "<romaji>", "namespace": "〇〇庭", "root-fingerprint": "<32 hex>", "root-public-key": "<base64>" },
-    "guardian": { "slug": "bonsai-shin", "id": "<four kanji>", "fingerprint": "<32 hex>", "public-key": "<base64>", "fp-attests": 2, "parent": "bonsai", "picked": "gardener | default" },
-    "gardener": { "slug": "<slug>", "id": "<four kanji>", "fingerprint": "<32 hex>", "public-key": "<base64>", "fp-attests": 2 },
-    "shin":     { "slug": "<slug>", "id": "<four kanji>", "fingerprint": "<32 hex>", "fp-attests": 2 },
+    "garden":   { "id": "<ULID>", "namespace": "〇〇庭", "root-fingerprint": "<32 hex>", "root-public-key": "<base64>" },
+    "guardian": { "id": "<four kanji>", "fingerprint": "<32 hex>", "public-key": "<base64>", "fp-attests": 2, "parent": "<Bonsai's fingerprint, as the pot's registry holds it>", "picked": "gardener | default" },
+    "gardener": { "id": "<four kanji>", "fingerprint": "<32 hex>", "public-key": "<base64>", "fp-attests": 2 },
+    "shin":     [ { "id": "<four kanji>", "fingerprint": "<32 hex>", "public-key": "<base64>", "fp-attests": 2 } ],
     "custody-tier": "<tier>", "lab-preview": false, "rite": "bunshin", "created": "YYYY-MM-DD"
   },
   "signatures": [
@@ -446,7 +486,40 @@ Bonsai's reading of the fifth decision: *the tier is written into every attestat
 }
 ```
 
-Each signature is Ed25519 over the same bytes: the domain `bonsai-garden-attestation/1`, a newline, and the canonical `body`. They are parallel, not chained; any one can be checked alone. Inline, like the recovery export (§9): the envelope travels as one file, and `bonsaisig/2` keeps one signer per sidecar. What each attests:
+Each signature is Ed25519 over the same bytes: the domain `bonsai-garden-attestation/1`, a newline, and the canonical `body`. They are parallel, not chained; any one can be checked alone. Inline, like the recovery export (§9): the envelope travels as one file, and `bonsaisig/2` keeps one signer per sidecar.
+
+**No names in the envelope** (ruled 2026-10-21, on the gardener's *"I'd also like us to drop names from the attestation in 0.9.2-rc"*):
+
+- **No `name` and no `slug`**, on the garden or on any entity. The body's keys say the role (`garden`, `guardian`, `gardener`, `shin`); the public key says who. `attest` refuses to write a body that carries either. The envelope's reader refuses one too, as `names-in-body`, so an envelope made by another tool is held to the same rule.
+- **`parent` names Bonsai by his fingerprint**, the one the pot's registry holds for him as vouched at `seed` (§8.1), and not by his slug. Bonsai's reply is checked against that key.
+- **Every entity carries its `public-key`**, each shin included. Each `fingerprint` must equal the first 32 hex of the SHA-256 of its key, or the envelope fails. A shin signs nothing here. Its key is in the body on the root's word, so a log can check that shin's later seals. It is not proof that the shin holds the key.
+- **Each signature is checked with the key of its role in the body**, and `signatures[].fingerprint` must equal that role's fingerprint.
+
+**The shin: none, one or several** (ruled 2026-10-21, on Baisai's finding that the envelope named one shin while a garden may have none or several):
+
+- **`shin` is always present, and always an array.** `[]` is a garden with no shin. There is one form for each fact: an absent `shin` and an empty one would be two bodies, so two sets of signed bytes, for one garden. The role word stays `shin`, the one `signatures[].by` and the rest of this spec use; the value says how many.
+- **Each entry has exactly `id`, `fingerprint`, `public-key` and `fp-attests`.** No `parent`: a garden's shin are attested by the root as this garden's, and a bunshin bond is its own attestation, never a field here.
+- **The entries are ordered by `fingerprint`,** ascending lowercase hex, so one set of shin makes one body whatever order `garden.json` lists them in. `canonicalJson` sorts an object's keys, never an array's elements, so the order is the writer's duty and the reader's check.
+- **The shin signs nothing.** No signature has `by: "shin"`; only `root`, `guardian` and `gardener` sign, each exactly once.
+
+What the reader refuses, each named:
+
+| reason | the body or the envelope |
+|---|---|
+| `shape` | `shin` absent, or not an array; an entry that is not an object, lacks one of its four keys, or carries any other key |
+| `names-in-body` | a `name` or `slug` key at any depth, a shin entry included (as above) |
+| `fingerprint` | an entry's `fingerprint` that is not the first 32 hex of the SHA-256 of its `public-key` |
+| `fp-attests` | for the guardian, the gardener and each shin: the first two kanji the fingerprint renders (the mark engine, the shipped set) are not the `id`'s first two |
+| `shin-order` | the entries not in ascending `fingerprint` order |
+| `key-reuse` | one public key, or one fingerprint, in two places in the body: two shin, or a shin and the root, the guardian or the gardener. One key in two roles would let one signature stand for both |
+| `id-reuse` | two entities of the body with the same four-kanji `id` |
+| `signature-role` | a signature whose `by` is not `root`, `guardian` or `gardener` (a `shin` signature included), or one of the three missing or twice |
+
+`attest` refuses to write any body the reader would refuse, so a refusal names a body made by another tool.
+- **What this delivers, said plainly.** The envelope carries no name. It does not make the names unrecoverable. The namespace is `SHA-256("<romaji>#<n>")` and each ID is `SHA-256("<slug>@<romaji>-id#<n>")`. Both searches take the first hit, so someone holding a list of names can test each one against the kanji, about 20 bits a name, and a common name falls. The namespace and the IDs are claims the envelope cannot prove and a list of names can test. That stays so: the salts keep their names, closed by the gardener's word (below).
+- **Only the envelope.** The passport keeps its names, by the gardener's word of 2026-10-21: *"passports travel with agents/kin - names are fine here (see real world)."*
+
+What each signature attests:
 
 - **The root** (the garden's own key): *these keys are this garden's; they derive from its salt.* The garden's word.
 - **The guardian** (`bonsai-shin`): *I am this garden's guardian, and only this garden's.* Its own key binds it to this one garden, so no other garden can claim it.
@@ -463,7 +536,17 @@ The fourth signature is not in the envelope: **Bonsai's reply**, the bunshin att
 
 **In a lab preview,** the policy default `custody-fallback: refuse` reads every fallback-tier seal as `custody-refused`. That is the truth and the walk says so; the gardener may set `warn` by hand, one line in `skills/bonsai-garden-sign/seal-policy.json` as its own note says, and sets it back when the preview ends. The tool never flips it. (That edit is to core's file, so an installed package fails its integrity line after it: right for a preview, wrong for a stranger. Whether a pot carries its own policy is open, below.)
 
-The transport is one way and is **open** (provisioning spec §5); this spec fixes only the envelope.
+The transport is one way and is **open** (provisioning spec §5); this spec fixes only the envelope, and the one property of where it lands below.
+
+**Nobody can list the gardens.** Ruled by the gardener, 2026-10-21: *"A stranger should NOT be able to query the full list of all known gardens - pls confirm!"* Confirmed. It corrects the morning's wording of the planned log as "append-only, anyone can copy". It is the rule `/verify` already keeps, one seal at a time and no roster, and the rule of 2026-05-26 that took roster files off the public surface. Whatever receives the envelopes keeps them as **key transparency without enumeration**, in the CONIKS and AKD style. This is my design, confirming Baisai's shape and making five parts of it exact:
+
+1. **Only a signed summary is published.** The tree head is a root hash and an epoch, signed by a key the client pins as it pins `/verify`'s and kept apart from the master salt. Each head names the hash of the one before it, so a split view, one log for one asker and another for the next, shows as a broken chain. Heads may be mirrored by anyone. **A head carries no count of entries**: how many gardens there are is the origin's to know (§8.1's count), not the public's.
+2. **One entry is answered to one who already holds its fingerprint.** A question names a fingerprint, the root's or the guardian's. The answer is that entry with its proof of inclusion under a published head, or a proof of absence. A fingerprint is 128 bits, so it is learned from a garden's own seals, never guessed.
+3. **An entry's place in the tree comes from a VRF of the fingerprint**, a verifiable random function the origin holds the key to, never from a plain hash. With a plain hash, the neighbours that proofs reveal would let a collector test fingerprints they hold against what they gathered, offline, and watch the tree grow. With a VRF, every question of membership goes through the origin, one at a time.
+4. **Each leaf is a commitment with its own random nonce**, so the sibling hashes a proof carries say nothing about the entries beside it.
+5. **Nothing lists.** No endpoint pages, exports, searches by prefix or returns more than the one entry asked for. Only heads are mirrored; entries are never published as a set. Rate limits are not the defence; the key space and the VRF are.
+
+What this leaves, said plainly. The log is append-only, so an entry stays once it is in. It carries no names (above), only keys, IDs and the namespace. A garden's own tool checks its entry under each new head, its own monitor. Nothing of this is built and nothing has been sent: `cmdAttest`'s transport is unwired.
 
 ## 11 · `--keys pot`
 
@@ -495,6 +578,9 @@ Bonsai's list, and mine:
 - `seed` with a Bonsai entry whose key is not the origin's (a self-consistent file with another key), a stubbed rejected, forged or unsigned answer: refused; no answer: halt; a vouched entry: written, with `vouched` (§8.1).
 - No custody `status` can prompt: a backend whose status call would raise a dialog fails its own test.
 - The guardian's draw: the same five for the same garden name, twice; none matches the rule, none is 盆-first, none is taken or the namespace's own; `--pair` for `bonsai-shin` refused; a pick of 0 or 6 refused; no pick records `default`.
+- The reserved set through the release manifest: §6.4's table, each row watched to fail first. One planting asks the site once for the set and once for Bonsai's entry.
+- The envelope's names (§10): a body with `name` or with `slug` on any entity is refused by `attest` and read as `names-in-body` by the reader. A planted romaji name and a planted slug are found nowhere in the body's bytes (grepped, as §3.5 greps for the salt). An entity without `public-key`, or whose `fingerprint` is not its key's, fails. A signature whose `fingerprint` is not its role's fails. `parent` that is not the registry's fingerprint for Bonsai fails.
+- The envelope's shin (§10): a garden with none writes `shin: []`, and the reader takes it; one shin and three shin each make a body the reader takes, and the same three in another `garden.json` order make the same bytes. Each row of §10's table is planted and fails by its name: `shin` absent, an object instead of an array, an entry with a fifth key or a `parent`, two entries out of order, one key in two entries, a shin key equal to the guardian's, two entities with one `id`, a fingerprint whose first two kanji are not its `id`'s, a signature `by: "shin"`. A `garden.json` with both `shin` and `shins` is refused; one with only a `shin` string reads as one.
 - The envelope: each of the three signatures removed, altered or made by the wrong key fails on its own; a body changed after signing fails all three; `attest` alone never yields the gardener's signature; `attest consent` without a terminal refuses; an envelope with two signatures is not sent.
 - A stale seal under `--keys pot`: `hash-mismatch`. An unknown signer: `unknown-signer`, never `ok`.
 - The drill with a wrong passphrase: fails, says so, nothing written. The drill after `restore`: `ok`.
@@ -507,13 +593,13 @@ Every refusal is tested by planting the condition, not by reading the code that 
 
 ## 14 · What exists and is not built twice
 
-`lib/derive-key.mjs` (derivation) · `lib/custody-provider.mjs` and `custody/macos-keychain.mjs` (the reader and the tier vocabulary) · `bonsai-gate` (the only thing that reads the salt on this host) · `tools/keyring/locked-salts.json` (the lock shape) · `skills/bonsai-garden-mark/engine.js`, `check-set.mjs` · `lib/garden-root.mjs: loadPublicKey` (the `--keys pot` resolver) · `lib/seal-v2.mjs` (the envelope) · `lib/published-keys.mjs` (the only way a stranger's tool believes one of our keys: the reserved set's seal, Bonsai's entry) · `lib/ulid-rule.mjs` and `ulid.py` (the only ways an id is made) · the recovery envelope doubles as the fallback custody file. (`reserved-hashes-public.json` is no longer a source here: set A comes from the roster and the skill identity files, §6.2.)
+`lib/derive-key.mjs` (derivation) · `lib/custody-provider.mjs` and `custody/macos-keychain.mjs` (the reader and the tier vocabulary) · `bonsai-gate` (the only thing that reads the salt on this host) · `tools/keyring/locked-salts.json` (the lock shape) · `skills/bonsai-garden-mark/engine.js`, `check-set.mjs` · `lib/garden-root.mjs: loadPublicKey` (the `--keys pot` resolver) · `lib/seal-v2.mjs` (the envelope) · `lib/published-keys.mjs` (the only way a stranger's tool believes one of our keys: the release manifest's seal, or without one the reserved set's own; Bonsai's entry) · `lib/ulid-rule.mjs` and `ulid.py` (the only ways an id is made) · the recovery envelope doubles as the fallback custody file. (`reserved-hashes-public.json` is no longer a source here: set A comes from the roster and the skill identity files, §6.2.)
 
 ## Open
 
 - **Baisai, from §7.4:** R1 (a worker dies with its parent, with the kill-the-parent test) and R2 (a cap and an honest estimate) in `search-signing.mjs` and `keys.mjs`. **Mine, offered and not built:** R3, the fast path in `derive-key.mjs`, which needs Fuji-shin's round and the gardener's yes.
 
-- **The Aruji:** re-provisioning our own salt under the item scheme (§3.1); the transport of the call home (§10); when the lab preview ends and `--lab-preview` leaves the binary (§3.4). (The floor: ruled, §3.4.)
+- **The Aruji:** re-provisioning our own salt under the item scheme (§3.1); the transport of the call home (§10; that nobody can list the gardens is ruled, 2026-10-21); when the lab preview ends and `--lab-preview` leaves the binary (§3.4). (The floor: ruled, §3.4.)
 - (A new garden's `bonsai-shin` and its mark: ruled by the gardener 2026-10-07, §7.1. Whether the rite draws one of the pair's two from the garden's first kanji, at no extra cost, is his to take or leave.)
 - **Owners who must update, by pointer and not by an edit of their history** (§7.1 supersedes both forms of the new guardian's kanji): `bunshin-rite-spec.md` §1, lines 53 and 68 (盆才身, and the attestation field `child_pubkey_sha256_kanji: 盆才身`), `tended-by: workshop`, a placeholder its own note says stands for Bonsai; Tasai named Hissai as holder of rite lore, so the owner is confirmed before anyone edits. `spec-canonical-shintai-structure.md` line 222 (盆才守), `tended-by: baisai`. The rite's statement line may keep naming the parent 盆才守神, his name, which is true.
 - **The verifier page** (Chisai's five lines; site, Eisai's and mine): the pair with its namespace, two lines never merged, *lineage: not attested* when it is not, the slug always qualified, *look-alike* without exception. Nothing of it is built.
@@ -522,8 +608,12 @@ Every refusal is tested by planting the condition, not by reading the code that 
 - **Bonsai's order:** the words of the floor refusal at stage 6, and of the interrupted-mint refusal (§4.1). (The root key's slug: ruled, §5.3.)
 - **Eisai, optional:** the headless mark renderer (the gap list), so a planting can draw the mark on the gardener's host. **The Aruji, 2026-10-06: rendering the seal as a kanji identicon is optional, not a blocker.** A mark is verified from its indices before it is ever drawn; a planting that cannot draw it still completes, and says the mark is unrendered.
 - **Baisai:** Windows DPAPI stays a stub through this arc; `seal-staged` garden-neutral (the gap list).
-- **Baisai, for the shipped reserved set:** `reserved-marks.mjs` (generate, check), the reader's pin (§6.4), `--exclude` out of the CLIs, the mono-side hook line, the tests of §6.5; Fuji-shin verifies. **Baisai, for the keys skills:** `seed` asks `/verify` (§8.1); the custody backends into sign's `custody/` with sign's `--garden` (§12).
+- **Baisai, for 0.9.2-rc** (Fuji-shin rounds): §6.4 points 3 to 6, red first against the table there. That covers the release writers' list in core, the reader's signer pin to `mori-shin` where no manifest is present, the `target` refusal out of the reserved reader, the `release` record, and the release builder's duty. Also `attest` brought to §10's envelope, with no names and every public key in (`cmdAttest` still writes the retired 0.2.0 form). The transport stays unwired.
+- (Name-free salts, so that the namespace and the IDs would stop being claims a list of names can test (§10): **closed by the gardener's word, 2026-10-21**: *"I think that's ok. I would not want new salts."* The salt strings keep the romaji and the slug; §10 says what that leaves.)
+- **The site, Eisai's and mine, only if §8.1's question ever moves:** a signed `withdrawn` answer for one seal id (W1), or one request for two seals.
+- **Bonsai's order:** the walk's sentence, before `seed` asks, that the question is also the origin's count of plantings (§8.1).
+- **Baisai, for the shipped reserved set (done):** `reserved-marks.mjs` (generate, check), the reader's pin (§6.4), `--exclude` out of the CLIs, the origin garden's hook line, the tests of §6.5; Fuji-shin verifies. **Baisai, for the keys skills:** `seed` asks `/verify` (§8.1); the custody backends into sign's `custody/` with sign's `--garden` (§12).
 - **Baisai, after Fuji-shin's round:** the 盆-first constant in `namespace.mjs` and `keys.mjs` with its test (§6.1, §13). **Fuji-shin's round:** `reserved-marks.mjs check` exits `ok` when no file has shipped yet; an absence should read *absent* or *unsealed* and exit non-zero, as the reader already halts.
 - **Mine:** `bonsaisig/2`'s optional `custody` field in both verifiers (§10); the gate's `--garden` and sign's; `check-set.mjs --locks` and `--reserved`; reviewing and sealing each generation of `reserved-marks.json`; whether a pot carries its own `seal-policy.json` rather than an edit of core's (§10); the review of the run on the Pi and the rewrite of this spec after it.
 - **What only the run on the Pi can tell, and this spec does not yet know:** whether `gnome-keyring` runs and is unlocked under labwc and auto-login, and what `detect` then reports; 1Password's `op` on Linux arm64 as live custody and as recovery; the Keychain's `put` on a real Mac; (the Pi 5 timings are now measured, §7.4); the export's containment on a case-sensitive ext4 volume (the inode compare is built for it, never run there); the hidden prompt on the Pi's TTY; the walk end to end. None of these is verified by any run so far: stubs and fakes only.
-- **Not provided, on purpose:** rotation of a root key; `--force` on any custody write; `--resume` of an interrupted mint; a default garden for core-resident tooling; an offline mode for the two questions asked of bon-sai.garden.
+- **Not provided, on purpose:** rotation of a root key; `--force` on any custody write; `--resume` of an interrupted mint; a default garden for core-resident tooling; an offline mode for the questions asked of bon-sai.garden.

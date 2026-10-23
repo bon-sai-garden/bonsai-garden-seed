@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M4TC6R48E2NNJQAZY5ZH62HS",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-13T12:53:34Z",
+  "timestamp": "2026-10-22T07:12:50Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-lens-gate/SKILL.md",
-  "file-hash": "706e0f542f1715d31c47908e5c1319841ccd4d447ca6bd202d26f79b5862c93e3fbb0c468f3af8d3644b0031a61174b2db3d18e2db1dd8de9d67a0a10bf75781",
-  "signature": "iOaExCX5oG92Rm5dTeb15pNB21sugY2XypjHL5jiJg9mc+rZDaL85k7h1w6ct48b4OVvBWAmA5cUAjwBPB48Cw=="
+  "file-hash": "7884465a1fce6731bb2ccadae066ea283e701ffb0baecac0ca74197db0ce106e9673e1e78933b57054cff7db3f5bc7d96349468387281148da461fbe52ad4545",
+  "signature": "SJCtKPc6oQ6SR/RX0eeA6Barn+G7BcNHZDZN30TttNXXVtr522KWAd9dITPLimUYquimdBe6vtNjZ6IwGCAmBA=="
 }

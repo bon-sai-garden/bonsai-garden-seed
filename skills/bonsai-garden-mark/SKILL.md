@@ -5,7 +5,7 @@ description: >
   identicon. A 1024-kanji vocabulary, a hash-to-index engine, and the vanity
   search that finds a base string whose mark spells a chosen word. Verifiable by
   a stranger with nothing but this engine and the published set.
-version: 1.3.0
+version: 1.3.2
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -69,7 +69,7 @@ node skills/bonsai-garden-mark/test-reserved-marks-mutants.mjs  # each guard bro
 own skill marks re-derived from their salts, the committed file (it only grows) and the rule's
 constants. It is sealed owner by Mori-shin after she reviews each generation as its list; the
 generator's runner never seals it. The gate runs in the garden's one pre-commit (core: every commit;
-mono: when the roster is staged). The reader needs bon-sai.garden to answer: no answer halts.
+the garden's own checkout: when the roster is staged). The reader needs bon-sai.garden to answer: no answer halts.
 
 The vanity scripts **write instance data**. Point `--out` at your own pot; they default to writing beside themselves, which is a core checkout, and that is the wrong place for a result that belongs to one garden.
 
@@ -80,4 +80,4 @@ Was `tools/runtime/kanji-identicon/`. `tools/runtime/` meant *secure read/write 
 ## Open
 
 - The vanity scripts still default `--out` to their own directory. Until that default points at a resolved pot, a careless run writes instance data into core. The three in pot resolve the engine correctly (`core-path.mjs`); the reverse direction is not yet done.
-- `curation.py` imports `jamdict`, an unvendored third-party dependency — the only one in this skill.
+- `curation.py` imports `jamdict`, an unvendored third-party dependency — the only one in this skill. It is pinned with what it pulls in, each by hash, in `requirements-curation.txt` beside it, and asked for only when curating: `python3 -m pip install --require-hashes -r skills/bonsai-garden-mark/requirements-curation.txt`.

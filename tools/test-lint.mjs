@@ -125,7 +125,7 @@ t('a repository holding both biome.jsonc and biome.json is refused', () => {
   const r = lint(d);
   return [r.code === 2 && /refused: .*both biome\.jsonc and biome\.json/.test(r.out), `exit ${r.code}`];
 });
-// the strip (2026-10-18): the masters leave core for the pot's build-process/lint/, and a repository keeps no copies.
+// 2026-10-18: the masters may move out of core, and a repository then keeps no copies.
 // LONG_PY is clean at core's line length (120) and reformatted at ruff's default (88); QUOTED_JS is clean under core's
 // Biome settings (single quotes) and not under Biome's defaults: each is clean only if the master was applied.
 const LONG_PY =

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T14:57:37Z",
+  "timestamp": "2026-10-21T20:01:05Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-sign/test-planted-negative.mjs",
-  "file-hash": "7e6c32d6abc5af1fdea8c6633e41852b394e3ace821be01b4796ce5e4ecec40e303884a4f9130439e7d82779cd56fcb290ed7f3375262bdf1d046d2604b3f8c0",
-  "signature": "GiRjpTlN5yIOZtkzdCVV9REF7UziOG4vCdp8Zz/lJcwUELW02lBA/mqer9lwTeCXDnZA9ZZKZqUghhVvNcJ2Bg=="
+  "file-hash": "80168ed0b9994419b2844998f3a40df1e6e943dee7adc6710bb9a0f55682c51117e3d2a40ed78bd8888624eed7f51d7fa8e322d5dde6954c9839870527ebec68",
+  "signature": "D2o9D1DJuCWFOy99e3igZLk+wru1b4kArivwjnJfGpud04SRRuVRPVv4L6dzlS7GjIkYVFEdWeFGGtSfigsfAg=="
 }

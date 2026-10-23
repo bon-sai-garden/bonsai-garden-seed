@@ -4,20 +4,24 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-21
+// updated: 2026-10-22
 // ---
 //
-// rt-manifest.mjs — runtime rituals/specs/spec-rt-slice.md §2, §4, §5. The one master of the
+// rt-manifest.mjs — rt's spec, §2, §4, §5. The one master of the
 // format: runtime's generator and drift gate, core's install-runtime and rt's doctor all import it
 // (runtime and rt reach it through core, a down edge). It reads bytes and hashes them; it never
 // imports, requires or runs a file it is given.
 //
-//   RT-MANIFEST.json  (in rt)    { format, name, version, files: [{ path, sha256, bytes }] }: rt-manifest/2, since
+//   RT-MANIFEST.json  (in rt)    { format, name, version, files: [{ path, sha256, bytes, mode }] }: rt-manifest/2, since
 //                     0.9.1-rc. It names no repository and no commit (2026-10-21: a shipped file says nothing of where
 //                     it was made); the commit an rt was made from is in the message of the commit that carries it.
 //                     rt 0.9.0 and before carry rt-manifest/1, which adds the repository and commit it was made from;
 //                     parseManifest reads both (a pot keeps the rt it installed), and a core older than this one
 //                     refuses /2, fail-closed.
+//                     `mode` (Mori-shin's ruling, 2026-10-21, from rt 0.9.2; the format string stays): the string "100644"
+//                     or "100755", git's word for the file, on every entry or on none (none: every rt before 0.9.2). Some,
+//                     or another value, is malformed. verifyTree checks the owner's execute bit against it and says what it
+//                     did, `mode: checked | not-stated | not-checkable`, never checked when it was not; a miss fails.
 //   .RT-MANIFEST.json.bonsaisig  (in rt)  the manifest's own seal (bonsaisig/2, owner, target RT-MANIFEST.json); the one
 //                     file rt carries that its manifest cannot list
 //   rt-minimum.json   (in core)  { format, name, 'min-version', signers }: the oldest rt this core takes, and whose
@@ -25,7 +29,7 @@
 //   runtime.json      (in a pot) what the pot installed: the manifest's sha256, its version, who sealed it, when
 //                     the published keys vouched; a record of the pot's, not a pin of core's
 //
-// Core pinned one rt by its manifest's sha256 until 2026-10-18 (rt-pin.json). The gardener: "we should never refer to a
+// Core pinned one rt by its manifest's sha256 until 2026-10-18, in a pin file. The gardener: "we should never refer to a
 // specific version of runtime as a dependency me thinks", "maybe a minimumversion, bvut not a fixed version".
 
 import fs from 'node:fs';
@@ -43,6 +47,10 @@ export const HOOKS_DIR = 'tools/hooks/garden'; // the pot's core.hooksPath, insi
 export const DOCTOR = 'tools/rt/doctor.mjs';
 
 export const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
+/** The two modes a manifest can state: git's word for a regular file, and for an executable one. */
+export const MODES = Object.freeze(['100644', '100755']);
+/** Where a platform has no execute bit (Windows), a mode cannot be checked here, and is never said to be. */
+export const execBitReadable = () => process.platform !== 'win32';
 const SHA_RE = /^[0-9a-f]{64}$/;
 const COMMIT_RE = /^[0-9a-f]{40}$/;
 const VERSION_RE = /^\d+\.\d+\.\d+(\.\d+)?(-[a-z0-9.-]+)?$/;
@@ -69,21 +77,32 @@ export const atLeast = (v, min) => versionCmp(v, min) >= 0;
 /** The manifest's bytes for `files` ({ rel: Buffer }): sorted, fixed key order, one trailing newline. The current shape
  *  names none; `v1: true` writes the shape rt 0.9.0 and before carry, with the commit (the drift gate regenerates
  *  an older rt in its own shape). */
-export function manifestBytes({ name, version, upstream = null, files, v1 = false }) {
+// The older format's own key for where an rt was made (rt-manifest/1, every rt before 0.9.1-rc): read, never written
+// in the current shape. One place names it; every use goes through V1_FROM.
+export const V1_FROM = 'upstream';
+
+export function manifestBytes({ name, version, [V1_FROM]: from = null, files, modes = null, v1 = false }) {
+  // modes: { rel: "100644" | "100755" } for every file, written on every entry; null writes none (the shape before 0.9.2)
   const list = Object.keys(files)
     .sort()
-    .map((p) => ({ path: p, sha256: sha256(files[p]), bytes: files[p].length }));
+    .map((p) => {
+      const e = { path: p, sha256: sha256(files[p]), bytes: files[p].length };
+      if (!modes) return e;
+      if (!MODES.includes(modes[p]))
+        throw new Error(`no mode a manifest can state for ${p} (${JSON.stringify(modes[p])}): every entry's, "100644" or "100755"`);
+      return { ...e, mode: modes[p] };
+    });
   for (const f of list)
     if (!PATH_RE.test(f.path) || f.path === MANIFEST || f.path === MANIFEST_SEAL)
       throw new Error(`not a path a manifest can carry: ${f.path}`);
-  if (v1 && !COMMIT_RE.test(upstream?.commit || ''))
+  if (v1 && !COMMIT_RE.test(from?.commit || ''))
     throw new Error(`${MANIFEST_FORMAT_V1} names the commit it was made from`);
   const m = v1
     ? {
         format: MANIFEST_FORMAT_V1,
         name,
         version,
-        upstream: { repo: upstream.repo, commit: upstream.commit },
+        [V1_FROM]: { repo: from.repo, commit: from.commit },
         files: list,
       }
     : { format: MANIFEST_FORMAT, name, version, files: list };
@@ -101,17 +120,27 @@ export function parseManifest(buf) {
     throw new Error(`${MANIFEST} is not ${MANIFEST_FORMAT} (nor ${MANIFEST_FORMAT_V1}, an older rt's)`);
   if (typeof m.name !== 'string' || !VERSION_RE.test(m.version || ''))
     throw new Error(`${MANIFEST} names no rt and version`);
-  if (m.format === MANIFEST_FORMAT_V1 && (!m.upstream || !COMMIT_RE.test(m.upstream.commit || '')))
+  if (m.format === MANIFEST_FORMAT_V1 && (!m[V1_FROM] || !COMMIT_RE.test(m[V1_FROM].commit || '')))
     throw new Error(`${MANIFEST} carries no commit it was made from (${MANIFEST_FORMAT_V1} names one)`);
-  if (m.format === MANIFEST_FORMAT && 'upstream' in m)
+  if (m.format === MANIFEST_FORMAT && V1_FROM in m)
     throw new Error(`${MANIFEST} is ${MANIFEST_FORMAT}, which names no commit it was made from`);
   if (!Array.isArray(m.files) || !m.files.length) throw new Error(`${MANIFEST} lists no files`);
   for (const f of m.files) {
     if (!f || !PATH_RE.test(f.path || '') || !SHA_RE.test(f.sha256 || ''))
       throw new Error(`${MANIFEST} has a malformed entry: ${JSON.stringify(f)}`);
   }
+  const stating = m.files.filter((f) => Object.hasOwn(f, 'mode')).length;
+  if (stating && stating !== m.files.length)
+    throw new Error(
+      `${MANIFEST} is malformed: mode on some entries (${stating} of ${m.files.length}); a manifest states every entry's mode or none`,
+    );
+  const odd = stating ? m.files.find((f) => !MODES.includes(f.mode)) : null;
+  if (odd)
+    throw new Error(`${MANIFEST} is malformed: ${odd.path} has mode ${JSON.stringify(odd.mode)}; a mode is "100644" or "100755"`);
   return m;
 }
+/** Does this (parsed) manifest state modes? Every entry does, or none (parseManifest refuses some). */
+export const statesModes = (m) => Array.isArray(m?.files) && m.files.length > 0 && Object.hasOwn(m.files[0], 'mode');
 
 /** Core's minimum (rt-minimum.json), read and checked for shape. Throws with one line saying what is wrong. */
 export function readMinimum(file) {
@@ -181,7 +210,7 @@ export function manifestSeal(dir, minimum) {
   if (data.role !== 'owner')
     return no('seal', `${MANIFEST} is sealed ${data.role} by ${data.signer}; this core takes only an owner seal`);
   // Mori-shin's R3 (2026-10-18): a seal that declares the software fallback is no release (the signer's own word, so it
-  // catches a careless cut, not a thief; build-rt takes the opt-out from the sealer, the other half)
+  // catches a careless release, not a thief; rt's builder takes the opt-out from the sealer, the other half)
   if (data.custody === 'software-fallback')
     return no(
       'seal',
@@ -231,11 +260,11 @@ export function walk(dir) {
 
 /**
  * Is the tree at `dir` exactly what its manifest lists, and (given `record`, a pot's runtime.json) the rt that pot
- * recorded? Reads bytes only. Returns { ok, problems: [{ kind, what }], manifest, manifestSha }. Kinds: not-recorded,
+ * recorded? Reads bytes only. Returns { ok, problems: [{ kind, what }], manifest, manifestSha, mode }. Kinds: mode, not-recorded,
  * tampered, unlisted, link, missing, malformed. The manifest's own seal is the one file the manifest does not list;
  * whether it holds is manifestSeal's question, not this one's.
  */
-export function verifyTree(dir, record = null) {
+export function verifyTree(dir, record = null, { execBits = execBitReadable() } = {}) {
   const problems = [];
   const say = (kind, what) => problems.push({ kind, what });
   const tree = walk(dir);
@@ -249,7 +278,7 @@ export function verifyTree(dir, record = null) {
     buf = fs.readFileSync(mf);
   } catch {
     say('missing', `${MANIFEST} is missing`);
-    return { ok: false, problems, manifest: null, manifestSha: null };
+    return { ok: false, problems, manifest: null, manifestSha: null, mode: null }; // no manifest read: no word on modes
   }
   msha = sha256(buf);
   if (record && msha !== record['manifest-sha256'])
@@ -258,11 +287,13 @@ export function verifyTree(dir, record = null) {
     m = parseManifest(buf);
   } catch (e) {
     say('malformed', e.message);
-    return { ok: false, problems, manifest: null, manifestSha: msha };
+    return { ok: false, problems, manifest: null, manifestSha: msha, mode: null };
   }
   if (record && (m.name !== record.name || m.version !== record.version))
     say('not-recorded', `this is ${m.name} ${m.version}; the pot recorded ${record.name} ${record.version}`);
   const listed = new Set(m.files.map((f) => f.path));
+  // what is said of the modes is what was done: checked, not stated by this manifest, or not checkable on this platform
+  const mode = !statesModes(m) ? 'not-stated' : execBits ? 'checked' : 'not-checkable';
   for (const f of m.files) {
     const p = path.join(dir, f.path);
     let st;
@@ -275,9 +306,17 @@ export function verifyTree(dir, record = null) {
     if (!st.isFile()) continue; // a link or other: said above
     const got = sha256(fs.readFileSync(p));
     if (got !== f.sha256) say('tampered', `${f.path} is sha256 ${got}; the manifest says ${f.sha256}`);
+    // the owner's execute bit, and only it: a umask owns the rest (a miss fails the entry, never a warning)
+    if (mode === 'checked' && ((st.mode & 0o100) !== 0) !== (f.mode === '100755'))
+      say(
+        'mode',
+        f.mode === '100755'
+          ? `${f.path}: the manifest says executable (100755) and it is not; run chmod +x ${f.path}`
+          : `${f.path}: the manifest says not executable (100644) and it is; run chmod -x ${f.path}`,
+      );
   }
   for (const f of tree.files)
     if (f !== MANIFEST && f !== MANIFEST_SEAL && !listed.has(f))
       say('unlisted', `${f} is here and the manifest does not list it`);
-  return { ok: problems.length === 0, problems, manifest: m, manifestSha: msha };
+  return { ok: problems.length === 0, problems, manifest: m, manifestSha: msha, mode };
 }

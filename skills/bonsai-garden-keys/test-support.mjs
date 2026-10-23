@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-10
-// updated: 2026-10-18
+// updated: 2026-10-21
 // ---
 //
 // test-support.mjs — TEST SUPPORT, never imported by anything a gardener runs. Used by
@@ -19,14 +19,24 @@
 // and never read by this file. No real keychain, 1Password, master salt, key or network is touched.
 //
 // The environment every run gets names no garden: BONSAI_GARDEN points at a path that does not exist,
-// so a tool that reached for the origin's mono would fail loudly instead of finding it.
+// so a tool that reached for the origin's own garden would fail loudly instead of finding it.
 //
 // `signers` (2026-10-18, install-runtime's minimum): more THROWAWAY keys the fake site holds, by slug, so a
 // suite can seal a fixture with a key the published keys vouch for (W.seal) and one they do not
 // (W.stranger). KEYS_TEST_SITE_MODE, read only by the generated entry, puts the fake site in one of
 // test-fake-origin.mjs's failure modes (unreachable, rejected, forged, ...); unset, it vouches.
+//
+// `seedPot` takes `shin` as one slug, a list of slugs (each its own pair), or null for a garden with none. The generated
+// entry reads two more variables, test material only: KEYS_TEST_TERMINAL (a file of the lines `attest consent` is typed,
+// passed in process as deps.terminal) and KEYS_TEST_TRANSPORT_LOG (deps.transport, which logs what it was offered).
+//
+// `release` (2026-10-21, spec-gardeners-keys 0.7.0 §6.4 point 3): the copy's root also carries SEED-MANIFEST.json over
+// every file of the three skills, sealed owner by a THROWAWAY key under the writer slug `baisai` that the fake site
+// holds, so the reserved set is believed through the manifest. W.resealManifest(edit) rewrites and re-seals it.
+// The set itself is sealed by a THROWAWAY key under mori-shin's slug: the reader pins the set's owner to her.
 
 import { spawnSync } from 'node:child_process';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -56,6 +66,7 @@ export async function makeWorld({
   tmp = null,
   label = 'world',
   signers: extra = [],
+  release = false,
 } = {}) {
   const FAKE = await import(path.join(srcCore, 'skills', 'bonsai-garden-mark', 'test-fake-origin.mjs'));
   const dir = fs.mkdtempSync(path.join(tmp || process.env.KEYS_TEST_TMP || os.tmpdir(), `${label}-`));
@@ -68,7 +79,8 @@ export async function makeWorld({
   const polFile = path.join(core, 'skills', 'bonsai-garden-sign', 'seal-policy.json');
   setPolicy(core, policy);
 
-  const ORIGIN = FAKE.throwawaySigner('fixture-origin');
+  const ORIGIN = FAKE.throwawaySigner('mori-shin');
+  const WRITER = FAKE.throwawaySigner('baisai');
   const BONSAI = FAKE.throwawaySigner('bonsai');
   const EXTRA = Object.fromEntries(extra.map((slug) => [slug, FAKE.throwawaySigner(slug)]));
   const VERIFIER = FAKE.keypair();
@@ -83,9 +95,40 @@ export async function makeWorld({
     )}\n`,
   );
   await FAKE.sealWith(signLib, rule, ORIGIN, { target: 'skills/bonsai-garden-mark/reserved-marks.json' });
+  const manifest = path.join(core, 'SEED-MANIFEST.json');
+  const resealManifest = async (edit = (m) => m) => {
+    const files = [];
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) walk(p);
+        else if (e.isFile()) {
+          const b = fs.readFileSync(p);
+          files.push({
+            path: path.relative(core, p).split(path.sep).join('/'),
+            sha256: crypto.createHash('sha256').update(b).digest('hex'),
+            bytes: b.length,
+          });
+        }
+      }
+    };
+    for (const sk of ['bonsai-garden-keys', 'bonsai-garden-mark', 'bonsai-garden-sign'])
+      walk(path.join(core, 'skills', sk));
+    files.sort((x, y) => (x.path < y.path ? -1 : 1));
+    const m = edit({
+      format: 'bonsai-garden-release-manifest/1',
+      name: 'bonsai-garden-seed',
+      version: '0.9.2-rc',
+      held: [],
+      files,
+    });
+    fs.writeFileSync(manifest, `${JSON.stringify(m, null, 2)}\n`);
+    await FAKE.sealWith(signLib, manifest, WRITER, { target: 'SEED-MANIFEST.json' });
+  };
+  if (release) await resealManifest();
 
   const cfg = {
-    signers: [ORIGIN, BONSAI, ...Object.values(EXTRA)].map((k) => ({
+    signers: [ORIGIN, WRITER, BONSAI, ...Object.values(EXTRA)].map((k) => ({
       slug: k.slug,
       raw: k.raw.toString('base64'),
       fingerprint: k.fingerprint,
@@ -110,8 +153,17 @@ const cfg = ${JSON.stringify(cfg)};
 const verifier = { privateKey: crypto.createPrivateKey({ key: Buffer.from(cfg.verifier, 'base64'), format: 'der', type: 'pkcs8' }) };
 const signers = cfg.signers.map((s) => ({ ...s, raw: Buffer.from(s.raw, 'base64') }));
 const site = fakeSite({ signers, verifier, mode: process.env.KEYS_TEST_SITE_MODE || 'vouch', canonicalAnswer });
-const fetchImpl = async (u, init) => { log('ASK ' + JSON.parse(init.body).signer); return site.fetchImpl(u, init); };
+const fetchImpl = async (u, init) => { log('ASK ' + JSON.parse(init.body).signer); fs.appendFileSync(${JSON.stringify(path.join(dir, 'site-bodies.log'))}, init.body + '\\n'); return site.fetchImpl(u, init); };
 let deps = { origin: makeOrigin({ fetchImpl, pinnedKey: cfg.verifierPub }) };
+if (process.env.KEYS_TEST_TERMINAL) {
+  // attest consent's terminal, in process: the lines the gardener would type, one per question (spec §10)
+  const lines = fs.readFileSync(process.env.KEYS_TEST_TERMINAL, 'utf8').split('\\n');
+  deps.terminal = { interactive: true, say: (l) => console.log(l), ask: async (q) => { console.log(q); return lines.shift() ?? ''; } };
+}
+if (process.env.KEYS_TEST_TRANSPORT_LOG) {
+  // the call home's transport, in process: it logs what it was offered and keeps it
+  deps.transport = { name: 'test', send: async (paths) => { fs.appendFileSync(process.env.KEYS_TEST_TRANSPORT_LOG, 'SEND ' + paths.join(' ') + '\\n'); return { sent: false, where: null, why: 'the test transport keeps it' }; } };
+}
 if (process.env.RT_TEST_FETCH_DIR) {
   // install-runtime's download path, served from a local directory: URL basename -> file there
   const path = await import('node:path');
@@ -204,6 +256,7 @@ await cli(process.argv.slice(2), deps);
     pot,
     { name = 'marta', gardener = 'ana', shin = 'kiko', attest = true, fpAttests = '1' } = {},
   ) => {
+    const shins = shin == null ? [] : [].concat(shin); // a slug, a list of slugs, or null for none
     const steps = [];
     const step = (what, args, input = pp(PASS)) => {
       const r = run(args, { input });
@@ -213,7 +266,20 @@ await cli(process.argv.slice(2), deps);
       return r;
     };
     // shin: null plants a garden with no companion (W's F-5, 2026-10-18): bonsai-shin is then its only kin
-    step('id', ['id', '--pot', pot, '--name', name, '--gardener', gardener, ...(shin ? ['--shin', shin] : [])], '');
+    step(
+      'id',
+      [
+        'id',
+        '--pot',
+        pot,
+        '--name',
+        name,
+        '--gardener',
+        gardener,
+        ...(shins.length ? ['--shin', shins.join(',')] : []),
+      ],
+      '',
+    );
     step('mint', ['mint', '--pot', pot, '--lab-preview', ...B], pp(PASS, PASS));
     const exp = path.join(dir, `${name}-master-salt.sealed`);
     step(
@@ -230,7 +296,11 @@ await cli(process.argv.slice(2), deps);
     const SET = JSON.parse(
       fs.readFileSync(path.join(core, 'skills', 'bonsai-garden-mark', 'kanji-1024-v1.2.json'), 'utf8'),
     ).kanji;
-    const kin = { [gardener]: [21, 70], 'bonsai-shin': [24, 25], ...(shin ? { [shin]: [26, 27] } : {}) };
+    const kin = {
+      [gardener]: [21, 70],
+      'bonsai-shin': [24, 25],
+      ...Object.fromEntries(shins.map((s, i) => [s, [26 + 2 * i, 27 + 2 * i]])),
+    };
     for (const [slug, [a, b]] of Object.entries(kin)) {
       step(`identity ${slug}`, [
         'identity',
@@ -243,11 +313,16 @@ await cli(process.argv.slice(2), deps);
         ...B,
       ]);
     }
-    for (const slug of [name, gardener, 'bonsai-shin', ...(shin ? [shin] : [])])
+    for (const slug of [name, gardener, 'bonsai-shin', ...shins])
       step(`derive ${slug}`, ['derive', slug, '--pot', pot, ...B]);
     step('seed', ['seed', '--pot', pot, '--bonsai-entry', await bonsaiEntry(), ...B]);
     if (attest) step('attest', ['attest', '--pot', pot, ...B]);
     return { steps, exportFile: exp, name, gardener, shin };
+  };
+  /** Every request the fake site was sent, as sent: what a stranger's tool told bon-sai.garden. */
+  const siteBodies = () => {
+    const f = path.join(dir, 'site-bodies.log');
+    return fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n').filter(Boolean) : [];
   };
   const siteAsked = () => {
     const lines = fs.existsSync(siteLog) ? fs.readFileSync(siteLog, 'utf8').split('\n').filter(Boolean) : [];
@@ -270,6 +345,9 @@ await cli(process.argv.slice(2), deps);
     seedPot,
     bonsaiEntry,
     siteAsked,
+    siteBodies,
+    manifest,
+    resealManifest,
     log,
     B,
     setPolicy: (v) => setPolicy(core, v),

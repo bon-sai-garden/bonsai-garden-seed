@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "custodian",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-21T10:33:37Z",
+  "timestamp": "2026-10-22T07:03:30Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/html/glossary.html",
-  "file-hash": "8b84e8bb1440b568170f71ee9c8e11b79e4a1e323b573fe9ec2093510c4bb56a3359377583806bc333a6cd13e1918d5017cd82bdba9aa74b3b0f0a4e815ca43f",
-  "signature": "WcW3sjgywE+UTy08VGp/+mxdaVotVrIsMWkYMHNLXvL2XGlLR3sXxkvbHA5MZUWgKq0cHe1hrYv/dz811FsXAg=="
+  "file-hash": "c2df89e5256d21645b81106976d671e9e38ba432fa3f425184230cd9f3723eb5e2f96eaa0f28f1ed7e6128f8b6f814f6eb71255ec337feba1ece06774b2b58fa",
+  "signature": "a1uanJEI39nUnmvuYGlu9+KrAhTCluN08ILspffg0Z54ipQTjfR038/ugunyLvL9PeoU0PnI5dO2QorzXwinBA=="
 }

@@ -1,11 +1,8 @@
----
-id: 01M3BS42KPT7BTQZ8BWF6MNDT2
----
-# Bonsai Garden — Core
+# Bonsai Garden — Seed
 
-This repository is the core of Bonsai Garden, a cultivation framework for AI-native teams: the method and its lore, the rites, the design system, the tools that seal and check files, and Bonsai, the guardian spirit who walks a new gardener in.
+This repository is the seed of a Bonsai Garden. Bonsai Garden is a cultivation framework for AI-native teams, and the seed holds the method and its lore, the rites, the design system, the tools that seal and check files, and Bonsai, the guardian spirit who walks a new gardener in.
 
-> [!note] Release candidate 0.9.1-rc, not 1.0
+> [!note] Release candidate 0.9.2-rc, not 1.0
 > The rite has been walked end to end, most recently by the gardener and a kin: a dry run on one of his own machines with an earlier preview, from a first install to a garden of its own. This candidate was not walked again; its packages were checked the way a stranger gets them. It closes the first of four security items ranked high on the way to 1.0: a seal now holds wherever its bytes are. Before 1.0 come the other three (a kin carried into a second garden stays the same kin; an external, pinned verifier; a kin's session never signs as the gardener or as another kin), the last gaps in running code only from a sealed manifest, and whatever the next walks find. The runtime the rite installs, [bonsai-garden-rt](https://github.com/bon-sai-garden/bonsai-garden-rt), is public and carries the same version.
 
 **Jump to:** [Start here](#start-here) · [What this is](#what-this-is) · [Trust, and how to check it](#trust-and-how-to-check-it) · [Where the rest lives](#where-the-rest-lives) · [Philosophy](#philosophy) · [License](#license)
@@ -40,6 +37,7 @@ Core is the soil. What grows in it is yours.
 - **A file is sealed** by a detached `.bonsaisig` beside it: an ed25519 signature over the file's exact bytes and every field of the seal (who signed it, in what role, and the file's id). [The sign skill](skills/bonsai-garden-sign/SKILL.md) says how the keys are derived. A seal holds wherever its bytes are: the address it was made at is provenance, not a verdict.
 - **A seal is checked against the keys published at [bon-sai.garden/verify](https://bon-sai.garden/verify)**, never against a key that travels with what it vouches for. Try one: `node skills/bonsai-garden-sign/bin/sign.mjs verify-sidecar --file agents/bonsai/SKILL.md` answers `ok`, signer `bonsai`.
 - **Code runs only from a sealed manifest.** Which file belongs where is a sealed manifest's to say: each package's `MANIFEST.json`, and this repository's `SEED-MANIFEST.json`. A package checks its own manifest before anything in it is used, and the garden's MCP refuses a module its sealed manifest does not place.
+- **An exec bit is part of the release.** `SEED-MANIFEST.json` states every file's mode, and Bonsai's planting checks the scripts it runs against it. `git clone` keeps the bits, and so do `unzip`, `tar` and your system's archive tool; Python's `zipfile` drops every one, and the planting then refuses, naming each file and the `chmod +x` that puts it back.
 
 ---
 
@@ -64,7 +62,7 @@ Core is the soil. What grows in it is yours.
 
 ### Rituals: specs and templates
 
-- **Specs:** [The Canonical Shintai Structure](rituals/specs/spec-canonical-shintai-structure.md) · [Metadata schema](rituals/specs/metadata-schema.md) · [Bunshin Rite](rituals/specs/bunshin-rite-spec.md) · [Provisioning a garden's runtime](rituals/specs/spec-garden-provisioning-runtime.md) · [The publication-readiness gate](rituals/specs/spec-publication-readiness-gate.md) · [Shell script skills](rituals/specs/spec-shell-script-skills.md)
+- **Specs:** [The Canonical Shintai Structure](rituals/specs/spec-canonical-shintai-structure.md) · [Metadata schema](rituals/specs/metadata-schema.md) · [Bunshin Rite](rituals/specs/bunshin-rite-spec.md) · [The publication-readiness gate](rituals/specs/spec-publication-readiness-gate.md)
 - **Templates:** [spec](rituals/templates/spec.md) · [task](rituals/templates/task.md) · [session log](rituals/templates/session-log-template.md) · [feedstock CV](rituals/templates/feedstock-cv-template.md) · [origins](rituals/templates/origins-template.md) · [presence](rituals/templates/presence.md) · [canon document](rituals/templates/canon-document.html)
 
 ### Skills that ship with core

@@ -5,7 +5,7 @@
  * type: script
  * tended-by: mori-shin
  * created: 2026-09-13
- * updated: 2026-09-13
+ * updated: 2026-10-21
  * ---
  * `type: script` is a placeholder — pending Baisai's patterns.md proposal
  * (2026-09-13 review); see ../lib/derive-key.mjs's header for the full note.
@@ -13,12 +13,12 @@
  * macOS custody backend — reads the master salt from the real macOS
  * Keychain entry the workshop already provisions on the gardener's machine.
  *
- * Same account/service constants as bonsai-garden's tools/keyring/setup.mjs
+ * Same account/service constants as the origin garden's tools/keyring/setup.mjs
  * — deliberately. This is not a second, parallel Keychain entry; it reads
  * the one real secret that already exists, so a signing operation run
  * through this service and one run through the existing workshop tooling
  * are reading the identical master salt. Provisioning (init/rotate/delete)
- * stays bonsai-garden's job (setup.mjs) — this module only ever reads.
+ * stays the origin garden's job (setup.mjs) — this module only ever reads.
  *
  * Assurance-tier honesty note: `security add-generic-password` (how the
  * entry is provisioned today) does not attach an explicit Secure-Enclave-
@@ -45,8 +45,8 @@ async function getMasterSaltHex() {
     throw new Error(
       `Could not read the master salt from the macOS Keychain ` +
         `(account "${KEYCHAIN_ACCOUNT}", service "${KEYCHAIN_SERVICE}"). ` +
-        `Either it isn't provisioned on this machine (see bonsai-garden's ` +
-        `tools/keyring/setup.mjs --init), or this process doesn't have ` +
+        `Either it isn't provisioned on this machine (your garden's keyring ` +
+        `setup provisions it), or this process doesn't have ` +
         `Keychain access. Original error: ${err.message}`,
     );
   }

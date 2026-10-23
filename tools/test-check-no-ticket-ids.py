@@ -87,7 +87,7 @@ class Gate(unittest.TestCase):
         self.assertEqual(run(GATE, "--root", str(root), str(root / "bad.md"))[0], 1)
 
     def test_a_named_file_is_read_under_root_never_the_working_folder(self):
-        # found 2026-10-21 (the 0.9.0-rc re-cut seat): a relative name was read in the working folder, so a gate run
+        # found 2026-10-21 (a seat of 2026-10-21): a relative name was read in the working folder, so a gate run
         # from elsewhere read another file of that name, or none at all
         root = repo(tempfile.mkdtemp(dir=self.tmp), {"bad.md": f"{CARD}\n", "ok.md": "fine\n"})
         here = Path(tempfile.mkdtemp(dir=self.tmp))

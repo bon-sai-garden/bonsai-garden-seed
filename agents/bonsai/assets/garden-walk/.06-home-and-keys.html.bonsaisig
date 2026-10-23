@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JVP6MTJTDR3725CKECNRX",
-  "signer": "eisai",
+  "signer": "bonsai",
   "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-10T20:20:08Z",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-21T12:16:17Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/06-home-and-keys.html",
-  "file-hash": "470455a7f8ee6463c5ba1c04041c6b3166ebdd3e397e4fa2a0d5fd12608ec30c82edf00d0aa3a17a7d5d011622387f48ee2176f48fc6160b26007cfd35b5ff2c",
-  "signature": "jIg8FtALU5tMKHeVpz+iusS0CEzopgx3KO4V5iYo/Nw8f6kOEVbQ0+8+87rvLvVT5Y9z/N+Hd+spCmE/9SOCDQ=="
+  "file-hash": "23d10b2523b1deee65d091a9ebd80989cc6a01718771eead8659503d1a90a20c062f2bf4ce3a946941111a8c9ec8a93c36cddaa53d2fd4f943ab0a2bb386de05",
+  "signature": "EpjYbKwc6BkT3WUv/PnRBMw+KnNeTtSYtgAkOu0l6A9mwujnZ41aa6+AtOU0yWCZiuVt44SSJlgypZL54mHOBA=="
 }

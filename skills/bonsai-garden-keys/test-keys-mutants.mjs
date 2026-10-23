@@ -4,19 +4,22 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-20
+// updated: 2026-10-22
 // ---
 //
 // test-keys-mutants.mjs — a guard is not trusted until it has been watched to fail.
 //
 // For each guard: copy the three skills (keys, sign, mark) into a scratch directory, break that
 // guard with one exact text replacement (or a few, where the refusal is held twice, in depth), and
-// run the cases of test-keys.mjs that plant its condition against the broken copy. The mutant is
+// run the cases of test-keys.mjs that plant its condition against the broken copy (or, for the rows
+// that need the whole arc under a release manifest, test-release-record.mjs against it, and for the call
+// home's envelope, test-attestation.mjs). The mutant is
 // KILLED when every named case FAILS. A mutant that survives is a guard nobody would miss: the
 // harness fails. A replacement that does not match exactly once is a harness error, never a pass.
 //
 //   node skills/bonsai-garden-keys/test-keys-mutants.mjs            every mutant
 //   node skills/bonsai-garden-keys/test-keys-mutants.mjs --only n,m  the named mutants
+//   node skills/bonsai-garden-keys/test-keys-mutants.mjs --dry       every replacement matches once; nothing is run
 //
 // The real tree is never modified.
 
@@ -31,6 +34,7 @@ const SKILLS = path.dirname(HERE);
 const TMP = fs.mkdtempSync(path.join(process.env.KEYS_TEST_TMP || os.tmpdir(), 'keys-mutants-'));
 const argv = process.argv.slice(2);
 const only = argv.includes('--only') ? argv[argv.indexOf('--only') + 1].split(',') : null;
+const dry = argv.includes('--dry');
 
 const K = 'bonsai-garden-keys/bin/keys.mjs';
 const C = 'bonsai-garden-keys/lib/custody.mjs';
@@ -40,6 +44,7 @@ const G = 'bonsai-garden-keys/lib/garden.mjs';
 const RM = 'bonsai-garden-mark/reserved-marks.mjs'; // the floor and the rule moved here with the shipped reserved set
 const PV = 'bonsai-garden-keys/lib/pot-verdict.mjs'; // the pot's verify moved here from keys.mjs (13b5672, 2026-10-11)
 const RT = 'bonsai-garden-keys/lib/rt-manifest.mjs'; // the one order of versions: install-runtime, the doctor, rt's exec gate
+const OR = 'bonsai-garden-mark/origin.mjs'; // the one question a stranger's tool asks the origin, and the count beside it
 
 // [name, [[file, find, replace], ...], [cases that must go red]]
 const MUTANTS = [
@@ -526,10 +531,11 @@ const MUTANTS = [
   [
     'attest-root-key-length',
     [
+      // the rule's one place since 2026-10-22: attest's own copy was shadowed by it, and survived (Fuji-shin's round)
       [
-        K,
-        "  if (Buffer.from(g['root-public-key'] || '', 'base64').length !== 32)\n    throw refuse(\"garden.json's root-public-key is not 32 bytes of base64\");",
-        '  if (false) throw refuse("garden.json\'s root-public-key is not 32 bytes of base64");',
+        'bonsai-garden-keys/lib/attestation.mjs',
+        "    if (!fp) no(R.SHAPE, 'garden.root-public-key is not 32 bytes of base64');",
+        "    if (false) no(R.SHAPE, 'garden.root-public-key is not 32 bytes of base64');",
       ],
     ],
     ['attest-refuses-a-root-key-that-is-not-32-bytes'],
@@ -668,7 +674,7 @@ const MUTANTS = [
       [
         C,
         "import { sealEnvelope, openEnvelope } from './envelope.mjs';",
-        "import { sealEnvelope, openEnvelope } from './envelope.mjs';\nconst reachOut = () => import('../../../../bonsai-garden/tools/keyring/derive-key.mjs');",
+        "import { sealEnvelope, openEnvelope } from './envelope.mjs';\nconst reachOut = () => import('../../../../another-garden/tools/keyring/derive-key.mjs');",
       ],
     ],
     ['runs-from-core-alone'],
@@ -708,8 +714,8 @@ const MUTANTS = [
     [
       [
         K,
-        '  const ex = await reservedRule(ctx);\n  if (guardian) {',
-        "  const ex = await loadReservedSet({ origin: { ask: async () => ({ status: 'signature-vouched' }) } });\n  if (guardian) {",
+        '  const ex = await reservedRule(ctx, rec);\n  if (guardian) {',
+        "  const ex = await loadReservedSet({ origin: { ask: async () => ({ status: 'signature-vouched' }) }, record: rec });\n  if (guardian) {",
       ],
     ],
     ['identity-halts-when-the-origin-cannot-be-reached'],
@@ -724,7 +730,7 @@ const MUTANTS = [
     [
       [
         K,
-        '  const v = await ctx.origin.ask(data);',
+        '  const v = await ctx.origin.ask(data, { count });',
         "  const v = { status: 'signature-vouched', verifiedAt: '2026-10-07T12:00:00.000Z' };",
       ],
     ],
@@ -761,10 +767,12 @@ const MUTANTS = [
     [[K, "  if (data.signer !== 'bonsai' || data.role !== 'owner' || 'open' in data) {", '  if (false) {']],
     ['seed-refuses-a-seal-that-is-not-bonsais-owner-seal'],
   ],
+  // seed-any-address left with its guard (spec 0.7.0 §8.1: the seal's target is shown, never a verdict); the entry's
+  // format took up what the address no longer says
   [
-    'seed-any-address',
-    [[K, '  if (data.target !== SEED_TARGET)\n    throw refuse(', '  if (false)\n    throw refuse(']],
-    ['seed-refuses-a-seal-on-another-address'],
+    'seed-any-format',
+    [[K, '  if (be?.format !== SEED_FORMAT)\n    throw refuse(', '  if (false)\n    throw refuse(']],
+    ['seed-refuses-an-entry-in-another-format'],
   ],
   [
     'seed-hash-unchecked',
@@ -839,41 +847,339 @@ const MUTANTS = [
   ],
 ];
 
+// The rows that need the whole arc under a release manifest live in test-release-record.mjs, which runs against the
+// core RELEASE_TEST_SRC_CORE names: each of these is broken in a scratch core (the three skills and tools/ulid.py) and
+// killed when every named row FAILS, as above.
+const RELEASE_MUTANTS = [
+  [
+    'seed-takes-the-record-for-bonsais-entry',
+    [
+      [
+        K,
+        "  const vouched = await vouchBonsai(ctx, ctx.f['bonsai-entry'], be, count);",
+        "  const vouched = g.release && !g.release.spent ? g.release.vouched : await vouchBonsai(ctx, ctx.f['bonsai-entry'], be, count);",
+      ],
+    ],
+    ['the-release-record-never-stands-in-for-bonsais-entry', 'one-arc-asks-the-set-once-and-bonsais-entry-once-more'],
+  ],
+  // the /stats count beside Bonsai's seal (§8.1's count): seed only, the release from the checkout's manifest
+  [
+    'seed-sends-no-count',
+    [
+      [
+        K,
+        "  const vouched = await vouchBonsai(ctx, ctx.f['bonsai-entry'], be, count);",
+        "  const vouched = await vouchBonsai(ctx, ctx.f['bonsai-entry'], be, null);",
+      ],
+    ],
+    ['seed-sends-its-count-beside-bonsais-seal-and-nothing-of-the-garden'],
+  ],
+  [
+    'seed-counts-a-workshop',
+    [
+      [
+        K,
+        "  const count = release ? { event: 'seed', release, 'lab-preview': g['lab-preview'] === true } : null;",
+        "  const count = { event: 'seed', release: release || '0.9.2-rc', 'lab-preview': g['lab-preview'] === true };",
+      ],
+    ],
+    ['a-checkout-without-a-release-manifest-sends-no-count'],
+  ],
+  [
+    'origin-sends-any-count',
+    [[OR, '        count && !countProblem(count)\n', '        count\n']],
+    ['a-malformed-count-is-not-sent-and-the-answer-is-the-same'],
+  ],
+  [
+    'the-count-carries-the-garden',
+    [
+      [OR, '        count && !countProblem(count)\n', '        count\n'],
+      [
+        OR,
+        "          ? { event: count.event, release: count.release, 'lab-preview': count['lab-preview'] }\n",
+        '          ? count\n',
+      ],
+      [
+        K,
+        "  const count = release ? { event: 'seed', release, 'lab-preview': g['lab-preview'] === true } : null;",
+        "  const count = release ? { event: 'seed', release, 'lab-preview': g['lab-preview'] === true, garden: g.garden } : null;",
+      ],
+    ],
+    ['seed-sends-its-count-beside-bonsais-seal-and-nothing-of-the-garden'],
+  ],
+  [
+    'origin-says-counted-without-a-vouch',
+    [[OR, "        counted: v.status === 'signature-vouched' ? field : null,\n", '        counted: field,\n']],
+    ['a-count-is-claimed-only-for-a-seal-the-site-vouched'],
+  ],
+];
+
+// The call home's envelope (spec 0.8.0 §10): test-attestation.mjs, against the core ATTEST_TEST_SRC_CORE names, with
+// --only the rows named; its reader rows need no world, its binary rows plant one each run.
+const AT = 'bonsai-garden-keys/lib/attestation.mjs';
+const ATTEST_MUTANTS = [
+  [
+    'envelope-reads-past-names',
+    [[AT, "  for (const p of namesIn(body, 'body', []))\n    no(R.NAMES,", '  for (const p of [])\n    no(R.NAMES,']],
+    ['a-name-or-a-slug-on-any-entity-is-names-in-body'],
+  ],
+  [
+    'envelope-takes-any-entitys-fingerprint',
+    [
+      [
+        AT,
+        '    else if (fp && fp !== e.fingerprint)\n      no(R.FINGERPRINT,',
+        '    else if (false)\n      no(R.FINGERPRINT,',
+      ],
+    ],
+    ['a-fingerprint-that-is-not-its-keys-is-fingerprint'],
+  ],
+  [
+    'envelope-takes-any-root-fingerprint',
+    [[AT, "    else if (fp && fp !== g['root-fingerprint'])", '    else if (false)']],
+    ['a-fingerprint-that-is-not-its-keys-is-fingerprint'],
+  ],
+  [
+    'envelope-fp-attests-unchecked',
+    [[AT, '      if (rendered !== claimed)', '      if (false)']],
+    ['a-fingerprint-whose-first-two-kanji-are-not-its-ids-is-fp-attests'],
+  ],
+  [
+    'envelope-shin-in-any-order',
+    [
+      [
+        AT,
+        '        if (!(fps[i - 1] < fps[i]))\n          no(R.SHIN_ORDER,',
+        '        if (false)\n          no(R.SHIN_ORDER,',
+      ],
+    ],
+    ['the-shin-table-each-row-fails-by-its-name'],
+  ],
+  [
+    'envelope-one-key-in-two-places',
+    [
+      [
+        AT,
+        "  twice(\n    keys.map(([w, k]) => [w, k]),\n    R.KEY_REUSE,\n    'public key',\n  );\n  twice(\n    keys.map(([w, , f]) => [w, f]),\n    R.KEY_REUSE,\n    'fingerprint',\n  );\n",
+        '',
+      ],
+    ],
+    ['the-shin-table-each-row-fails-by-its-name'],
+  ],
+  [
+    'envelope-one-id-twice',
+    [[AT, "  twice(ids, R.ID_REUSE, 'id');\n", '']],
+    ['the-shin-table-each-row-fails-by-its-name', 'attest-refuses-what-the-reader-refuses'],
+  ],
+  [
+    'envelope-any-parent',
+    [[AT, '    else if (p !== parent)\n      no(R.PARENT,', '    else if (false)\n      no(R.PARENT,']],
+    ['parent-that-is-not-the-registrys-fingerprint-for-bonsai-is-parent'],
+  ],
+  [
+    'envelope-takes-a-fifth-key',
+    [
+      [
+        AT,
+        '      if (!want.includes(k) && !NAME_KEYS.has(k))\n        no(R.SHAPE,',
+        '      if (false)\n        no(R.SHAPE,',
+      ],
+    ],
+    ['the-shin-table-each-row-fails-by-its-name'],
+  ],
+  [
+    'envelope-takes-a-shin-signature',
+    [
+      [
+        AT,
+        '    if (!ROLES.includes(s.by)) {\n      no(\n        R.ROLE,',
+        "    if (!ROLES.includes(s.by) && s.by !== 'shin') {\n      no(\n        R.ROLE,",
+      ],
+    ],
+    ['a-signature-by-shin-or-a-role-twice-or-missing-is-signature-role'],
+  ],
+  [
+    'envelope-takes-a-role-twice',
+    [[AT, '    if (seen.has(s.by)) {', '    if (false) {']],
+    ['a-signature-by-shin-or-a-role-twice-or-missing-is-signature-role'],
+  ],
+  [
+    'envelope-takes-a-role-missing',
+    [
+      [
+        AT,
+        '  for (const r of need) if (!seen.has(r)) no(R.ROLE,',
+        '  for (const r of []) if (!seen.has(r)) no(R.ROLE,',
+      ],
+    ],
+    [
+      'a-signature-by-shin-or-a-role-twice-or-missing-is-signature-role',
+      'each-signature-removed-altered-or-by-the-wrong-key-fails-alone',
+    ],
+  ],
+  [
+    'envelope-signatures-unverified',
+    [[AT, '    else if (bytes && !keyHolds(key, bytes, s.signature))', '    else if (false)']],
+    ['each-signature-removed-altered-or-by-the-wrong-key-fails-alone', 'a-body-changed-after-signing-fails-all-three'],
+  ],
+  [
+    'envelope-signature-fingerprint-unchecked',
+    [[AT, '    if (s.fingerprint !== fp)\n      no(R.SIGNATURE,', '    if (false)\n      no(R.SIGNATURE,']],
+    ['each-signature-removed-altered-or-by-the-wrong-key-fails-alone'],
+  ],
+  [
+    'envelope-keys-in-written-order',
+    [[AT, '    return `{${Object.keys(v)\n      .sort()\n', '    return `{${Object.keys(v)\n']],
+    ['the-same-three-shin-in-another-order-make-the-same-bytes'],
+  ],
+  [
+    'garden-json-takes-both-shin-fields',
+    [[G, "  if (has('shins') && has('shin'))\n    throw bad(", '  if (false)\n    throw bad(']],
+    ['garden-json-shins-one-field-for-one-fact'],
+  ],
+  [
+    'id-writes-shin-as-before',
+    [
+      [
+        K,
+        '    shins,\n    namespace: null,',
+        '    shin: shins[0] ?? null,\n    ...(shins.length > 1 ? { shins } : {}),\n    namespace: null,',
+      ],
+    ],
+    ['a-garden-with-no-shin-writes-an-empty-array-and-is-read-clean'],
+  ],
+  [
+    'attest-signs-for-the-gardener',
+    [
+      [
+        K,
+        "    sig('guardian', locks.agents[GUARDIAN].signing_salt, body.guardian.fingerprint),\n  ];",
+        "    sig('guardian', locks.agents[GUARDIAN].signing_salt, body.guardian.fingerprint),\n    sig('gardener', locks.agents[g.gardener].signing_salt, body.gardener.fingerprint),\n  ];",
+      ],
+    ],
+    ['attest-writes-the-envelope-with-two-signatures-and-sends-nothing'],
+  ],
+  [
+    'attest-sends',
+    [
+      [
+        K,
+        "  if (!was || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);\n",
+        "  if (!was || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);\n  await ctx.transport.send([file]);\n",
+      ],
+    ],
+    ['attest-writes-the-envelope-with-two-signatures-and-sends-nothing'],
+  ],
+  [
+    'attest-writes-what-its-reader-refuses',
+    [
+      [
+        K,
+        "  if (bp.length) throw refuse(`${[...new Set(bp.map((x) => x.reason))].join(', ')}: ${bp[0].detail}; nothing written`);",
+        '',
+      ],
+    ],
+    ['attest-refuses-what-the-reader-refuses'],
+  ],
+  [
+    'attest-writes-a-name',
+    [
+      [K, '      id: g.garden,\n      namespace:', '      id: g.garden,\n      name: g.name,\n      namespace:'],
+      [
+        K,
+        "  if (bp.length) throw refuse(`${[...new Set(bp.map((x) => x.reason))].join(', ')}: ${bp[0].detail}; nothing written`);",
+        '',
+      ],
+    ],
+    ['no-planted-name-is-anywhere-in-the-envelopes-bytes'],
+  ],
+  [
+    'attest-shin-in-garden-json-order',
+    [[K, '    shin: shinOrder(shinsOf(g).map(entity)),', '    shin: shinsOf(g).map(entity),']],
+    ['three-shin-in-another-garden-json-order-make-the-same-envelope'],
+  ],
+  [
+    'consent-without-a-terminal',
+    [[K, '  if (!term.interactive)\n    throw refuse(', '  if (false)\n    throw refuse(']],
+    ['consent-refuses-without-a-terminal'],
+  ],
+  [
+    'consent-takes-any-pair',
+    [[K, "    if (typed !== [...body.guardian.id].slice(0, 2).join(''))", '    if (false)']],
+    ['consent-refuses-a-pair-that-is-not-the-guardians'],
+  ],
+];
+
 let killed = 0,
   survived = 0,
   broken = 0,
   ran = 0;
-for (const [name, edits, cases] of MUTANTS) {
+for (const [name, edits, cases, suite = 'keys'] of [
+  ...MUTANTS,
+  ...RELEASE_MUTANTS.map((m) => [...m, 'release-record']),
+  ...ATTEST_MUTANTS.map((m) => [...m, 'attestation']),
+]) {
   if (only && !only.includes(name)) continue;
   ran++;
   const dir = path.join(TMP, name);
-  for (const s of ['bonsai-garden-keys', 'bonsai-garden-sign', 'bonsai-garden-mark']) {
-    fs.cpSync(path.join(SKILLS, s), path.join(dir, s), { recursive: true });
+  const into = dry ? SKILLS : suite === 'keys' ? dir : path.join(dir, 'skills'); // dry: the real tree, read only
+  if (!dry) {
+    for (const s of ['bonsai-garden-keys', 'bonsai-garden-sign', 'bonsai-garden-mark']) {
+      fs.cpSync(path.join(SKILLS, s), path.join(into, s), { recursive: true });
+    }
+    if (suite !== 'keys') {
+      fs.mkdirSync(path.join(dir, 'tools'), { recursive: true });
+      fs.copyFileSync(path.join(SKILLS, '..', 'tools', 'ulid.py'), path.join(dir, 'tools', 'ulid.py'));
+    }
   }
   let bad = null;
+  const edited = new Map(); // dry: each file's text as the edits before this one left it, never written
   for (const [file, find, repl] of edits) {
-    const p = path.join(dir, file);
-    const src = fs.readFileSync(p, 'utf8');
+    const p = path.join(into, file);
+    const src = edited.get(p) ?? fs.readFileSync(p, 'utf8');
     const count = src.split(find).length - 1;
     if (count !== 1) {
       bad = `${file}: the replacement matches ${count} times, not once`;
       break;
     }
-    fs.writeFileSync(
-      p,
-      src.replace(find, () => repl),
-    );
+    if (dry)
+      edited.set(
+        p,
+        src.replace(find, () => repl),
+      );
+    else
+      fs.writeFileSync(
+        p,
+        src.replace(find, () => repl),
+      );
   }
   if (bad) {
     broken++;
     console.log(`BROKEN    ${name}  — ${bad}`);
     continue;
   }
-  const r = spawnSync(process.execPath, [path.join(HERE, 'test-keys.mjs'), '--only', cases.join(',')], {
-    env: { ...process.env, KEYS_SKILL_DIR: path.join(dir, 'bonsai-garden-keys'), KEYS_TEST_TMP: TMP },
-    encoding: 'utf8',
-    timeout: 900000,
-  });
+  if (dry) {
+    console.log(`MATCHES   ${name}`);
+    continue;
+  }
+  const r =
+    suite === 'keys'
+      ? spawnSync(process.execPath, [path.join(HERE, 'test-keys.mjs'), '--only', cases.join(',')], {
+          env: { ...process.env, KEYS_SKILL_DIR: path.join(dir, 'bonsai-garden-keys'), KEYS_TEST_TMP: TMP },
+          encoding: 'utf8',
+          timeout: 900000,
+        })
+      : suite === 'release-record'
+        ? spawnSync(process.execPath, [path.join(HERE, 'test-release-record.mjs')], {
+            env: { ...process.env, RELEASE_TEST_SRC_CORE: dir, KEYS_TEST_TMP: TMP },
+            encoding: 'utf8',
+            timeout: 900000,
+          })
+        : spawnSync(process.execPath, [path.join(HERE, 'test-attestation.mjs'), '--only', cases.join(',')], {
+            env: { ...process.env, ATTEST_TEST_SRC_CORE: dir, KEYS_TEST_TMP: TMP },
+            encoding: 'utf8',
+            timeout: 900000,
+          });
   const out = r.stdout || '';
   const red = cases.filter((c) => new RegExp(`^FAIL  ${c}\\b`, 'm').test(out));
   if (r.status !== 0 && red.length === cases.length) {
@@ -891,6 +1197,9 @@ for (const [name, edits, cases] of MUTANTS) {
   }
 }
 console.log(
-  `\n${killed}/${ran} mutants killed${survived ? `, ${survived} SURVIVED` : ''}${broken ? `, ${broken} BROKEN` : ''}   (scratch: ${TMP})`,
+  dry
+    ? `\n${ran - broken}/${ran} replacements match once${broken ? `, ${broken} BROKEN` : ''}; nothing was run`
+    : `\n${killed}/${ran} mutants killed${survived ? `, ${survived} SURVIVED` : ''}${broken ? `, ${broken} BROKEN` : ''}   (scratch: ${TMP})`,
 );
+if (dry) fs.rmSync(TMP, { recursive: true, force: true }); // its own empty scratch directory, made above
 process.exit(survived || broken ? 1 : 0);

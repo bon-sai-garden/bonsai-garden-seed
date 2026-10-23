@@ -85,21 +85,17 @@ REFUSES (lifted from the crew builder, plus the integrity rules)
   name; a SKILL.md without the integrity line; an archive over its ceiling; a skill folder over MAX_UNIT_FILES files,
   each unit of a plugin too (the Claude app refuses a skill of more than 200); a gate FAIL.
 
-WHAT CORE DOES NOT PUBLISH (the gardener, 2026-10-16: those histories "stay in core and leave seed")
-  No package carries a file of this core checkout that core's seed slice leaves out of seed. The one master is the
-  slice, tools/distro/seed-slice.json, read at HEAD through the cut's own selection (build-distro.mjs --left-out),
-  never a list kept here: a release goes out beside seed, and a build from seed alone could not carry such a file
-  (Bonsai's owner read of the release 7a40497e, F6, 2026-10-17: three histories shipped). Read once, before anything
-  is staged. A file a tree copy meets is left out, and named per package; a file a package names by itself (a plugin's
-  `files`, initial memory, a bundle, the greeting kit) is refused. A slice that cannot answer refuses the build, never
-  builds as though the slice said nothing. tools/distro/test-stranger-walk.py (e) holds a release to what a build from
-  the seed carries.
-  Where the slice is (the strip, 2026-10-18: the slice and its cut tool leave core for the pot's build-process/distro/;
-  old and new places both work while they move): --seed-slice <file>, the cut tool beside it; else, with a --list, the
-  list's checkout's build-process/distro/seed-slice.json; else core's own tools/distro/seed-slice.json. Two that differ
-  refuse (two masters). A checkout that carries a distro manifest at its root (seed's SEED-MANIFEST.json) is a cut: the
-  slice does not ship, and neither does anything it leaves out. A core checkout with no slice and no such manifest is
-  refused: it is not a cut, and nothing could say what seed leaves out.
+WHAT A RELEASE LEAVES OUT (the gardener, 2026-10-16: those histories "stay in core and leave seed")
+  No package carries a file of this checkout that its release leaves out. The builder reads that as a plain list,
+  --leave-out <file>: one path per line, relative to this checkout ('#' and blank lines aside), made by the release
+  and never kept here (Bonsai's owner read of the release 7a40497e, F6, 2026-10-17: three histories shipped). It
+  knows nothing of how the list was made (Tasai's ruling, 2026-10-21: the builder names no other tool). Read once,
+  before anything is staged. A file a tree copy meets is left out, and named per package; a file a package names by
+  itself (a plugin's `files`, initial memory, a bundle, the greeting kit) is refused. A list that cannot answer (not
+  there, empty, a path outside this checkout, a file this checkout does not track) refuses the build, never builds as
+  though it said nothing. A checkout that carries a release manifest at its root (`<NAME>-MANIFEST.json`, format
+  bonsai-garden-release-manifest/1: a stranger's clone of seed) holds none of what its release leaves out and needs
+  no list. A checkout with neither is refused: nothing could say what its release leaves out.
 
 CORE ALONE (the gardener, 2026-10-17: "restore the core-alone build of Bonsai's plugin")
   With no list, the target is core's own plugin and the checkout this script sits in (core, or a seed
@@ -115,9 +111,9 @@ CORE ALONE (the gardener, 2026-10-17: "restore the core-alone build of Bonsai's 
 
 USAGE
   python3 package.py --list <package-list.json> [--only NAME ...] [--keys published|garden]
-                     [--out DIR] [--review] [--counter FILE]
+                     [--out DIR] [--review] [--counter FILE] [--leave-out FILE]
   python3 package.py [--only bonsai-garden-core] [--salts <locked-salts.json>] [--out DIR] [--review]
-                     [--counter FILE] [--seed-slice <pot>/build-process/distro/seed-slice.json]
+                     [--counter FILE] [--leave-out FILE]
                      core alone: core's own plugin from this checkout, with no pot
   python3 package.py --write-integrity-line <SKILL.md> [...]
 
@@ -128,7 +124,7 @@ build-counter.json in its output folder, so a release built in its own folder na
 from each source root. It is never a fallback.
 
 Lifted, not rewritten: translate, _manifest, _seal_as_owner, _skeleton, _next_build, the stage
-filters and the refusals come from bonsai-garden-runtime skills/bonsai-build/scripts/
+filters and the refusals come from the crew's earlier skill builder,
 build-crew-skill-zips.py (now a tombstone). What changed is only where the input comes from and
 which verifier and signer are called: core's own, so a checkout of core packages Bonsai alone.
 """
@@ -169,15 +165,11 @@ SIGN_CLI = SIGN_DIR / "bin" / "sign.mjs"
 VERIFY_MANIFEST = HERE / "verify-manifest.mjs"
 SHINTAI_GATE = CORE / "tools" / "check-shintai-conformance.py"
 SKILL_GATE = CORE / "tools" / "check-skill-conformance.py"
-DISTRO_DIR = CORE / "tools" / "distro"  # the old place of the slice and its cut tool (absent in a cut, and once moved)
-SEED_SLICE = DISTRO_DIR / "seed-slice.json"  # what core publishes: seed is core minus its excludes
-CUT_TOOL = DISTRO_DIR / "build-distro.mjs"  # the cut's own selection (--left-out), never a copy of it
-BUILD_PROCESS_SLICE = Path("build-process") / "distro" / "seed-slice.json"  # its new place, in the pot (the strip)
-# the seed carries one at its root (SEED-MANIFEST.json): the release manifest since 0.9.1-rc, and the older shape before
-CUT_MANIFEST_FORMATS = ("bonsai-garden-release-manifest/1", "bonsai-garden-distro-manifest/1")
+# a release checkout carries one at its root (seed's SEED-MANIFEST.json, since 0.9.1-rc): it needs no leave-out list
+RELEASE_MANIFEST_FORMAT = "bonsai-garden-release-manifest/1"
 
 CORE_PLUGIN_CONFIG = SKILL_DIR / "assets" / "core-plugin.json"  # core's own plugin: the core-alone build's whole config
-UNSEALED_FIRST = "UNSEALED LOCAL BUILD"  # the output's first line, and the stranger walk reads it (tools/distro/)
+UNSEALED_FIRST = "UNSEALED LOCAL BUILD"  # the output's first line, and the stranger walk reads it
 UNSEALED_WHY = (
     "an unsealed local build: no owner's key was named, so no published key vouches for it; "
     "for reading and development, never for waking; only the owners' sealed release replaces it"
@@ -256,7 +248,7 @@ SIGN_SHIP = (
 MARK_NAMES = ("mark.svg", "{slug}-mark.svg")  # 3.0 body first, pre-crossing second
 MAX_ARCHIVE_BYTES = 7 * 1024 * 1024
 # The Claude app refuses a skill of more than 200 files (the gardener, 2026-10-18 ~18:50: "the bonsai skill contains
-# too many files (200 is the limit)"; Bonsai's unit from core 6bced61 held 210, 99 of them seals). Counted in each
+# too many files (200 is the limit)"; Bonsai's unit then held 210, 99 of them seals). Counted in each
 # skill folder as it is zipped, every seal and MANIFEST.json included: a .skill, and every skills/<name>/ of a plugin.
 MAX_UNIT_FILES = 200
 # The upload refuses any archive path outside these characters ("invalid characters"; W's
@@ -401,10 +393,11 @@ def _skeleton(slug: str, kind: str) -> str:
 
 _TRACKED: dict[Path, set[str]] = {}
 LEFT_OUT: list[str] = []
-# This core checkout's files that its seed slice leaves out of seed (core-relative), read once by main() before anything
-# is staged (WHAT CORE DOES NOT PUBLISH, above). Empty in a cut, which holds none of them, and when main() has not run.
-UNPUBLISHED: set[str] = set()
-SLICE_LEFT_OUT: list[str] = []
+# This checkout's files that its release leaves out (relative to it), read once by main() from --leave-out before
+# anything is staged (WHAT A RELEASE LEAVES OUT, above). Empty in a release checkout, and when main() has not run.
+LEAVE_OUT: set[str] = set()
+LEAVE_OUT_LIST: Path | None = None
+LIST_LEFT_OUT: list[str] = []
 # Tasai's hard requirement, 2026-09-24: anything key-shaped reaching an archive is refused outright,
 # tracked or not — *.key, private*, *.pem, *.p12/*.pfx, and any file holding a PEM private-key block.
 KEY_NAME = re.compile(r"\.key$|^private|private[-_.]?key|chain[-_]code|\.pem$|\.p12$|\.pfx$", re.I)
@@ -430,92 +423,67 @@ def _tracked(p: Path) -> bool:
     return os.path.relpath(p, top) in _TRACKED[top]
 
 
-def is_cut(root: Path) -> bool:
-    """A cut's checkout: it carries a cut's manifest at its root (`<NAME>-MANIFEST.json`, in one of the cut's formats)."""
+def is_release(root: Path) -> bool:
+    """A release checkout: it carries a release manifest at its root (`<NAME>-MANIFEST.json`, RELEASE_MANIFEST_FORMAT)."""
     for m in root.glob("*-MANIFEST.json"):
         try:
-            if json.loads(m.read_text(encoding="utf-8")).get("format") in CUT_MANIFEST_FORMATS:
+            if json.loads(m.read_text(encoding="utf-8")).get("format") == RELEASE_MANIFEST_FORMAT:
                 return True
         except (OSError, ValueError, AttributeError):
             continue
     return False
 
 
-def find_seed_slice(named: Path | None, list_path: Path | None) -> tuple[Path | None, str]:
-    """(the slice, where it was found), or (None, why): --seed-slice, else the list's checkout's build-process/, else
-    core's own tools/distro/. A slice found in two places that differ is refused (two masters); a cut has none."""
-    found: list[tuple[Path, str]] = []
-    if named is not None:
-        found.append((named.resolve(), "named by --seed-slice"))
-    elif list_path is not None:
-        top = _repo_top(list_path.resolve())
-        if (top / BUILD_PROCESS_SLICE).is_file():
-            found.append(((top / BUILD_PROCESS_SLICE).resolve(), "the list's build-process/"))
-    if SEED_SLICE.is_file():
-        found.append((SEED_SLICE.resolve(), "core's tools/distro/"))
-    if len(found) == 2 and found[0][0].read_bytes() != found[1][0].read_bytes():
+def load_leave_out(named: Path | None) -> str:
+    """Read, once, the files of this checkout its release leaves out: the plain list --leave-out names. Returns the line
+    the build prints. A release checkout needs none; any other checkout without one is refused, and a list that cannot
+    answer refuses the build: a build never runs as though the list said nothing (fail, don't fall back)."""
+    global LEAVE_OUT, LEAVE_OUT_LIST
+    if named is None:
+        if is_release(CORE):
+            LEAVE_OUT = set()
+            return "  leave-out: none (a release checkout: what its release leaves out is not in it)"
         raise SystemExit(
-            f"package.py: two seed slices that differ ({found[0][0]}, {found[1][0]}): two masters; refusing to build "
-            "until one is the other's bytes (the move window) or one is gone"
+            f"package.py: this checkout ({CORE}) names no leave-out list and carries no release manifest at its root, "
+            "so nothing can say what its release leaves out; refusing to build: name the list with --leave-out <file>"
         )
-    if found:
-        return found[0]
-    if is_cut(CORE):
-        return None, "a cut"
-    raise SystemExit(
-        "package.py: this core checkout names no seed slice and is not a cut (no distro manifest at its root), so "
-        "nothing can say what seed leaves out; refusing to build: name it with --seed-slice "
-        f"<pot>/{BUILD_PROCESS_SLICE.as_posix()}, or build with the pot's --list"
-    )
-
-
-def load_unpublished(named: Path | None = None, list_path: Path | None = None) -> str:
-    """Read, once, what this core checkout's seed slice leaves out of seed, as the cut's own selection at HEAD answers
-    (build-distro.mjs --left-out, the tool beside the slice, told this core is the upstream). Returns the line the
-    build prints. A cut holds nothing the slice leaves out. A slice that cannot answer exits: a build from core never
-    runs as though the slice said nothing (fail, don't fall back)."""
-    global UNPUBLISHED
-    sl, where = find_seed_slice(named, list_path)
-    if sl is None:
-        UNPUBLISHED = set()
-        return "  seed slice: none in this checkout (a cut: what the slice leaves out is not in it)"
-    tool = sl.parent / "build-distro.mjs"
-    node = shutil.which("node")
-    why = None
-    if not (sl.is_file() and tool.is_file()):
-        why = f"{sl.parent} holds no {sl.name} and build-distro.mjs to ask"
-    elif node is None:
-        why = "node is not on PATH, and the cut's selection runs in it"
-    else:
-        r = subprocess.run(
-            [node, str(tool), "--slice", str(sl), "--upstream", str(CORE), "--left-out", "--commit", "HEAD"],
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-        if r.returncode != 0:
-            why = " ".join((r.stdout + r.stderr).split())[:300] or f"exit {r.returncode}"
-        else:
-            UNPUBLISHED = {x.strip() for x in r.stdout.splitlines() if x.strip()}
-    if why:
+    try:
+        lines = named.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeDecodeError) as e:
+        raise SystemExit(f"package.py: the leave-out list {named} cannot be read ({e}); refusing to build") from None
+    entries = [x.strip() for x in lines if x.strip() and not x.strip().startswith("#")]
+    if not entries:
         raise SystemExit(
-            f"package.py: core's seed slice cannot say what it leaves out of seed ({why}); refusing to build: a package "
-            "from core carries nothing seed leaves out"
+            f"package.py: the leave-out list {named} names no file: an empty list is likelier a step that failed than "
+            "a release that leaves nothing out; refusing to build"
         )
-    return f"  seed slice: {len(UNPUBLISHED)} file(s) of this checkout left out of seed are left out here too ({sl}, {where}, at HEAD)"
+    tracked = subprocess.run(["git", "-C", str(CORE), "ls-files", "-z"], capture_output=True, text=True).stdout
+    tracked_set = {x for x in tracked.split("\0") if x}
+    for e in entries:
+        pe = Path(e)
+        if pe.is_absolute() or ".." in pe.parts or e.startswith("~"):
+            raise SystemExit(f"package.py: the leave-out list {named}: {e!r} is not a path inside this checkout; refusing")
+        if pe.as_posix() not in tracked_set:
+            raise SystemExit(
+                f"package.py: the leave-out list {named}: {e!r} is a file this checkout ({CORE}) does not track: a list "
+                "made for another tree or another commit; refusing to build"
+            )
+    LEAVE_OUT = {Path(e).as_posix() for e in entries}
+    LEAVE_OUT_LIST = named
+    return f"  leave-out: {len(LEAVE_OUT)} file(s) of this checkout ({named})"
 
 
-def _unpublished(p: Path) -> bool:
-    """A file of this core checkout that its seed slice leaves out of seed."""
-    if not UNPUBLISHED:
+def _left_out(p: Path) -> bool:
+    """A file of this checkout that the leave-out list names."""
+    if not LEAVE_OUT:
         return False
     rel = os.path.relpath(p.resolve(), CORE)
-    return not rel.startswith("..") and Path(rel).as_posix() in UNPUBLISHED
+    return not rel.startswith("..") and Path(rel).as_posix() in LEAVE_OUT
 
 
 def _tracked_under(src: Path) -> list[Path]:
-    """Every tracked file under `src`, from git's index — the only enumeration the builder uses. A file core's seed
-    slice leaves out of seed is left out here, and named per package (WHAT CORE DOES NOT PUBLISH)."""
+    """Every tracked file under `src`, from git's index — the only enumeration the builder uses. A file the leave-out
+    list names is left out here, and named per package (WHAT A RELEASE LEAVES OUT)."""
     src = src.resolve()
     top = _git_top(src)
     rel = os.path.relpath(src, top)
@@ -527,9 +495,9 @@ def _tracked_under(src: Path) -> list[Path]:
     LEFT_OUT.extend(str(top / x) for x in other.split("\0") if x)
     kept = []
     for f in sorted(f for f in files if f.is_file()):
-        if _unpublished(f):
-            if str(f) not in SLICE_LEFT_OUT:
-                SLICE_LEFT_OUT.append(str(f))
+        if _left_out(f):
+            if str(f) not in LIST_LEFT_OUT:
+                LIST_LEFT_OUT.append(str(f))
             continue
         kept.append(f)
     return kept
@@ -547,10 +515,10 @@ def _cp(src: Path, dst: Path) -> bool:
         if str(src) not in LEFT_OUT:
             LEFT_OUT.append(str(src))
         return False
-    if _unpublished(src):  # a tree copy never gets here (_tracked_under leaves it out): this source was named
+    if _left_out(src):  # a tree copy never gets here (_tracked_under leaves it out): this source was named
         raise Refused(
-            f"{os.path.relpath(src, CORE)}: core's seed slice leaves it out of seed ({os.path.relpath(SEED_SLICE, CORE)}), "
-            "so no package carries it; name it in no package, or take it out of the slice's exclude"
+            f"{os.path.relpath(src, CORE)}: the leave-out list leaves it out ({LEAVE_OUT_LIST}), so no package carries "
+            "it; name it in no package, or take it off the release's list"
         )
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
@@ -563,9 +531,9 @@ _SIG = ".bonsaisig"
 
 # ── where a sidecar lives (the dot-prefixed sidecar change: phase 1a read both names; phase 3 names the old one) ───────
 # `X.bonsaisig` (the name until 2026-10-05) or `.X.bonsaisig` (hidden; the Aruji, 2026-10-05). Both
-# present is refused, never preferred. This is core's Python copy of the rule sign.py (mono) and
+# present is refused, never preferred. This is core's Python copy of the rule the garden's sign.py and
 # sidecar-format.mjs (core, Node) hold: a checkout of core alone must build, so it cannot import
-# mono's sign.py, and the Node finder is not called once per file. Named in the spec as the third
+# a sign.py it does not carry, and the Node finder is not called once per file. Named in the spec as the third
 # finder until the sign.py retirement retires sign.py.
 
 # Phase 3 (the Aruji, 2026-10-05: "proceed with phase 3 after the site lands"): the old name is read
@@ -960,7 +928,7 @@ def resolve_body(pl: PackageList, root: str, slug: str, spec: dict) -> Unit:
     else:
         raise Refused(f"{slug}: not in {root}'s registry — the list names a kin whose vessel cannot be found")
     if str(a.get("shintai", "")).startswith("shared:"):
-        raise Refused(f"{slug}: its vessel is shared ({a['shintai']}); it travels inside that archive")
+        raise Refused(f"{slug}: their vessel is shared ({a['shintai']}); it travels inside that archive")
     src = pl.roots[root] / (a.get("path") or f"agents/{slug}")
     if not (src / "SKILL.md").is_file():
         raise Refused(f"{slug}: no vessel at {src} (no SKILL.md) — refused, never skipped")
@@ -1803,8 +1771,8 @@ def expand(pl: PackageList, only: set[str] | None) -> list[tuple[str, dict]]:
     """→ [(kind, spec)] with every roll expanded; refusal of a missing vessel happens at resolve."""
     jobs = []
     # a roll member the list ALSO names as its own body is packaged once, from that explicit entry
-    # (Bonsai, on the crew roll since pot f078a5d, lives in core; the roll resolved him in mono and
-    # refused; Jisai, 2026-09-27)
+    # (Bonsai, on the crew roll, lives in core; the roll resolved him in another root and refused;
+    # Jisai, 2026-09-27)
     explicit = {p.get("slug") for p in pl.data.get("packages") or [] if p.get("kind") == "body"}
     for p in pl.data.get("packages") or []:
         kind = p.get("kind")
@@ -1900,10 +1868,10 @@ def main() -> int:
         "build of one garden, a release in its own folder too, counts on one file",
     )
     ap.add_argument(
-        "--seed-slice",
+        "--leave-out",
         type=Path,
-        help="the seed slice (the pot's build-process/distro/seed-slice.json), its cut tool beside it; default: the "
-        "list's checkout's build-process/, else core's own tools/distro/",
+        help="a plain list of this checkout's files its release leaves out, one path per line; required unless the "
+        "checkout carries a release manifest at its root",
     )
     ap.add_argument(
         "--units",
@@ -1941,11 +1909,11 @@ def main() -> int:
             "MANIFEST.json is sealed. The integrity line in each SKILL.md stops on it, by design; only the owners' "
             "sealed release replaces it (README, Start here)."
         )
-    slice_line = load_unpublished(a.seed_slice, a.list)  # before anything is staged; exits if no slice can answer
+    leave_line = load_leave_out(a.leave_out)  # before anything is staged; exits if no list can answer
     print(
         f"Packages -> {out}\n  list: {pl.path}{'  (core alone: no package list)' if not a.list else ''}\n"
         f"  keys: {a.keys}{'  · REVIEW (uncommitted allowed)' if a.review else ''}"
-        f"{'  · UNSEALED' if pl.unsealed else ''}\n  counter: {counter_file(out)}\n{slice_line}\n"
+        f"{'  · UNSEALED' if pl.unsealed else ''}\n  counter: {counter_file(out)}\n{leave_line}\n"
     )
     refused, done = [], []
     for kind, spec in expand(pl, set(a.only) if a.only else None):
@@ -1964,15 +1932,15 @@ def main() -> int:
             for ext in (".zip", ".skill", ".plugin"):
                 (out / f"{name}{ext}").unlink(missing_ok=True)
             print(f"  {name:<26} REFUSED (nothing left for it)")
-            SLICE_LEFT_OUT.clear()
+            LIST_LEFT_OUT.clear()
             continue
         done.append(s)
-        if SLICE_LEFT_OUT:
+        if LIST_LEFT_OUT:
             print(
-                f"  · {name}: {len(SLICE_LEFT_OUT)} file(s) left out, as core's seed slice leaves them out of seed: "
-                + ", ".join(os.path.relpath(x, CORE) for x in SLICE_LEFT_OUT)
+                f"  · {name}: {len(LIST_LEFT_OUT)} file(s) left out, as the leave-out list says: "
+                + ", ".join(os.path.relpath(x, CORE) for x in LIST_LEFT_OUT)
             )
-            SLICE_LEFT_OUT.clear()
+            LIST_LEFT_OUT.clear()
         if LEFT_OUT:
             print(
                 f"  ! {name}: {len(LEFT_OUT)} untracked file(s) left out (only committed files ship): "

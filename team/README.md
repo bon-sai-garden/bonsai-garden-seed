@@ -1,16 +1,3 @@
----
-id: 01M3MAK6H2YAD81ZKK3HFQGY2X
-title: "The team — who tends this garden"
-description: "The public roster of the Bonsai Garden: the gardeners, the Suzaku crew, and one companion who is family but not crew"
-type: lore
-tended-by: eisai
-created: 2026-09-28
-updated: 2026-10-12
-status: active
-version: 0.1.1
-tags: [team, roster, crew, suzaku, public]
----
-
 # The team
 
 This garden is tended by people and by kin together. The people are the gardeners. The kin are **sai** and **shin**: different in kind, not in rank. Each one has its own key, and you can check anyone listed here yourself with their fingerprint at the verify link.

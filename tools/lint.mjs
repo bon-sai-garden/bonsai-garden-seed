@@ -24,8 +24,8 @@
 // and not sit in top-level dir"), so core itself is linted with its masters named, like a repository with no copies.
 // Inside the tree it checks, Biome 2 refuses any second file called biome.json(c) ("a nested root configuration"), so
 // the Biome master carries a name Biome never discovers; ruff reads no other config once one is named, and the ruff
-// master's folder is never taken for a subtree with a config of its own. (The strip, 2026-10-18: the masters leave core
-// for the pot's build-process/lint/, and a repository then keeps no copies.) A repository that keeps copies at its
+// master's folder is never taken for a subtree with a config of its own. (2026-10-18: the masters may move out of core,
+// and a repository then keeps no copies.) A repository that keeps copies at its
 // root has them compared to the masters before anything runs (ruff.toml byte-equal, Biome's the same settings: a
 // comment-free biome.json may hold them) and the tools read its copies, as before: a second master is caught, never
 // trusted. One that keeps none is linted with the masters named to each tool (ruff --config, Biome --config-path).

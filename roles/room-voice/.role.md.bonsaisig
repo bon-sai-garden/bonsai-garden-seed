@@ -4,9 +4,9 @@
   "signer": "koe-shin",
   "role": "owner",
   "fingerprint": "1f80587c41c68d24ef20b5a7c7196dd5",
-  "timestamp": "2026-10-16T14:36:04Z",
+  "timestamp": "2026-10-22T17:29:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/room-voice/role.md",
-  "file-hash": "2ebbfc0a2d58ba0f5cf7623d6a790c32f8d1c8cce6c423d7fb7797f5599c9260f80c290507fa191a99fccda611f78ebe4b662ba3d617646aafc57ba047d1f211",
-  "signature": "bWrXcWpz7XG4vI8M/GX3wNx221y/+M+LgjdRJZczCMI1lpA3JdnJywJtSlaRnHVGASG2xYfwAbytjV8lrp65Cw=="
+  "file-hash": "43720701df4d20c227e39a585d9a2f081357691bb1c0764d990b7237d5c95eef6eb322dab38bbb5282fd69784fb0c1485bd3c355f1265e47a5a73e3e059609b1",
+  "signature": "NR1K5wBEd7Wtywe70pqXMYBzoQ3s/iPV2KSUqlBAeXUixLY00S83L7+cEq3dK+brmSiGrIDnEh73vrbeqX/2Bg=="
 }

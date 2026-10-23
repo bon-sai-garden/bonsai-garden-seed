@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-15T18:02:38Z",
+  "timestamp": "2026-10-22T16:41:25Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-validate/scripts/audit-filenames.py",
-  "file-hash": "ee15ed09c8380fe0790f1ade94539ee4c4b8e70fb066d2b28ffb22fe81e3d14ee7a2c7a1d81a59194895a01ecab30cc9f046f8bbfce32987b947666e3eb6e846",
-  "signature": "qiYuCDED00KEb8WjY8ljfRNVsS3spmweBOR6c3n0Ptgtm2v3mrzrt1sVRdQcO42DBCyDLvJ3QDYTUyyj8jfwCg=="
+  "file-hash": "249f4cf1012bcde96252449f0bdd18577a6caf5db4d4e6eb6068b5b3004f5ea5860216cdd48a38b815f9102b026ed52b1148c1746e506d0bd46a8f8e88c4e868",
+  "signature": "zKmuKoVQfghb/xDwp9/X9YJt0VTg4a/8jTCOzJE5zifmz61bN659onSkhbfySItoAPpiHK0KxTuxKHm72thzAw=="
 }
