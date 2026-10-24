@@ -1,7 +1,7 @@
 {
   "format": "bonsai-garden-release-manifest/1",
   "name": "bonsai-garden-seed",
-  "version": "0.9.2-rc",
+  "version": "0.9.2.1-rc",
   "held": [],
   "files": [
     {
@@ -96,7 +96,7 @@
     },
     {
       "path": ".package-lock.json.bonsaisig",
-      "sha256": "ee8e71065a61b0a572c9544f042d5d458739e085cb4f0b522f1170cd40f5942e",
+      "sha256": "99af1afcfc14c21372fdfade508e8624344de7182a03cc04a10edf37a5d14306",
       "bytes": 529,
       "mode": "100644"
     },
@@ -2022,7 +2022,7 @@
     },
     {
       "path": "package-lock.json",
-      "sha256": "75f0200aee826d77ac349e6fd1ce5adcfb9dc5de76cc9c43d2939416bbcaca20",
+      "sha256": "d2065de24b0d853075683f0dc6e699c7f0c0e1e9937008f980312e5567752b02",
       "bytes": 18198,
       "mode": "100644"
     },
