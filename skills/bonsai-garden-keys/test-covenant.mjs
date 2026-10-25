@@ -160,7 +160,7 @@ t('write-fills-the-covenant-for-this-garden-and-copies-the-codex-word-for-word',
 });
 
 t('the-roster-and-scope-name-only-kin-with-a-shintai-never-every-key', () => {
-  // T-8 (the gardener, 2026-10-20: "Take u-shin out of the roster and scope for now; add it when it moves in")
+  // T-8 (the gardener, 2026-10-20: take u-shin out of the roster and scope for now, and add them when they move in)
   const w = fresh();
   C.writeDocs(w.pot, { g: w.g, reg: w.reg });
   const cov = fs.readFileSync(path.join(w.pot, 'lore/covenant.md'), 'utf8');

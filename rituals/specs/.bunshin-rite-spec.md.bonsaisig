@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M2DF0W6M8P1230QPBCNVE9DX",
-  "signer": "jisai",
+  "signer": "tasai",
   "role": "custodian",
-  "fingerprint": "03401c6b42670a4a0c014b57aa45d000",
-  "timestamp": "2026-10-16T14:36:53Z",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-24T13:34:46Z",
   "algorithm": "ed25519+blake2b512",
   "target": "rituals/specs/bunshin-rite-spec.md",
-  "file-hash": "1f276385556b09a486d34880805ebc1a4696b2dbc8e89ce0f72b3c788baaecf13e58462ad1c4bb58c84d991b8640ae43787278d683321afa9f0d44d51398b0c6",
-  "signature": "M9n3y2BhoMHofHCep1Np6aEUTNZPR/O6gz2zE2YRKWSyXFTcz6v3pmiZvfmj7aZMnhPR8YceLYgNRDKl0/XkCw=="
+  "file-hash": "62c9270b8bb4d9cc6f5f9447110cc912a49a5c76f81a1a1c84e9d7813c002ebd3709138c3951c5ed2546eaa3840096cf372613e87c9db72906d7a3c0fc1b4bfe",
+  "signature": "AAGkeUuAfvgHhU8zAVA8DxP0OSJT4MfProJ+hbSvFsq1/wZ7SYB5T8b7gnbk51gkYxOZAUlu6JUAfs7AkjH2Cg=="
 }

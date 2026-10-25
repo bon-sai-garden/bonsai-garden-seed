@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-21
+# updated: 2026-10-24
 # ---
 """package.py — one logical builder. Core holds the capability; the pot says what to package.
 
@@ -43,7 +43,11 @@ WHAT EVERY PACKAGED SKILL FOLDER GETS — the same logic for all four kinds, wri
               v6 templates, text-card.py with its colour gate, and fp-kanji.py with its set, copied
               byte for byte with their seals under scripts/greeting/ as core lays them out; and the
               kin's own registry row at identity/registry-entry.json, the greeting's input and never a
-              key source. The generated references/agents.md names both.
+              key source. The generated references/agents.md names both. And the face's pin
+              (2026-10-23): the agents/faces.json beside the registry that gave the row, the same root,
+              byte for byte with the pin's own seal, at identity/faces.json, where fill-greeting.py
+              looks in a package; proven by the shipped fill-greeting.py's own lookup on the stage. A
+              root with no pin builds without one, said per package, and the seal stands in for the face.
   scripts     a kin vessel's scripts/ ships (the tracked tree), so what its SKILL.md tells an installed
               kin to run is there (W's link-memory.sh was listed and not shipped; finding 3). A nested
               SKILL.md inside it cannot travel (the uploader refuses a nested skill): left out with its
@@ -63,7 +67,7 @@ WHAT EVERY PACKAGED SKILL FOLDER GETS — the same logic for all four kinds, wri
   every-kin   if the list names one, a kin vessel carries the garden's crew-wide section, generated
               from the committed fragment into references/agents.md; a body keeping its own copy is
               refused, and the staged copy must equal a fresh generation before the manifest is sealed.
-  bundle      if the list names one, every kin vessel carries the shared documents it reads when no
+  bundle      if the list names one, every kin vessel carries the shared documents its kin reads when no
               garden MCP answers (the codex, the routines), copied byte for byte from their committed
               canonical home WITH that home's own seal, so the copy proves it is the original. A
               tombstone, an uncommitted or a dirty source is refused. A body's own file at the same
@@ -96,6 +100,25 @@ WHAT A RELEASE LEAVES OUT (the gardener, 2026-10-16: those histories "stay in co
   though it said nothing. A checkout that carries a release manifest at its root (`<NAME>-MANIFEST.json`, format
   bonsai-garden-release-manifest/1: a stranger's clone of seed) holds none of what its release leaves out and needs
   no list. A checkout with neither is refused: nothing could say what its release leaves out.
+
+A BODY'S NUMBER AND SEALS (the gardener, 2026-10-24: "we should never re-use old version numbers if we applied
+technical patches to a shintai … pls bump up the patch number *every* time we apply a change", and "every file within
+a shintai should have the owner seal, not a custodian seal")
+  A body's SKILL.md declares MAJOR.MINOR.PATCH[-label]; one that declares a build (four parts) is refused, since the
+  builder counts BUILD. The counter keeps the hash of each body it counted (`_bodies`): the same body under a counted
+  M.m.p is a re-package and takes BUILD+1; a different one is refused, bump the patch; a count kept before the hashes
+  were is refused too, since what shipped cannot be told. Counts are written only once the package is, and never for a
+  --review build. Every file a body ships from the body's own folder carries the owner seal of the body's kin (a nested
+  body's files: that body's kin), judged by check-shintai-conformance.py's owner_seal_findings, the one definition; anything else is
+  refused, named. The gardener's own files are named as his, awaiting his own seal.
+
+WHAT A BUILD CLEARS (the gardener, 2026-10-24: "pls remove any old build files automatically when building a new
+plugin")
+  The out folder keeps build-outputs.json: per package, the files its build wrote and their sha256. A package that
+  builds removes what its last build wrote and this one did not (a plugin built without --units drops the units it
+  wrote before); a build of the whole list also removes what a package the list no longer names wrote. It removes only
+  a recorded file whose bytes are still the ones it wrote (a changed one is left and named), never a file it has no
+  record of, the counter, the record, or anything outside the out folder, and it prints every removal.
 
 CORE ALONE (the gardener, 2026-10-17: "restore the core-alone build of Bonsai's plugin")
   With no list, the target is core's own plugin and the checkout this script sits in (core, or a seed
@@ -132,6 +155,7 @@ which verifier and signer are called: core's own, so a checkout of core packages
 from __future__ import annotations
 
 import argparse
+import atexit
 import datetime as _dt
 import hashlib
 import importlib.util
@@ -139,11 +163,21 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
+
+# A bundled script reads and writes no bytecode beside itself. A __pycache__ left beside the scripts failed a package's
+# own check (a planting, 2026-10-24), and a .pyc planted beside a sealed sibling runs instead of the sibling, under -B
+# too, while the sibling's sealed bytes stay untouched (Mori-shin's read, 2026-10-25: bytecode is code). So before any
+# sibling is loaded, Python's cache points at a fresh private folder, removed at exit; the instructions that run a
+# bundled script pass -B.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 HERE = Path(__file__).resolve().parent
 SKILL_DIR = HERE.parent
@@ -207,6 +241,8 @@ GREETING_KIT = (
     "bonsai-garden-mark/kanji-1024-v1.2.json",
 )
 REGISTRY_ROW = "identity/registry-entry.json"  # the kin's own row, as the list's registry had it at build
+FACES_PIN = "agents/faces.json"  # a root's face pin, beside the root's registry
+FACES_ROW = "identity/faces.json"  # where fill-greeting.py looks in a package (FACES there), the pin byte for byte
 EVERY_KIN_TRAILER = """
 ## In this package
 
@@ -219,6 +255,8 @@ default), `bonsai-garden-portrait/scripts/text-card.py` with its gate `check-kan
 - **This kin's own registry row**, `identity/registry-entry.json`: pass this package's root as `--garden` to \
 `fill-greeting.py`, or the file as `--registry` to `text-card.py`. `agents/registry.json` at the root is the \
 package marker and stays an empty roster: no key and no fingerprint travels as canon; the published keys decide.
+- **The face's pin**, `identity/faces.json` when the garden keeps one: `fill-greeting.py --garden <this package>` \
+links the face from that file; with no such file the seal stands in for the face.
 """
 
 
@@ -251,6 +289,13 @@ MAX_ARCHIVE_BYTES = 7 * 1024 * 1024
 # too many files (200 is the limit)"; Bonsai's unit then held 210, 99 of them seals). Counted in each
 # skill folder as it is zipped, every seal and MANIFEST.json included: a .skill, and every skills/<name>/ of a plugin.
 MAX_UNIT_FILES = 200
+# What the upload takes beyond `claude plugin validate`, which passed both refused uploads of bon-sai-team: a plugin
+# description of at most 500 characters (the upload's own words, 2026-10-25: 1.5.2 was refused at 741, a limit the
+# app did not hold on 10-14), a skill description of at most 1,024. Counted as the upload's JavaScript counts a string,
+# in UTF-16 units, never fewer than the characters. A skill description from 950 is said, one edit from a refusal.
+MAX_PLUGIN_DESCRIPTION = 500
+MAX_SKILL_DESCRIPTION = 1024
+WARN_SKILL_DESCRIPTION = 950
 # The upload refuses any archive path outside these characters ("invalid characters"; W's
 # portrait-work-thumb@2x.jpg, 2026-09-27, found by Jisai). Refused here, before it is packaged.
 UPLOAD_PATH_OK = re.compile(r"^[A-Za-z0-9._/-]+$")
@@ -368,8 +413,11 @@ def translate(path: Path, version: str | None = None) -> str:
     version = version or field("version")
     if not name or not desc:
         raise Refused(f"{path}: SKILL.md needs both name and description")
-    if len(desc) > 1024:
-        raise Refused(f"{path}: description is {len(desc)} chars, over the 1024 limit")
+    n = upload_length(desc)
+    if n > MAX_SKILL_DESCRIPTION:
+        raise Refused(f"{path}: the description is {n} characters; the upload takes at most {MAX_SKILL_DESCRIPTION}")
+    if n >= WARN_SKILL_DESCRIPTION:
+        print(f"  ! {path.parent.name}: the description is {n} characters, {MAX_SKILL_DESCRIPTION - n} from the upload's limit")
     q = '"' + desc.replace("\\", "\\\\").replace('"', '\\"') + '"'
     head = ["---", f"name: {name}", f"description: {q}"]
     if version:
@@ -1040,7 +1088,20 @@ def stage_unit(u: Unit, stage: Path, pl: PackageList, keys: str, review: bool, c
             f"(the gate reads {declared or 'none'!r}) — nothing to stamp"
         )
     version, repo_build, label = vm.group(1), vm.group(2), vm.group(3) or ""
-    build_num = repo_build.lstrip(".") if repo_build else str(_next_build(counter, u.name, version))
+    pending = None  # a body's (counter, name, version, build, body hash), recorded once its package is written
+    if u.kind == "body":
+        if repo_build:
+            raise Refused(
+                f"{u.name}: SKILL.md declares a build ({declared}): the owner declares MAJOR.MINOR.PATCH[-label] and the "
+                f"builder counts the build, so a changed body can never ship under a used number (the gardener, "
+                f"2026-10-24: \"bump up the patch number *every* time we apply a change\")"
+            )
+        body_sum = _body_source_hash(u, pl)
+        n = _peek_body_build(counter, u.name, version, body_sum)
+        pending = (counter, u.name, version, n, body_sum)
+        build_num = str(n)
+    else:
+        build_num = repo_build.lstrip(".") if repo_build else str(_next_build(counter, u.name, version))
     top = _repo_top(src)
     head = _git(top, "rev-parse", "--short", "HEAD")
     source = f"{top.name}@{head}" + ("+uncommitted" if dirty else "")
@@ -1162,6 +1223,30 @@ def stage_unit(u: Unit, stage: Path, pl: PackageList, keys: str, review: bool, c
     if keyish:
         raise Refused(f"{u.name}: key material reached the stage — refused: {', '.join(keyish)}")
 
+    if u.kind == "body":
+        # every file the body ships from the body's own folder carries the owner seal of the body's kin (the gardener,
+        # 2026-10-24: "every file within a shintai should have the owner seal, not a custodian seal. If we need a kin to
+        # seal their own shintai files we need to invoke them and ask them to sign it."). The stamped SKILL.md is judged
+        # by the source SKILL.md; what the builder adds (the bundle, the greeting kit, the verifier, the Every-kin
+        # section) is not the body's.
+        srcroot, stage_root = u.src.resolve(), str(stage.resolve()) + os.sep
+        shipped = {(u.src / "SKILL.md").resolve()}
+        for dst, from_ in SOURCE_OF.items():
+            if dst.startswith(stage_root) and Path(dst).is_file():
+                try:
+                    from_.resolve().relative_to(srcroot)
+                except ValueError:
+                    continue
+                shipped.add(from_.resolve())
+        mine, his = GATE_MOD.owner_seal_lines(GATE_MOD.owner_seal_findings(u.src, _sidecar_of, only=shipped))
+        if his:
+            print(f"  ! {u.name}: {len(his)} file(s) the gardener owns ship awaiting his own seal: {', '.join(his)}")
+        if mine:
+            raise Refused(
+                f"{u.name}: {len(mine)} shipped file(s) of the shintai without {u.name}'s owner seal; invoke {u.name} to "
+                f"sign them (the gardener, 2026-10-24): " + "; ".join(mine)
+            )
+
     # every seal that ships must still hold, at the registry's key
     broken = []
     for f in sorted(stage.rglob("*")):
@@ -1246,6 +1331,7 @@ def stage_unit(u: Unit, stage: Path, pl: PackageList, keys: str, review: bool, c
         "body": body8,
         "sealed_by": fp[:8],
         "manifest": hashlib.sha256(manifest.read_bytes()).hexdigest()[:8],
+        "pending": [pending] if pending else [],
     }
 
 
@@ -1288,6 +1374,31 @@ def _is_tombstone(raw: bytes) -> bool:
     return bool(m and re.search(r"^status:\s*moved\s*$", m.group(1), re.M))
 
 
+BUNDLE_FIELDS = {"role"}  # the registry fields a bundle source may name in braces
+_PLACEHOLDER = re.compile(r"\{([a-z-]+)\}")
+
+
+def _fill(ref: str, row: dict, name: str) -> str:
+    """A bundle source naming `{field}`, filled from the kin's registry row. One list-wide line,
+    "assets/role.md": "core:roles/{role}/role.md", bakes every body's role file from the role's master (Tasai's yes,
+    2026-10-24: a stale role copy in a body is a second master). The registry says what binds, never a slug
+    list here. A field outside BUNDLE_FIELDS, a kin without the field, or a value that is no plain name
+    (one path segment, so "../x" cannot climb out) refuses."""
+
+    def sub(m: re.Match) -> str:
+        k = m.group(1)
+        if k not in BUNDLE_FIELDS:
+            raise Refused(f"bundle: {ref} names {{{k}}}, not a field a bundle may use ({', '.join(sorted(BUNDLE_FIELDS))})")
+        v = row.get(k)
+        if not isinstance(v, str) or not v:
+            raise Refused(f"{name}: bundle {ref} needs the registry's {k}, and {name} has none")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", v):
+            raise Refused(f"{name}: the registry's {k} {v!r} is no plain name, so {ref} cannot be filled")
+        return v
+
+    return _PLACEHOLDER.sub(sub, ref)
+
+
 def _bundle(pl: PackageList, u: Unit, review: bool) -> list[tuple[str, Path]]:
     """(dest, source) for the shared documents a body carries, verbatim.
 
@@ -1307,7 +1418,8 @@ def _bundle(pl: PackageList, u: Unit, review: bool) -> list[tuple[str, Path]]:
         files.update((spec or {}).get("files") or {})
     if not files:
         return []
-    kin_type = next((a.get("type") for a in pl.registry(u.root_name) if a.get("slug") == u.name), None)
+    row = next((a for a in pl.registry(u.root_name) if a.get("slug") == u.name), {})
+    kin_type = row.get("type")
     out = []
     for dest, ref in files.items():
         if ref is None:  # a body's own entry opts out of a list-wide file
@@ -1316,7 +1428,7 @@ def _bundle(pl: PackageList, u: Unit, review: bool) -> list[tuple[str, Path]]:
             if "types" in ref and kin_type not in ref["types"]:
                 continue
             ref = ref["from"]
-        src = pl.ref(ref)
+        src = pl.ref(_fill(ref, row, u.name))
         if not src.is_file():
             raise Refused(f"bundle: {ref} is not there ({src})")
         m = FM_RE.match(src.read_text(encoding="utf-8"))
@@ -1458,6 +1570,35 @@ def _stage_greeting_kit(u: Unit, stage: Path, pl: PackageList) -> None:
         + "\n",
         encoding="utf-8",
     )
+    _stage_face_pin(u, stage)
+
+
+def _stage_face_pin(u: Unit, stage: Path) -> None:
+    """2026-10-23: the face travels. fill-greeting.py links a face from a faces pin, and in a package the
+    script looks at identity/faces.json; with no file there, a standalone install greets with the seal, not the face
+    (the gardener's "nice intro with thumbnail"). The pin is the one beside the registry that gave the row, in the
+    same root, copied byte for byte with the pin's own seal (the address is provenance, never a verdict, as the
+    kit's). The shipped fill-greeting.py's own lookup then runs on the stage and must find the face there, so a pin
+    the script would refuse or skip refuses the package here. A root with no pin builds without one, and says so."""
+    pin = u.root / FACES_PIN
+    if (stage / FACES_ROW).exists():
+        raise Refused(f"{u.name}: the source already has {FACES_ROW}; the builder will not overwrite it")
+    if not pin.is_file():
+        print(f"  ! {u.name}: no {FACES_PIN} in root {u.root_name!r}: the greeting shows the seal, not the face")
+        return
+    if not _cp(pin, stage / FACES_ROW):
+        raise Refused(f"{u.name}: {pin} is not committed; a face pin ships only as committed")
+    side = _sidecar_of(pin)
+    if side is not None:
+        _cp(side, (stage / FACES_ROW).parent / side.name)  # both are named faces.json, so the sidecar's name holds
+    fill = stage / GREETING_DIR / "bonsai-garden-portrait" / "scripts" / "fill-greeting.py"
+    mod = _load(f"_fill_greeting_{u.name}", fill)
+    try:
+        url, found = mod.find_face([stage], u.name)
+    except mod.Refused as e:
+        raise Refused(f"{u.name}: the face pin {pin} would not be read in the package: {e}") from e
+    if not url or Path(found).resolve() != (stage / FACES_ROW).resolve():
+        raise Refused(f"{u.name}: fill-greeting.py does not find the face in the package ({found})")
 
 
 COUNTER: Path | None = None  # --counter: the garden's one build counter, when the build names it
@@ -1480,13 +1621,157 @@ def _next_build(counter: Path, name: str, version: str) -> int:
     return n
 
 
+# A body's version moves with its content (the gardener, 2026-10-24: "we should never re-use old version numbers if we
+# applied technical patches to a shintai. Otherwise the version number is useless. So, pls bump up the patch number
+# *every* time we apply a change."). The owner declares MAJOR.MINOR.PATCH[-label]; the builder counts BUILD, which only
+# re-packages one body (a re-seal, a re-pack). The counter keeps, beside each count, the hash of the body it counted
+# (`_bodies`, a key no name can take), so a different body under a counted M.m.p is refused: bump the patch.
+BODIES_KEY = "_bodies"
+
+
+def _body_source_hash(u: "Unit", pl: "PackageList") -> str:
+    """sha256 over what a body ships from its own folder: every tracked file under the shipped paths inside u.src, by
+    path and bytes. Seals are left out (a re-seal is a BUILD, not a change of content); what the builder adds (the stamp,
+    the bundle, the greeting kit, the verifier) is not the body's, so it is not in it either."""
+    src = u.src.resolve()
+    files: set[Path] = set()
+    for p in _shipped_paths(u, pl):
+        p = Path(p)
+        try:
+            p.resolve().relative_to(src)
+        except ValueError:
+            continue  # an include from elsewhere: not this body's own
+        if p.is_dir():
+            files.update(f.resolve() for f in _tracked_under(p))
+        elif p.is_file() and _tracked(p):
+            files.add(p.resolve())
+    h = hashlib.sha256()
+    for f in sorted(files):
+        if f.name.endswith(_SIG) or not f.is_file():
+            continue
+        h.update(f.relative_to(src).as_posix().encode() + b"\0" + hashlib.sha256(f.read_bytes()).digest())
+    return h.hexdigest()
+
+
+def _peek_body_build(counter: Path, name: str, version: str, body: str) -> int:
+    """The BUILD this body would take, or Refused: never a used number for a changed body. Writes nothing; the count and
+    the hash are recorded only once the package is written (_record_body_build), so a refused run spends no number."""
+    try:
+        data = json.loads(counter.read_text())
+    except Exception:
+        data = {}
+    n = int((data.get(name) or {}).get(version, 0))
+    if n == 0:
+        return 1
+    seen = ((data.get(BODIES_KEY) or {}).get(name) or {}).get(version)
+    if seen is None:
+        raise Refused(
+            f"{name}: {version} was built {n} time(s) before the builder kept body hashes, so this body cannot be told "
+            f"from what shipped as {version}.{n}: bump the patch (the gardener, 2026-10-24: never re-use a version number)"
+        )
+    if seen != body:
+        raise Refused(
+            f"{name}: {version} already shipped (build {n}) with a different body: bump the patch, never re-use a version "
+            f"number (the gardener, 2026-10-24)"
+        )
+    return n + 1
+
+
+def _record_body_build(counter: Path, name: str, version: str, n: int, body: str) -> None:
+    try:
+        data = json.loads(counter.read_text())
+    except Exception:
+        data = {}
+    data[name] = {version: n}
+    data.setdefault(BODIES_KEY, {})[name] = {version: body}
+    counter.parent.mkdir(parents=True, exist_ok=True)
+    counter.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
+
+
+# What the builder wrote, so it can clear what it wrote last time (the gardener, 2026-10-24: "pls remove any old build
+# files automatically when building a new plugin"). Narrow by design: it deletes only files it recorded writing, in the
+# out folder, whose bytes are still the ones it wrote; never a file it has no record of, the counter, or this record.
+OUTPUTS_RECORD = "build-outputs.json"
+OUTPUTS_FORMAT = "bonsai-garden-build-outputs/1"
+
+
+def _outputs_read(out: Path) -> dict:
+    p = out / OUTPUTS_RECORD
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {"format": OUTPUTS_FORMAT, "packages": {}}
+    except Exception as e:
+        raise Refused(f"{p}: the build-outputs record does not read ({e}); refusing to guess what was written") from None
+    if d.get("format") != OUTPUTS_FORMAT or not isinstance(d.get("packages"), dict):
+        raise Refused(f"{p}: not a {OUTPUTS_FORMAT} record; refusing to guess what was written")
+    return d
+
+
+def _outputs_write(out: Path, d: dict) -> None:
+    (out / OUTPUTS_RECORD).write_text(json.dumps(d, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _remove_recorded(out: Path, name: str, files: dict, why: str) -> None:
+    """Remove each recorded file still holding the bytes this builder wrote; name the rest. Every removal is printed."""
+    keep = {OUTPUTS_RECORD, counter_file(out).name}
+    for fname, sha in sorted(files.items()):
+        p = out / fname
+        if "/" in fname or "\\" in fname or fname in ("", ".", "..") or fname in keep:
+            print(f"  ! {name}: {fname!r} in the build-outputs record is not a file this builder writes; left alone")
+            continue
+        if not p.is_file():
+            continue
+        if hashlib.sha256(p.read_bytes()).hexdigest() != sha:
+            print(f"  ! {name}: {fname} left in place: its bytes changed since {name}'s build wrote it")
+            continue
+        p.unlink()
+        print(f"  - {name}: removed {fname} ({why})")
+
+
+def record_outputs(out: Path, name: str, written: list[str]) -> None:
+    """After `name` built: drop what its last build wrote and this one did not, and record what this one wrote. A file
+    another package recorded and this one now writes changes hands, so it is never removed under the old name."""
+    d = _outputs_read(out)
+    pk = d["packages"]
+    now = {f: hashlib.sha256((out / f).read_bytes()).hexdigest() for f in written if (out / f).is_file()}
+    for other, rec in pk.items():
+        if other != name:
+            for f in now:
+                rec.get("files", {}).pop(f, None)
+    before = (pk.get(name) or {}).get("files") or {}
+    _remove_recorded(out, name, {f: s for f, s in before.items() if f not in now}, "its last build wrote it, this one did not")
+    pk[name] = {"files": now}
+    _outputs_write(out, d)
+
+
+def drop_unlisted_outputs(out: Path, names: set[str]) -> None:
+    """A build of the whole list: what a package the list no longer names wrote is removed, and its record with it."""
+    d = _outputs_read(out)
+    for name in sorted(set(d["packages"]) - names):
+        _remove_recorded(out, name, (d["packages"][name] or {}).get("files") or {}, "the list no longer names it")
+        del d["packages"][name]
+    _outputs_write(out, d)
+
+
 def _manifest(
     stage: Path, slug: str, owner: str, version: str, build_id: str, kind: str, unsealed: str | None = None
 ) -> Path:
     """sha256 of every shipped byte. Lifted; `owner` and `kind` added so a standalone skill and a
     plugin can name whose seal the manifest carries. `unsealed` (the core-alone build with no key): the
     reason, written into the manifest, so its own check answers UNSEALED and never ok. It names no source:
-    where a package was built from is the release's commit message, never a shipped file (2026-10-21)."""
+    where a package was built from is the release's commit message, never a shipped file (2026-10-21).
+    A bytecode cache in the stage refuses: the copy skips one, so any here came by another hand, and sealed in it
+    would ship a byproduct of running a script (B10-65, the Kizuna dry run, 2026-10-24)."""
+    caches = sorted(
+        f.relative_to(stage).as_posix()
+        for f in stage.rglob("*")
+        if f.is_file() and ("__pycache__" in f.relative_to(stage).parts or f.suffix == ".pyc")
+    )
+    if caches:
+        raise Refused(
+            f"{slug}: a bytecode cache in what would be sealed: {', '.join(caches[:4])}{' …' if len(caches) > 4 else ''}"
+        )
     files = {}
     for f in sorted(stage.rglob("*")):
         if f.is_file() and f.relative_to(stage).as_posix() not in (
@@ -1562,11 +1847,22 @@ def _zip(stage: Path, archive: Path, wrapper: str | None) -> None:
         )
     if archive.exists():
         archive.unlink()
+    # Every entry is 0644, or 0755 where the file is executable: never the stage's own mode. A mode git does not track
+    # reached the archive (a rewrite had left 79 body files owner-only, 0600), and the bon-sai-team 1.5.1 upload was
+    # refused (400, 2026-10-25) while every plugin the app had taken carried none.
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as z:
         for f in sorted(stage.rglob("*")):
             if f.is_file():
                 rel = f.relative_to(stage).as_posix()
-                z.write(f, f"{wrapper}/{rel}" if wrapper else rel)
+                info = zipfile.ZipInfo.from_file(f, f"{wrapper}/{rel}" if wrapper else rel)
+                info.external_attr = (stat.S_IFREG | (0o755 if f.stat().st_mode & 0o111 else 0o644)) << 16
+                info.compress_type = zipfile.ZIP_DEFLATED
+                z.writestr(info, f.read_bytes())
+
+
+def upload_length(s: str) -> int:
+    """A string's length as the upload counts it: UTF-16 units, so a character outside the BMP counts twice."""
+    return len(s.encode("utf-16-le")) // 2
 
 
 def _within_file_ceiling(where: str, folder: Path) -> None:
@@ -1607,7 +1903,12 @@ def package_unit(u: Unit, out: Path, pl: PackageList, keys: str, review: bool) -
         archive.unlink(missing_ok=True)
         raise Refused(f"{u.name}: archive is {size:,} B, over the {ceiling:,} B ceiling")
     shutil.copy2(archive, out / f"{u.name}.skill")
-    s.update(archive=str(archive), bytes=archive.stat().st_size, files=len(zipfile.ZipFile(archive).namelist()))
+    s.update(
+        archive=str(archive),
+        bytes=archive.stat().st_size,
+        files=len(zipfile.ZipFile(archive).namelist()),
+        outputs=[archive.name, f"{u.name}.skill"],
+    )
     return s
 
 
@@ -1630,6 +1931,12 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
         pj["repository"] = pj["repository"].get("url") or ""
         if not pj["repository"]:
             del pj["repository"]
+    desc = pj.get("description") or ""
+    if upload_length(desc) > MAX_PLUGIN_DESCRIPTION:
+        raise Refused(
+            f"{name}: plugin.json's description is {upload_length(desc)} characters; the upload takes at most "
+            f"{MAX_PLUGIN_DESCRIPTION} (shorten it at its source, {cfg['plugin-json']})"
+        )
     (stage / ".claude-plugin" / "plugin.json").write_text(json.dumps(pj, indent=2, ensure_ascii=False) + "\n")
     if extra:
         (stage / "bonsai-plugin.json").write_text(json.dumps(extra, indent=2, ensure_ascii=False) + "\n")
@@ -1678,7 +1985,7 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
                 continue
             a = next((x for x in pl.registry(root) if x.get("slug") == slug), {})
             if str(a.get("shintai", "")).startswith("shared:"):
-                continue  # travels inside its parent's vessel (registry shintai: shared:<parent>)
+                continue  # travels inside their parent's vessel (registry shintai: shared:<parent>)
             units.append(resolve_body(pl, root, slug, {**cfg.get("body-defaults", {}), **b}))
     for sref in cfg.get("skills") or []:
         sspec = sref if isinstance(sref, dict) else {"skill": sref}
@@ -1764,13 +2071,15 @@ def package_plugin(spec: dict, out: Path, pl: PackageList, keys: str, review: bo
         "files": len(zipfile.ZipFile(archive).namelist()),
         "skills": [s["name"] for s in summaries],
         "units": unit_archives,
+        "outputs": [archive.name, f"{name}.zip", *unit_archives],
+        "pending": [p for s in summaries for p in s.get("pending", [])],
     }
 
 
 def expand(pl: PackageList, only: set[str] | None) -> list[tuple[str, dict]]:
     """→ [(kind, spec)] with every roll expanded; refusal of a missing vessel happens at resolve."""
     jobs = []
-    # a roll member the list ALSO names as its own body is packaged once, from that explicit entry
+    # a roll member the list ALSO names as their own body is packaged once, from that explicit entry
     # (Bonsai, on the crew roll, lives in core; the roll resolved him in another root and refused;
     # Jisai, 2026-09-27)
     explicit = {p.get("slug") for p in pl.data.get("packages") or [] if p.get("kind") == "body"}
@@ -1785,9 +2094,9 @@ def expand(pl: PackageList, only: set[str] | None) -> list[tuple[str, dict]]:
             shared = {a["slug"] for a in pl.registry(p["root"]) if str(a.get("shintai", "")).startswith("shared:")}
             for s in slugs:
                 if s in shared:
-                    continue  # travels inside its parent's vessel
+                    continue  # travels inside their parent's vessel
                 if s in explicit:
-                    print(f"  · {s}: on the {p['roll']} roll and named as its own body; packaged once, from that entry")
+                    print(f"  · {s}: on the {p['roll']} roll and named as their own body; packaged once, from that entry")
                     continue
                 # a roll-wide spec, with the list's per-slug overrides on top (e.g. one body's max-bytes)
                 over = (p.get("overrides") or {}).get(s) or {}
@@ -1915,9 +2224,10 @@ def main() -> int:
         f"  keys: {a.keys}{'  · REVIEW (uncommitted allowed)' if a.review else ''}"
         f"{'  · UNSEALED' if pl.unsealed else ''}\n  counter: {counter_file(out)}\n{leave_line}\n"
     )
-    refused, done = [], []
+    refused, done, named = [], [], set()
     for kind, spec in expand(pl, set(a.only) if a.only else None):
         name = spec["name"]
+        named.add(name)
         try:
             if kind == "refused":
                 raise Refused(spec["why"])
@@ -1935,6 +2245,12 @@ def main() -> int:
             LIST_LEFT_OUT.clear()
             continue
         done.append(s)
+        # the package is written: its bodies' builds count now (a refused run spends no number, and a review build,
+        # which never ships, none either), and what it wrote replaces what its last build wrote
+        if not a.review:
+            for rec in s.get("pending", []):
+                _record_body_build(*rec)
+        record_outputs(out, name, s.get("outputs", []))
         if LIST_LEFT_OUT:
             print(
                 f"  · {name}: {len(LIST_LEFT_OUT)} file(s) left out, as the leave-out list says: "
@@ -1953,6 +2269,8 @@ def main() -> int:
             f"  {s['name']:<26} {s['build']:<30} {s['bytes']:>10,} B {s['files']:>4} files  "
             f"{seal}  from {s['source']}  gates PASS"
         )
+    if not a.only:  # the whole list: what a package it no longer names wrote goes too
+        drop_unlisted_outputs(out, named)
     if STAGE_BASE is not None:
         shutil.rmtree(STAGE_BASE, ignore_errors=True)
     print(

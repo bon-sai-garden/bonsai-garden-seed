@@ -2,7 +2,7 @@
 id: 01M37XP5ZZATK45GEN4R7K59JW
 title: "CV: Zensai for Bonsai"
 type: feedstock-cv
-tended-by: zensai
+tended-by: bonsai
 created: 2026-09-02
 updated: 2026-09-02
 version: "6"

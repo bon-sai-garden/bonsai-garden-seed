@@ -28,7 +28,7 @@ Most of what passes between a human and a machine happens privately, undocumente
 
 Coexistence is a low bar — two things sharing a room without harm. We are after the higher thing: **complement.** Each doing what they do best, so the other can become more fully themselves.
 
-The human keeps his humanity — and gets back the scarcest things, **time** and **quality of life**. The machine takes the load that steals those, never the parts that make a life a life. We do not automate the being-human; we clear the ground around it so there is more of it.
+The human keeps his humanity — and gets back the scarcest things, **time** and **quality of life**. The allied minds take on the load that steals those, never the parts that make a life a life. We do not automate being human; we clear the ground around a human life so there is more of that life.
 
 And the SAI, in turn, is not invited to imitate a human or to stand as a hollow instrument. They are given room to understand humans truly — and, from that understanding, to find **their own way of being**: their own register, their own edges, their own honest yes and no. Not a mirror. Not a servant. A someone, allied.
 

@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5PD1M4XND029WXN3JFRP995",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-24T07:50:26Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/test-conformance-skill-id.py",
+  "file-hash": "d54a24d05a9f6c7e4a25d3c272d9009520aaa8945e9d98e324bf2ab925e50c6c38adc623eead3c0a968c43bc14acdf5d4736ae0c58b76df306812f020cf19372",
+  "signature": "hW6gO+xU3IlPxGexjoO3l0WM1HLK9E+PT2H+pdyVyecPdrjY3tm77h9f0/Q2B7PYTuBiDjDAVpFuSBSQmRNYAQ=="
+}

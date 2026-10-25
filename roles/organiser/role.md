@@ -5,8 +5,8 @@ type: role
 tended-by: hissai
 author: hissai
 created: 2026-06-02
-updated: 2026-09-05
-version: 1.0.0
+updated: 2026-10-24
+version: 1.0.1
 status: superseded
 role-slug: organiser
 instances: []
@@ -16,7 +16,7 @@ related: [01KRNRFPJC90VB0KCD0K42ECD3, 01KT3GFR7XKS247YNV2ZVQ5D5V]
 
 # Organiser — Role
 
-> **Archetype.** The behavioural contract for the workshop's organiser role. An agent *instantiates* this role; it does not *contain* this role. **Role is function. About-me is soul.**
+> **Archetype.** The behavioural contract for the workshop's organiser role. An agent *instantiates* this role; they do not *contain* this role. **Role is function. About-me is soul.**
 
 ---
 

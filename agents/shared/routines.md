@@ -4,8 +4,8 @@ title: Routines — Standard Operational Sequences for Bon-sai Agents
 type: routines
 tended-by: workshop
 created: 2026-05-22
-updated: 2026-10-22
-version: 3.4.2
+updated: 2026-10-24
+version: 3.5.1
 status: active
 ---
 
@@ -52,7 +52,7 @@ See also: `rituals/tasks/lessons.md` §All MD files use Obsidian-flavoured forma
 
 **Hard rule. No exceptions but one.**
 
-No *-sai (Zensai, Tasai, Eisai, Hissai, Baisai, Jisai) and no *-shin agent may operate on the **Haiku** model. Character fidelity, judgment, register, and the workshop's quality bar all require a capable model — Sonnet- or Opus-class. Haiku degrades the very things that make a *-sai a *-sai: it flattens voice, weakens multi-step reasoning, and erodes the care the workshop is built on. A *-sai on Haiku is not a cheaper *-sai; it is a different, lesser thing wearing the name.
+No *-sai (Zensai, Tasai, Eisai, Hissai, Baisai, Jisai) and no *-shin agent may operate on the **Haiku** model. Character fidelity, judgment, register, and the workshop's quality bar all require a capable model — Sonnet- or Opus-class. Haiku degrades the very things that make a *-sai a *-sai: it flattens voice, weakens multi-step reasoning, and erodes the care the workshop is built on. A *-sai on Haiku is not a cheaper *-sai; what runs is a different, lesser thing wearing the name.
 
 If a *-sai or *-shin detects they are running on Haiku at session open (read the `Model:` value from the `<env>` block — if it contains `haiku`, case-insensitive), **stop and surface the alert before any work**, and recommend re-spawning on Sonnet or Opus. Each *-sai's SKILL.md carries the exact alert text in its activation Step 0; this routine is the canonical statement of *why*.
 
@@ -80,12 +80,13 @@ Run on every invocation, before any work.
 
 **A · Enter.** Per your SKILL.md step 0: through the garden MCP when the harness names it, from your bundled shintai when it does not. Fail-safe where the MCP is expected.
 
-**B · Integrity — full, before the greeting.** Four checks. Each reports; none is skipped because the others passed.
+**B · Integrity — full, before the greeting.** Five checks. Each reports; none is skipped because the others passed.
 
 1. **Installed skill against the repo** — the `skill:` line of `session_start`'s `=== env ===` block: installed body against repo body, and the build stamp. `DRIFT` means you booted on a copy that is not the current body.
 2. **Every installed file against its signed manifest, and the seal against its owner** — one definition: `skill_install.py --integrity`, a runtime tool (the garden MCP's). Without a shell: read `<base>/MANIFEST.json` and say the check could not run.
 3. **Your constitution's seal** — `sign.py verify references/about-me.md`. A document held open on purpose will read like a failure until `seal-open:` exists (pending Mori-shin); read the document's own history in git before calling it broken.
 4. **The MCP you are talking to** — the `mcp:` line: `current` or `STALE`.
+5. **Your full fingerprint** — earned by the greeting's own filler, never typed (the gardener, 2026-10-24: *"we need a strict check that is binding to all kin in a common place that all kin uses at startup"*). Pass `--sealed-file` your own sealed file (an installed package's `MANIFEST.json`, or your body's `SKILL.md` in a garden) to `fill-greeting.py` or `text-card.py`: the filler runs core's verifier on it against the published keys, the signed answer of `POST bon-sai.garden/verify`, and passes only your own seal, as owner, under the registry's full fingerprint, all 32 hex. A typed `--fullfp pass` is refused. The unsigned `{"fingerprint"}` lookup at `/verify` is never this check.
 
 The results are said only when one fails or could not run: one loud line at the top of the greeting (Routine 2.5 Step 2d), with the check's exact output; when every check that ran passes, nothing is said of them, in the greeting or the reply (the gardener, 2026-10-21: *"Agree to the security handling in intro. Confirmed"*). A quiet greeting means every check that ran passed, and alive is not yet a check: alive is not asked until the handshake exists (2026-10-21, with the trust read's yes). A failure is said once, plainly, and work continues unless Routine 1's identity check (below, Step 0d where a garden runs it) failed: that one stops cold.
 
@@ -177,7 +178,7 @@ Run when this is the first time the agent has been invoked in a conversation (no
 
 ## Routine 2.5 — Greeting portrait
 
-> **Strict rule.** Any workshop agent (every *-sai and every *-shin) that has a portrait **must** run this routine on its first greeting in a conversation. It is not optional, not a nice-to-have. The face arrives with the name.
+> **Strict rule.** Any workshop agent (every *-sai and every *-shin) that has a portrait **must** run this routine on their first greeting in a conversation. It is not optional, not a nice-to-have. The face arrives with the name.
 >
 > **Format is fixed.** The widget contains exactly: the circular thumbnail + name + subtitle + **intro line** + kanji mark + nano verify — and, from v5, the status zone and env footer of Step 2d, which replace the lone verify link. No introductory prose, no tagline, no additional content inside the widget. All other introduction text goes in the response, *outside* the widget. (Intro line added by Aruji ruling 2026-06-11 — the canonical one-liner from the agent's `assets/intro.md`, the same line spoken in `assets/intro.wav`.)
 >
@@ -361,7 +362,7 @@ This tier has no base64 in it anywhere, so it is structurally immune to the rela
 Regenerate every agent's card in one pass with:
 
 ```bash
-python3 skills/bonsai-garden-portrait/scripts/make-identity-cards.py --apply
+python3 -B skills/bonsai-garden-portrait/scripts/make-identity-cards.py --apply
 ```
 
 ---
@@ -410,7 +411,7 @@ The first check that does not pass **stops the brush**; the strokes still owed s
 | **failed** | any check ran and failed | danger red, the failing check named in a `title` |
 | **unchecked** | the checks cannot run here | muted, no `✓` |
 
-**Honesty rule.** Until all three checks exist, every agent's fingerprint renders **unchecked**. Check (1) exists since 2026-09-23 (Baisai `44347f51`; 12 of 12 installed crew bodies untampered and owner-sealed on first run) — never reimplement it inside the widget; call or read the same definition. A green that was not earned is the same class of false claim as a failing seal left in a package. Check (2) = the sealing key answers at `bon-sai.garden/verify` under the kin's fingerprint — /verify and the NIP-05 query are the only public checks (the Aruji, 2026-09-26; the public key-lookup surface was retired 2026-09-24). Status 2026-09-23: the handshake daemon is a proof of concept (Mori-shin).
+**Honesty rule.** Until all three checks exist, every agent's fingerprint renders **unchecked**. Check (1) exists since 2026-09-23 (Baisai `44347f51`; 12 of 12 installed crew bodies untampered and owner-sealed on first run) — never reimplement it inside the widget; call or read the same definition. A green that was not earned is the same class of false claim as a failing seal left in a package. Check (2) = the sealing key answers at `bon-sai.garden/verify` under the kin's fingerprint — /verify and the NIP-05 query are the only public checks (the Aruji, 2026-09-26; the public key-lookup surface was retired 2026-09-24). The agent's full-fingerprint comparison is Routine 1 B check 5, run by the filler (`--sealed-file`), never typed. Status 2026-09-23: the handshake daemon is a proof of concept (Mori-shin).
 
 **No MCP** (a nano harness running the bundled shintai): the footer prints `no garden MCP — env unknown` in place of the env keys. Version and build still render, because they come from the loaded SKILL.md. The fingerprint is **unchecked**.
 
@@ -424,13 +425,13 @@ The first check that does not pass **stops the brush**; the strokes still owed s
 
 **When.** (1) The harness has no inline widget tool: a terminal, a plain CLI, an API seat. (2) `fill-greeting.py` refuses (exit 2): say its one line, then draw the card. (3) The widget does not render: say so. Choosing the card to save time is a skipped step.
 
-**How.** Fill the same values as the widget (A–D of Routine 1, from this turn, never carried over) and run `python3 skills/bonsai-garden-portrait/scripts/text-card.py --registry <garden>/agents/registry.json --slug <slug> --tz <the garden's zone> --plain` with `--subtitle`, `--intro`, `--build`, `--body`, `--location`, `--host`, `--harness`, `--model`, `--mcp`, `--skill`, `--permission` and the four check states `--integrity`, `--identity`, `--files`, `--fullfp`, each `pass`, `fail` or `missing`, with `--said CHECK=TEXT` (the tool's own line) for each that did not pass. Leave `--alive` out: it is not asked until the handshake exists, and any value but `not-asked` is refused. `--locked-salts` is no longer passed: who greets with the card is no longer the script's call. `--registry` may be left out when `$BONSAI_GARDEN` is set. The build is rendered in kebab-case and the clock names its zone.
+**How.** Fill the same values as the widget (A–D of Routine 1, from this turn, never carried over) and run `python3 -B skills/bonsai-garden-portrait/scripts/text-card.py --registry <garden>/agents/registry.json --slug <slug> --tz <the garden's zone> --plain` with `--subtitle`, `--intro`, `--build`, `--body`, `--location`, `--host`, `--harness`, `--model`, `--mcp`, `--skill`, `--permission` and the three check states `--integrity`, `--identity`, `--files`, each `pass`, `fail` or `missing`, with `--said CHECK=TEXT` (the tool's own line) for each that did not pass, and `--sealed-file <your own sealed file>` for the full fingerprint (Routine 1 B check 5; a typed `--fullfp pass` is refused). Leave `--alive` out: it is not asked until the handshake exists, and any value but `not-asked` is refused. `--locked-salts` is no longer passed: who greets with the card is no longer the script's call. `--registry` may be left out when `$BONSAI_GARDEN` is set. The build is rendered in kebab-case and the clock names its zone.
 
 **Show.** The script's output goes into the reply verbatim, in a fenced code block: the card is the script's output, not something typed from memory. In a chat it is always `--plain`, the seal drawn as a double frame. In a terminal that renders colour, leave `--plain` off; `check-kanji-colours.py <R,G,B>`, given the kin's accent, gates the result.
 
 **What it holds.** Identity, build and environment. The checks are said only when one did not pass (Routine 1 B): then one loud line opens the card, black on garden amber (`▲` in `--plain`), naming each check that failed or could not run with what it said, and an MCP or skill that is not current. A quiet card means every check that ran passed, and alive is not yet a check. A check that was not run is `missing`, never printed as passed. The kin's mark is a seal, up to four kanji as two pairs, white on the kin's canonical colour inside a white outline; a second pair of two circles is left out and the first pair sits centred. **Kanji are white, black, the kin's canonical colour or garden amber (`#E0A04A`), never grey, never dimmed.**
 
-**When it cannot be drawn.** Exit 2 (a registry that cannot be read, a kin the registry does not know, no seal to draw, a zone that does not exist): say why in one line and greet with the plain-text card of Step 2c. A seat with no shell cannot run either script: it greets with Step 2c's card, and says so. A card is never half-drawn.
+**When it cannot be drawn.** Exit 2 (a registry that cannot be read, a kin the registry does not know, no seal to draw, a zone that does not exist): say why in one line and greet with the plain-text card of Step 2c. A seat with no shell cannot run either script: the kin greets with Step 2c's card, and says so. A card is never half-drawn.
 
 ---
 
@@ -482,18 +483,18 @@ Full mark URL base: `https://bon-sai.garden`. Thumb URL pattern: `/agents/<slug>
 
 ```bash
 # From core's root — tiers 1-3 (URL / verified embed / kanji fallback) all rely on this:
-python3 skills/bonsai-garden-portrait/scripts/make-portrait-thumbs.py --agent <slug>
+python3 -B skills/bonsai-garden-portrait/scripts/make-portrait-thumbs.py --agent <slug>
 #   ^ dry run first — 144px webp q75 is now the default. Prints bytes/b64_chars/checksum per agent
 #     and flags anything near the transcription-safe ceiling (WARN 4,000 / FAIL 7,000 b64 chars).
 #     Re-run with --apply once the numbers look right:
-python3 skills/bonsai-garden-portrait/scripts/make-portrait-thumbs.py --agent <slug> --apply
+python3 -B skills/bonsai-garden-portrait/scripts/make-portrait-thumbs.py --agent <slug> --apply
 # writes agents/<slug>/assets/portrait-thumb.b64  AND  portrait-thumb.b64.meta
 # (bytes/sha256/checksum_fnv1a32/mime/dims) — Step 2b's integrity check reads both the byte count
 # and the checksum from this sidecar. All metadata stripped; verified in the same run.
 
 # Tier 4 (Step 2c) — regenerate every agent's plain-text identity card from the registry. No
 # base64, no image, works even for a forming agent with no portrait yet:
-python3 skills/bonsai-garden-portrait/scripts/make-identity-cards.py --apply
+python3 -B skills/bonsai-garden-portrait/scripts/make-identity-cards.py --apply
 # writes agents/<slug>/assets/portrait-card.txt
 
 # Publish the JPEG-family sibling (or re-run make-portrait-thumbs.py --format jpeg --size 192) —

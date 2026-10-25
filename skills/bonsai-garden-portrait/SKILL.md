@@ -3,9 +3,9 @@ name: bonsai-garden-portrait
 description: >
   Turn a source photo or render into an agent's canonical 512x512 portrait,
   woven with EXIF authorship metadata and a signed C2PA manifest, then
-  generate its greeting-widget thumbnail and its universal plain-text
-  identity card. The full pipeline behind every agent's face in the garden.
-version: 1.4.1
+  generate the portrait's greeting-widget thumbnail and the agent's universal
+  plain-text identity card. The full pipeline behind every agent's face in the garden.
+version: 1.5.3
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -18,9 +18,9 @@ version: 1.4.1
 Load this skill through the Skill tool (`bonsai-garden-core:bonsai-garden-portrait`), never from a dev checkout, and run its integrity line first. Then, from this skill's base directory:
 
 ```bash
-python3 scripts/fill-greeting.py --garden <the garden root> --slug <the kin> \
+python3 -B scripts/fill-greeting.py --garden <the garden root> --slug <the kin> \
   --subtitle "<one line>" --version <x.y.z> [--build <label>] \
-  --integrity <pass|fail|missing> --identity … --files … --fullfp … [--said CHECK=TEXT …] \
+  --integrity <pass|fail|missing> --identity … --files … --sealed-file <the kin's own sealed file> [--said CHECK=TEXT …] \
   --location "<where>" [--tz <zone>] --host <host> --harness "<harness>" --model "<model>" \
   --mcp "<mcp line>" --skill "<skill line>" --permission <mode> --out greeting.html
 ```
@@ -37,7 +37,7 @@ Pass the output file's content, **verbatim**, to the harness's inline widget too
 | `--integrity` | the `integrity:` line of `bonsai_session_start`: `pass` only on `ok` (in a rehearsal pot, `ok · lab-preview pot`, and say it is a rehearsal's), `fail` on `STOP`, `missing` if it did not run. |
 | `--identity`, `--files` | `missing` where there is no published-key or manifest check of the body: a pot has neither. Never `pass` unrun. |
 | `--alive` | **leave it out**: not asked until the handshake exists. Any value but `not-asked` is refused (exit 2). A session-start that answered is not the handshake. |
-| `--fullfp` | `pass` only if the full fingerprint the verifier printed for the kin's seal equals the registry's. `missing` otherwise. |
+| `--sealed-file` | **the full fingerprint is earned here, never typed** (the gardener, 2026-10-24: *"we need a strict check that is binding to all kin in a common place that all kin uses at startup"*). The kin's own sealed file: an installed package's `MANIFEST.json`, or the body's `SKILL.md` in a garden; any other file the kin sealed fails, so the pass is bound to the body. The filler runs core's verifier on that file against the published keys (the signed answer of `POST bon-sai.garden/verify`) and passes the check only when the seal is the kin's own, as owner, under the registry's full fingerprint, all 32 hex; otherwise the loud line carries the verifier's words. `--fullfp pass` is refused, and `--fullfp` beside `--sealed-file` too; `--fullfp fail` or `missing` stand on the caller's word. Without either, the check could not run, and the card says so. |
 | `--location`, `--host`, `--mcp`, `--skill` | the session-start `=== env ===` block, parsed by key. Where location is not enabled, write exactly that in `--location`; never a guess. The clock is read by the script (`--tz` for the zone); never type a time. |
 | `--said` | for a check that failed or could not run: the tool's own line, copied. Nothing for a check that passed. |
 | `--harness`, `--model`, `--permission` | the agent's own context; the server cannot see them. |
@@ -72,7 +72,7 @@ Bonsai Garden's own workshop can lean on a public repo and jsDelivr once MVP 1.0
 ## Stage 1 — canonical portrait + weave
 
 ```bash
-python3 scripts/make-canonical-portrait.py \
+python3 -B scripts/make-canonical-portrait.py \
   --slug bonsai --source path/to/photo.jpg \
   --name "Bonsai" --org "Bonsai Garden"
 ```
@@ -89,7 +89,7 @@ Flags worth knowing: `--dry-run` (show the plan, write nothing), `--quick` (EXIF
 ## Stage 2 — thumbnail + checksummed sidecar
 
 ```bash
-python3 scripts/make-portrait-thumbs.py --agent bonsai --apply
+python3 -B scripts/make-portrait-thumbs.py --agent bonsai --apply
 ```
 
 Reads `portrait.png`, writes a metadata-stripped `portrait-thumb.b64` sized for a greeting widget (144px webp q75 by default — validated relay-safe, not just under the truncation ceiling) plus a `.meta` sidecar carrying byte count, SHA-256, **and an FNV-1a/32 checksum over the base64 string itself** — the second check exists because a same-length substitution can corrupt a relayed base64 string without changing its decoded byte count at all; see the script's own module docstring for the live incident that surfaced this.
@@ -97,7 +97,7 @@ Reads `portrait.png`, writes a metadata-stripped `portrait-thumb.b64` sized for 
 ## Stage 3 — universal identity card
 
 ```bash
-python3 scripts/make-identity-cards.py --apply
+python3 -B scripts/make-identity-cards.py --apply
 ```
 
 Reads `agents/registry.json` (or `--registry` to point elsewhere) and writes a fixed-width, box-drawing plain-text card per agent — no base64 anywhere in it, so it's immune to the relay-corruption class of bug entirely. This is the tier-4 fallback in `agents/shared/routines.md` §Routine 2.5: the floor for a surface that can render neither a widget nor an image at all. Also the only tier that still identifies a forming agent with no portrait or fp8 yet.

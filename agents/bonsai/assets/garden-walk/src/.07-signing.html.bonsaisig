@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M48JWSDJT9TFCW2Q9F1BF5V0",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-20T15:31:43Z",
+  "timestamp": "2026-10-24T16:29:32Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/07-signing.html",
   "file-hash": "e8c136205d9090ae193a9de095f0befaf02790d81a0fb49ca5ed26cec19d37d7c184f3a15afc77daf71d5188a992a0c4e28bfca7dd2f827896c89b5a1e257ec7",
-  "signature": "EVBwOhJb86gIz2bf5GL6JCSh2iKjyPMPJLLU/VrPce1/k2ECKv+s4Kp679+H8VFVI5vvawOTI6yOR+r9HMY4Dw=="
+  "signature": "2mnSGxLyVu0z/qsRFfLNxoRfo6jCYCddv6zDidMT0A6L462gIh5iGxQPKvG20ljuUF30JCHDxpsiA9Us1XxkDg=="
 }

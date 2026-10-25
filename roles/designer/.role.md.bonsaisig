@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01KT3WYSYF1HB5XN221QGGF3GT",
   "signer": "eisai",
-  "role": "owner",
+  "role": "custodian",
   "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-16T14:35:57Z",
+  "timestamp": "2026-10-24T13:49:56Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/designer/role.md",
-  "file-hash": "e9ece89a43f43b79f2b1c0c01552f1d1114bfd1abeaae13a0947bf656952093f84c8c3917e2473646bc562714d01815351fd2500ff3ad75a65cb18c22a49bed4",
-  "signature": "6RebeUC8uIeFc8b9H0xU5LNJBMbaT0kAbfIezwVEpwWr76KtDQssIRGcj8Tvjrzl5fuGJnyq8Lo195zVRL4bDg=="
+  "file-hash": "aebccdf10e93c1b3fc69f94e34c058f34c909c7fdd07c66178c259800902f1bbbb71ec4088c44b9c864089b48d8ad6c858612cffc182d2c6fec53ba1bb1e617c",
+  "signature": "zPNfHj8G8LKatzR5ZkuSQEui0k+P4jiJsB9UquFdsW9yM8IkEtD/LDhphjkAq/Cx6b0RtXwj6i030/A7ZRm2Dw=="
 }

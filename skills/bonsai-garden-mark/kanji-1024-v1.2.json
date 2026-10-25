@@ -12,7 +12,7 @@
     {"index": 2, "char": "多", "strokes": 6, "grade": "g2", "meanings": ["many", "frequent", "much"]},
     {"index": 3, "char": "園", "strokes": 13, "grade": "g2", "meanings": ["park", "garden", "yard", "farm"], "garden": {"meanings": ["the garden itself"], "note": "the gardener / garden class kanji", "source": "garden canon"}},
     {"index": 4, "char": "主", "strokes": 5, "grade": "g3", "meanings": ["lord", "chief", "master", "main thing", "principal"]},
-    {"index": 5, "char": "身", "strokes": 7, "grade": "g3", "meanings": ["somebody", "person", "one's station in life"], "garden": {"meanings": ["divided body"], "note": "the *-shin class kanji: a divided or companion body — a presence of its own, not its vessel", "source": "garden canon (2026-09-16 class ruling); wording Hissai, 2026-09-24"}},
+    {"index": 5, "char": "身", "strokes": 7, "grade": "g3", "meanings": ["somebody", "person", "one's station in life"], "garden": {"meanings": ["divided body"], "note": "the *-shin class kanji: a divided or companion body — a presence of their own, not their vessel", "source": "garden canon (2026-09-16 class ruling); wording Hissai, 2026-09-24"}},
     {"index": 6, "char": "筆", "strokes": 12, "grade": "g3", "meanings": ["writing brush", "writing", "painting brush", "handwriting"]},
     {"index": 7, "char": "樹", "strokes": 16, "grade": "g6", "meanings": ["tree", "timber", "standing timber"]},
     {"index": 8, "char": "富", "strokes": 12, "grade": "g5", "meanings": ["wealth", "enrich", "abundant"]},

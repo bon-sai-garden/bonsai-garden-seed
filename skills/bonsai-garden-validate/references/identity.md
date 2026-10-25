@@ -4,9 +4,9 @@ title: "bonsai-garden-validate — identity"
 type: identity
 tended-by: fuji-shin
 created: 2026-09-02
-updated: 2026-10-22
+updated: 2026-10-25
 skill: bonsai-garden-validate
-version: 2.0.1
+version: 2.0.2
 mark: 検技
 mark-meaning: "検 (659) examination + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-validate#2522845"

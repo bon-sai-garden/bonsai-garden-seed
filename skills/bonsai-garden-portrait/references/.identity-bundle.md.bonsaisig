@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3BS43NCTG8BB5GZZZD2V3CQ",
-  "signer": "eisai",
-  "role": "owner",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-21T21:16:19Z",
+  "signer": "baisai",
+  "role": "custodian",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-24T21:44:46Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-portrait/references/identity-bundle.md",
-  "file-hash": "5aa0b6328f8db9f5e521de3a977ee215636d5be371728ec6acc8c9a7113a47a18b1ae73c6fb31f805fe3d9888ef6e3c7e079fbcbe2f623611158d61262077bdd",
-  "signature": "8vx/Y5VsMQKEzL4i9fM8HasISj4emW5dIYeKPBoLI5Y/f9/4l0T+2baHIohMbumNX3sSJYLQE9qu/XGPX4IXCQ=="
+  "file-hash": "b5feaa7b833a0cf8ceba250dd5038b926131da2d80ed13776e710036ea2eada3d1c9d87c1b1850356509705a146055837146a3f8fce71bc84c9a55f87ac399a4",
+  "signature": "6I+DhnfYPli8xWZDJzZGnkmnUFUfEqHdO+me7dke3QwET1feLGH4+OnPWmDc7Y7eXG2YhAtowB3vCt2UnFzaCg=="
 }

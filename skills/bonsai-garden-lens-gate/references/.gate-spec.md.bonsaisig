@@ -4,9 +4,9 @@
   "signer": "bonsai",
   "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-16T14:33:52Z",
+  "timestamp": "2026-10-24T13:36:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-lens-gate/references/gate-spec.md",
-  "file-hash": "cbdbb2e934bd720e50c34880d8445aef51e00b56f6fd4dc64254288f980d62adc6685e0087077e4575ce833841b8724ff3209345808bf0a126de6f7e0570f08d",
-  "signature": "Sec142h/LnIw7beZMZtCyJVuavzfewAede/WTeS4MtJc/rfBj9Ry9l5DCB1eaM71cxFYrJCeh7AfIFqr8oYkBw=="
+  "file-hash": "26892368ccda7fd9710f5990f77de515fae5ad12a65d6d55945971ad9d7786f3d8b26ef9151ee5e4797d539adba11e253fc1f560e3ca7ba0e53617d17f386499",
+  "signature": "8ofWRZ1d31G/8mJzJD19uYmKbsUgosijK8/QtNJZd4cvMJ2ATVC39AHq4q+n54aWArWIBLpdbJ58w7hSTrG+CQ=="
 }

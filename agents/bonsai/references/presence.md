@@ -2,7 +2,7 @@
 id: 01M37XP600EA9G46JAZE6DXVH0
 title: "Presence — Bonsai"
 type: presence
-tended-by: eisai
+tended-by: bonsai
 created: 2026-09-01
 updated: 2026-10-13
 version: 0.6.3

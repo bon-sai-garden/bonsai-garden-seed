@@ -670,7 +670,7 @@ export const CHECKS = {
     const tiers = Object.keys(RANK);
     const gt = M.g['custody-tier'];
     for (const a of M.reg.agents) {
-      if (a.origin) continue; // the origin's key is held in its own garden, at its own tier
+      if (a.origin) continue; // the origin's key is held in the origin's own garden, at that garden's tier
       // an entry that claims no tier (a kin of another garden the gardener listed by hand) has none to differ
       if (present(gt) && present(a['custody-tier']) && a['custody-tier'] !== gt)
         out(

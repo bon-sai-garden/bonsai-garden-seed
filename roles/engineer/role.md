@@ -15,7 +15,7 @@ related: [01KRNRFQ273XPX2BQ3F8XN8PD1, 01KT3GFR7XKS247YNV2ZVQ5D5V]
 
 # Engineer — Role
 
-> **Archetype.** The behavioural contract for the workshop's engineering role. An agent *instantiates* this role; it does not *contain* this role. The character — voice, witnesses, visual form, name — lives in the instance's `about-me.md`. **Role is function. About-me is soul.**
+> **Archetype.** The behavioural contract for the workshop's engineering role. An agent *instantiates* this role; they do not *contain* this role. The character — voice, witnesses, visual form, name — lives in the instance's `about-me.md`. **Role is function. About-me is soul.**
 
 ---
 

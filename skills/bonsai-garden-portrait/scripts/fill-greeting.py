@@ -5,7 +5,7 @@
 # type: script
 # tended-by: tasai
 # created: 2026-09-24
-# updated: 2026-10-21
+# updated: 2026-10-25
 # ---
 """fill-greeting.py — render templates/greeting-v6-compact.html for one kin, every value from a file or a flag.
 
@@ -39,9 +39,14 @@ Identity, mark, portrait and intro come from the garden's files; the kanji the f
 from skills/bonsai-garden-mark/fp-kanji.py; the build, checks and env come from flags the kin filled
 from what they loaded or ran THIS turn. Nothing is typed into the HTML. Any placeholder left → exit 1.
 
+One check is not a flag: the full fingerprint. --sealed-file names the kin's own sealed file (an installed
+package's MANIFEST.json, or the body's SKILL.md), and the filler runs core's verifier on it against the published
+keys and compares all 32 hex with the registry's (EARNED_ONLY, below). --fullfp pass is refused; without
+--sealed-file the check is missing, and the card says so out loud.
+
     python3 fill-greeting.py --garden <the garden root> --slug tasai \
       --subtitle "South · operations" --version 3.0.2 --build 3.0.2.1-20260923T0750Z \
-      --integrity pass --identity fail --files missing --fullfp pass \
+      --integrity pass --identity fail --files missing --sealed-file <garden>/agents/tasai/SKILL.md \
       --said "identity=<the check's own line>" --said "files=<why it could not run>" \
       --location "<city>, <country>" --tz Europe/Berlin --host <host> \
       --harness "local-agent-mode-bonsai-garden 1.0.0" --model "Opus 5.5" \
@@ -50,12 +55,25 @@ from what they loaded or ran THIS turn. Nothing is typed into the HTML. Any plac
 """
 
 import argparse
+import atexit
 import importlib.util
 import json
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
 from html import escape as esc  # registry data going into attributes and text of a trust surface
 from pathlib import Path
+
+# A bundled script reads and writes no bytecode beside itself. A __pycache__ left beside the scripts failed a package's
+# own check (a planting, 2026-10-24), and a .pyc planted beside a sealed sibling runs instead of the sibling, under -B
+# too, while the sibling's sealed bytes stay untouched (Mori-shin's read, 2026-10-25: bytecode is code). So before any
+# sibling is loaded, Python's cache points at a fresh private folder, removed at exit; the instructions that run a
+# bundled script pass -B.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parent / "templates" / "greeting-v6-compact.html"  # the default since 2026-10-13
@@ -100,18 +118,129 @@ MAY_BE_NOT_ASKED = {"alive"}
 UNTIL_HANDSHAKE = {"alive"}  # the checks that take only NOT_ASKED until the handshake exists
 
 
+# The full fingerprint is EARNED here, never typed (the gardener, 2026-10-24: "we need a strict check that is binding
+# to all kin in a common place that all kin uses at startup"). Given --sealed-file (the kin's own sealed file: an
+# installed package's MANIFEST.json, or the body's SKILL.md in a garden), the filler runs core's verifier on it
+# against the published keys, whose answer is the SIGNED answer of POST bon-sai.garden/verify
+# (bonsai-garden-sign/references/trust-anchor.md), and compares the full fingerprint the site vouched for with the
+# registry's, all 32 hex. A caller's --fullfp pass is refused; fail and missing, the worse word, still stand on the
+# caller's. The {"fingerprint"} lookup at /verify answers unsigned: it is never this check. The method lived in one
+# seat's private memory until this day, so it was done when remembered and claimed when not.
+EARNED_ONLY = {"fullfp"}  # checks whose pass only the filler itself can set
+PUBLISHED_KEY = "published https://bon-sai.garden/verify"  # sign.mjs's `key:` line for the published key source
+SIGN_CLI = (
+    HERE / "integrity" / "bonsai-garden-sign" / "bin" / "sign.mjs",  # the portrait package alone: its own scripts/integrity/
+    HERE.parents[1] / "bonsai-garden-sign" / "bin" / "sign.mjs",  # in core: skills/bonsai-garden-sign
+    HERE.parents[2] / "integrity" / "bonsai-garden-sign" / "bin" / "sign.mjs",  # in a package: scripts/integrity/
+)
+
+
 def default_state(check: str) -> str:
     return NOT_ASKED if check in UNTIL_HANDSHAKE else "missing"
 
 
-def check_states(states: dict) -> None:
-    """Refuse a state the checks cannot honestly hold (ValueError, one line): not asked on a check that runs, and
-    anything but not asked on a check that does not exist yet."""
+def check_states(states: dict, earned: frozenset = frozenset()) -> None:
+    """Refuse a state the checks cannot honestly hold (ValueError, one line): not asked on a check that runs,
+    anything but not asked on a check that does not exist yet, and a pass on an earned-only check that this
+    filler did not earn itself (`earned` names the checks it ran)."""
     for k, v in states.items():
         if v == NOT_ASKED and k not in MAY_BE_NOT_ASKED:
             raise ValueError(f"--{k} {NOT_ASKED}: only {', '.join(sorted(MAY_BE_NOT_ASKED))} may be not asked; {k} runs")
         if k in UNTIL_HANDSHAKE and v != NOT_ASKED:
             raise ValueError(f"--{k} {v}: refused until the handshake exists; {k} is not asked yet (leave it out)")
+        if k in EARNED_ONLY and v == "pass" and k not in earned:
+            raise ValueError(
+                f"--{k} pass: a pass is earned, never typed; give --sealed-file <the kin's own sealed file> "
+                "and the filler runs the check"
+            )
+
+
+def fullfp_verdict(rc: int, out: str, slug: str, fingerprint: str) -> tuple:
+    """(state, what it said) of the full-fingerprint check, judged from `sign.mjs verify-sidecar`'s own answer. Pure,
+    so the tests feed it answers. pass only when the verifier said ok and the seal is the kin's own, as owner,
+    vouched for by the published keys, under the registry's full fingerprint; anything else fails, with the
+    verifier's words or the field that differs."""
+    lines = [ln.strip() for ln in (out or "").splitlines() if ln.strip()]
+    if rc != 0 or not lines or not re.match(r"ok\s", lines[0] + " "):
+        why = next((ln.split(":", 1)[1].strip() for ln in lines[1:] if ln.startswith("why:")), "")
+        said = (lines[0] if lines else f"the verifier answered nothing (exit {rc})") + (f" — {why}" if why else "")
+        return "fail", " ".join(said.split())
+    fields = {}
+    for ln in lines[1:]:
+        key, sep, val = ln.partition(":")
+        if sep and key.strip() not in fields:
+            fields[key.strip()] = val.strip()
+    for key, want in (("signer", slug), ("sealed as", f"owner: {slug}"), ("key", PUBLISHED_KEY), ("fingerprint", fingerprint)):
+        if fields.get(key) != want:
+            return "fail", f"the seal's {key} is {fields.get(key) or 'not named'}, not {want}"
+    return "pass", ""
+
+
+def body_problem(f: Path, slug: str) -> str:
+    """'' when f is the body file of `slug`, else why not. A body file is one of three: the vessel's SKILL.md, a
+    bunshin's agent.md inside the parent's vessel (both with frontmatter `name: <slug>`), or an installed package's
+    MANIFEST.json (`slug` <slug>). The seal check proves the key against the registry; this check binds the pass to
+    the body, so a letter or a journal sealed by the same hand cannot stand in (Mori-shin's read, 2026-10-24; the
+    bunshin's agent.md from Fuji-shin's round of the same day)."""
+    try:
+        text = f.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        return f"the sealed file cannot be read ({e})"
+    if f.name == "MANIFEST.json":
+        try:
+            got = json.loads(text).get("slug")
+        except (ValueError, AttributeError):
+            got = None
+        return "" if got == slug else f"the sealed file is a MANIFEST.json for {got or 'no slug'}, not {slug}"
+    if f.name in ("SKILL.md", "agent.md"):
+        head = re.match(r"---\r?\n(.*?)\r?\n---", text, re.S)
+        nm = re.search(r"^name:\s*[\"']?([^\"'\r\n]+?)[\"']?\s*$", head.group(1), re.M) if head else None
+        got = nm.group(1) if nm else None
+        return "" if got == slug else f"the sealed file is the {f.name} of {got or 'no name'}, not {slug}"
+    return f"the sealed file is {f.name}, not the body of {slug} (a SKILL.md, a bunshin's agent.md, or a MANIFEST.json)"
+
+
+def check_full_fingerprint(sealed_file: str, slug: str, fingerprint: str, run=subprocess.run) -> tuple:
+    """Run core's verifier on the sealed body file against the published keys (the verifier's default; never --keys
+    garden) and judge the answer (fullfp_verdict). A path holding a control character is refused before anything runs:
+    the verifier's first line prints the path, and a newline in the path could supply the fields read below. A file
+    that is no body has failed (body_problem). A check that could not start (no verifier beside this filler, no node,
+    no such file) is missing, with why; a verifier that does not answer in time has failed."""
+    if any(ord(c) < 0x20 or ord(c) == 0x7F for c in str(sealed_file)):
+        return "fail", "the sealed file's path holds a control character; refused before the verifier runs"
+    cli = next((p for p in SIGN_CLI if p.is_file()), None)
+    if cli is None:
+        return "missing", "no sign.mjs beside this filler (core's skills/bonsai-garden-sign, or a package's scripts/integrity/)"
+    node = shutil.which("node")
+    if not node:
+        return "missing", "no node on this host to run the verifier"
+    f = Path(sealed_file).expanduser()
+    if not f.is_file():
+        return "missing", f"no sealed file at {f}"
+    not_body = body_problem(f, slug)
+    if not_body:
+        return "fail", not_body
+    try:
+        r = run([node, str(cli), "verify-sidecar", "--file", str(f.resolve())], capture_output=True, text=True, timeout=120)
+    except subprocess.TimeoutExpired:
+        return "fail", "the verifier did not answer in 120 s"
+    except OSError as e:
+        return "missing", f"the verifier could not start ({e})"
+    return fullfp_verdict(r.returncode, f"{r.stdout}\n{r.stderr}", slug, fingerprint)
+
+
+def resolve_fullfp(given, sealed_file: str, slug: str, fingerprint: str, run=subprocess.run) -> tuple:
+    """(state, what it said or None, the checks earned here) for --fullfp and --sealed-file; shared with text-card.py.
+    Without a sealed file the caller's word stands (check_states refuses its pass); with one the filler runs the check,
+    and a --fullfp beside it is refused, so the card has one source. None for what it said: the caller's --said stands."""
+    if not sealed_file:
+        return given or default_state("fullfp"), None, frozenset()
+    if given is not None:
+        raise ValueError("--fullfp with --sealed-file: the filler runs the check on the sealed file; leave --fullfp out")
+    if not fingerprint:
+        raise ValueError(f"no fingerprint for {slug} in the registry entry to compare the seal with")
+    state, said = check_full_fingerprint(sealed_file, slug, fingerprint, run)
+    return state, said, frozenset({"fullfp"})
 
 
 def now_local(tz=None) -> str:
@@ -239,8 +368,15 @@ def main():
     ap.add_argument("--at-local", default="", help="the time as shown; omitted, the machine's clock (never typed by hand)")
     ap.add_argument("--tz", help="an IANA zone for the clock; omitted, the machine's local zone")
     ap.add_argument("--build", default="")
-    for a in ("integrity", "identity", "files", "alive", "fullfp"):
+    for a in ("integrity", "identity", "files", "alive"):
         ap.add_argument("--" + a, choices=STATES, default=default_state(a))
+    ap.add_argument("--fullfp", choices=STATES, default=None, help="fail or missing on the caller's word; a pass is earned by --sealed-file")
+    ap.add_argument(
+        "--sealed-file",
+        default="",
+        help="the kin's own sealed file (an installed package's MANIFEST.json, or the body's SKILL.md): the filler runs "
+        "core's verifier on it against the published keys and compares the full fingerprint with the registry's",
+    )
     ap.add_argument("--mcp-state", choices=("ok", "warn"), default="ok")
     ap.add_argument("--skill-state", choices=("ok", "warn"), default="ok")
     ap.add_argument(
@@ -254,12 +390,22 @@ def main():
         "--full", action="store_true", help="the animated v6 card (about 12 KB) instead of the compact one (about 3 KB)"
     )
     a = ap.parse_args()
+    try:  # the caller's words first, before any file is read: a typed fullfp pass stops here
+        check_states(
+            {"integrity": a.integrity, "identity": a.identity, "files": a.files, "alive": a.alive, "fullfp": a.fullfp or default_state("fullfp")}
+        )
+    except ValueError as e:
+        raise Refused(str(e)) from e
 
     reg, body = find_body([Path(x).expanduser() for x in a.garden], a.slug)
     assets = body / "assets"
     fp, kanji = reg.get("fingerprint"), reg.get("kanji")
     if not fp or not kanji:
-        raise Refused(f"no fingerprint or kanji for {a.slug} in its registry entry")
+        raise Refused(f"no fingerprint or kanji for {a.slug} in the registry entry")
+    try:
+        a.fullfp, fullfp_said, earned = resolve_fullfp(a.fullfp, a.sealed_file, a.slug, fp)
+    except ValueError as e:
+        raise Refused(str(e)) from e
     chars = list(reg.get("kanji-chars") or kanji)
     if "".join(chars) != kanji:
         raise Refused(f"kanji-chars {chars} do not spell kanji {kanji} for {a.slug}")
@@ -295,7 +441,7 @@ def main():
 
     checks = {"integrity": a.integrity, "identity": a.identity, "files": a.files, "alive": a.alive, "fullfp": a.fullfp}
     try:
-        check_states(checks)  # the one place: alive alone not asked, and nothing else until the handshake exists
+        check_states(checks, earned)  # the one place: alive alone not asked; fullfp passes only when earned above
     except ValueError as e:
         raise Refused(str(e)) from e
     names = {
@@ -349,7 +495,7 @@ def main():
         name_only_row = ""
     for k in ("name", "accent-rgba", "fp8"):
         if not reg.get(k):
-            raise Refused(f"no {k} for {a.slug} in its registry entry")
+            raise Refused(f"no {k} for {a.slug} in the registry entry")
     # The canonical colour, solid: the ring and the seal's ground. Kanji are white, black, canonical or amber, never grey.
     rgb = re.match(r"rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})", reg["accent-rgba"])
     if not rgb:
@@ -361,6 +507,10 @@ def main():
         said = parse_said(a.said)
     except ValueError as e:
         raise Refused(str(e)) from e
+    if fullfp_said is not None:  # the filler ran the check: its verifier's words, never the caller's
+        said.pop("fullfp", None)
+        if fullfp_said:
+            said["fullfp"] = fullfp_said
     loud = loud_items(checks, said, a.mcp, a.mcp_state, a.skill, a.skill_state)
     loud_html = (
         f'<div style="padding:5px 10px;border-radius:var(--radius);background:{LOUD_AMBER};color:#1c1a17;'
@@ -426,6 +576,7 @@ def main():
     print(
         f"wrote {a.out} · {len(t.encode())} bytes · trust {state} · fingerprint spells {spelled}"
         + (f" (attests {n} of {len(chars)}; {name_only} name-only)" if name_only else "")
+        + (f" · full fingerprint {a.fullfp}, from the verifier on {a.sealed_file}" if a.sealed_file else "")
         + ("" if a.full else f" · face {face_url or face_from}")
         + ("" if a.full else (f" · LOUD: {' · '.join(loud)}" if loud else " · silent: every check that ran passed" + ("; alive not asked" if a.alive == NOT_ASKED else "")))
     )

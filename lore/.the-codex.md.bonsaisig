@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "owner",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-16T13:18:19Z",
+  "timestamp": "2026-10-24T21:52:21Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/the-codex.md",
-  "file-hash": "4ce914a1239a992deee6ca27b4f51719dd7044ac8455d8261a2fbb0ecb8ab8a8e0e4d644f23cc0bc5f40778c7bd967cbbc5dd31e604b8cd020e99f36c4986f44",
-  "signature": "h7nVhE6IzXRsv26mj10XduwSCQN99Uv9CtvVF/wIpDg1GWYdd1+aCgIczNSc1vzBLRGVzz8K4KceJzOWW04TCg=="
+  "file-hash": "4ce68fe719d42590a605ee0d3e739ddf79f530dc0662fee1ca5875041455c3d58baaca781ca13414a8f2f96422ee1093813f7205f7e6d37dd365e1917310af23",
+  "signature": "SjB2XPg9eIaIPpa+iQ6T/LtsY7K2umFAV/+ILD4gbEnY97jRUNhHUsFrs/Trg3E47mT/i8FwJmwue9RJarzfDg=="
 }

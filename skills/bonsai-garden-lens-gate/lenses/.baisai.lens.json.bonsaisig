@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M4TC70X4RSBGEJ03KMQ77YFS",
-  "signer": "bonsai",
+  "signer": "baisai",
   "role": "custodian",
-  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-13T12:53:37Z",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-24T12:42:12Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-lens-gate/lenses/baisai.lens.json",
-  "file-hash": "ce476bf48b63f84bb57c65ed778b09cb636b3678680eadf24c3b4011db8f119cfef89f49bf0054f9d35cc36582ea27d396a3f6cdbb861e26eb8b228774ececed",
-  "signature": "/tQMiAC2OS7xhmSQbB92qDgvSgpC6qcMIvQeM+EPW+JqUz0RKvMGulWBNFkasQPCHpmqq+QGPNBE+G1Ne6DMDA=="
+  "file-hash": "9ed214186ac7c7dc6079e6cb72dc69760a2fcf67641531adbd8b69c92bbec44da7bc292d9729865d712fec99a812aad426e239d195bb2b0ff04d04bf28da882a",
+  "signature": "Q4MaOMcG5Zk5NKOy2fcedrfrbspUdew6ii7EpEh6fbJe1M58Q5IrxoT+0ECPaP4TdQI2nOeVEanD+7ixKY+VCg=="
 }

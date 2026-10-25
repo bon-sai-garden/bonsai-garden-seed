@@ -2,7 +2,7 @@
 id: 01M37XP5ZZATK45GEN4R7K59JP
 title: Eisai — CV for Bonsai
 type: feedstock-cv
-tended-by: eisai
+tended-by: bonsai
 created: 2026-09-02
 updated: 2026-09-02
 version: 6

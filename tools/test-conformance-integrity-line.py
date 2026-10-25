@@ -66,7 +66,7 @@ LINE = "> **Integrity first.** run the check.\n\n# Orma\n"
 no_id = findings(body(FM + LINE))
 note = [line for line in no_id.splitlines() if "identity document" in line]
 check(
-    "a kin with no identity document gets a note naming where it looks and why it matters",
+    "a kin with no identity document gets a note naming where the gate looks and why the document matters",
     bool(note) and note[0].lstrip().startswith("!") and "references/identity.md" in note[0] and "custodian" in note[0],
     str(note)[:240],
 )

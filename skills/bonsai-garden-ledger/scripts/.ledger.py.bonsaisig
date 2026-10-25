@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "owner",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-15T19:42:32Z",
+  "timestamp": "2026-10-24T23:31:51Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-ledger/scripts/ledger.py",
-  "file-hash": "7ef179b02504befe78a607e60aee0cbd92ae7e43306ebb812615341b65fa530559bad87ad39191b3f2951063ee5acd3bb8ef3127be690d57752e88f846bb5bf1",
-  "signature": "86Z/0WNSTQI1Bg7SP0JtGzpR9J5GUlUH0+CYrbQojvGK/5Xhu5NVt5QPwa5vXR3hEqkQNpkZTB270L+gDZAJCA=="
+  "file-hash": "b972f7b9719c0b2d630cf9739a27bccc94d98c0e6dad8dc158a0a0cd97f8b5960eb99d379f12be6d74efcfb7c1d177225f8772b923ae30e8e064806420f27b43",
+  "signature": "q/+XGPeMz8kMMOMNyjaF/GvpB66YxXU2hNl3KWuIT5MyL9pybChg3bpEbCN0U4/Lpgph80XVYAHQw8zAImZtDw=="
 }

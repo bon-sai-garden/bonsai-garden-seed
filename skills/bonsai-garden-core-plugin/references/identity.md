@@ -4,9 +4,9 @@ title: "bonsai-garden-core-plugin — identity"
 type: identity
 tended-by: baisai
 created: 2026-09-12
-updated: 2026-10-21
+updated: 2026-10-25
 skill: bonsai-garden-core-plugin
-version: 2.7.0
+version: 2.9.5
 mark: 装技
 mark-meaning: "装 (816) attire, pack + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-core-plugin#2310"

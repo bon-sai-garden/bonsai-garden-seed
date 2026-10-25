@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JVNV9F950FKKC741PDCJ4",
-  "signer": "eisai",
-  "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-06T17:59:47Z",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-24T19:43:15Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/05-the-tools.html",
-  "file-hash": "c8cebe9e7df898bf864d5c6a15fa48349ae33d3063b0d080dafe57c94fddbb4e4643ac9200a56ad02ff51a55df715f263d4cff8964204fd76ce4aaad072a35cc",
-  "signature": "EVRp0y6dGhEOI1TMaj3skx+ocs+C7EScDbMvn39NYPLBZxUkr7U+jRMhe7/LGoI1jQ2elg71VRalGGVRe8gKDg=="
+  "file-hash": "e0f95ab80d5086174cbfd10ba5f3d3a090b89ac29713836c1f2dc0ff5c6e71f73c54307a6bb7eb8b92d96889e191e56f805f593e7084d3406205c96ece257d45",
+  "signature": "m7L3C+M4v5iX9aX+SIJhrtT2D/LRg9DgY9h4CwQmaEK3oOWohf75B0hZDz4b1kWCSFoC4k3DCkP4p7f+7HX9CQ=="
 }

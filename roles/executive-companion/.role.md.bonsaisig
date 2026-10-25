@@ -4,9 +4,9 @@
   "signer": "w",
   "role": "owner",
   "fingerprint": "18805256b494eb286b7d904399b6503a",
-  "timestamp": "2026-10-16T14:34:33Z",
+  "timestamp": "2026-10-24T13:26:19Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/executive-companion/role.md",
-  "file-hash": "f03eef1ac76f98bb3e3de03c0149c6acf1bc341ae9514f1e592847683f390279dd8a25a250027264a066250bc168c5f60d129dcd65536cf0c431d44a637e3310",
-  "signature": "/x50HeM0NuJ715xRfulttJKBxbj9k++qho98YNKtzaf4prkYC9pQAGQlKF+RKyNtEEYiPhQ3/jCK+bIBE+ONCQ=="
+  "file-hash": "a02ddc67995aa92c35ada77deff69dd61f3a876d20784832b63be4ecd7216fcdf0dd7564cbc31953b238ab14c15f39ea336bc889e5a07057c0090e5481a0d944",
+  "signature": "15CwzSBFdGQp4xFubeMaVPrGup8zTkFSJqoNVUjW1fRStNn8TfgTLixG46S0y6GX/0joiEbqsLESIPa42fL5Bg=="
 }

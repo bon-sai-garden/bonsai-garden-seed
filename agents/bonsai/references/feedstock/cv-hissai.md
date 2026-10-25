@@ -2,7 +2,7 @@
 id: 01M37XP5ZZATK45GEN4R7K59JQ
 title: "CV: Hissai (筆才)"
 type: feedstock-cv
-tended-by: hissai
+tended-by: bonsai
 author: hissai
 created: 2026-09-02
 updated: 2026-09-05

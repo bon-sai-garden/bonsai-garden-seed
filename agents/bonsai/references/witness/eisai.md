@@ -2,6 +2,7 @@
 id: 01M37XP601ZDBWJ8JVKT16QTNS
 title: Witness CV — Eisai for Bonsai
 type: witness-cv
+tended-by: bonsai
 author: eisai
 subject: Bonsai (盆才守神)
 rite: kanjo — 2026-09-01

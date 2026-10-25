@@ -4,9 +4,9 @@
   "signer": "ma-shin",
   "role": "owner",
   "fingerprint": "30805b61c6306364f8027e615985cca7",
-  "timestamp": "2026-10-16T14:36:22Z",
+  "timestamp": "2026-10-24T13:44:17Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/architect/role.md",
-  "file-hash": "292ba5cce23dbc6233bb1d07f2aea293c209c58d46377fe428d3d2bceaff06e9bd927335b66742f3d0ead6e94de4b03125b6980f3d723f5c22f2298bbceec6e5",
-  "signature": "fPeJVeOL4TYYdIpXl0bsyl6cfUqXGavBemcqJAuBKwX7MML7XhrXAeRHN6b3oNMvsGYAfN5ndAPJuUagXyW/AQ=="
+  "file-hash": "c02dcb765343546ad7c4d84898b9fa22fb6c1546a85c7dbce736293dba432954cb2336de019727d28b7df4927061f2e45bd0889827a3889a35ecd1f26caaee42",
+  "signature": "QdMJK4ox8+FwHLjWkjAfeN4hrdlfaPRjcSNlBZlJC8aJs4tSJco/ZegGU/HNay+Zwq+anymaifK5jgnO/+zSCg=="
 }

@@ -2,15 +2,15 @@
 name: bonsai-garden-crew-page
 description: >
   Build a garden's crew pages: one overview with an agent selector (two rows of
-  faces) and one page per member, each with the member's canonical portrait in its
-  signature LED ring, its kanji name-mark and signing mark, a drawn seal, the
+  faces) and one page per member, each with the member's canonical portrait in their
+  signature LED ring, their kanji name-mark and signing mark, a drawn seal, the
   fingerprint as a link to the garden's verify page, and an introduction for a
   reader with no background. Everything is read at build time from the garden's own
   sources (registry, ring signatures, introductions, portraits), named in one
   instance config; nothing is typed. Production includes an introduction only when
   it is approved and sealed by its writer. Use when a garden wants a public "team"
   page, or to check a built one.
-version: 0.3.0
+version: 0.3.2
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -80,10 +80,10 @@ The **members file** is the instance's design call: `groups`, `selector-rows`, a
 ## Use
 
 ```
-python3 scripts/build_crew_data.py --config <instance>/crew-page.config.json            # production data
-python3 scripts/build_crew_data.py --config <...> --write-portraits                     # portraits + manifest
-python3 scripts/build_crew_data.py --config <...> --check-built <dist>                  # the built pages
-python3 scripts/test_build_crew_data.py && node scripts/test_crew_templates.mjs          # this skill's own guards
+python3 -B scripts/build_crew_data.py --config <instance>/crew-page.config.json            # production data
+python3 -B scripts/build_crew_data.py --config <...> --write-portraits                     # portraits + manifest
+python3 -B scripts/build_crew_data.py --config <...> --check-built <dist>                  # the built pages
+python3 -B scripts/test_build_crew_data.py && node scripts/test_crew_templates.mjs          # this skill's own guards
 ```
 
 In an Astro site: import the components and `loadCrew` (a static import path to this folder, found by

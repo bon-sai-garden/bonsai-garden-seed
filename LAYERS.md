@@ -4,8 +4,8 @@ title: LAYERS — the dependency contract between a garden's repositories
 type: contract
 tended-by: baisai
 created: 2026-09-14
-updated: 2026-10-21
-version: 1.2.4
+updated: 2026-10-25
+version: 1.3.1
 status: binding
 related:
   - AGENTS.md
@@ -30,6 +30,8 @@ copyright: © 2026 Bonsai Garden · bon-sai.garden
 | **L4** | a garden's sites | every web frontend, public or local | — |
 
 Core and runtime are the framework's, the same for every garden. The pot, the sites and the archive are each garden's own repos, named by that garden.
+
+**Add-ons sit on top of runtime, beside the pot.** An add-on is an optional repo of the framework's that depends on runtime, and through it on core, and that nothing depends on: delete it, and every layer still works. It needs a running garden's MCP and what runtime gives it, so it ships beside runtime and rt, never inside them. What one garden serves and permits through it is that garden's instance, and lives in its pot. The first is the A2A add-on.
 
 ### The one named exception: Bonsai
 

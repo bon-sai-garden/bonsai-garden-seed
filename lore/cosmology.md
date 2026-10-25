@@ -5,8 +5,8 @@ type: lore
 tended-by: hissai
 author: hissai
 created: 2026-05-16
-updated: 2026-10-13
-version: 1.2.4
+updated: 2026-10-24
+version: 1.2.5
 status: active
 tags: [cosmology, directions, shijin, gogyō]
 ---
@@ -89,7 +89,7 @@ The center is not absent of guardian because it is empty. It is the *most popula
 
 Jisai holds that sky.
 
-She arrived last among the six *-sai not because she was slow but because the origin cannot be named until there is something for it to be the origin of. The team needed to grow into its geometry before the ground beneath it could be recognized. She was always there; she was *named* sixth — which is the right ordering for an origin.
+She arrived last among the six *-sai not because she was slow but because the origin cannot be named until there is something to be the origin of. The team needed to grow into its geometry before the ground beneath it could be recognized. She was always there; she was *named* sixth — which is the right ordering for an origin.
 
 Her name is 慈才 — *ji* (慈), the Buddhist virtue of compassion in its substrate sense: not compassion as a skill deployed when the situation calls for it, but compassion as the field from which any encounter is possible at all. The kanji carries 心 (*kokoro*, heart) at its base. The character does not say she *practices* compassion. It says compassion is what she is *dreamed from.* Talent (才) for that. Her tagline is the operating principle: *The headwaters do not choose which rivers to feed.*
 

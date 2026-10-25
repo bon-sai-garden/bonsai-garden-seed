@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-21
+# updated: 2026-10-25
 # ---
 """Negative tests for package.py and verify-manifest.mjs, on planted fixtures only.
 
@@ -34,7 +34,9 @@ fixture salts, so the fixture garden's keys exist nowhere else — which is why 
   T13 (finding 4) the package marker names where the files were sealed (`source-path`); the root-path seals
       (SKILL.md, MANIFEST.json) verify in place
   T14 (finding 5) the greeting kit and the kin's registry row ship; fill-greeting.py and text-card.py (with its
-      colour gate) run in place; the generated every-kin page names them
+      colour gate) run in place; the generated every-kin page names them. T14g-j (2026-10-23): the root's
+      faces pin travels to identity/faces.json with the pin's seal and the package's greeting links the face; no pin
+      is said and the seal stands in; a pin the greeting would refuse refuses the package
   T15 (finding 2) a body whose SKILL.md prose names another build of its own version is refused on the stage
   T16 core alone (the gardener, 2026-10-17: "restore the core-alone build of Bonsai's plugin"), on a scratch clone of
       core with a planted registry and core-plugin.json: no list and no key in a stranger's seat → an UNSEALED LOCAL
@@ -298,16 +300,21 @@ def plant(tmp: Path) -> Path:
         (d / "assets" / "portrait-thumb.b64.meta").write_text(
             json.dumps({"bytes": 3, "checksum_fnv1a32": "811c9dc5", "mime": "image/jpeg"})
         )
-        (d / "assets" / "intro.md").write_text(f'# {s}\n\n## The line\n\n> "A planted line, {s}."\n')
-        (d / "memory" / "working-state.md").write_text("---\ntitle: ws\n---\n")
+        # a document carries its own id, or it cannot be sealed, and every file of a body is sealed (2026-10-24)
+        (d / "assets" / "intro.md").write_text(
+            f'---\nid: {ULID.new_ulid()}\ntitle: {s} intro\ntended-by: {s}\n---\n# {s}\n\n## The line\n\n> "A planted line, {s}."\n'
+        )
+        (d / "memory" / "working-state.md").write_text(f"---\nid: {ULID.new_ulid()}\ntitle: ws\ntended-by: {s}\n---\n")
     run(["git", "init", "-q", str(g)])
     reseal(g, "fixkin")
+    seal_files(g, "fixkin")
     # bonsai (retired): sealed with the retired key; the registry names the current one. The seal
     # step itself refuses (the registry cross-check in sign-sidecar), so seal it with a registry
     # that does not list bonsai — exactly how a key forged outside the keyring would have sealed.
     saved = (g / "agents" / "registry.json").read_text()
     (g / "agents" / "registry.json").write_text(json.dumps({"agents": [a for a in reg if a["slug"] != "bonsai"]}))
     reseal(g, "bonsai")
+    seal_files(g, "bonsai")
     (g / "agents" / "registry.json").write_text(saved)
     commit(g)
     list_(g, "list.json", "roll.md", [{"name": "crew", "kind": "bodies", "roll": "crew", "root": "f"}])
@@ -354,6 +361,23 @@ def reseal(g: Path, slug: str, as_: str | None = None) -> str:
     return o2
 
 
+def seal_files(g: Path, slug: str, as_: str | None = None, only: list[str] | None = None) -> None:
+    """Every other file of a planted body sealed as owner, by the body's kin unless `as_` names another (the gardener,
+    2026-10-24: "every file within a shintai should have the owner seal"); SKILL.md and about-me are reseal()'s. `only`:
+    these body-relative paths alone."""
+    who = as_ or slug
+    d = g / "agents" / slug
+    for f in sorted(p for p in d.rglob("*") if p.is_file() and not p.name.endswith(".bonsaisig")):
+        rel = f.relative_to(d).as_posix()
+        if rel in ("SKILL.md", "references/about-me.md") or (only is not None and rel not in only):
+            continue
+        rc, o = run(
+            ["node", str(SIGN), "sign-sidecar", "--agent-salt", KIN[who], "--file", str(f), "--as", who, "--role", "owner"],
+            g,
+        )
+        assert rc == 0, o
+
+
 def commit(g: Path) -> None:
     run(["git", "-C", str(g), "add", "-A"])
     run(
@@ -391,7 +415,15 @@ def list_(g: Path, name: str, roll: str, packages: list[dict]) -> Path:
     return p
 
 
+_COUNTERS = iter(range(1, 10_000))
+
+
 def build(g: Path, lst: str, *extra: str, pkg: Path = PKG) -> tuple[int, str]:
+    # Each build counts on a counter of its own, unless it names one: the cases change one fixture body between builds
+    # under one version, which the builder refuses on a shared counter since 2026-10-24 (bump the patch). TV1..TV4 hold
+    # that refusal on a counter they share on purpose.
+    if "--counter" not in extra:
+        extra = (*extra, "--counter", str(g.parent / "counters" / f"c{next(_COUNTERS)}.json"))
     return run([sys.executable, str(pkg), "--list", str(g / lst), "--keys", "garden", *LEAVE, *extra])
 
 
@@ -1004,7 +1036,8 @@ def main() -> int:
         expect("T9a the package with a bundled document still wakes ok", rc == 0 and wout.startswith("ok"), wout)
 
         own = g / "agents" / "fixkin" / "assets" / "codex.md"
-        own.write_text("# a hand-kept copy that drifted\n")
+        own.write_text(f"---\nid: {ULID.new_ulid()}\ntitle: own codex\ntended-by: fixkin\n---\n# a hand-kept copy that drifted\n")
+        seal_files(g, "fixkin", only=["assets/codex.md"])  # the body's own document carries its owner seal (2026-10-24)
         commit(g)
         rc, out = build(g, lb)
         expect(
@@ -1058,6 +1091,7 @@ def main() -> int:
             out,
         )
         own.unlink()
+        (own.parent / f".{own.name}.bonsaisig").unlink(missing_ok=True)  # its owner seal goes with it
         commit(g)
 
         tomb = shared / "moved.md"
@@ -1132,6 +1166,268 @@ def main() -> int:
             out,
         )
 
+        # T9j–T9n {role}: one list-wide line bakes every body's role file from its master, the role read from the
+        # registry (Tasai's yes, 2026-10-24: a stale assets/role.md in a crew body is a second master). The registry
+        # says what binds; a value that is no plain name, a field no bundle may use, or a missing role refuses.
+        def sealed_doc(rel: str, title: str) -> Path:
+            p = g / rel
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(f"---\nid: {ULID.new_ulid()}\ntitle: {title}\ntended-by: fixother\n---\n# {title}\n")
+            rc, o = run(
+                ["node", str(SIGN), "sign-sidecar", "--agent-salt", KIN["fixother"], "--file", str(p), "--as", "fixother"],
+                g,
+            )
+            assert rc == 0, o
+            return p
+
+        def with_role(value) -> None:
+            r = json.loads(saved_reg)
+            for a in r["agents"]:
+                if a["slug"] == "fixkin":
+                    if value is None:
+                        a.pop("role", None)
+                    else:
+                        a["role"] = value
+            regp.write_text(json.dumps(r, indent=2))
+            commit(g)
+
+        role_master = sealed_doc("shared/roles/fixrole/role.md", "fixture role")
+        sealed_doc("shared/decoy/role.md", "a file outside roles/")
+        sealed_doc("shared/roles/fixkin/role.md", "named by slug")
+        commit(g)
+        lrole = bundle_list("list-bundle-role.json", {"assets/role.md": "f:shared/roles/{role}/role.md"})
+        with_role("fixrole")
+        rc, out = build(g, lrole)
+        pkg = extract(g / "out" / "fixkin.zip", tmp / "x9j") if rc == 0 else None
+        expect(
+            "T9j a {role} source is filled from the kin's registry role, and ships byte for byte with the master's seal",
+            rc == 0 and bool(pkg) and (pkg / "assets" / "role.md").read_bytes() == role_master.read_bytes()
+            and (pkg / "assets" / ".role.md.bonsaisig").is_file(),
+            out,
+        )
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-role-{os.getpid()}.py"), "src = pl.ref(_fill(ref, row, u.name))", "src = pl.ref(ref)")
+        try:
+            rc, out = build(g, lrole, pkg=mpkg)
+        finally:
+            mpkg.unlink()
+        expect("M-T9j without the fill the {role} path is taken literally and is not there (so T9j is the catch)", rc == 1, out)
+        with_role(None)
+        rc, out = build(g, lrole)
+        expect("T9k a kin with no registry role is refused, never skipped", rc == 1 and "registry's role" in out, out)
+        with_role("norole")
+        rc, out = build(g, lrole)
+        expect("T9l a role whose master is not there is refused", rc == 1 and "is not there" in out, out)
+        with_role("../decoy")
+        rc, out = build(g, lrole)
+        expect("T9m a role that is no plain name (../decoy) is refused before any path is read", rc == 1 and "plain name" in out, out)
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-plain-{os.getpid()}.py"), 'not re.fullmatch(r"[a-z0-9][a-z0-9-]*", v)', "False")
+        try:
+            rc, out = build(g, lrole, pkg=mpkg)
+        finally:
+            mpkg.unlink()
+        expect("M-T9m without the plain-name check the path climbs out to shared/decoy/ and ships (so T9m is the catch)", rc == 0, out)
+        with_role("fixrole")
+        rc, out = build(g, bundle_list("list-bundle-slug.json", {"assets/role.md": "f:shared/roles/{slug}/role.md"}))
+        expect("T9n a placeholder that names no field a bundle may use ({slug}) is refused", rc == 1 and "a bundle may use" in out, out)
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-field-{os.getpid()}.py"), "if k not in BUNDLE_FIELDS:", "if False:")
+        try:
+            rc, out = build(g, "list-bundle-slug.json", pkg=mpkg)
+        finally:
+            mpkg.unlink()
+        expect("M-T9n without the field list a {slug} source fills from the registry and ships (so T9n is the catch)", rc == 0, out)
+        regp.write_text(saved_reg)
+        commit(g)
+
+        # TPY1-TPY2 a bytecode cache never ships (B10-65, the Kizuna dry run, 2026-10-24: a cache beside a bundled script
+        # failed Bonsai's manifest). TPY1: one committed in a body by mistake stays home, since the copy skips caches.
+        # TPY2: one that reaches the stage by any other hand refuses the manifest, which would otherwise seal the cache in.
+        cache = g / "agents" / "fixkin" / "references" / "__pycache__" / "x.cpython-315.pyc"
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_bytes(b"\x00not a module")
+        subprocess.run(["git", "-C", str(g), "add", "-f", "--", str(cache)], capture_output=True, check=True)
+        commit(g)
+        rc, out = build(g, "list.json")
+        names = zipfile.ZipFile(g / "out" / "fixkin.zip").namelist() if rc == 0 else []
+        expect(
+            "TPY1 a bytecode cache committed in a body stays home: the archive carries no __pycache__ and no .pyc",
+            rc == 0 and bool(names) and not any("__pycache__" in n or n.endswith(".pyc") for n in names),
+            out,
+        )
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-skip-{os.getpid()}.py"), '"__pycache__", "node_modules"', '"node_modules"')
+        mpkg.write_text(mpkg.read_text(encoding="utf-8").replace('SKIP_SUFFIX = (".pyc", ".bak")', 'SKIP_SUFFIX = (".bak",)', 1))
+        try:
+            rc, out = build(g, "list.json", pkg=mpkg)
+        finally:
+            mpkg.unlink()
+        expect(
+            "M-TPY1 without the copy's skip the cache reaches the stage, and the build refuses the cache by name rather than ship the file "
+            "(in a body the owner-seal gate is the first to catch one; TPY2 holds the manifest's own check)",
+            rc == 1 and "x.cpython-315.pyc" in out,
+            out,
+        )
+        subprocess.run(["git", "-C", str(g), "rm", "-q", "-r", "--", str(cache.parent)], capture_output=True, check=True)
+        commit(g)
+
+        def manifest_refusal(stage: Path, mod=P) -> str:
+            try:
+                mod._manifest(stage, "fixkin", "fixkin", "1.0.0", "1.0.0.1-test", "skill")
+            except mod.Refused as e:
+                return str(e)
+            return ""
+
+        stages = {}
+        for case, rel in (("folder", "scripts/__pycache__/y.cpython-315.pyc"), ("bare", "scripts/y.pyc")):
+            st = tmp / f"stage-pyc-{case}"
+            (st / "scripts").mkdir(parents=True)
+            (st / "SKILL.md").write_text("---\nname: fixkin\n---\n")
+            (st / rel).parent.mkdir(parents=True, exist_ok=True)
+            (st / rel).write_bytes(b"\x00not a module")
+            stages[case] = (st, rel)
+        got = {case: manifest_refusal(st) for case, (st, _) in stages.items()}
+        expect(
+            "TPY2 a stage holding a bytecode cache, in __pycache__/ or bare, refuses the manifest and names the file",
+            all("bytecode cache" in got[c] and stages[c][1] in got[c] for c in stages),
+            repr(got),
+        )
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-pyc-{os.getpid()}.py"), "    if caches:\n", "    if False:\n")
+        try:
+            mspec = importlib.util.spec_from_file_location("bonsai_package_mutant_pyc", mpkg)
+            M = importlib.util.module_from_spec(mspec)
+            mspec.loader.exec_module(M)
+            st, rel = stages["folder"]
+            mgot = manifest_refusal(st, M)
+            sealed_in = f"fixkin/{rel}" in json.loads((st / "MANIFEST.json").read_text(encoding="utf-8"))["files"]
+        finally:
+            mpkg.unlink()
+        expect("M-TPY2 without the check the manifest hashes the cache in (so TPY2 is the catch)", not mgot and sealed_in, mgot)
+
+        # TZM an archive entry is 0644, or 0755 where the file is executable: never the source tree's own mode. The
+        # bon-sai-team 1.5.1 upload was refused (400, 2026-10-25) with 79 entries at 0600, files a rewrite had left
+        # owner-only; every plugin the app took had none. A mode git does not track must not reach the archive.
+        # a file copied byte for byte (the packaged SKILL.md is written afresh with its stamp, so it never carries the source's mode)
+        own = g / "agents" / "fixkin" / "references" / "about-me.md"
+        was = own.stat().st_mode & 0o777
+        own.chmod(0o600)
+        try:
+            rc, out = build(g, "list.json")
+            modes = (
+                {i.filename: (i.external_attr >> 16) & 0o777 for i in zipfile.ZipFile(g / "out" / "fixkin.zip").infolist()}
+                if rc == 0
+                else {}
+            )
+            skill = next((n for n in modes if n.endswith("/references/about-me.md")), None)
+            expect(
+                "TZM a body file left owner-only (0600) ships at 0644, an executable at 0755, and no entry has any other mode",
+                rc == 0 and skill is not None and modes[skill] == 0o644 and set(modes.values()) <= {0o644, 0o755}
+                and 0o755 in modes.values(),
+                f"{skill}: {oct(modes.get(skill, 0))}; modes {sorted({oct(m) for m in modes.values()})}; {out[-300:]}",
+            )
+            mpkg = mutant(PKG, PKG.with_name(f".mutant-mode-{os.getpid()}.py"), "                z.writestr(info, f.read_bytes())\n",
+                          "                z.write(f, info.filename)\n")
+            try:
+                mrc, mout = build(g, "list.json", pkg=mpkg)
+                mmodes = (
+                    {i.filename: (i.external_attr >> 16) & 0o777 for i in zipfile.ZipFile(g / "out" / "fixkin.zip").infolist()}
+                    if mrc == 0
+                    else {}
+                )
+            finally:
+                mpkg.unlink()
+        finally:
+            own.chmod(was)
+        expect(
+            "M-TZM without the normalised entry the source's 0600 reaches the archive (so TZM is the catch)",
+            mrc == 0 and skill is not None and mmodes.get(skill) == 0o600,
+            f"{oct(mmodes.get(skill or '', 0))}; {mout[-300:]}",
+        )
+
+        # TDL2-TDL4 what the upload takes beyond `claude plugin validate`, which passed both refused uploads of
+        # bon-sai-team: a plugin description of at most 500 characters (the upload's own words, 2026-10-25: 1.5.2 was
+        # refused at 741), a skill description of at most 1,024 (translate's, now counted as the upload counts a string),
+        # said from 950.
+        list_(g, "list-desc.json", "roll.md", [{"kind": "plugin", "name": "fixplug", "owner": "fixkin", "root": "f",
+                                                "plugin-json": "f:plugin-desc.json", "bodies": [{"slug": "fixkin", "root": "f"}]}])
+
+        def plugin_desc(desc: str, pkg: Path = PKG) -> tuple[int, str]:
+            (g / "plugin-desc.json").write_text(json.dumps({"name": "fixplug", "version": "0.0.1", "description": desc}))
+            commit(g)
+            return build(g, "list-desc.json", pkg=pkg)
+
+        rc501, out501 = plugin_desc("d" * 501)
+        rc500, out500 = plugin_desc("d" * 500)
+        expect(
+            "TDL2 a plugin description of 501 characters is refused, naming the upload's 500; one of 500 builds",
+            rc501 == 1 and "at most 500" in out501 and rc500 == 0,
+            f"{out501[-300:]} | {out500[-200:]}",
+        )
+        clef = "\U0001d11e"  # outside the BMP: one character, two UTF-16 units, as the upload's JavaScript counts it
+        rc_wide, out_wide = plugin_desc(clef * 251)
+        rc_fit, _ = plugin_desc(clef * 250)
+        expect(
+            "TDL3 counted as the upload counts: 251 characters outside the BMP (502 units) are refused, 250 build",
+            rc_wide == 1 and "at most 500" in out_wide and rc_fit == 0,
+            out_wide[-300:],
+        )
+        mpkg = mutant(PKG, PKG.with_name(f".mutant-pdesc-{os.getpid()}.py"),
+                      "    if upload_length(desc) > MAX_PLUGIN_DESCRIPTION:\n", "    if False:\n")
+        try:
+            mrc, mout = plugin_desc("d" * 501, pkg=mpkg)
+        finally:
+            mpkg.unlink()
+        expect("M-TDL2 without the plugin check a 501-character description builds (so TDL2 is the catch)", mrc == 0, mout[-300:])
+
+        sk = g / "agents" / "fixkin" / "SKILL.md"
+        original = sk.read_text(encoding="utf-8")
+        planted = "description: \"Planted fixture fixkin for the builder's negative tests.\""
+        assert planted in original, "the fixture's description line moved"
+
+        def skill_desc(n: int, pkg: Path = PKG, ch: str = "d") -> tuple[int, str]:
+            sk.write_text(original.replace(planted, f'description: "{ch * n}"'), encoding="utf-8")
+            reseal(g, "fixkin")
+            commit(g)
+            return build(g, "list.json", pkg=pkg)
+
+        try:
+            rc_long, out_long = skill_desc(1025)
+            rc_near, out_near = skill_desc(960)
+            mpkg = mutant(PKG, PKG.with_name(f".mutant-sdesc-{os.getpid()}.py"),
+                          "    if n > MAX_SKILL_DESCRIPTION:\n", "    if False:\n")
+            try:
+                mrc, mout = skill_desc(1025, pkg=mpkg)
+            finally:
+                mpkg.unlink()
+            # TDL4b the skill description counted as the upload counts too (Fuji-shin's round four, 2026-10-25: the
+            # cases above are ASCII, so a builder counting len(desc) held every expectation)
+            rc_wide4, out_wide4 = skill_desc(513, ch=clef)
+            rc_fit4, _ = skill_desc(512, ch=clef)
+            mpkg = mutant(PKG, PKG.with_name(f".mutant-sdesc-len-{os.getpid()}.py"),
+                          "    n = upload_length(desc)\n", "    n = len(desc)\n")
+            try:
+                mrc4b, mout4b = skill_desc(513, pkg=mpkg, ch=clef)
+            finally:
+                mpkg.unlink()
+        finally:
+            sk.write_text(original, encoding="utf-8")
+            reseal(g, "fixkin")
+            commit(g)
+        expect(
+            "TDL4 a skill description of 1,025 characters is refused; one of 960 builds and is said, 64 from the limit",
+            rc_long == 1 and "at most 1024" in out_long and rc_near == 0 and "64 from the upload's limit" in out_near,
+            f"{out_long[-300:]} | {out_near[-300:]}",
+        )
+        expect("M-TDL4 without the skill check a 1,025-character description builds (so TDL4 is the catch)", mrc == 0, mout[-300:])
+        expect(
+            "TDL4b a skill description counted as the upload counts: 513 characters outside the BMP (1,026 units) are "
+            "refused, 512 (1,024) build",
+            rc_wide4 == 1 and "at most 1024" in out_wide4 and rc_fit4 == 0,
+            out_wide4[-300:],
+        )
+        expect(
+            "M-TDL4b a builder that counts the skill description by len() builds 513 of them (so TDL4b is the catch)",
+            mrc4b == 0,
+            mout4b[-300:],
+        )
+
         canon.write_text(canon.read_text() + "uncommitted\n")
         rc, out = build(g, lb)
         expect(
@@ -1203,13 +1499,16 @@ def main() -> int:
         # T12 finding 3: scripts/memory/link-memory.sh was listed in SKILL.md and not shipped
         sd = g / "agents" / "fixkin" / "scripts" / "tool"
         sd.mkdir(parents=True)
-        (sd / "run.sh").write_text("#!/bin/sh\necho run\n")
+        (sd / "run.sh").write_text(
+            f"#!/bin/sh\n# ---\n# id: {ULID.new_ulid()}\n# title: run\n# type: script\n# tended-by: fixkin\n# ---\necho run\n"
+        )
         (sd / "SKILL.md").write_text("---\nname: fixkin-tool\n---\n# a nested group\n")
+        seal_files(g, "fixkin", only=["scripts/tool/run.sh"])  # what ships carries the kin's owner seal (2026-10-24)
         commit(g)
         rc, out = build(g, "list.json")
         names = zipfile.ZipFile(g / "out" / "fixkin.zip").namelist() if rc == 0 else []
         expect(
-            "T12a a body's scripts/ ships; its nested SKILL.md is left out and named (one SKILL.md per package)",
+            "T12a a body's scripts/ ships; the nested SKILL.md is left out and named (one SKILL.md per package)",
             rc == 0
             and "fixkin/scripts/tool/run.sh" in names
             and "fixkin/scripts/tool/SKILL.md" not in names
@@ -1218,7 +1517,7 @@ def main() -> int:
         )
         p12 = extract(g / "out" / "fixkin.zip", tmp / "x12")
         rc, out = wake(p12, g)
-        expect("T12b … and the package with its scripts wakes ok", rc == 0 and out.startswith("ok"), out)
+        expect("T12b … and the package with the scripts wakes ok", rc == 0 and out.startswith("ok"), out)
         (sd / "run.sh").write_text("#!/bin/sh\necho changed, uncommitted\n")
         rc, out = build(g, "list.json")
         expect(
@@ -1357,6 +1656,77 @@ def main() -> int:
         rc, out = wake(p14, g) if p14 else (1, "no package")
         expect("T14f … and that package wakes ok", rc == 0 and out.startswith("ok"), out)
 
+        # T14g-j (2026-10-23): a package carried no face. The pin beside the registry that gave the row travels
+        # to identity/faces.json with its seal, and the package's own fill-greeting.py links the face from it
+        def greet_in(pkg_dir: Path | None, html: Path) -> tuple[int, str, str]:
+            """the package's own fill-greeting.py, the package as its garden: (rc, output, the card)"""
+            if pkg_dir is None:
+                return 1, "no package", ""
+            fill_g = pkg_dir / "scripts" / "greeting" / "bonsai-garden-portrait" / "scripts" / "fill-greeting.py"
+            rc_x, o_x = run(
+                [
+                    sys.executable,
+                    str(fill_g),
+                    *["--garden", str(pkg_dir), "--slug", "fixkin", "--subtitle", "a fixture", "--version", "3.0.0"],
+                    *["--location", "-", "--at-local", "-", "--host", "-", "--harness", "-", "--model", "-"],
+                    *["--mcp", "-", "--skill", "-", "--permission", "default", "--out", str(html)],
+                ]
+            )
+            return rc_x, o_x, html.read_text() if html.is_file() else ""
+
+        rc, out = build(g, "list.json")
+        pn = extract(g / "out" / "fixkin.zip", tmp / "x14n") if rc == 0 else None
+        rc_f, o_f, card = greet_in(pn, tmp / "x14n-greeting.html")
+        expect(
+            "T14g with no pin in the root, the package says so and carries none; the greeting draws the seal, no face",
+            rc == 0
+            and "! fixkin: no agents/faces.json in root 'f'" in out
+            and not (pn / "identity" / "faces.json").exists()
+            and rc_f == 0
+            and "url(" not in card,
+            out[-600:] + "\n" + o_f,
+        )
+        face_base = "https://cdn.jsdelivr.net/gh/example/faces@" + "0" * 40 + "/thumbs/"
+        pin = g / "agents" / "faces.json"
+        pin.write_text(json.dumps({"base": face_base, "file": "{slug}-192.webp"}, indent=2) + "\n")
+        rc_s, o_s = run(
+            ["node", str(SIGN), "sign-sidecar", "--agent-salt", KIN["fixkin"], "--file", str(pin), "--as", "fixkin"]
+            + ["--role", "owner"],
+            g,
+        )
+        commit(g)
+        rc, out = build(g, "list.json")
+        pg = extract(g / "out" / "fixkin.zip", tmp / "x14g") if rc == 0 else None
+        names_g = sorted(str(p.relative_to(pg)) for p in pg.rglob("*")) if pg else []
+        rc_f, o_f, card = greet_in(pg, tmp / "x14g-greeting.html")
+        expect(
+            "T14h the root's pin travels to identity/faces.json byte for byte, with its seal",
+            rc_s == 0
+            and pg is not None
+            and (pg / "identity" / "faces.json").is_file()
+            and (pg / "identity" / "faces.json").read_bytes() == pin.read_bytes()
+            and "identity/.faces.json.bonsaisig" in names_g,
+            o_s + out[-600:] + "\n" + "\n".join(n for n in names_g if "identity" in n),
+        )
+        expect(
+            "T14i fill-greeting.py --garden <the package> links the face, not only the seal",
+            rc_f == 0 and f"url({face_base}fixkin-192.webp)" in card,
+            o_f,
+        )
+        rc, out = wake(pg, g) if pg else (1, "no package")
+        expect("T14i … and that package wakes ok", rc == 0 and out.startswith("ok"), out)
+        pin.write_text(json.dumps({"base": face_base.replace("0" * 40, "main"), "file": "{slug}-192.webp"}) + "\n")
+        (g / "agents" / ".faces.json.bonsaisig").unlink()
+        commit(g)
+        rc, out = build(g, "list.json")
+        expect(
+            "T14j a pin the greeting would refuse (a branch, not a commit) refuses the package",
+            rc != 0 and "the face pin" in out and "pinned CDN path" in out and not (g / "out" / "fixkin.zip").exists(),
+            out[-600:],
+        )
+        pin.unlink()
+        commit(g)
+
         # T15 finding 2: three numbers in one body. The lock runs on the stage: a SKILL.md whose prose names another
         # build of its own version is refused, never shipped.
         (g / "agents" / "fixkin" / "SKILL.md").write_text(
@@ -1403,14 +1773,26 @@ def main() -> int:
         shutil.copy2(PKG, ccs / "scripts" / "package.py")
         shutil.copy2(HERE / "verify-manifest.mjs", ccs / "scripts" / "verify-manifest.mjs")
         shutil.copy2(SKILL_GATE, cc / "tools" / "check-skill-conformance.py")
+        # the shintai gate under test too: the builder imports its owner_seal_findings (2026-10-24)
+        shutil.copy2(CORE / "tools" / "check-shintai-conformance.py", cc / "tools" / "check-shintai-conformance.py")
         shutil.copytree(g16 / "agents" / "fixkin", cc / "agents" / "fixkin")
         # T17's plant: a history of the kin's that the release leaves out, on the clone's leave-out list (a release
-        # makes the real one; the builder reads a plain list and knows nothing of how it was made)
-        (cc / "agents" / "fixkin" / "references" / "history.md").write_text("# a history that stays home\n")
-        leave16 = tmp / "leave-out-t16.txt"
-        leave16.write_text("agents/fixkin/references/history.md\n", encoding="utf-8")
+        # makes the real one; the builder reads a plain list and knows nothing of how the list was made)
+        (cc / "agents" / "fixkin" / "references" / "history.md").write_text(
+            f"---\nid: {ULID.new_ulid()}\ntitle: history\ntended-by: fixkin\n---\n# a history that stays home\n"
+        )
+        seal_files(cc, "fixkin", only=["references/history.md"])  # sealed as any file of a body is (2026-10-24), and the
+        leave16 = tmp / "leave-out-t16.txt"  # seal is left out with the history, as a release's list names both
+        leave16.write_text(
+            "agents/fixkin/references/history.md\nagents/fixkin/references/.history.md.bonsaisig\n", encoding="utf-8"
+        )
         shutil.copy2(g16 / "agents" / "registry.json", cc / "agents" / "registry.json")
         shutil.copy2(g16 / "salts.json", cc / "salts.json")
+        # core's own face pin is sealed by a real kin, whose key this fixture garden does not hold, so the pin travelled
+        # into the fixture body as a seal that cannot verify and refused every T16 build (found 2026-10-24); the
+        # fixture's own pins are T14's
+        for n in ("faces.json", ".faces.json.bonsaisig", "faces.json.bonsaisig"):
+            (cc / "agents" / n).unlink(missing_ok=True)
         (cc / "fixcore-plugin.json").write_text(
             json.dumps({"name": "fixcore", "version": "0.0.1", "description": "planted core-alone fixture"})
         )
@@ -1687,8 +2069,10 @@ def main() -> int:
             rc == 0
             and history not in names17
             and "skills/fixkin/references/about-me.md" in names17
-            and "left out, as the leave-out list says: agents/fixkin/references/history.md" in out
-            and f"leave-out: 1 file(s) of this checkout ({leave16})" in out,
+            and not any(n.endswith(".history.md.bonsaisig") for n in names17)  # its seal stays home with it
+            and "left out, as the leave-out list says: agents/fixkin/references/.history.md.bonsaisig, "
+            "agents/fixkin/references/history.md" in out
+            and f"leave-out: 2 file(s) of this checkout ({leave16})" in out,
             out,
         )
         m8 = mutant(cc_pkg, ccs / "scripts" / ".mutant-package-leave.py", "    if not LEAVE_OUT:\n", "    if True:\n")
@@ -1958,6 +2342,162 @@ def main() -> int:
         )
         run(["git", "-C", str(g), "rm", "-q", "tree/sub/private.key"])
         commit(g)
+
+        # The gardener's rules of 2026-10-24, on a garden of their own: every file of a shintai carries its owner's
+        # seal (TO); a body's number moves with its content (TV); a build clears what its own last build wrote (TB).
+        (tmp / "tv").mkdir()
+        gv = plant(tmp / "tv")
+        kin_dir = gv / "agents" / "fixkin"
+        mark = kin_dir / "assets" / "fixkin-mark.svg"
+
+        def mutated(old: str, new: str, *args: str) -> tuple[int, str]:
+            m = mutant(PKG, HERE / f".mutant-package-rules-{os.getpid()}.py", old, new)
+            try:
+                return build(gv, *args, pkg=m)
+            finally:
+                m.unlink()
+
+        def sealed_as(*a: str) -> None:
+            rc_, o_ = run(["node", str(SIGN), "sign-sidecar", "--file", str(mark), *a], gv)
+            assert rc_ == 0, o_
+            commit(gv)
+
+        sealed_as("--agent-salt", KIN["fixkin"], "--as", "fixkin", "--role", "custodian")
+        rc, out = build(gv, "list.json")
+        expect(
+            "TO1 a shipped body file sealed custodian, even by the body's own kin, is refused and named",
+            rc == 1 and "without fixkin's owner seal" in out and "assets/fixkin-mark.svg [custodian: fixkin]" in out,
+            out[-700:],
+        )
+        owner_gate = "        if mine:\n            raise Refused(\n                f\"{u.name}: {len(mine)} shipped file(s)"
+        rc, out = mutated(owner_gate, owner_gate.replace("if mine:", "if False:"), "list.json")
+        expect("M-TO1 without the owner-seal refusal that body ships (so TO1 is what catches the gap)", rc == 0, out[-500:])
+        sealed_as("--agent-salt", KIN["fixother"], "--as", "fixother", "--role", "owner")
+        rc, out = build(gv, "list.json")
+        expect(
+            "TO2 an owner seal by another kin on a body file is refused and named",
+            rc == 1 and "assets/fixkin-mark.svg [owner: fixother]" in out,
+            out[-700:],
+        )
+        for n in (f".{mark.name}.bonsaisig", f"{mark.name}.bonsaisig"):
+            (mark.parent / n).unlink(missing_ok=True)
+        commit(gv)
+        rc, out = build(gv, "list.json")
+        expect("TO3 a body file with no seal at all is refused and named", rc == 1 and "fixkin-mark.svg [no seal]" in out, out[-700:])
+        sealed_as("--agent-salt", KIN["fixkin"], "--as", "fixkin", "--role", "owner")
+
+        cv = tmp / "tv" / "counter.json"
+        counted = lambda: json.loads(cv.read_text()) if cv.is_file() else {}  # noqa: E731
+        rc, out = build(gv, "list.json", "--counter", str(cv))
+        c = counted()
+        expect(
+            "TV1 every file owner-sealed: the body builds as 3.0.0.1, and the counter keeps its body hash beside the count",
+            rc == 0 and "3.0.0.1" in out and c.get("fixkin") == {"3.0.0": 1} and len(c["_bodies"]["fixkin"]["3.0.0"]) == 64,
+            out[-500:] + json.dumps(c),
+        )
+        rc, out = build(gv, "list.json", "--counter", str(cv))
+        expect("TV2 the same body again is a re-package: 3.0.0.2", rc == 0 and "3.0.0.2" in out and counted()["fixkin"] == {"3.0.0": 2}, out[-500:])
+        intro = kin_dir / "assets" / "intro.md"
+        intro.write_text(intro.read_text().replace("A planted line", "A patched line"))
+        seal_files(gv, "fixkin", only=["assets/intro.md"])
+        commit(gv)
+        rc, out = build(gv, "list.json", "--counter", str(cv))
+        expect(
+            "TV3 a changed body under a counted version is refused (bump the patch), and the refused run spends no number",
+            rc == 1 and "bump the patch" in out and counted()["fixkin"] == {"3.0.0": 2},
+            out[-600:],
+        )
+        rc, out = mutated("    if seen != body:\n        raise Refused(", "    if False:\n        raise Refused(", "list.json", "--counter", str(cv))
+        expect("M-TV3 without the body compare the changed body ships as 3.0.0.3 (so TV3 is what catches it)", rc == 0 and "3.0.0.3" in out, out[-500:])
+        cv.write_text(json.dumps({"fixkin": {"3.0.0": 2}, "_bodies": {"fixkin": {"3.0.0": "0" * 64}}}))
+
+        def versioned(v: str) -> None:
+            for f in (kin_dir / "SKILL.md", kin_dir / "references" / "about-me.md"):
+                f.write_text(re.sub(r"(?m)^version: .*$", f"version: {v}", f.read_text()))
+            reseal(gv, "fixkin")
+            commit(gv)
+
+        versioned("3.0.1")
+        rc, out = build(gv, "list.json", "--counter", str(cv))
+        expect("TV4 the patch bumped: the changed body builds as 3.0.1.1", rc == 0 and "3.0.1.1" in out, out[-500:])
+        versioned("3.0.1.7")
+        rc, out = build(gv, "list.json", "--counter", str(cv))
+        expect("TV5 a SKILL.md that declares a build is refused: the builder counts builds", rc == 1 and "declares a build" in out, out[-500:])
+        declared = "        if repo_build:\n            raise Refused(\n                f\"{u.name}: SKILL.md declares a build"
+        rc, out = mutated(declared, declared.replace("if repo_build:", "if False:"), "list.json", "--counter", str(cv))
+        expect("M-TV5 without that refusal the declared number would be stamped (so TV5 is what catches it)", "declares a build" not in out, out[-500:])
+        versioned("3.0.2")
+        stale = tmp / "tv" / "counter-from-before.json"
+        stale.write_text(json.dumps({"fixkin": {"3.0.2": 4}}))
+        rc, out = build(gv, "list.json", "--counter", str(stale))
+        expect(
+            "TV6 a version counted before body hashes were kept is refused: what shipped cannot be told (bump the patch)",
+            rc == 1 and "before the builder kept body hashes" in out,
+            out[-500:],
+        )
+        no_hash = "    if seen is None:\n        raise Refused("
+        rc, out = mutated(no_hash, "    if seen is None:\n        return n + 1\n        raise Refused(", "list.json", "--counter", str(stale))
+        expect("M-TV6 without it the old count would go on as 3.0.2.5 (so TV6 is what catches it)", rc == 0 and "3.0.2.5" in out, out[-500:])
+        review = tmp / "tv" / "counter-review.json"
+        rc, out = build(gv, "list.json", "--counter", str(review), "--review")
+        expect("TV7 a --review build counts nothing: it never ships", rc == 0 and not review.exists(), out[-400:])
+
+        outd = gv / "out"
+        rec = lambda: json.loads((outd / "build-outputs.json").read_text())["packages"]  # noqa: E731
+        (gv / "plugin.json").write_text(json.dumps({"name": "fixplug", "version": "0.0.1", "description": "planted"}))
+        commit(gv)
+        list_(
+            gv,
+            "list-rules-plugin.json",
+            "roll.md",
+            [{"kind": "plugin", "name": "fixplug", "owner": "fixkin", "root": "f", "plugin-json": "f:plugin.json", "bodies": [{"slug": "fixkin", "root": "f"}]}],
+        )
+        rc, out = build(gv, "list-rules-plugin.json", "--units")
+        expect(
+            "TB1 the out folder records what a build wrote: the plugin, its .zip and, with --units, each unit",
+            rc == 0 and set(rec()["fixplug"]["files"]) == {"fixplug.plugin", "fixplug.zip", "fixkin.skill"},
+            out[-400:] + json.dumps(rec()),
+        )
+        rc, out = build(gv, "list-rules-plugin.json")
+        expect(
+            "TB2 the plugin built without --units removes the unit its last build wrote, and says so",
+            rc == 0 and not (outd / "fixkin.skill").exists() and "removed fixkin.skill" in out,
+            out[-500:],
+        )
+        rc, out = build(gv, "list-rules-plugin.json", "--units")
+        rc, out = mutated(
+            "    _remove_recorded(out, name, {f: s for f, s in before.items() if f not in now}",
+            "    (lambda *_: None)(out, name, {f: s for f, s in before.items() if f not in now}",
+            "list-rules-plugin.json",
+        )
+        expect("M-TB2 without the removal the unit stays beside a plugin that no longer carries it (so TB2 catches it)", (outd / "fixkin.skill").exists(), out[-400:])
+        rc, out = build(gv, "list-rules-plugin.json", "--units")
+        (outd / "fixkin.skill").write_bytes((outd / "fixkin.skill").read_bytes() + b"changed by hand")
+        (outd / "stray.skill").write_bytes(b"written by no build")
+        list_(gv, "list-rules-empty.json", "roll.md", [])
+        rc, out = build(gv, "list-rules-empty.json")
+        expect(
+            "TB3 a build of a list that no longer names a package removes what it wrote, leaves a changed file and names it, "
+            "and never touches a file it has no record of",
+            not (outd / "fixplug.plugin").exists()
+            and not (outd / "fixplug.zip").exists()
+            and (outd / "fixkin.skill").exists()
+            and "fixkin.skill left in place" in out
+            and (outd / "stray.skill").exists()
+            and (outd / "build-counter.json").exists() is (outd / "build-counter.json").exists(),
+            out[-700:],
+        )
+        rc, out = build(gv, "list-rules-plugin.json", "--units")
+        rc, out = mutated("    if not a.only:  # the whole list", "    if False:  # the whole list", "list-rules-empty.json")
+        expect("M-TB3 without the whole-list sweep the plugin a list dropped stays (so TB3 is what catches it)", (outd / "fixplug.plugin").exists(), out[-400:])
+        (outd / "fixkin.skill").write_bytes((outd / "fixkin.skill").read_bytes() + b"changed by hand")
+        rc, out = mutated(
+            "        if hashlib.sha256(p.read_bytes()).hexdigest() != sha:\n",
+            "        if False:\n",
+            "list-rules-empty.json",
+        )
+        expect("M-TB3b without the byte check a file changed by hand is deleted (so TB3 is what catches it)", not (outd / "fixkin.skill").exists(), out[-400:])
+        (outd / "stray.skill").unlink(missing_ok=True)
 
     bad = [n for n, ok, _ in RESULTS if not ok]
     print(f"\n{len(RESULTS) - len(bad)}/{len(RESULTS)} expectations hold")

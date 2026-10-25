@@ -1,0 +1,12 @@
+{
+  "format": "bonsaisig/2",
+  "id": "01M5Q9BVMN9ETJJS0G9Z7A86FH",
+  "signer": "baisai",
+  "role": "owner",
+  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
+  "timestamp": "2026-10-24T17:12:06Z",
+  "algorithm": "ed25519+blake2b512",
+  "target": "tools/test-conformance-owner-seals.py",
+  "file-hash": "21532adfaf6bd5472fe1ad6658afc9528369819df6f43a6dd655722e310b9b7e9ce0c7a178fedafd26768550080e834a9161798581f1a1c0f13c56315e847b34",
+  "signature": "0iVY/4/2t1KlwttkDKettkXeclTjn4fSuRQ+S3u+1It1jeFIp03ujNkfy5EUOUp58AEC+fyWrXayitVwunttDA=="
+}

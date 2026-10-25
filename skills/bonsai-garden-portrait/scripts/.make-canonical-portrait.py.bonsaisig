@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "custodian",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-20T22:32:28Z",
+  "timestamp": "2026-10-24T23:27:44Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-portrait/scripts/make-canonical-portrait.py",
-  "file-hash": "dc4d045d3335f3c02d479debb72e2bee37e2103bf9875ff9bf0e75d9abebcd6ca19d76552d027f6bab4199f33ff587d6d6c2583bb5fc8848de75e8875f45765c",
-  "signature": "4r2ZZXLNhO1+ZNpC32Yle0Y3CSU/DQUWvcH1LF0ZOuAE2A2MrEhu4KYYuJYDa7H7lRIj6MLM2uHP8uuRo0OgCA=="
+  "file-hash": "aa64714d63b2c48b4a1c9ca652a0f16c879f3a104b7f194dcabaab8e1e882f1eec55a2335f9b8212fe9a70fceec32972fbef8e6a1a5e83f7d966ed12bcbbb9ff",
+  "signature": "8QqUndSyy2m3Vj4+OkBs+3+ppMQZHaj6EhxUfTH0cV5gozGaOQ8Top5yeqhGLAzOUP3feqVcqWfAurJh2c+lCg=="
 }

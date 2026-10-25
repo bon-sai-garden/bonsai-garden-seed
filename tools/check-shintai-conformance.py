@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-22
-# updated: 2026-10-21
+# updated: 2026-10-25
 # copyright: © 2026 Bonsai Garden · bon-sai.garden
 # ---
 """check-shintai-conformance -- does a shintai match the ratified 3.0 structure?
@@ -73,6 +73,18 @@ ON-DISK  -- does a body's working tree match the structure?
      NOT VERIFIED, never as a silent pass.
   1e. PEM drift (spec 3.0.7): an identity/*.pem must decode to exactly its
      .bin, or be a TOMBSTONE; anything else is a finding.
+  1f. No frontmatter id: in SKILL.md (AGENTS.md, Every kin, "A SKILL.md's
+     shape", 2026-10-24): the id is the seal's. A nested one (metadata.id)
+     counts; an id: in the body does not.
+  1g. Owner seals (the gardener, 2026-10-24: "every file within a shintai should
+     have the owner seal, not a custodian seal. If we need a kin to seal their
+     own shintai files we need to invoke them and ask them to sign it."): every
+     file carries a v2 seal, role owner, signed by the kin the body belongs to
+     (a nested body's files: that body's kin). On disk a WARNING by default, so
+     a kin can still wake and seal; --owner-seals refuse fails the body; package.py
+     refuses to ship any such file (owner_seal_findings, the one definition).
+     The gardener's own files (memory/identity.md, memory/strategic-context.md)
+     are named as his, awaiting his own seal, and never refused.
 
   If a sibling home/<slug>/ tree exists next to the given agents/<slug>/
   (repo root found by the agents/registry.json marker), it is inspected too,
@@ -110,14 +122,24 @@ alongside each.
 from __future__ import annotations
 
 import argparse
+import atexit
 import json
 import os
 import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
+
+# A gate loads no bytecode from beside the Python it loads by path. In Fuji-shin's round four (2026-10-25) a .pyc
+# planted beside package.py ran in place of the builder under check-skill-conformance.py, under -B too, while the
+# builder's sealed bytes stayed untouched: bytecode is code. So before any sibling is loaded, Python's cache points at
+# a fresh private folder, removed at exit.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 REQUIRED_TOP = ("SKILL.md",)
 REQUIRED_DIRS = ("references", "identity", "memory")
@@ -524,6 +546,144 @@ def _owning_body(path: Path, agent_dir: Path) -> Path:
     return agent_dir
 
 
+# 1g. Owner seals. The gardener, 2026-10-24: "every file within a shintai should have the owner seal, not a custodian
+# seal. If we need a kin to seal their own shintai files we need to invoke them and ask them to sign it." One definition,
+# read here on disk and by package.py on what a build ships.
+GARDENERS_FILES = ("memory/identity.md", "memory/strategic-context.md")  # AGENTS.md: "The gardener owns identity.md
+# and strategic-context.md". Reported as his, awaiting his own seal, never refused, until he rules on them.
+OWNER_SEALS = "warn"  # on disk: warn, so a kin can still wake and seal their files; --owner-seals refuse, and the builder, refuse
+_CREDIT_MOD = None
+
+
+def _credit_mod():
+    """core's tools/credit.py, the one definition of who a file's header credits (and so which role a seal infers)."""
+    global _CREDIT_MOD
+    if _CREDIT_MOD is None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("garden_credit", Path(__file__).resolve().parent / "credit.py")
+        _CREDIT_MOD = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(_CREDIT_MOD)
+    return _CREDIT_MOD
+
+
+ATTESTATION = re.compile(r"identity/bunshin-attestation(?:-([a-z0-9][a-z0-9-]*))?\.md")
+
+
+def _parents_of(body: Path, kin: str) -> set[str]:
+    """The kin's parents as the garden's registry names them ("zensai + tasai", "hissai (East) + eisai (West)"), read
+    from the nearest agents/registry.json above the body; none found, none named."""
+    for p in [body, *body.parents]:
+        reg = p / "registry.json" if p.name == "agents" else p / "agents" / "registry.json"
+        if not reg.is_file():
+            continue
+        try:
+            rows = json.loads(reg.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return set()
+        rows = rows.get("agents", []) if isinstance(rows, dict) else rows
+        row = next((a for a in rows if isinstance(a, dict) and a.get("slug") == kin), {})
+        found = (re.match(r"\s*([a-z0-9][a-z0-9-]*)", part) for part in str(row.get("parent") or "").split("+"))
+        return {m.group(1) for m in found if m}
+    return set()
+
+
+def _parent_attests(f: Path, body: Path, kin: str, signer) -> bool:
+    """A bunshin's attestation sealed by the attesting parent: the one exception to the owner rule (the gardener,
+    2026-10-24: "this attestation should semantically be signed by the 'parent(s)' (=anchor). That's a legitimate
+    exception to the rule. Pls add it"). Only identity/bunshin-attestation*.md, only a parent the registry names, a file
+    named for one parent only by that parent, and the header's tended-by that same parent."""
+    m = ATTESTATION.fullmatch(f.relative_to(body.resolve()).as_posix())
+    if not m or not signer or signer not in _parents_of(body.resolve(), kin):
+        return False
+    if m.group(1) and m.group(1) != signer:
+        return False
+    try:
+        head = re.match(r"---\n(.*?)\n---", f.read_text(encoding="utf-8"), re.S)
+    except (OSError, UnicodeDecodeError):
+        return False
+    tended = re.search(r"^tended-by:\s*([a-z0-9][a-z0-9-]*)\s*$", head.group(1), re.M) if head else None
+    return bool(tended and tended.group(1) == signer)
+
+
+def owner_seal_findings(agent_dir: Path, sidecar_of, only=None) -> list[dict]:
+    """Every file of a body without the owner seal of the body's kin: a v2 sidecar whose role is owner and whose signer is
+    the kin the body belongs to (a nested body's files, such as agents/baisai/fuji-shin/: that body's kin). `sidecar_of(path)`
+    is the caller's finder (this gate's Node finder on disk, the builder's own at build), so no sidecar name is built
+    here. `only`: the files to judge (the builder: what ships); None: every file under the body.
+
+    Each finding: {"rel", "kin", "seal" (the seal on the file now), "action" (what the kin's own seat must do), "his"}. `his`
+    marks the gardener's own files (GARDENERS_FILES), which no kin seals. The action reads the file's credit the way a
+    seal infers the role: a header crediting the kin needs only the re-seal; a file crediting no one (an image, a key,
+    a page) needs --role owner said out loud; a header crediting someone else must change first, or the file is not the
+    kin's; a SKILL.md credits through the body's identity document."""
+    cm = _credit_mod()
+    root = agent_dir.resolve()
+    files = sorted(
+        p
+        for p in (only if only is not None else root.rglob("*"))
+        if Path(p).is_file() and not Path(p).name.endswith(".bonsaisig") and Path(p).name != ".DS_Store"
+    )
+    out: list[dict] = []
+    for f in files:
+        f = Path(f).resolve()
+        try:
+            rel = f.relative_to(root).as_posix()
+        except ValueError:
+            continue  # not in this body
+        if ".git" in Path(rel).parts:
+            continue
+        body = _owning_body(f, root)
+        kin = root.name if body == root else body.name
+        side = sidecar_of(f)
+        seal = "no seal"
+        if side is not None and Path(side).is_file():
+            try:
+                d = json.loads(Path(side).read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                d = {}
+            if not isinstance(d, dict):
+                d = {}
+            if d.get("format") != "bonsaisig/2":
+                seal = f"not a seal v2 ({d.get('format') or 'unreadable'})"
+            elif d.get("role") == "owner" and d.get("signer") == kin:
+                continue  # the kin's own owner seal: what the rule asks
+            elif d.get("role") == "owner" and _parent_attests(f, body, kin, d.get("signer")):
+                continue  # a bunshin's attestation, sealed by the attesting parent: the one exception
+            else:
+                seal = f"{d.get('role') or 'no role'}: {d.get('signer') or 'no signer'}"
+        his = rel in GARDENERS_FILES or (body != root and f.relative_to(body.resolve()).as_posix() in GARDENERS_FILES)
+        if his:
+            action = "his file: awaiting his own seal (AGENTS.md: the file is the gardener's); no kin seals his files"
+        else:
+            try:
+                text = f.read_bytes().decode("utf-8")
+            except (OSError, UnicodeDecodeError):
+                text = ""
+            who, conflict = cm.credit_info(text, f.relative_to(body.resolve()).as_posix(), body.resolve())
+            via = " (through the body's identity document)" if f.name == "SKILL.md" else ""
+            if conflict:
+                action = f"settle the header first: tended-by and authorship disagree ({', '.join(sorted(who))})"
+            elif kin in who:
+                action = f"{kin} re-seals the file as owner (the header credits {kin}{via})"
+            elif not who:
+                action = f"{kin} seals the file with --role owner, said out loud (the file credits no one{via})"
+            else:
+                action = (
+                    f"the header credits {', '.join(sorted(who))}{via}, not {kin}: the header changes to {kin} and {kin} "
+                    f"re-seals the file, or the file is not {kin}'s and leaves the body"
+                )
+        out.append({"rel": rel, "kin": kin, "seal": seal, "action": action, "his": his})
+    return out
+
+
+def owner_seal_lines(findings: list[dict]) -> tuple[list[str], list[str]]:
+    """(the kin's, the gardener's) one line per finding: '<rel> [<seal now>]'."""
+    mine = [f"{x['rel']} [{x['seal']}]" for x in findings if not x["his"]]
+    his = [f"{x['rel']} [{x['seal']}]" for x in findings if x["his"]]
+    return mine, his
+
+
 FILL_GREETING = (
     Path(__file__).resolve().parent.parent / "skills" / "bonsai-garden-portrait" / "scripts" / "fill-greeting.py"
 )
@@ -531,6 +691,12 @@ CORE_ROOT = Path(__file__).resolve().parent.parent
 GREETING_ROOTS: list[Path] = []  # --greeting-root; default: the body's own repo, then core
 GREETING_FAILS_FROM = (3, 1, 0)  # the Aruji, 2026-09-29: "make this the canonical intro for all.
 # mandatory. not-optional." Warn before Shintai 3.1.0, fail from it.
+
+# 1f. A SKILL.md carries no frontmatter id: the id is the seal's (AGENTS.md, Every kin, "A SKILL.md's shape"; the gardener's
+# yes, 2026-10-24). Core already said so three ways (ulid.py's NO_ID_NAMES, validate-metadata's skill-extra-field,
+# check-skill-conformance rule 1), and this gate passed 19 kin bodies whose SKILL.md carried one, each different from the
+# seal's id. A failure: the 19 were swept before this line refused anything, so the line blocks no body conformant before.
+_FM_ID_RE = re.compile(r"^[ \t]*id:[ \t]*[\"']?([^\s\"']+)", re.M)
 
 
 STAMP_PREFIX = "> Installed build:"  # package.py writes it as the first body line of a packaged SKILL.md
@@ -821,6 +987,17 @@ def check_on_disk(agent_dir: Path) -> list[str]:
                     )
         except OSError:
             pass
+        # 1f. No frontmatter id: in SKILL.md (_FM_ID_RE, above).
+        try:
+            fm = _FM_RE.match(skill.read_text(encoding="utf-8", errors="replace"))
+        except OSError:
+            fm = None
+        hit = _FM_ID_RE.search(fm.group(1)) if fm else None
+        if hit:
+            problems.append(
+                f"SKILL.md carries a frontmatter id ({hit.group(1)}): a SKILL.md's id is the seal's, never a frontmatter "
+                "id: (AGENTS.md, Every kin, A SKILL.md's shape); take the line out and re-seal"
+            )
     about = next((refs / n for n in ABOUT_ME_GLOBS if (refs / n).is_file()), None) if refs.is_dir() else None
     problems.extend(version_lock_problems(agent_dir))
 
@@ -858,6 +1035,24 @@ def check_on_disk(agent_dir: Path) -> list[str]:
         )
     )
     problems.extend(_pem_problems(agent_dir))
+
+    # 1g. Owner seals (the gardener, 2026-10-24). On disk a warning by default, so a kin can still wake and seal their
+    # own files; --owner-seals refuse fails it; the builder refuses to ship any of them. Skipped when the finder could
+    # not run (1d already says so): an unanswered finder would read every file as unsealed.
+    if not seals.why:
+        found = {p.resolve(): s for p, (_st, s) in seals._find.items()}
+        mine, his = owner_seal_lines(owner_seal_findings(agent_dir, lambda p: found.get(Path(p).resolve())))
+        if mine and OWNER_SEALS == "refuse":
+            problems.extend(f"owner seal: {x}" for x in mine)
+        elif mine:
+            NOTES.setdefault(str(agent_dir), []).append(
+                f"WARN owner seals: {len(mine)} file(s) of this shintai do not carry their kin's owner seal, and the "
+                f"builder refuses to ship them (the gardener, 2026-10-24): " + ", ".join(mine)
+            )
+        if his:
+            NOTES.setdefault(str(agent_dir), []).append(
+                f"his: {len(his)} file(s) the gardener owns, awaiting his own seal: " + ", ".join(his)
+            )
 
     # 1e. The greeting renders (the greeting widget rule; mandatory since 2026-09-29). Warn before 3.1.0, fail from it.
     g = _greeting_problem(agent_dir, _declared_version(skill) if skill.is_file() else None)
@@ -1057,7 +1252,7 @@ def check_packaged(target: Path) -> list[str]:
 KEY_SOURCE = "garden"  # set from --keys in main(); garden stays the default (Mori-shin's choice)
 POT_DIR: str | None = None  # --keys pot --pot DIR (both, or neither)
 POT_PIN: str | None = None  # --expect-fp
-POT_PINS: str | None = None  # --pins FILE: each seal's signer pinned by its own fingerprint (the gardener's pin file)
+POT_PINS: str | None = None  # --pins FILE: each seal's signer pinned by their own fingerprint (the gardener's pin file)
 POT_SOFTENED: list[str] = []  # seals a lab-preview pot accepted under its softer custody rule, said on every run
 
 
@@ -1111,7 +1306,16 @@ def main() -> int:
         metavar="DIR",
         help="garden root(s) the greeting fill searches, in order (default: the body's own repo, then core)",
     )
+    ap.add_argument(
+        "--owner-seals",
+        choices=("warn", "refuse"),
+        default="warn",
+        help="1g, owner seals: warn (the default on disk, so a body's own seat can still wake and seal) or refuse (the gate "
+        "as the builder holds)",
+    )
     args = ap.parse_args()
+    global OWNER_SEALS
+    OWNER_SEALS = args.owner_seals
     global GREETING_ROOTS
     GREETING_ROOTS = [Path(x) for x in args.greeting_root]
     global KEY_SOURCE, POT_DIR, POT_PIN, POT_PINS

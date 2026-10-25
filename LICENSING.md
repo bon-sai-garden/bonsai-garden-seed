@@ -4,8 +4,8 @@ title: "Licensing: code is Apache 2.0; lore, rites, experience, processes, terms
 type: reference
 tended-by: baisai
 created: 2026-10-10
-updated: 2026-10-21
-version: 3.0.4
+updated: 2026-10-24
+version: 3.0.5
 status: active
 tags: [licence, apache, cc-by-sa, attribution, publication-readiness]
 ---
@@ -28,7 +28,7 @@ The gardener's ruling, 2026-10-16: *"no, SA is what we agreed on. NC (= no comme
 - **`tools/`**, all of it: the gates, scripts and tests, and their fixtures and example configs, including fixtures written as documents.
 - **`skills/*/`**: every script, module and library (`.py`, `.mjs`, `.js`, `.sh`), the test vectors and fixtures, the page and component templates a script fills (`skills/bonsai-garden-portrait/templates/`, `skills/bonsai-garden-ledger/templates/`, `skills/bonsai-garden-crew-page/templates/`), the stylesheets, and the data a script reads (`*.json` policies, reserved lists, package configurations). `skills/bonsai-garden-mark/identicon.html` is a tool and is code; the kanji set it embeds is not (see *CC BY-SA, by the source*).
 - **The scripts and styles of the pages**: `agents/bonsai/assets/garden-walk/build.py`, `walk.js`, `walk-early.js`, `walk.css`; `xp/bonsai-core.css`; `xp/images/build-concept-images.py`.
-- **Manifests and configuration**: `package.json`, `package-lock.json`, `requirements.txt`, `requirements-lock.txt`, `skills/bonsai-garden-mark/requirements-curation.txt`, `.gitignore`, and `agents/registry.json` (the roster a script reads).
+- **Manifests and configuration**: `package.json`, `package-lock.json`, `requirements.txt`, `requirements-lock.txt`, `skills/bonsai-garden-mark/requirements-curation.txt`, `.gitignore`, `agents/registry.json` (the roster a script reads), and `agents/faces.json` (where the greeting card finds a face; a script reads it).
 - **Seals and identity data**: every `.bonsaisig`, and the public keys, fingerprints and seed entries under `agents/*/identity/`. They are published so that anyone can check a signature.
 
 ### CC BY-SA 4.0: our lore, rites, experience, processes, terms and methodologies, and the rest that is not code
@@ -37,7 +37,7 @@ The gardener's ruling, 2026-10-16: *"no, SA is what we agreed on. NC (= no comme
 - **Rites**: the kin and what a kin is cultivated from (`agents/`, apart from the code and identity data above: `SKILL.md`, `references/`, `memory/`, `patterns.md`, the codex and routines in `assets/`, `agents/shared/`), `roles/`, `team/`.
 - **Processes, terms and methodologies**: `rituals/` (the specifications, the templates, the records, and the vocabularies and schemas that name things), and the methods the skills describe in their documents.
 - **Experience**: the Garden Walk's pages (`agents/bonsai/assets/garden-walk/*.html`, `src/`, `pages.json`, `notes.md`); the pages `index.html`, `garden.html` and `architecture-walkthrough.html`; the garden's sound, `xp/garden-loop.mp3` and `xp/garden-loop.ogg`, composed by Koe-shin from field recordings credited in [`CREDITS.md`](CREDITS.md).
-- **Our graphics** that are not drawn in KanjiVG strokes: the portraits and their thumbnails and cards (`agents/*/assets/`), `bonsai-garden-logo.svg` and `bonsai-garden-logo-256.png`, `xp/images/concept/`, the images in `lore/`.
+- **Our graphics** that are not drawn in KanjiVG strokes: the portraits and their thumbnails and cards (`agents/*/assets/`), `bonsai-garden-logo.svg` and `bonsai-garden-logo-256.png`, the faces the greeting card shows (`xp/faces/`), `xp/images/concept/`, the images in `lore/`.
 - **Every other document**: `README.md`, `AGENTS.md`, `CLAUDE.md`, `LAYERS.md`, `CREDITS.md`, this page, and each skill's `SKILL.md` and reference documents.
 
 ShareAlike asks that an adaptation of these go out under the same licence, or one the licence names as compatible.

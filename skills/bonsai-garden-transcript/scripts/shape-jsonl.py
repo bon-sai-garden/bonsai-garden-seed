@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-09-24
+# updated: 2026-10-25
 # copyright: © 2026 Bonsai Garden · bon-sai.garden
 # ---
 """
@@ -34,14 +34,25 @@ Exit 0 on success, 1 on any failure — with the reason on stderr.
 from __future__ import annotations
 
 import argparse
+import atexit
 import contextlib
 import hashlib
 import json
 import os
 import re
+import shutil
 import sys
 import tempfile
 from pathlib import Path
+
+# A bundled script reads and writes no bytecode beside itself. A __pycache__ left beside the scripts failed a package's
+# own check (a planting, 2026-10-24), and a .pyc planted beside a sealed sibling runs instead of the sibling, under -B
+# too, while the sibling's sealed bytes stay untouched (Mori-shin's read, 2026-10-25: bytecode is code). So before any
+# sibling is loaded, Python's cache points at a fresh private folder, removed at exit; the instructions that run a
+# bundled script pass -B.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 MAX_TOOL_INPUT = 160
 

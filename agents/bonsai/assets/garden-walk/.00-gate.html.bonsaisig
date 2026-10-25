@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JVJF228BEQ0STFR575D3W",
-  "signer": "eisai",
-  "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-06T16:07:07Z",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-24T16:29:26Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/00-gate.html",
   "file-hash": "577ce430e7224f11c73140aa6af4ef920a0e52e6836ba473e9d7b40f50594b4eb7141d36de1e9553f7a00cfe90f9ffad6fcb20ae1ea0f785c4b2b90200ca48d8",
-  "signature": "RDtzEGo1RPWlvCl/vLes03LD6lhQUBnADCfuwpb87frngJ0H1AYst6Bkht08sHjX2CFVGHlZusTb1vVXIBxkAw=="
+  "signature": "s6rq8ThHnhPu7+OSzqxk9ND6GPxE/+OhiOdrCEUeIBIKSGWx9XYm0IMqUZWoEjBOm4xwYrIIKDMuBQr5DqqjDA=="
 }

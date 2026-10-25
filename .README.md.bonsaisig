@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3BS42KPT7BTQZ8BWF6MNDT2",
-  "signer": "baisai",
+  "signer": "tasai",
   "role": "custodian",
-  "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-22T17:44:02Z",
+  "fingerprint": "008016198a47d99e0eda6b533a56cde3",
+  "timestamp": "2026-10-25T17:24:50Z",
   "algorithm": "ed25519+blake2b512",
   "target": "README.md",
-  "file-hash": "df90c42f08aeb988c4f56d2a09fed992b5b34f87dac221e331cd62d81f0c3c4685694ed4c7b7870a6a446b1623cabd35a62ac6d888ce92f982bfb9824a74298c",
-  "signature": "fQdGmvO5aWMwfwi2GxaMGtUZRIO6ynFGa0niy/Ifdsc46WPonhoKhgfcW1Jnb77HwIegho9aGd5Ue5LHTO48Dg=="
+  "file-hash": "d00843197c8b53d25b2e101ace39b4e065670c1713245adffa6dd9d96ccd2bbd0ba277ac471648e310122c5bf8ecf0fbedeb036bf73f578949334d5a2731e16e",
+  "signature": "pdS8KWuyQ2r719Mk6F96NnWP4anKu8ZFei05FrOOGGGpHQY0wZgpZOt3aitSg8FQceYBu1HqaHORb5cZrJwbCw=="
 }

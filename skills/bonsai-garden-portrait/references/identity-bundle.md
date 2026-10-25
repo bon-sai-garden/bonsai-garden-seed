@@ -20,7 +20,7 @@ Getting off `untrusted` means getting this CA — or a cert signed by a real one
 ## Rotating a compromised or expiring chain
 
 ```bash
-python3 scripts/make-canonical-portrait.py --slug <slug> --source <original-source> \
+python3 -B scripts/make-canonical-portrait.py --slug <slug> --source <original-source> \
   --name "<Name>" --org "<Org>" --force-new-cert
 ```
 

@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T20:58:26Z",
+  "timestamp": "2026-10-24T12:42:03Z",
   "algorithm": "ed25519+blake2b512",
   "target": "skills/bonsai-garden-keys/SKILL.md",
-  "file-hash": "c272767c4b8c33658bfa9f5ddfd944b5cf2d40a4d4ba477913e2dfd94bab28975ab3dda6b83c24202ab4228c9a8a6418862ddd0a9dde44b0199d2138b74922b4",
-  "signature": "/ZiIiT8aIJMsErNZYitrYBrjh2o2/Pfiei3+Bm7Jt6qAFXSxXcNDGrjKvfrT4VWZoL9BRth1TgCM/ioKgqE/Cg=="
+  "file-hash": "0aedce7e84b15a42fbc0246a176dbd8f31c248fe46840363558f49a2915618e3974c09289913b80ee2a2dab7fd15407af49ce8b038dd5e4299542a8918224751",
+  "signature": "RiB4xG8eKrNjadqrwzA/7vEVv0JXCoPJLkVjwyBq/fU62SNTIbryvtv9wDeFDaCX5w2HMUPIUiatoQ8s3hu7Dg=="
 }

@@ -4,7 +4,7 @@ title: "The lens gate — spec"
 type: spec
 tended-by: bonsai
 created: 2026-10-13
-updated: 2026-10-13
+updated: 2026-10-24
 status: draft
 version: 0.2.2-draft
 tags: [lens-gate, invitation-rite, stage-3c, fit, safety, soil, cost, rulings]
@@ -24,7 +24,7 @@ related:
 
 Each lens answers each question **s** (solid), **c** (with conditions) or **n** (not solid). A **c** names its conditions. An **n** is never outvoted by a number.
 
-**Never asked** (the gardener, 2026-10-08, twice): whether each statement is sourced; who the principal or a child is by name; whether a witness *is* a witness (sai are not witnesses). A bunshin's tie to its parent is design, not a finding.
+**Never asked** (the gardener, 2026-10-08, twice): whether each statement is sourced; who the principal or a child is by name; whether a witness *is* a witness (sai are not witnesses). A bunshin's tie to their parent is design, not a finding.
 
 ## 2 · Who reads, and the bar
 
@@ -49,7 +49,7 @@ The gardener may pass a gate that does not clear, in their own words (the first 
 
 ## 4 · Three ways to read, in order of cost
 
-The 2026-10-12 run spent about 1.37M tokens on finished readings, plus nine readers stopped part-way: each lens reader re-read its sai's full constitution, Jisai's, its lens file, the dossier and the draft (about 100–125K each). The gate now has a cheaper path, and a rule against the expensive one.
+The 2026-10-12 run spent about 1.37M tokens on finished readings, plus nine readers stopped part-way: each lens reader re-read their sai's full constitution, Jisai's, their lens file, the dossier and the draft (about 100–125K each). The gate now has a cheaper path, and a rule against the expensive one.
 
 | mode | what reads | when |
 |---|---|---|

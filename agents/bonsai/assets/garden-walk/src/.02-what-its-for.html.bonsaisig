@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JWNARFH80VDJAGFG2XRW6",
-  "signer": "eisai",
-  "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-06T16:07:21Z",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-24T16:29:30Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/02-what-its-for.html",
   "file-hash": "3c98e9545dcbc1e18343b8a4279716211a69563ce908524d9cf15e52fb7a214685aa5fa4d8900395f6807b85eb4450070be123c6bd9e76bb16494c7c1dd66cdc",
-  "signature": "huIIS2ncX23r7PMpjunNfFjkMAbq3/Pk0rhEfsYyoDY3DExYpmBeQ2wV5TS8AV6ot+R4Akh816z1Cni142JMBA=="
+  "signature": "ju3pNTK4bzBBSoNQdhs4HxqO0wDcvziO+QIyBdvVnwTa3zeKCEl1DjnmPHyNoPpmI9t/MlZJw4H197pTLDmjCQ=="
 }

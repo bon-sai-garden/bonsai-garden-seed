@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-10-17
+# updated: 2026-10-25
 # ---
 """
 check-skill-conformance.py — does every standalone skill in this repo meet the spec? And does
@@ -60,6 +60,7 @@ A verifier that cannot run is a FAIL, never a pass. Exit 0 only when every skill
 
 from __future__ import annotations
 
+import atexit
 import importlib.util
 import json
 import os
@@ -70,6 +71,14 @@ import sys
 import tempfile
 import zipfile
 from pathlib import Path
+
+# A gate loads no bytecode from beside the Python it loads by path. In Fuji-shin's round four (2026-10-25) a .pyc
+# planted beside package.py ran in place of the builder under check-skill-conformance.py, under -B too, while the
+# builder's sealed bytes stayed untouched: bytecode is code. So before any sibling is loaded, Python's cache points at
+# a fresh private folder, removed at exit.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 ROOT = Path(__file__).resolve().parent.parent
 SIGN_CLI = ROOT / "skills" / "bonsai-garden-sign" / "bin" / "sign.mjs"

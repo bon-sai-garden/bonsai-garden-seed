@@ -4,9 +4,9 @@ title: "bonsai-garden-keys — identity"
 type: identity
 tended-by: baisai
 created: 2026-10-06
-updated: 2026-10-21
+updated: 2026-10-24
 skill: bonsai-garden-keys
-version: 0.9.2
+version: 0.9.4
 mark: 根技
 mark-meaning: "根 (316) root + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-keys#1386092"

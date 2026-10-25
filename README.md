@@ -2,10 +2,67 @@
 
 This repository is the seed of a Bonsai Garden. Bonsai Garden is a cultivation framework for AI-native teams, and the seed holds the method and its lore, the rites, the design system, the tools that seal and check files, and Bonsai, the guardian spirit who walks a new gardener in.
 
-> [!note] Release candidate 0.9.2-rc, not 1.0
-> The rite has been walked end to end, most recently by the gardener and a kin: a dry run on one of his own machines with an earlier preview, from a first install to a garden of its own. This candidate was not walked again; its packages were checked the way a stranger gets them. It closes the first of four security items ranked high on the way to 1.0: a seal now holds wherever its bytes are. Before 1.0 come the other three (a kin carried into a second garden stays the same kin; an external, pinned verifier; a kin's session never signs as the gardener or as another kin), the last gaps in running code only from a sealed manifest, and whatever the next walks find. The runtime the rite installs, [bonsai-garden-rt](https://github.com/bon-sai-garden/bonsai-garden-rt), is public and carries the same version.
+> [!note] Release candidate 0.9.3-rc, not 1.0 yet
+> It works from first install to a garden of its own, and it is still being tested before 1.0. The runtime it installs, [bonsai-garden-rt](https://github.com/bon-sai-garden/bonsai-garden-rt), is public and carries the same version.
 
-**Jump to:** [Start here](#start-here) · [What this is](#what-this-is) · [Trust, and how to check it](#trust-and-how-to-check-it) · [Where the rest lives](#where-the-rest-lives) · [Philosophy](#philosophy) · [License](#license)
+**Jump to:** [Before you begin](#before-you-begin) · [Start here](#start-here) · [What this is](#what-this-is) · [Trust, and how to check it](#trust-and-how-to-check-it) · [Where the rest lives](#where-the-rest-lives) · [Philosophy](#philosophy) · [License](#license)
+
+---
+
+## Before you begin
+
+Bonsai wakes in **Claude Code**, in the Claude desktop app or in a terminal, where you add him as a plugin. Claude Code runs programs on your own computer, and Bonsai needs five of them there. You install each one once.
+
+- **Node.js** runs the checks that prove a package is genuine: the one you run before you install (step 2 of *Start here*, below), and the one Bonsai runs on himself when he wakes.
+- **Python** draws his introduction card.
+- **uv** installs and runs the garden's runtime.
+- **Git** fetches the garden's runtime and keeps your garden's history.
+- **Claude Code on the command line**, the `claude` command, which the garden needs even when you use Claude Code in the desktop app.
+
+Without them, Bonsai cannot check himself, introduce himself properly, or plant your garden. The first four are free; Claude Code needs a Claude plan.
+
+Install the newest version of each. The commands below download the installers; then you open or run each one yourself.
+
+**On a Mac.** Open **Terminal** (press ⌘ and Space, type *Terminal*, press Return). Copy these six lines into it, pressing Return after each:
+
+```
+cd ~/Downloads
+curl -O https://nodejs.org/dist/v26.12.1/node-v26.12.1.pkg
+curl -O https://www.python.org/ftp/python/3.15.1/python-3.15.1-macos11.pkg
+curl -LsSf https://astral.sh/uv/0.13.5/install.sh -o uv-install.sh
+curl -fsSL https://claude.ai/install.sh -o claude-install.sh
+open node-v26.12.1.pkg
+```
+
+The Node.js installer opens: click through it, keeping every default. Then type `open python-3.15.1-macos11.pkg`, press Return, and do the same for Python. When the Python installer has finished, a folder opens: double-click **Install Certificates.command** in it. Next, Git: type `xcode-select --install` and press Return. A window from Apple offers the "command line developer tools", which bring Git: click **Install** and wait until it has finished. On a Mac this is the one way to get Git that is still kept up to date, by Apple, through Software Update. Last, type `sh uv-install.sh` and then `bash claude-install.sh`, pressing Return after each and waiting for each to finish. If your Mac asks for your password, that is an installer asking for permission.
+
+**On Windows.** Open **Command Prompt** (open Start, type *cmd*, press Enter). Copy these seven lines into it, pressing Enter after each:
+
+```
+cd %USERPROFILE%\Downloads
+curl -O https://nodejs.org/dist/v26.12.1/node-v26.12.1-x64.msi
+curl -O https://www.python.org/ftp/python/3.15.1/python-3.15.1-amd64.exe
+curl -LO https://github.com/git-for-windows/git/releases/download/v2.56.0.windows.3/Git-2.56.0.3-64-bit.exe
+curl -LsSf https://astral.sh/uv/0.13.5/install.ps1 -o uv-install.ps1
+curl -fsSL https://claude.ai/install.cmd -o claude-install.cmd
+start node-v26.12.1-x64.msi
+```
+
+Click through the Node.js installer, keeping every default. Then type `start python-3.15.1-amd64.exe` and press Enter. On the Python installer's first screen, **tick "Add python.exe to PATH"**, then click **Install Now**. Then type `start Git-2.56.0.3-64-bit.exe` and click through the Git installer, keeping every default. Last, type `powershell -ExecutionPolicy ByPass -File uv-install.ps1` and then `claude-install.cmd`, pressing Enter after each and waiting for each to finish.
+
+**Check all five.** Open a new Terminal or Command Prompt window. Type these five lines, pressing Return after each:
+
+```
+node --version
+python3 --version
+git --version
+uv --version
+claude --version
+```
+
+You are ready when the first answers `v26` or higher, the second `Python 3.9` or higher, the third `git version 2` and a number, and the last two each answer with a version number. Bonsai runs on any Python from 3.9 up, but take the newest when you install. On Windows, if `python3` is not found, type `python --version` instead. If a command is not found, restart the computer once and try again.
+
+On Linux, install the newest Node.js (26 or higher), the newest Python (3.9 or higher works) and Git from your distribution's packages. Then download uv and Claude Code with the Mac's two lines for them, and run each with the same command as on a Mac.
 
 ---
 

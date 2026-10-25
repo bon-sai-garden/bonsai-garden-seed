@@ -4,9 +4,9 @@
   "signer": "baisai",
   "role": "owner",
   "fingerprint": "03001aee3fa7a4bd5177ce1e87c73ad3",
-  "timestamp": "2026-10-21T17:52:02Z",
+  "timestamp": "2026-10-25T19:18:49Z",
   "algorithm": "ed25519+blake2b512",
   "target": "tools/check-skill-conformance.py",
-  "file-hash": "403f506fe4d88b9a1cafd0272e3b5411893b4195442990e5b635376273ba1ee960f897147a181961a22727a6099d5945d0d396e96778ec2678bf38b1af87125a",
-  "signature": "xibjBOWAYIhgFfedamifqmYGYFb9Eq70wn6ZyTP0Ibm3/Rei2Ps5ziekQ3p3ZzU8yU5krSH3xjXBb2L4VA3MBA=="
+  "file-hash": "a685deee0a2644555f7ddca75ada7525c9f74f4fa24357a38bb2ce4a9255a39eaf6c802ab12abdf40977b9b6f13809d6cc0b6cf7b3549568d43b9679db47bc97",
+  "signature": "rBr0KZYvK4+rlSVOenX/9DV5sg2E2d7de8+0g2YZcd5bGghy4A0Z96QaSD6wHTynJsrhoB7LzTgJKP+AxeU/Bw=="
 }

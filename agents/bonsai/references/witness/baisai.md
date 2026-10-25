@@ -2,7 +2,7 @@
 id: 01M37XP600EA9G46JAZE6DXVGX
 title: Witness CV — Baisai (培才)
 type: witness-cv
-tended-by: baisai
+tended-by: bonsai
 witness-for: Bonsai (盆才守神)
 created: 2026-09-01
 updated: 2026-10-22

@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "description": "Where the greeting card finds Bonsai's face: xp/faces/ of the published bonsai-garden-seed, through cdn.jsdelivr.net, the one image origin the widget sandbox lets through. Read by skills/bonsai-garden-portrait/scripts/fill-greeting.py; Bonsai's package carries this file as identity/faces.json. Pinned to a release tag, never a branch: a CDN caches a branch for days, and a release tag stays where the release set the tag. Only Bonsai's face is here. Every other kin's face is pinned by the garden that tends the kin, in that garden's agents/faces.json, and a kin with no face at this pin greets with the kanji seal. When the face changes, the pin moves to the release that carries the new one.",
+    "created": "2026-10-24",
+    "updated": "2026-10-24",
+    "tended-by": "eisai",
+    "why": "Bonsai's own package greets with his face, not only his seal; the face is kept here and pinned to a release (the gardener's word, 2026-10-24)."
+  },
+  "base": "https://cdn.jsdelivr.net/gh/bon-sai-garden/bonsai-garden-seed@v0.9.3-rc/xp/faces/",
+  "file": "{slug}-192.webp"
+}

@@ -2,6 +2,7 @@
 id: 01M37XP601ZDBWJ8JVKT16QTNX
 title: Witness CV — Tasai (多才)
 type: witness-cv
+tended-by: bonsai
 author: tasai
 subject: Bonsai (盆才守神)
 rite: kanjo — 2026-09-01

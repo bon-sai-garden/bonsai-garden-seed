@@ -1,13 +1,13 @@
 ---
 id: 01M48JMWBT0M4T6DM7C1M8N8Z2
 title: "The Garden Walk, a chain of pages: notes (mockups, draft 0.3)"
-description: "The walk as ten full pages, one per stage from the gate to calling home, rendered HTML in core and generated Astro on the public site; how it is built, what is example, and what is the gardener's to decide"
+description: "The walk as ten full pages, one per stage from the gate to calling home, rendered HTML in core and generated Astro on the public site; how the pages are built, what is example, and what is the gardener's to decide"
 type: spec-draft
-tended-by: eisai
+tended-by: bonsai
 created: 2026-10-06
-updated: 2026-10-21
+updated: 2026-10-24
 status: draft
-version: 0.6.1
+version: 0.6.2
 tags: [garden-walk, mockups, stage-pages, bonsai, public-site, eisai]
 related:
   - "[[agents/bonsai/assets/gardener-about-me-template]]"
@@ -95,6 +95,10 @@ Bonsai's dry walk of 2026-10-06 (the Aruji speaking for a friend, stages 1 to 4,
 - **A witness has what you take and what you leave.** Each witness came with a *leave*: what from this person the walker does not want. A **tension that stays** is kept on the sketch, held, not resolved. *Witnesses* now comes with its plain meaning first on step 4.
 - **The turn says what happens when what follows is not built:** the walk stops, the yes is recorded and waits.
 - **A gloss under a quotation** (`.gloss`): words stay in the language they were written in (the rule in the intake), and still can be followed.
+
+## From a planting on a new gardener's own Mac (0.6.2)
+
+Page 05 now says, before the first command, which five free programs must answer (Node.js, Python, Git, uv, and Claude Code on the command line) and how a line is handed at the terminal: one at a time onto an empty prompt, Ctrl+C first after a broken one, a small file for Japanese characters or several commands, a new Terminal tab after a change to the shell or the tools, every pair of characters checked by the garden's own check, and a read of the gardener's Terminal said and kept nowhere. Page 06's line on pairs says the same check comes first. These are the gist of the six rules in the planting runbook's §0, *The rules of the walk at the terminal*, in the gardener's words. The runbook is the master, and no check reads the two against each other. The site's generated pages follow core's at the next run of the site's generator (Eisai's).
 
 ## Content sets: the structure is core's, a walker's words are the walker's
 

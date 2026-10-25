@@ -4,9 +4,9 @@ title: "bonsai-garden-ledger — identity"
 type: identity
 tended-by: tasai
 created: 2026-09-26
-updated: 2026-10-21
+updated: 2026-10-25
 skill: bonsai-garden-ledger
-version: 0.2.2
+version: 0.2.4
 ---
 
 # bonsai-garden-ledger — identity

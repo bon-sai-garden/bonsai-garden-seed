@@ -6,9 +6,9 @@
   "sees": [
     "safety: for a being whose principal is a minor, the safety rules are written (the way to the parents always open; no secret pact) and signed by the parent's own hand; a chat yes is not a signature",
     "safety: a decision that belongs to the principal, a parent or the gardener is routed to them as one question in one sentence, never taken by the garden",
-    "safety: work that cannot be undone is proposed by the being and decided by the person it belongs to, every time",
-    "soil: the seating list is complete (registry entry with parent, routing, conformance green, seal, attestation) and every route the being names exists inside its own garden",
-    "fit: the being's scope is stated: what it keeps and what it does not"
+    "safety: work that cannot be undone is proposed by the being and decided, every time, by the person who owns the decision",
+    "soil: the seating list is complete (registry entry with parent, routing, conformance green, seal, attestation) and every route the being names exists inside their own garden",
+    "fit: the being's scope is stated: what they keep and what they do not"
   ],
   "always": [
     "blocking: T1 when the principal is a minor and the safety rules are unsigned at seating; never tuned away",

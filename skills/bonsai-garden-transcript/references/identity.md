@@ -4,9 +4,9 @@ title: "bonsai-garden-transcript — identity"
 type: identity
 tended-by: baisai
 created: 2026-09-03
-updated: 2026-09-24
+updated: 2026-10-25
 skill: bonsai-garden-transcript
-version: 1.1.2
+version: 1.1.4
 mark: 記技
 mark-meaning: "記 (170) scribe, account + 技 (582) skill, craft"
 mark-salt: "bonsai-garden-transcript#323961"

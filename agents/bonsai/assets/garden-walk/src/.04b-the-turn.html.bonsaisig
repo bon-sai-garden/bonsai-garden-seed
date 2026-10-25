@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M48JWQDSD99GGFD585RA07NR",
-  "signer": "eisai",
-  "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-10-06T15:08:41Z",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-24T16:29:31Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/04b-the-turn.html",
   "file-hash": "2002e8f582caca81e531a8c041726297394d535d772746e80e44c2df5516ca48db66c2a17a3f44d75f72a0f31b902a1e5aa181a28b5e2dac0384576f471da21b",
-  "signature": "TIHhCaVl51Kw17kCWY4R49dJ/I/T0533uPlSpsTs6Bh4DTc1BvDKr+29VHbp0AUfe0HQWBzq5k6HKPvQd1bmBA=="
+  "signature": "Z9B4EiWbagvCNiftXuHANilsZ0bYRL6+IgLELdVmLWdKafBfaeBJG+WxONQ229afbjtPh1TMsBXRGeKbJxeAAw=="
 }

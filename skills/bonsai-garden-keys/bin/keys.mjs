@@ -5,13 +5,14 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-22
+// updated: 2026-10-23
 // ---
 //
 // keys.mjs — spec-gardeners-keys.md §2: detect, id, mint, recover, namespace, identity, derive,
 // seed, verify, attest, and status; past the arc, seal-staged, install-runtime and fill-bodies
-// (planting 7c). Bonsai runs the same binary the gardener does; there is no
-// --walk flag and no second code path. Exit: 0 done · 2 refused (one line: why, and what to do) ·
+// (planting 7c); beside identity, check-pair (lib/pair.mjs: one answer to "is this pair free?",
+// given by both, and the pair in kanji or by index, B10-44 and B10-47). Bonsai runs the same
+// binary the gardener does; there is no --walk flag and no second code path. Exit: 0 done · 2 refused (one line: why, and what to do) ·
 // 3 halt (the state cannot be determined) · 64 usage. A refusal never writes.
 //
 // The master salt is read from custody once per verb, kept in memory, and never printed, logged,
@@ -64,7 +65,7 @@ import {
   shinOrder,
 } from '../lib/attestation.mjs';
 import { fileURLToPath } from 'node:url';
-import { searchNamespace, pairOf, chars, bonFirst, attempts, GUARDIAN } from '../../bonsai-garden-mark/namespace.mjs';
+import { searchNamespace, chars, attempts, GUARDIAN } from '../../bonsai-garden-mark/namespace.mjs';
 import { loadReservedSet, checkoutOf, SHIPPED } from '../../bonsai-garden-mark/reserved-marks.mjs';
 import { releaseOf } from '../../bonsai-garden-mark/release-manifest.mjs';
 import { makeOrigin, countProblem } from '../../bonsai-garden-mark/origin.mjs';
@@ -87,6 +88,7 @@ import {
   CovenantRefusal,
 } from '../lib/covenant.mjs';
 import { plantHomes } from '../lib/homes.mjs';
+import { resolvePair, pairLine, ruleFinding, takenFinding, pairFindings, PairError } from '../lib/pair.mjs';
 
 class Exit extends Error {
   constructor(code, msg) {
@@ -128,6 +130,7 @@ const KNOWN = new Set([
   'choices',
   'for',
   'renew',
+  'pair-index',
 ]);
 
 const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs in the arc's order:
@@ -140,7 +143,15 @@ const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs 
   recover  restore --pot <dir> --file <export>      a new or wiped host: back into custody, then the drill
   namespace --pot <dir>                             three kanji, the third 庭, none matching the shipped reserved rule
   identity <slug> --pot <dir> --pair 〇〇 [--candidates | --pick <1-5>] [--fp-attests 2]
+  identity <slug> --pot <dir> --pair-index <a>,<b> [--candidates | --pick <1-5>] [--fp-attests 2]
+                                                    the same pair by its two numbers in the published vocabulary
+                                                    (kanji-1024-v1.2.json), plain ASCII; either form is echoed back,
+                                                    kanji and numbers, before anything is locked
   identity bonsai-shin --pot <dir> --candidates | --pick <1-5>     the guardian's ID is drawn, never chosen (no --pair)
+  check-pair (--pair 〇〇 | --pair-index <a>,<b>) [--pot <dir>]
+                                                    free or not, and why in plain words (which kanji is in which set):
+                                                    the shipped reserved rule, 盆 first, and with --pot the pairs this
+                                                    garden holds. Exit 0 free, 1 not free. Reads no custody, writes nothing
   derive   <slug> --pot <dir>                       public key and fingerprint into the pot's identity layout
   derive   --all --pot <dir>                        the root and every locked entity, custody opened once
   seed     --pot <dir> --bonsai-entry <file>         the pot's agents/registry.json, in order, once the origin vouches
@@ -172,10 +183,10 @@ const USAGE = `keys.mjs — the gardener's keys (spec-gardeners-keys.md), verbs 
   --op-vault <name>   1Password: the vault (default "Bonsai Garden")
   --passphrase-stdin  read passphrases from stdin, one per line (otherwise asked on the terminal)
 
-namespace, identity and seed ask bon-sai.garden whether it vouches (the reserved set's seal, Bonsai's
-entry); no answer halts. The reserved set is the shipped skills/bonsai-garden-mark/reserved-marks.json.
+namespace, identity, check-pair and seed ask bon-sai.garden whether it vouches (the reserved set's seal,
+Bonsai's entry); no answer halts. The reserved set is the shipped skills/bonsai-garden-mark/reserved-marks.json.
 
-Exit: 0 done · 1 drift (fill-bodies --check, seal-staged --check, verify) · 2 refused · 3 halt · 64 usage.`;
+Exit: 0 done · 1 drift (fill-bodies --check, seal-staged --check, verify), or not free (check-pair) · 2 refused · 3 halt · 64 usage.`;
 
 function parse(argv) {
   const pos = [],
@@ -333,6 +344,16 @@ async function reservedRule(ctx, record = null) {
       const m = `no reserved set to search against: ${e.message}`;
       throw e.exit === 3 ? halt(m) : refuse(m);
     }
+    throw e;
+  }
+}
+
+/** The pair a command line names, in either form (lib/pair.mjs), or null; a pair that cannot be read exits 64 or 2. */
+function pairFrom(f) {
+  try {
+    return resolvePair(f);
+  } catch (e) {
+    if (e instanceof PairError) throw new Exit(e.exit, e.message);
     throw e;
   }
 }
@@ -766,6 +787,16 @@ async function cmdIdentity(ctx, slug) {
   }
   if (ctx.f.candidates && pick) throw usage('--candidates only prints the five; --pick locks one: not both');
   let pair = null;
+  // B10-44 (2026-10-23): the pair in either form, --pair 〇〇 or --pair-index <a>,<b>, read before the origin is asked
+  // and echoed, kanji and numbers, before anything is locked, so a wrong pair is seen
+  const given = guardian ? null : pairFrom(ctx.f);
+  if (!guardian) {
+    if (!given)
+      throw usage(
+        'identity needs the pair the entity chose: --pair 〇〇 (the two kanji) or --pair-index <a>,<b> (their numbers in kanji-1024-v1.2.json)',
+      );
+    console.log(pairLine(given.pair, given.form));
+  }
   // spec §6.4 point 5: namespace's record of the one answer, while the arc runs, believed under the root's seal first
   const rec = g.release && !g.release.spent ? g.release : null;
   if (rec) {
@@ -775,31 +806,24 @@ async function cmdIdentity(ctx, slug) {
   }
   const ex = await reservedRule(ctx, rec);
   if (guardian) {
-    if (ctx.f.pair)
+    if (ctx.f.pair !== undefined || ctx.f['pair-index'] !== undefined)
       throw refuse(
         `${GUARDIAN} does not choose a pair: the rite draws five allowed IDs and the gardener picks one (spec §7.1); run identity ${GUARDIAN} --candidates`,
       );
   } else {
-    if (!ctx.f.pair) throw usage('identity needs --pair 〇〇, the two kanji the entity chose');
-    try {
-      pair = pairOf(ctx.f.pair);
-    } catch (e) {
-      throw usage(e.message);
-    }
-    const why = ex.reserved(pair);
-    if (why) throw refuse(`${chars(pair)}: ${why}, in the first namespace; choose another`);
-    const bon = bonFirst(pair); // spec §6.1, held here as well as in the search: two walls
-    if (bon) throw refuse(`${chars(pair)}: ${bon}; choose another`);
+    pair = given.pair;
+    // the answer check-pair gives, from one place (lib/pair.mjs): the reserved rule in plain words, then 盆 first
+    // (spec §6.1, held here as well as in the search: two walls)
+    const why = ruleFinding(pair, ex)?.words;
+    if (why) throw refuse(`${chars(pair)}: ${why}; choose another`);
   }
   const locks = readLocks(ctx.pot);
   if (locks.agents[slug])
     throw refuse(
       `${slug} is already locked in this garden (${locks.agents[slug].identity_kanji}); a lock is never searched twice`,
     );
-  for (const [other, e] of Object.entries(locks.agents)) {
-    if (pair && JSON.stringify(e.identity_pair) === JSON.stringify(pair))
-      throw refuse(`${chars(pair)} is taken in this garden by ${other}; choose another`);
-  }
+  const taken = pair ? takenFinding(pair, locks) : null;
+  if (taken) throw refuse(`${chars(pair)}: ${taken.words}; choose another`);
   // spec §7.3 and §7.1: five attempts, public and deterministic (no key, no custody); the gardener picks one
   const five = attempts({
     slug,
@@ -817,7 +841,7 @@ async function cmdIdentity(ctx, slug) {
     );
     for (const c of five) console.log(`  ${c.n}  ${c.kanji}   ${c.salt}`);
     console.log(
-      `pick one with: identity ${slug}${pair ? ` --pair ${chars(pair)}` : ''} --pick <1-5>   (none pleases him: leave --pick out and the first stands, recorded as default)`,
+      `pick one with: identity ${slug}${pair ? ` --pair-index ${pair.join(',')}` : ''} --pick <1-5>   (none pleases the gardener: leave --pick out and the first stands, recorded as default)`,
     );
     return;
   }
@@ -870,6 +894,43 @@ async function cmdIdentity(ctx, slug) {
     `${slug}: ${id.kanji} (${pick ? `attempt ${pick}` : 'the first, picked: default'})   identity ${id.salt}   signing ${sg.salt}   fingerprint ${sg.fingerprint} (attests ${n})`,
   );
   console.log('mark: a plain mark, two chosen kanji; unrendered here (rendering is optional, spec Open)');
+}
+
+/**
+ * B10-47 (2026-10-23): the reserved-mark rule as a check a walk calls before it proposes a pair, never an eye. The
+ * answer identity gives, from the same place (lib/pair.mjs), against the same shipped set believed on the origin's
+ * word. It always asks: a garden's record of an earlier answer is held to the root key custody gives, and this verb
+ * opens no custody. With --pot it also says whether another entity in that garden holds the pair. First line:
+ * free | reserved | taken, the pair, its numbers. Exit 0 free, 1 not free. Reads no custody, writes nothing.
+ */
+async function cmdCheckPair(ctx, rest) {
+  if (rest.length)
+    throw usage(`check-pair takes the pair as --pair 〇〇 or --pair-index <a>,<b>, not as ${JSON.stringify(rest[0])}`);
+  const given = pairFrom(ctx.f);
+  if (!given) throw usage('check-pair needs the pair: --pair 〇〇 (the two kanji) or --pair-index <a>,<b> (their numbers)');
+  let locks = null;
+  if (ctx.pot) {
+    if (!fs.existsSync(P.garden(ctx.pot)))
+      throw refuse(`${ctx.pot} holds no garden.json: not a pot, so its pairs cannot be asked; nothing was checked`);
+    locks = readLocks(ctx.pot);
+  }
+  const ex = await reservedRule(ctx);
+  const { pair } = given;
+  const found = pairFindings({ pair, rule: ex, locks });
+  const word = !found.length ? 'free' : found[0].kind === 'taken' ? 'taken' : 'reserved';
+  console.log(`${word}  ${chars(pair)}  ${pair.join(',')}`);
+  console.log(`  ${pairLine(pair, given.form)}`);
+  for (const x of found) console.log(`  ${x.words}`);
+  if (!found.length) {
+    console.log(
+      `  neither kanji is the wildcard 〇, the pair is not a set-A first with a set-B second, and its first is not 盆${
+        locks ? '; no entity in this garden holds it' : "; not asked against a garden's own pairs (name --pot for that)"
+      }`,
+    );
+    console.log(`next: identity <slug> --pot <dir> --pair-index ${pair.join(',')} --candidates`);
+  } else console.log('choose another; nothing was written');
+  console.log(`reserved set: believed through ${ex.via}`);
+  if (found.length) throw new Exit(1, null);
 }
 
 /** What a verb wrote without sealing, and the command that seals exactly those paths when they are staged. */
@@ -1735,6 +1796,10 @@ async function main(argv, deps = {}) {
       break;
     case 'identity':
       await cmdIdentity(ctx(), rest[0]);
+      break;
+    case 'check-pair':
+      // no --pot needed, and no custody: the origin only, as the cli was handed it
+      await cmdCheckPair({ f, pot: f.pot ? path.resolve(f.pot) : null, origin: deps.origin || makeOrigin() }, rest);
       break;
     case 'derive':
       await cmdDerive(ctx(), rest[0]);

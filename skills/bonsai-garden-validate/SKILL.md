@@ -8,7 +8,7 @@ description: >
   names. Read-only, needs no private key, runs from a checkout of core alone.
   Use before signing, after moving files, after adding or editing
   frontmatter, and in any routine pass over a garden.
-version: 2.0.1
+version: 2.0.2
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -29,15 +29,15 @@ deploy allowlist) are not here: they belong to that garden's runtime.
 
 Walks every `.md` file and checks its YAML frontmatter: the six required fields, ULID ids and
 their uniqueness, the `type` vocabulary, `tended-by` (the schema's structural constants plus
-every kin found in the garden's `agents/` tree, so a newly invited kin is valid the moment its
+every kin found in the garden's `agents/` tree, so a newly invited kin is valid the moment their
 surface lands), date form and order, `related` / `supersedes` references, one canonical
 constitution per kin, kanban cards against the card schema, and every embedded `sign:` block,
 verified by core's own verifier (`skills/bonsai-garden-sign`).
 
 ```bash
-python3 scripts/validate-metadata.py                       # the whole checkout
-python3 scripts/validate-metadata.py --root agents/<slug>  # a subtree; the roster still comes from the garden
-python3 scripts/validate-metadata.py --json --strict       # machine output; warnings fail too
+python3 -B scripts/validate-metadata.py                       # the whole checkout
+python3 -B scripts/validate-metadata.py --root agents/<slug>  # a subtree; the roster still comes from the garden
+python3 -B scripts/validate-metadata.py --json --strict       # machine output; warnings fail too
 ```
 
 `--garden` names where the `agents/` tree is read from (default: the nearest directory at or
@@ -54,8 +54,8 @@ Fails on any `.md` whose YAML block is not at byte 0 because a read-time comment
 signers anchor on `---` at byte 0, so such a file has an invisible id.
 
 ```bash
-python3 scripts/check-frontmatter-order.py            # staged .md files (a pre-commit hook)
-python3 scripts/check-frontmatter-order.py FILE ...   # named files
+python3 -B scripts/check-frontmatter-order.py            # staged .md files (a pre-commit hook)
+python3 -B scripts/check-frontmatter-order.py FILE ...   # named files
 ```
 
 ### check-path-references.py — dead paths
@@ -65,8 +65,8 @@ references survive moves; these do not. Journals, logs and snapshots are left ou
 they record paths as they were.
 
 ```bash
-python3 scripts/check-path-references.py --write-baseline .path-ref-baseline.json   # before a refactor
-python3 scripts/check-path-references.py --baseline .path-ref-baseline.json         # after: only new breakage fails
+python3 -B scripts/check-path-references.py --write-baseline .path-ref-baseline.json   # before a refactor
+python3 -B scripts/check-path-references.py --baseline .path-ref-baseline.json         # after: only new breakage fails
 ```
 
 `--history-prefix PREFIX` adds a garden's own point-in-time folders; `--include-history` scans
@@ -79,7 +79,7 @@ a suggested name. The conventional upper-case documents (`SKILL.md`, `README.md`
 root contract documents and their sidecars are exempt, and so is `MEMORY.md` in a `memory/` directory (the memory index: the routines prescribe it and the garden MCP reads it by that name). A two-letter locale suffix before the extension (`heritage_de.html`) marks a translation and is not an underscore violation; any other underscore still is.
 
 ```bash
-python3 scripts/audit-filenames.py [--tsv report.tsv] [--refs] [--fix-dry-run]
+python3 -B scripts/audit-filenames.py [--tsv report.tsv] [--refs] [--fix-dry-run]
 ```
 
 It renames nothing; `--fix-dry-run` prints the `git mv` it would suggest.

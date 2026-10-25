@@ -11,7 +11,7 @@ description: >
   the instance. Use whenever a gardener or agent wants to know what a stretch
   of work cost, in tokens, money or another unit — without hand-parsing
   transcripts or hardcoding a garden's own prices or slugs into the answer.
-version: 0.2.2
+version: 0.2.4
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -33,7 +33,7 @@ one garden — the model names, the prices, the seats, and where the finished pa
 all instance data, and none of it lives here. This skill carries no garden's slugs, no garden's
 URLs, and no garden's prices: every one of those is a parameter the caller supplies.
 
-This skill's older sibling, `bonsai-garden-tokens`, teaches an agent to *read its own budget
+This skill's older sibling, `bonsai-garden-tokens`, teaches an agent to *read their own budget
 mid-session* — a one-page contract for "where am I, should this work run here or in a
 sub-agent." This skill is a different capability: producing a **standing record** of usage over
 a stretch of time, for a human or a dashboard to look at afterward. `bonsai-garden-tokens` does
@@ -63,28 +63,28 @@ not yet point here; that's an open item for its own owner (see below).
 
 ```bash
 # Stage 1+2: fetch this project's Claude Code transcripts since a date, write one JSON document
-python3 scripts/ledger.py fetch --harness claude-code --since 2026-09-21 --out data.json
+python3 -B scripts/ledger.py fetch --harness claude-code --since 2026-09-21 --out data.json
 
 # Same, but point at a specific project folder (or a parent holding several) instead of the
 # default (this cwd's own ~/.claude/projects/<cwd-key> folder)
-python3 scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
+python3 -B scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
     --root ~/.claude/projects/-some-project-path --out data.json
 
 # Add a list-price equivalent (a price table the CALLER supplies — see schema below)
-python3 scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
+python3 -B scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
     --price-table prices.json --out data.json
 
 # Add distance / CO2 factors, applied to fresh tokens only (cache reads are left out, so any
 # resulting figure is a floor, not a bill)
-python3 scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
+python3 -B scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
     --km-per-m-fresh 0.33,0.70,1.07 --co2-per-m-fresh 0.5 --out data.json
 
 # Attribute usage to a seat of work — a rule YOU supply (default: everything "unattributed")
-python3 scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
+python3 -B scripts/ledger.py fetch --harness claude-code --since 2026-09-21 \
     --seat-rule my-garden/seat-rule.py:seat_of_session --out data.json
 
 # Stage 3: render the page from a fetched data.json
-python3 scripts/ledger.py render --data data.json --template templates/ledger.html --out ledger.html
+python3 -B scripts/ledger.py render --data data.json --template templates/ledger.html --out ledger.html
 ```
 
 ## The seat rule — pluggable, never baked in

@@ -4,9 +4,9 @@
   "signer": "tasai",
   "role": "owner",
   "fingerprint": "008016198a47d99e0eda6b533a56cde3",
-  "timestamp": "2026-10-16T14:28:58Z",
+  "timestamp": "2026-10-24T13:45:06Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/orchestrator/role.md",
-  "file-hash": "10d74ba17494a81c603fde57259095339acdaf83a4523ff60b37320d2bf855f3edfb26ec8b3675fa76395340699733998d360c9599528282c691fdce6d4d7fc5",
-  "signature": "3KPV99iV3qiS0JXGH7qe5Zos/O6MJHCJDb7mcFOnncThGIv1JHPSnZC82RWKI2Tw3Zdtl0/fsAz8bNGeXMjHCg=="
+  "file-hash": "373f4ca5224dfc0b2e3c1db3a122a1506d7d4535aa963b4ae40d26e4b08b5feb939868b4529b9ee832840761e8dbf165e88d12165bf53cc8757ed5656d98ac59",
+  "signature": "6p9wiKsnVqCQJlooMdEA4SVBUVlvkkrX6/W3SoyiwGXzhu21nvxJUd5dLibOR0AOGazEfJ59G/ePSZCV+n0hAQ=="
 }

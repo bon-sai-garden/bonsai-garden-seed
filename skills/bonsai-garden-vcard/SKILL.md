@@ -7,7 +7,7 @@ description: >
   the kanji secondary name, the fingerprint, and the garden's domain and
   verify link as flags. Use whenever someone asks to create, update, or
   re-render a kin's contact card or .vcf file.
-version: 2.2.1
+version: 2.2.2
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -32,14 +32,14 @@ standards-compliant contacts app.
 
 ```bash
 # Renders and writes agents/<slug>/assets/<slug>.vcf
-python3 scripts/build-agent-vcard.py --agent-dir <garden>/agents/<slug>
+python3 -B scripts/build-agent-vcard.py --agent-dir <garden>/agents/<slug>
 
 # With the garden's domain and verify page
-python3 scripts/build-agent-vcard.py --agent-dir <garden>/agents/<slug> \
+python3 -B scripts/build-agent-vcard.py --agent-dir <garden>/agents/<slug> \
     --domain example.garden --key-url 'https://example.garden/verify/?fp={fingerprint}'
 
 # Explicit paths, for a non-standard layout
-python3 scripts/build-agent-vcard.py --about-me path/to/about-me.md \
+python3 -B scripts/build-agent-vcard.py --about-me path/to/about-me.md \
     --portrait path/to/portrait-thumb.jpg --registry path/to/registry.json --output card.vcf
 ```
 

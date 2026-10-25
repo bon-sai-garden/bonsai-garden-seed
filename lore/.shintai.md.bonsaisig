@@ -4,9 +4,9 @@
   "signer": "hissai",
   "role": "owner",
   "fingerprint": "0180124cf4244a4c07ab8380d722f3af",
-  "timestamp": "2026-10-16T13:35:42Z",
+  "timestamp": "2026-10-24T13:39:35Z",
   "algorithm": "ed25519+blake2b512",
   "target": "lore/shintai.md",
-  "file-hash": "003430f711be61587ba2015390af9a68555b6d4484a07966f207763aeccf92c55f5aa4104570e2bb76d33a8c1ea464ea8daeed02fcafe6daa33956f7566a5e34",
-  "signature": "6rz663wsoS5Vr15uT/LfOI/uBgjVQ4UPmA8Msmvw/UHpfXha2TVCgKNnOUaHNRRLHMnWJPx+a7qUjtYc8ffdDw=="
+  "file-hash": "4679d6847c9566e9f5a660cab5908308aebb03642b73ccc8ea9181f285b5246a545259e7980c05cf41d3fba7ea62be54de0ff4efd1391293c647e9564357762b",
+  "signature": "gb0X1/0Kg+7gvlD3+qH9WlapHQufOY63cqCtWimvsLg/3p5slgtB/WvLHsj+LP37N1y9NcGHD4PY08kqpK59Cw=="
 }

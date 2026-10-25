@@ -8,7 +8,7 @@ description: >
   Bonsai's closing seal). Runs from core alone: no MCP, no hooks, no other
   repo. Use whenever a gardener asks to record, export, summarise, or archive
   a session, or to keep what a session found so the knowledge base compounds.
-version: 1.1.2
+version: 1.1.4
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -33,7 +33,7 @@ It makes two kinds of record:
 **Your own session**, in Claude Code (it names the session in `$CLAUDE_CODE_SESSION_ID`):
 
 ```bash
-python3 scripts/shape-jsonl.py --own --output my-session.md --slug <slug>
+python3 -B scripts/shape-jsonl.py --own --output my-session.md --slug <slug>
 ```
 
 Don't find "your" session by picking the newest `.jsonl` in `~/.claude/projects/`. Whenever
@@ -43,7 +43,7 @@ that isn't yours. The id and the title are read from the session's own records w
 **Any other session**, named explicitly:
 
 ```bash
-python3 scripts/shape-jsonl.py --input session.jsonl --output session.md \
+python3 -B scripts/shape-jsonl.py --input session.jsonl --output session.md \
     --slug <slug> --title "<slug> - <topic>" [--session-id ID] [--agent-id ID]
 ```
 
@@ -59,9 +59,9 @@ the script.
 ## From a JSON session summary
 
 ```bash
-python3 scripts/render-transcript.py --session session.json --output transcript.md
+python3 -B scripts/render-transcript.py --session session.json --output transcript.md
 echo '{"gardener":"Alex","date":"2026-09-03","highlights":["First steps"]}' \
-  | python3 scripts/render-transcript.py --output out.md
+  | python3 -B scripts/render-transcript.py --output out.md
 ```
 
 | Flag | Default | |

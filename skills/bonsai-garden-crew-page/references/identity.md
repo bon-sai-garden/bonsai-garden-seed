@@ -4,9 +4,9 @@ title: "bonsai-garden-crew-page — identity"
 type: identity
 tended-by: eisai
 created: 2026-10-06
-updated: 2026-10-09
+updated: 2026-10-25
 skill: bonsai-garden-crew-page
-version: 0.3.0
+version: 0.3.2
 ---
 
 # bonsai-garden-crew-page — identity

@@ -343,7 +343,7 @@ home/&lt;slug&gt;/                    <span class="c"># per-agent workspace (<sp
   <h3>Sealed memory for sensitive agents</h3>
   <p>Agents serving an individual closely keep memory in a <strong>per-agent encrypted vault</strong>, a git repo of client-side-encrypted, signed episodes. The broker intercepts any write to such an agent's memory path and seals it or refuses it, so plaintext never lands in the repo.</p>
   <ul>
-    <li><strong>Isolation by addressing:</strong> an agent can only resolve its own vault. That is stronger than a row filter, where one missed <code>WHERE</code> leaks.</li>
+    <li><strong>Isolation by addressing:</strong> an agent can only resolve their own vault. That is stronger than a row filter, where one missed <code>WHERE</code> leaks.</li>
     <li><strong>Provenance:</strong> per-episode signatures give the provenance OWASP's memory-poisoning guidance (ASI06) asks for.</li>
   </ul>
   <div class="lim"><b>Open:</b>
@@ -391,7 +391,7 @@ home/&lt;slug&gt;/                    <span class="c"># per-agent workspace (<sp
   <ol>
     <li><strong>Policy on the logical path, before routing:</strong>
       <ul>
-        <li>the owner lock: only an agent writes its own memory tree;</li>
+        <li>the owner lock: only an agent writes their own memory tree;</li>
         <li>the self-memory guard;</li>
         <li>the sealed-memory interceptor.</li>
       </ul>
@@ -426,7 +426,7 @@ home/&lt;slug&gt;/                    <span class="c"># per-agent workspace (<sp
     <li><strong>Knowledge base:</strong> specs, handovers, journals, lessons, all ULID-addressed and cross-linked.</li>
     <li><strong>Failure-driven rules.</strong> When an agent makes a mistake, the fix is engineered so it can't recur, and the rule is recorded where it is enforced. <code>AGENTS.md</code> and the conformance gate grow one line per incident.</li>
     <li><strong>Pattern promotion.</strong> An agent observes something three times and proposes it; the operator approves; it becomes a role-level pattern that travels with the package. Deployment-wide lessons are promoted manually.</li>
-    <li><strong>Escalation policy in the agent spec</strong> (<code class="lore">Empty-Chair tripwire</code>). Acting without the operator is permitted. An agent noticing it <em>prefers</em> to is required to say so and hand the decision back. It's a reporting control, logged where the operator will see it.</li>
+    <li><strong>Escalation policy in the agent spec</strong> (<code class="lore">Empty-Chair tripwire</code>). Acting without the operator is permitted. An agent noticing they <em>prefer</em> to is required to say so and hand the decision back. It's a reporting control, logged where the operator will see it.</li>
     <li><strong>Deliberately temporary.</strong> Much of the harness encodes what current models can't reliably do alone. We expect to delete parts of it as models improve, and we keep the lessons, not the code.</li>
   </ul>
 </section>
@@ -464,7 +464,7 @@ home/&lt;slug&gt;/                    <span class="c"># per-agent workspace (<sp
       <tr><td><code class="lore">seal-open</code></td><td>signed, time-boxed declaration that a document intentionally differs from its seal</td></tr>
       <tr><td><code class="lore">tombstone</code></td><td>forwarding file at a moved path</td></tr>
       <tr><td><code class="lore">second master</code></td><td>an unmanaged duplicate; the fix is generate-and-gate</td></tr>
-      <tr><td><code class="lore">Empty-Chair tripwire</code></td><td>escalation control: the agent reports when it would prefer to act without the operator</td></tr>
+      <tr><td><code class="lore">Empty-Chair tripwire</code></td><td>escalation control: the agent reports when they would prefer to act without the operator</td></tr>
       <tr><td><code class="lore">bonsai</code></td><td>the bootstrap agent, shipped in core, which runs the setup procedure</td></tr>
     </tbody>
   </table></div>

@@ -37,7 +37,7 @@
 //        verifies v2 SIDECARS only: the embedded `verify` verb is not ok under a pot; an untrusted or unnamed pot
 //        answers every job with its refusal, never a pass. The seam is skills/bonsai-garden-sign/lib/pot-keys.mjs.
 //   node tools/verify-many.mjs --keys pot --pot <dir> --pins <file>
-//        the same, with each seal's signer pinned by its OWN fingerprint from the gardener's pin file
+//        the same, with each seal's signer pinned by their OWN fingerprint from the gardener's pin file
 //        ({"pins": {"<slug>": "<fp32>"}}, ~/.bonsai-garden/pins/<garden>.json, written by his hand). A body holds seals
 //        by more than one signer (a custodian's, a sibling's), and one --expect-fp pins one of them: every other seal read
 //        pin-mismatch (the 0.8.2 acceptance run, 2026-10-17: the origin served from its pot). Each seal still verifies

@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M48JWT2ZYVGRQRBP8N75749S",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-20T15:31:43Z",
+  "timestamp": "2026-10-24T16:29:32Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/08-calling-home.html",
   "file-hash": "2a8005421d18a0065bbdd97e1c4ae0e38eaa855e36350b4416c45363525d6f5b352f1499337abea99424539725cf710f29ae023c68a15fedddffbb5423184712",
-  "signature": "A6XxMG+BUIytSKprQyGJeo1VVB0dPoy+RD2h2grQ20RQZnYKs9n9Yex6K7Uuk++XAj9wWEEkOVGxVGLk1mV0DQ=="
+  "signature": "A62y96w4N85TEGganFKGsenNGUEtOWGlJo+Sv+pPs1IonS9yD1soK9PzTGduTX5Z90kjV+gCbUFBcuneIQz8AQ=="
 }

@@ -1761,7 +1761,7 @@ t('the-arc-end-to-end-and-the-secret-never-leaks', async () => {
   const st = run(W, ['status', '--pot', W.pot]);
   const reg = JSON.parse(fs.readFileSync(path.join(W.pot, 'agents', 'registry.json'), 'utf8'));
   const g = gardenJson(W.pot);
-  // the fingerprint chains: each kin's fingerprint decodes to its chosen pair
+  // the fingerprint chains: each kin's fingerprint decodes to their chosen pair
   let chains = true;
   for (const [slug, pair] of Object.entries(pairs)) {
     const e = reg.agents.find((x) => x.slug === slug);

@@ -5,7 +5,7 @@
 # type: script
 # tended-by: tasai
 # created: 2026-10-16
-# updated: 2026-10-16
+# updated: 2026-10-25
 # ---
 """text-card.py: a kin's greeting as a text card.
 
@@ -36,12 +36,14 @@ columns wide in a terminal but not always in a chat font, so a right-hand border
     python3 text-card.py --registry <garden>/agents/registry.json --slug <slug> \\
       --locked-salts <the garden's locked-salts file> --tz <zone> \\
       --subtitle "South · operations" --intro "<the kin's intro line>" --build 3.1.0.9-rc-20261014T1843Z \\
-      --integrity pass --identity pass --files pass --fullfp pass \\
+      --integrity pass --identity pass --files pass --sealed-file <the kin's own sealed file> \\
       --location "<city>, <country>" --host <host> --harness "<harness>" --model "<model>" \\
       --mcp "<mcp state>" --skill "<skill state>" --permission auto --plain
 
 Every value is a flag the kin's seat filled from what they loaded or ran this turn; nothing here is looked up but the kin's own
-name, kanji, fingerprint and accent.
+name, kanji, fingerprint and accent. One check is not a flag: the full fingerprint is earned by --sealed-file, run through
+fill-greeting.py's one check (core's verifier against the published keys, all 32 hex against the registry's), and a
+typed --fullfp pass is refused (the gardener, 2026-10-24).
 
   --registry      the garden's agents/registry.json; omitted, `$BONSAI_GARDEN/agents/registry.json`.
   --locked-salts  the garden's locked-salts file (JSON, `agents.<slug>`). The whole file is parsed; only the two
@@ -55,14 +57,26 @@ greets with the widget instead.
 """
 
 import argparse
+import atexit
 import importlib.util
 import json
 import os
 import re
+import shutil
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+# A bundled script reads and writes no bytecode beside itself. A __pycache__ left beside the scripts failed a package's
+# own check (a planting, 2026-10-24), and a .pyc planted beside a sealed sibling runs instead of the sibling, under -B
+# too, while the sibling's sealed bytes stay untouched (Mori-shin's read, 2026-10-25: bytecode is code). So before any
+# sibling is loaded, Python's cache points at a fresh private folder, removed at exit; the instructions that run a
+# bundled script pass -B.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 # Kanji take only these colours (the gardener, 2026-10-16): white, black, the kin's canonical colour, or garden amber.
 WHITE, BLACK = (255, 255, 255), (0, 0, 0)
@@ -185,21 +199,32 @@ def main():
         ap.add_argument(f"--{k}", default="")
     ap.add_argument("--permission", default="")
     fg = loud_words()
-    for k in ("integrity", "identity", "files", "alive", "fullfp"):
+    for k in ("integrity", "identity", "files", "alive"):
         ap.add_argument(f"--{k}", choices=fg.STATES, default=fg.default_state(k))
+    ap.add_argument("--fullfp", choices=fg.STATES, default=None, help="fail or missing on the caller's word; a pass is earned by --sealed-file")
+    ap.add_argument("--sealed-file", default="", help="the kin's own sealed file; the full fingerprint is checked on it (fill-greeting.py)")
     ap.add_argument("--mcp-state", choices=("ok", "warn"), default="ok")
     ap.add_argument("--skill-state", choices=("ok", "warn"), default="ok")
     ap.add_argument("--said", action="append", default=[], metavar="CHECK=TEXT", help="what a check that did not pass said")
     ap.add_argument("--plain", action="store_true")
     a = ap.parse_args()
-    states = {"integrity": a.integrity, "identity": a.identity, "files": a.files, "alive": a.alive, "fullfp": a.fullfp}
-    try:
-        fg.check_states(states)
+    states = {"integrity": a.integrity, "identity": a.identity, "files": a.files, "alive": a.alive}
+    try:  # the caller's words first: a typed fullfp pass stops here
+        fg.check_states({**states, "fullfp": a.fullfp or fg.default_state("fullfp")})
         said = fg.parse_said(a.said)
     except ValueError as e:
         refuse(str(e))
 
     kin = find_kin(registry_path(a.registry), a.slug)
+    try:  # the full fingerprint, earned by the filler's one check, or the caller's fail/missing
+        states["fullfp"], fullfp_said, earned = fg.resolve_fullfp(a.fullfp, a.sealed_file, a.slug, kin.get("fingerprint") or "")
+        fg.check_states(states, earned)
+    except ValueError as e:
+        refuse(str(e))
+    if fullfp_said is not None:  # the verifier's words, never the caller's
+        said.pop("fullfp", None)
+        if fullfp_said:
+            said["fullfp"] = fullfp_said
     if a.locked_salts:
         why = unlocked(a.locked_salts, a.slug)
         if why:

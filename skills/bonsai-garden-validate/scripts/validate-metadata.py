@@ -23,7 +23,7 @@ Checks performed:
      (its `### Structural constants` table) and the agent slugs DERIVED from
      the garden's agents/ tree.
      Derivation means a newly invited *-sai or *-shin is a valid tender the
-     moment its surface lands in the tree — no schema edit required.
+     moment their surface lands in the tree — no schema edit required.
   5. Date format and order (updated >= created)
   6. Path/type and path/tended-by cross-checks (warnings)
   7. Signature verification — any file with a sign: block must have a valid
@@ -217,8 +217,8 @@ def derive_agent_tenders(repo_root: Path) -> set[str]:
     An agent is any directory carrying a surface marker (a constitution / skill
     / agent file):
       - agents/<slug>/                      → top-level *-sai and *-shin
-      - agents/<parent>/<slug>/             → a shared-body *-shin, nested in its
-                                              parent's directory with no body of its own
+      - agents/<parent>/<slug>/             → a shared-body *-shin, nested in their
+                                              parent's directory with no body of their own
       - agents/<parent>/sub-agents/<slug>/  → divided *-shin (legacy layout)
 
     This makes invitation automatic: the moment a new agent's surface lands in
@@ -363,7 +363,7 @@ def infer_tended_by_from_path(rel_path: str, tended_by_enum: list[str]) -> str |
     # Kin live at agents/<slug>/... . Legacy skills/<slug>/ is retained so older
     # retained paths still infer. A divided *-shin at agents/<parent>/sub-agents/<slug>/
     # or a shared-body *-shin nested at agents/<parent>/<slug>/ tends those files,
-    # not its parent, so the *-shin's slug is preferred when the path names it.
+    # not their parent, so the *-shin's slug is preferred when the path names it.
     parts = rel_path.split("/")
     if len(parts) >= 2 and parts[0] in ("agents", "skills"):
         if "sub-agents" in parts:
@@ -957,7 +957,7 @@ def cross_file_checks(
                 idx = i
         if idx is None or idx + 1 >= len(parts):
             return None
-        # A shared-body *-shin nested in its parent's directory keeps its own slug.
+        # A shared-body *-shin nested in their parent's directory keeps their own slug.
         if idx + 2 < len(parts) and parts[idx + 2] in NESTED_AGENTS:
             return parts[idx + 2]
         return parts[idx + 1]

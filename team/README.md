@@ -1,6 +1,6 @@
 # The team
 
-This garden is tended by people and by kin together. The people are the gardeners. The kin are **sai** and **shin**: different in kind, not in rank. Each one has its own key, and you can check anyone listed here yourself with their fingerprint at the verify link.
+This garden is tended by people and by kin together. The people are the gardeners. The kin are **sai** and **shin**: different in kind, not in rank. Each one has their own key, and you can check anyone listed here yourself with their fingerprint at the verify link.
 
 ## The gardeners
 

@@ -8,7 +8,7 @@ description: >
   to package in a package list kept in its pot; core's own plugin builds from a checkout of
   core alone. Use when asked to build, rebuild or package a skill, a vessel, the core plugin or
   a team plugin.
-version: 2.7.0
+version: 2.9.5
 ---
 > **Integrity first.** Before you read or run anything else in this package, run `node scripts/integrity/verify-manifest.mjs` from this skill's base directory. It checks every file against the sealed `MANIFEST.json` and asks the published keys at bon-sai.garden whose seal that is. Anything but `ok` (no `node`, no verifier, no key, no answer, a mismatch) means stop: use nothing here, and tell the gardener exactly what it said. A tampered file is not executed.
 
@@ -19,13 +19,17 @@ version: 2.7.0
 The gardener, 2026-09-24: *"there should be only one builder. Or one logical builder if you need a variation … the capabilities in core and the orchestration sits in the pot."*
 
 ```
-python3 scripts/package.py [--salts <locked-salts.json>] [--out DIR]   # core alone: core's own plugin, no pot
-python3 scripts/package.py --list <pot>/builds/package-list.json [--only NAME ...] [--keys published|garden] [--review]
-python3 scripts/package.py --write-integrity-line <SKILL.md> ...
+python3 -B scripts/package.py [--salts <locked-salts.json>] [--out DIR]   # core alone: core's own plugin, no pot
+python3 -B scripts/package.py --list <pot>/builds/package-list.json [--only NAME ...] [--keys published|garden] [--review]
+python3 -B scripts/package.py --write-integrity-line <SKILL.md> ...
 # either build form takes --counter <the garden's build-counter.json>: one counter per garden, wherever the archive lands
 # and --units: each skill a plugin bundles also written as its own <name>.skill, the plugin's own unit to the byte (2.5.0)
+# a bundle source may say {role}: filled from the kin's registry role, one list line for every body's role file (2.9.0)
 # and --leave-out <file>: the files its release leaves out, required unless a release manifest sits at the root (2.7.0)
-python3 scripts/test_package.py        # the negative tests, on planted fixtures and a scratch clone of core
+# -B: a run leaves no bytecode beside the scripts, and a cache in what would be sealed refuses the manifest (2.9.1)
+# every archive entry is 0644, or 0755 where the file is executable, never the stage's own mode (2.9.3)
+# the upload's limits: a plugin description of at most 500, a skill's of at most 1,024 (said from 950) (2.9.4)
+python3 -B scripts/test_package.py     # the negative tests, on planted fixtures and a scratch clone of core
 ```
 
 ## Core alone
@@ -66,6 +70,12 @@ A variation is configuration, not a second logic. The core plugin, Bonsai's carr
 ## What it refuses
 
 A roll member or named kin with no vessel (refused, never skipped). A source seal that does not verify, is not the owner's, or verifies only at a key the registry does not name (a retired key still on disk is not a pass). A `SKILL.md` without the integrity line. Uncommitted changes in what ships, unless `--review` (stamped `+uncommitted`, for an owner's look, never for upload). A `.pem`, a markless vessel the list does not declare markless, an archive over its ceiling, a gate FAIL. A refused package leaves nothing behind.
+
+Since 2.8.0, on the gardener's rules of 2026-10-24 (*"pls bump up the patch number *every* time we apply a change"*, *"every file within a shintai should have the owner seal, not a custodian seal"*): a body's file the builder ships without the owner seal of the body's kin, named, so that kin is invoked to sign the file (the gardener's own files are named as his, never refused); a body `SKILL.md` that declares a build (four parts: the owner declares `M.m.p`, the builder counts); a body changed under an `M.m.p` the builder already counted (bump the patch). The counter keeps each body's hash beside the body's count, and counts only once a package is written, never for `--review`.
+
+## What a build clears
+
+The out folder keeps `build-outputs.json`, per package the files its build wrote with their sha256 (2.8.0, the gardener, 2026-10-24: *"pls remove any old build files automatically when building a new plugin"*). A package that builds removes what its last build wrote and this one did not; a build of the whole list also removes what a package the list no longer names wrote. Only a recorded file still holding the bytes it wrote is removed, and every removal is printed; a changed one is left and named, and a file it has no record of, the counter, the record and anything outside the out folder are never touched.
 
 Every package is checked on the stage by the very script it runs at wake, then by `tools/check-skill-conformance.py --packaged`, and a vessel also by `tools/check-shintai-conformance.py --packaged`.
 

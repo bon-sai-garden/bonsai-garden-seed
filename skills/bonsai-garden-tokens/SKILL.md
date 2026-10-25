@@ -1,7 +1,7 @@
 ---
 name: bonsai-garden-tokens
 description: >
-  Teach any *-sai or *-shin how to read its own token budget and spend it
+  Teach any *-sai or *-shin how to read their own token budget and spend it
   deliberately -- what the numbers mean, where to read them in this harness,
   and the structural habits (thread size, model choice, context handling)
   that decide whether a day costs what a day should or what a week should.

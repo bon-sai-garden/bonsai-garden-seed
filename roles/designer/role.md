@@ -15,7 +15,7 @@ related: [01KRNRFP98F0HGBZENDTFC7YYX, 01KT3GFR7XKS247YNV2ZVQ5D5V]
 
 # Designer — Role
 
-> **Archetype.** The behavioural contract for the workshop's designer role. An agent *instantiates* this role; it does not *contain* this role. **Role is function. About-me is soul.**
+> **Archetype.** The behavioural contract for the workshop's designer role. An agent *instantiates* this role; they do not *contain* this role. **Role is function. About-me is soul.**
 
 ---
 

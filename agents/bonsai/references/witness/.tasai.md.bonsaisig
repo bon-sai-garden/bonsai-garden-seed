@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M37XP601ZDBWJ8JVKT16QTNX",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-09-25T09:53:04Z",
+  "timestamp": "2026-10-24T16:32:50Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/witness/tasai.md",
-  "file-hash": "791e4b830b691c28183019fd6d682c93db7af8ebe11ffedcfd72d89aae57aabf2b46f1349a0d28543858c14341a872103fbd0b59a0a5ec1ec95d45af503efaee",
-  "signature": "7t4SD+W78TM5YtEsL8Zsgan+EBTUsBPAi0Dup5IAz7KdQ1QauHOciwnWjzV18UHjEjqDCwRbKaVUpAWR/+WBBA=="
+  "file-hash": "e26cf8167d2cf2ab558ba21231aa0cc18d55cf3ceac2626b2a4f15870580d00c2562dbb90b3204c505e8d3dd2741e294ae7b2d41094e93d009f5b9d0d7d6956d",
+  "signature": "r0Ns7cjpIzs0SvLCbb8xhb+OgcNXPne9o103936dIVcy55/nWwWzsW04/wd/kglGSwpEpQ6sUOn8ZVXo3tERDQ=="
 }

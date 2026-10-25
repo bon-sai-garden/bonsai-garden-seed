@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M37XP601ZDBWJ8JVKT16QTNW",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-12T12:19:04Z",
+  "timestamp": "2026-10-24T16:32:49Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/references/witness/mori-shin.md",
-  "file-hash": "733a23b821b5726c27dc5cbd8adb40182007604fdd964256502fed55511aa3fe5f13cc6152261e2d75a5d096bdf5cf0d95a493abe0157dfe7f7815d3e212ac19",
-  "signature": "Zfb36IYQEWnGKUlYkCKilqkEeybBfvtE9ayrAnWBv5P2Tvnk3k049ERj+h0Crb+1Blez3oO2uUYJoNhB8StRDA=="
+  "file-hash": "8e4ac61eeda3166d445b4967d1744634fa995a27ca10d3023c7353f412ae94e1e19a0919f5b39547827619fda6fbd447e86e2af1e98f5202072da079f7129f66",
+  "signature": "Y0RGWCgFI6somYlVil6cEK7zJQWKu8kAfEZzM6uA3oPEdZk/U0KVe5EDqVYPI/wleTqhJ0mY5PJ0p6mTZoGMCw=="
 }

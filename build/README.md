@@ -1,6 +1,6 @@
 # build/
 
-The library's sealed packages, ready to install. Built by the library's one builder, release 0.9.2-rc, sealed by each owner's key, every package checked from a clean folder before it was committed here.
+The library's sealed packages, ready to install. Built by the library's one builder, release 0.9.3-rc, sealed by each owner's key, every package checked from a clean folder before it was committed here.
 
 **A package is not a copy of its source, by design.** The builder adds an *Installed build* line to each `SKILL.md`, writes its `version` single-quoted (as the Claude app writes it back on install) with any `-label` moved off the version into that line (`3.1.6-rc` becomes `'3.1.6'`, and `-rc` sits in the stamp), and folds a multi-line `description:` onto one quoted line; every other file is byte for byte. What vouches for a package is its own `MANIFEST.json`, sealed by its owner: check that, as below. A file's own seal inside a package holds wherever the package is unpacked: since `bonsai-garden-sign` 1.1.0 the address a seal was made at is provenance, not a verdict, and the verdict rests on the file's bytes, its signer and its id.
 
@@ -13,6 +13,8 @@ The library's sealed packages, ready to install. Built by the library's one buil
 Each file has its `.sha256` beside it.
 
 ## Check before you install
+
+The check runs on Node.js. Bonsai also needs Python, uv, Git and the `claude` command. If any of the five is not on your computer yet, the seed's [README](../README.md#before-you-begin) shows how to install them, step by step.
 
 1. `shasum -a 256 -c bonsai.skill.sha256` (the same for any other file) must answer `OK`.
 2. Unzip it and run its own check. It must answer `ok`, name who sealed it, and say `keys published`. Anything else: stop, and use nothing in it.

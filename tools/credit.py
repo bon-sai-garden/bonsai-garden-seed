@@ -5,7 +5,7 @@
 # type: script
 # tended-by: baisai
 # created: 2026-09-24
-# updated: 2026-09-24
+# updated: 2026-10-25
 # ---
 """credit.py — the one definition of a file's CREDIT: the kin its own header names as tending it.
 
@@ -24,10 +24,21 @@ skills/bonsai-garden-sign/lib/credit.mjs; test-credit.py holds the cases both mu
 
 from __future__ import annotations
 
+import atexit
 import json
 import re
+import shutil
 import sys
+import tempfile
 from pathlib import Path
+
+# A gate loads no bytecode from beside the Python it loads by path. In Fuji-shin's round four (2026-10-25) a .pyc
+# planted beside package.py ran in place of the builder under check-skill-conformance.py, under -B too, while the
+# builder's sealed bytes stayed untouched: bytecode is code. So before any sibling is loaded, Python's cache points at
+# a fresh private folder, removed at exit.
+sys.dont_write_bytecode = True
+sys.pycache_prefix = tempfile.mkdtemp(prefix="bonsai-pycache-")
+atexit.register(shutil.rmtree, sys.pycache_prefix, True)
 
 MD_EXT = (".md", ".markdown")
 SCRIPT_EXT = (".py", ".sh", ".mjs", ".js", ".ts", ".cjs", ".bash", ".zsh", ".rb")

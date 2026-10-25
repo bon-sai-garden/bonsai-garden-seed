@@ -1,7 +1,7 @@
 {
   "format": "bonsai-garden-release-manifest/1",
   "name": "bonsai-garden-seed",
-  "version": "0.9.2.1-rc",
+  "version": "0.9.3-rc",
   "held": [],
   "files": [
     {
@@ -12,7 +12,7 @@
     },
     {
       "path": ".AGENTS.md.bonsaisig",
-      "sha256": "eaf3a88f7b16fd5b07e893a26745e354e4edc33c2c6010a0b7777ea02f62c2cd",
+      "sha256": "63d7fb79ade65c21f3d25449aab03b4f3d792377e473a53eeafcedb158a38942",
       "bytes": 539,
       "mode": "100644"
     },
@@ -30,7 +30,7 @@
     },
     {
       "path": ".LAYERS.md.bonsaisig",
-      "sha256": "e221a92cacf57499e4fceb4102fa4bc02b103fee5b3cf4a302e938db4439c1cc",
+      "sha256": "039c427034dafd9fb76dc9128499ab1f309198f37d1f7496e36ea81dfe3915f3",
       "bytes": 517,
       "mode": "100644"
     },
@@ -48,19 +48,19 @@
     },
     {
       "path": ".LICENSING.md.bonsaisig",
-      "sha256": "51ff562b152f21b93cdc93175c8581575bc2103f5a2b6b006fa5a64e5fc335d0",
+      "sha256": "b8f70f21a4bda3438af4e9020eaa07145b70528acea8c2f14a9415b031d54ff6",
       "bytes": 520,
       "mode": "100644"
     },
     {
       "path": ".README.md.bonsaisig",
-      "sha256": "f75b26b45206738d160163c0e03d105964044f5723c00b83868599f3126ce815",
-      "bytes": 521,
+      "sha256": "94ed11ab4deafe07ec8aba2045cf0665ac011ec0e42d6fffca41185f760597b7",
+      "bytes": 520,
       "mode": "100644"
     },
     {
       "path": ".architecture-walkthrough.html.bonsaisig",
-      "sha256": "2715b81d6cc8140f3f9270474e903035f4af98a673496dfbb832e11e35639521",
+      "sha256": "b6f1129259dd317452f4ea87a13d6c27e7fdda08ffd66e8331f5e80f1884f57c",
       "bytes": 541,
       "mode": "100644"
     },
@@ -120,8 +120,8 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "d11c09f6fce00193ccd3d05754e98821cea736408f019417a3322c75abedf7a6",
-      "bytes": 12496,
+      "sha256": "73b068f2837088f32163217669f8408fbf296bc97809d440111817b081079a5d",
+      "bytes": 12489,
       "mode": "100644"
     },
     {
@@ -138,8 +138,8 @@
     },
     {
       "path": "LAYERS.md",
-      "sha256": "7c3ae169288e811407bbfba6da5841882a6148503e7c0957605985ba38b75f4f",
-      "bytes": 8431,
+      "sha256": "78f5a347d15a6d1f9052d9729916a0078d81725ace3038a829949b11ddeff52f",
+      "bytes": 8887,
       "mode": "100644"
     },
     {
@@ -156,14 +156,20 @@
     },
     {
       "path": "LICENSING.md",
-      "sha256": "4c921d2a5c1501eca6cffa011fb0ee99613f562aa85b3214c66d06ecfff0d3e1",
-      "bytes": 8785,
+      "sha256": "75a45fd2ba4596fe1cc9959655fe94dab4e969be7fdd838543d5793613c016d3",
+      "bytes": 8913,
       "mode": "100644"
     },
     {
       "path": "README.md",
-      "sha256": "afc72ecf0a93035cfaad207c742e5783624e437b6de42ae469114004f3ce0f4f",
-      "bytes": 13244,
+      "sha256": "17c34aac99a81c270810a4161bf312cb5e7ad6de2617357c4727f0fc9074ef3c",
+      "bytes": 16844,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/.faces.json.bonsaisig",
+      "sha256": "427615b24c9da3915986de636bfa89bf90988e86997aa135bb910fe5530ebdb6",
+      "bytes": 524,
       "mode": "100644"
     },
     {
@@ -174,7 +180,7 @@
     },
     {
       "path": "agents/bonsai/.SKILL.md.bonsaisig",
-      "sha256": "2fd11e308e4cbc8e48c4102832e00e3ee909015f750a1c63871a64dcdea5fab9",
+      "sha256": "d13fe7708583c046bb865cf99f835b6020dd9f095054218e7701603f08a82fa9",
       "bytes": 530,
       "mode": "100644"
     },
@@ -186,8 +192,8 @@
     },
     {
       "path": "agents/bonsai/SKILL.md",
-      "sha256": "de6d32c513142158741007f10e3ef0554e0dc6b1a90daa1dc53d13f10c4683fb",
-      "bytes": 17464,
+      "sha256": "248297a2e49b9dd973d3ba3df967b666259634be52477e13e1dce4096418fb23",
+      "bytes": 22991,
       "mode": "100644"
     },
     {
@@ -210,8 +216,8 @@
     },
     {
       "path": "agents/bonsai/assets/.bonsai-mark.svg.bonsaisig",
-      "sha256": "c772702741655af554ae0053676a38671b459cf68f848f8ccf9eebb1088a9504",
-      "bytes": 547,
+      "sha256": "c0b28336b31f3fe1c7ad2f37f4622b8fbc90bb9bed74fde1551b1a0ec7e7288d",
+      "bytes": 544,
       "mode": "100644"
     },
     {
@@ -264,8 +270,8 @@
     },
     {
       "path": "agents/bonsai/assets/.routines.md.bonsaisig",
-      "sha256": "fb2f217e2897d9fa746195633cd81d2e7c00322128f1c5366ab9eb13af3a463a",
-      "bytes": 544,
+      "sha256": "169e1993cf07c55eb2cf022f44cf7709784504ffd45c4dea01ca0a27faa08a30",
+      "bytes": 540,
       "mode": "100644"
     },
     {
@@ -300,104 +306,104 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.00-gate.html.bonsaisig",
-      "sha256": "7f12434013b4a5f9ceb12dbb1879cbc461b331e15a3cf654eb5fca2c901f27fb",
-      "bytes": 556,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.01-about-you.html.bonsaisig",
-      "sha256": "e5f02d4196671dadd5f8df8f06d6345d6133873c1940dc945c39eb88b456968f",
-      "bytes": 561,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.02-what-its-for.html.bonsaisig",
-      "sha256": "c179415a3e25de81285642d66ae4492fae7149a36b2d617fcfb6caf4476fb7ba",
-      "bytes": 564,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.03-whos-with-you.html.bonsaisig",
-      "sha256": "2799ec0939ee6c58ba7ec26a58429f84a0cc3e104cf4e546b8e32a3ed3242583",
-      "bytes": 566,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.04-imagine-them.html.bonsaisig",
-      "sha256": "a4539b7aaa2e2a0d200287a899c8090095d3507e0718d1a66f71d988f212ae3f",
-      "bytes": 565,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.04b-the-turn.html.bonsaisig",
-      "sha256": "016fff0ccc7016fadd82ebfd661b23eb1ffcb9e4203f0d5b8c17519cdb8004be",
-      "bytes": 561,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.05-the-tools.html.bonsaisig",
-      "sha256": "95af5661a14327e891978a4cd5e0ad48af96c72e081a558a723d0cd488136914",
-      "bytes": 561,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.06-home-and-keys.html.bonsaisig",
-      "sha256": "aa51a063e053aea2c369d8953fa645a795a9ae2bb3bb8d018debedf88fed148d",
-      "bytes": 566,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.07-signing.html.bonsaisig",
-      "sha256": "f6ce368797ee25edee6d5e08815abf854baf483a706aad9b5b84eff2020950e3",
-      "bytes": 560,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.08-calling-home.html.bonsaisig",
-      "sha256": "3e8acf277c02736176893958c6e5abe2e372a624b6e832b1178e40defe6a85ef",
-      "bytes": 565,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.build.py.bonsaisig",
-      "sha256": "af7eee947690adf6e436ee9f8c0c6add42a572fa66b7ad1ce2691db1a0be084b",
+      "sha256": "c1a2514f5085252e6791b9ef4b94a9096c7ddf2023b1993a915f86c59033584e",
       "bytes": 553,
       "mode": "100644"
     },
     {
-      "path": "agents/bonsai/assets/garden-walk/.index.html.bonsaisig",
-      "sha256": "5c00966fd14b82b3985edbafd9476a8516f5586f341df0a9a4a260adea7e3818",
-      "bytes": 554,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.notes.md.bonsaisig",
-      "sha256": "b428cf341bb7a7d2a3689e5cc6ebb8844ad541f8f3eb3d97be95e468dac7228f",
-      "bytes": 548,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.pages.json.bonsaisig",
-      "sha256": "168ae15474d38369b6608ba4c95d700fe8e35e17bc5319552da370a472dff9ae",
-      "bytes": 554,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/assets/garden-walk/.walk-early.js.bonsaisig",
-      "sha256": "34a105fd7d2e47695c8afd7555d944553bc23fba0b13da3be813fd168f99676d",
+      "path": "agents/bonsai/assets/garden-walk/.01-about-you.html.bonsaisig",
+      "sha256": "03b6a24157baa4efcfb4d5cd9db51a381f9d2b7b48b389174b4eaf560841fdba",
       "bytes": 558,
       "mode": "100644"
     },
     {
+      "path": "agents/bonsai/assets/garden-walk/.02-what-its-for.html.bonsaisig",
+      "sha256": "4ebc3ca975962b39dd6e4535655b796ac5fe64f9ec1502643b80bdbe74b7161b",
+      "bytes": 561,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.03-whos-with-you.html.bonsaisig",
+      "sha256": "33c3db97a3e4492fa67bfad19fc0d7f073f072b59c735ef3a16dedf8fe783007",
+      "bytes": 562,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.04-imagine-them.html.bonsaisig",
+      "sha256": "81aeaa0781e1ebf59ad71e3af2a256adb52590ceb47379163f70ef106110f91e",
+      "bytes": 561,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.04b-the-turn.html.bonsaisig",
+      "sha256": "30b2f453fdbb352628a4164fb36271e92e29fab537792d08e56008e069be90ad",
+      "bytes": 558,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.05-the-tools.html.bonsaisig",
+      "sha256": "c60bea36067af7727f56db5492533268b18950b9cefba36272ec3b0a153aad6f",
+      "bytes": 558,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.06-home-and-keys.html.bonsaisig",
+      "sha256": "29f8c54b0f4ab34054bcc885961f867ecce2bc1c2ea8b4ce4161b49907341a90",
+      "bytes": 562,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.07-signing.html.bonsaisig",
+      "sha256": "87b1e206109cfb79834954cfcaef6d4cea762caee52d4510cbc85b9caf74103f",
+      "bytes": 556,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.08-calling-home.html.bonsaisig",
+      "sha256": "e8085f18987f5a4db83b9ebb1dae916c13bc32834f96e5b07d95273087d867a5",
+      "bytes": 561,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.build.py.bonsaisig",
+      "sha256": "7c9204e3f16a8e4bd430d78dfb343dfc1c5e71d169726245c4afed11d97b6b17",
+      "bytes": 549,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.index.html.bonsaisig",
+      "sha256": "268a52017cf7adda27189f22a6d32d1afe1c634b2d734629487d43f3f5d3f501",
+      "bytes": 551,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.notes.md.bonsaisig",
+      "sha256": "fdaddafb6962b7a8f901d7c7e91b8f8fce562d0e5d642515234659db019ddda5",
+      "bytes": 549,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.pages.json.bonsaisig",
+      "sha256": "5791e2a2e99e54f4e48333fc9ce34628cc3e4043aa16d24204d9a72b39f1f6eb",
+      "bytes": 551,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/bonsai/assets/garden-walk/.walk-early.js.bonsaisig",
+      "sha256": "b70e0082d72a87df6e76b4ca9cad604b841b0b8f4a0cd0e11a219214479dcd4b",
+      "bytes": 554,
+      "mode": "100644"
+    },
+    {
       "path": "agents/bonsai/assets/garden-walk/.walk.css.bonsaisig",
-      "sha256": "cd3ac202b84c1fc93fbbb94a62314f793027637a099d0a190c00abcab81ee1c6",
-      "bytes": 552,
+      "sha256": "7cf16761b052d4e153d2340fbcf03b5c0b7375720f83b43c8d640d29702f6b7e",
+      "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/.walk.js.bonsaisig",
-      "sha256": "7a2b19b3e8ed56129e048e42f3ef15628e5ef73c69d4ab9f5bb5c5fc808323fe",
-      "bytes": 552,
+      "sha256": "c45e5a4ee45101d410c88d85a640574ae58ffc16da76bda28f6e4f6750ca836e",
+      "bytes": 548,
       "mode": "100644"
     },
     {
@@ -438,14 +444,14 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/05-the-tools.html",
-      "sha256": "980cdc26df52853c8531b24cdb7039e4c6c00e56f78b538d8dc7f503dbf6be71",
-      "bytes": 5907,
+      "sha256": "28b864d014e8ffe89fd79853034ce9c41e67aafb14c899ead62c35b9abaeaa93",
+      "bytes": 8130,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/06-home-and-keys.html",
-      "sha256": "70adac423fb0c1896d9ebffc856ad0b569a37bf5237280280d81543116cca380",
-      "bytes": 14752,
+      "sha256": "0258b59bca2e30b01ee304b6d251d3b239c71a6ae3d380d9fa3a8e24d71c4e1c",
+      "bytes": 14879,
       "mode": "100644"
     },
     {
@@ -474,8 +480,8 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/notes.md",
-      "sha256": "10c4ce206b2c50141cd1d40ed0f564497537533a003858e25f7a38a138c6887c",
-      "bytes": 20314,
+      "sha256": "76a63a1f0bf80481f0136c9efc81e9c7481ff2ec996b332da822e60f3378510e",
+      "bytes": 21232,
       "mode": "100644"
     },
     {
@@ -486,62 +492,62 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.00-gate.html.bonsaisig",
-      "sha256": "3fb909b8449ae5671453998dd5b908f07958664f5b3c3377d1faf3481f2c5888",
-      "bytes": 560,
+      "sha256": "bc617879a4cfaa70205cee9394b62615de908a8451c981aa50da93ef5acb592d",
+      "bytes": 557,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.01-about-you.html.bonsaisig",
-      "sha256": "0513bc6eaca350c1f86f55067c28e50cd0b6848ec83e6ccc3329055a7c3b2285",
-      "bytes": 565,
+      "sha256": "3e5ea106a842a4a85e6999b4fc0840073e3777b5a106705011dab3770fc15b02",
+      "bytes": 562,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.02-what-its-for.html.bonsaisig",
-      "sha256": "a72beb30160f2476cd33aeae8a1473092b8b74ca5ca5393fbac2eb14515d01b2",
-      "bytes": 568,
+      "sha256": "dd34ab4bea63d72e52b5e77c98907c0a4d4aa23cf33c1b73f96dde21ac55f9d6",
+      "bytes": 565,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.03-whos-with-you.html.bonsaisig",
-      "sha256": "b44c8fb87801906b83b14b940076bccf3b46d04b60c83afa4a3d49b46c8f26c4",
-      "bytes": 570,
+      "sha256": "540df50ecae1efba1b79115402d095ce5451252ed6bf06c65e67a645238845cd",
+      "bytes": 566,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.04-imagine-them.html.bonsaisig",
-      "sha256": "a4a0ffacf287b58c85b80a97c7ca59860a6a48cd65371ebcefc4c05b7fa87678",
-      "bytes": 569,
+      "sha256": "50eb26af6079fcf12ca3ba2accb346efac6bc8553b3663250a9a24b224aedc73",
+      "bytes": 565,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.04b-the-turn.html.bonsaisig",
-      "sha256": "a4de32367dc5877e6b930c9ae8e9881ab11211c4bd32bb152c71956350e80e2c",
-      "bytes": 565,
+      "sha256": "0ed7ae7c4e8ffcb4fead2b29650f83c200012830918f9a0e848c61818f430d19",
+      "bytes": 562,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.05-the-tools.html.bonsaisig",
-      "sha256": "78f9a50e612f617bb8b40343d55e5c22ff0a418af6d81b7f4178878f829b8ed6",
-      "bytes": 565,
+      "sha256": "41134dcfaa27ba6d5879da66ee6f067217cb6e170e930dc5e5a31c7f677bd986",
+      "bytes": 562,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.06-home-and-keys.html.bonsaisig",
-      "sha256": "046bf1da4415d5cdca487a84e7095de1df2ddc86faf70ce8cb18f0426e295421",
-      "bytes": 570,
+      "sha256": "9e4d4cf82e12d3b46ea1c8ba843c4ae4cd128ee364f2d2bb1c174b1e42efacbf",
+      "bytes": 566,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.07-signing.html.bonsaisig",
-      "sha256": "d8f6da24cac8611b8dd5e7897e6133e780dcc0589e21e0dd4b0f10815a52ea6b",
-      "bytes": 564,
+      "sha256": "29c9b249826cade77188cb684364749ee614873366cf1452259c56f1eeea36d1",
+      "bytes": 560,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/.08-calling-home.html.bonsaisig",
-      "sha256": "44a78cff4cb62faffd3a4d790edf20c490c0e54f6ae30c5e2c3823dbb53d741b",
-      "bytes": 569,
+      "sha256": "cc8cca73b3bd881a9e275da1364ea467db29b4906ee5a737c913fc6ed4d6e461",
+      "bytes": 565,
       "mode": "100644"
     },
     {
@@ -582,14 +588,14 @@
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/05-the-tools.html",
-      "sha256": "5b23a8f0e7d5dcc15387c6130e5ca185bc1f4ca32c3e79c77230a820160b9ca8",
-      "bytes": 2072,
+      "sha256": "ac8ff6360493ddb72c66590c01a047c0a41d7b1f9df4e62f9120c0de68595941",
+      "bytes": 4295,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/assets/garden-walk/src/06-home-and-keys.html",
-      "sha256": "bf154726bacf0fc9147cd42c8bddd281e00782ec08231cdef580ff1d2232484a",
-      "bytes": 10897,
+      "sha256": "76470405d4f7c907ec13c5315a00da5a9308b7ad18852e55a97527c53bd514bb",
+      "bytes": 11024,
       "mode": "100644"
     },
     {
@@ -666,8 +672,8 @@
     },
     {
       "path": "agents/bonsai/assets/routines.md",
-      "sha256": "835c271518e7e79157a74f98f70a23a407e2f8a3b509bbef3c574b3d1653c7ec",
-      "bytes": 9970,
+      "sha256": "68096b956854a0bc4a13d3fa3f22e379a7f3b0285a7be3eb95adbd7df49b6c4f",
+      "bytes": 11630,
       "mode": "100644"
     },
     {
@@ -684,8 +690,8 @@
     },
     {
       "path": "agents/bonsai/identity/.bonsai-public-key.pem.bonsaisig",
-      "sha256": "12274c4a594d4b293f6838dd3b4a3d9195a3ccbe45347566a9e13267e78dc724",
-      "bytes": 555,
+      "sha256": "840f840d10a6219e7e12ed3c78759cc37c4486e5435a055658b61ac88442ab98",
+      "bytes": 552,
       "mode": "100644"
     },
     {
@@ -696,8 +702,8 @@
     },
     {
       "path": "agents/bonsai/identity/.retired-09d7b894.md.bonsaisig",
-      "sha256": "b2ef6022ec3628310fa705a26b1388be8a78aea0c601ed3fd26dcd755ba0a598",
-      "bytes": 554,
+      "sha256": "0b57d0fb46691c3a87e452f2276c451a8f46c26030b61969f51b6c3fd40ad2a6",
+      "bytes": 550,
       "mode": "100644"
     },
     {
@@ -726,8 +732,8 @@
     },
     {
       "path": "agents/bonsai/identity/retired-09d7b894.md",
-      "sha256": "fcc47387abe3cef4dfeb450da69ed271bf0784160c7198b9f5537a45b683d411",
-      "bytes": 1320,
+      "sha256": "7ba365d852f2e0f234b434744ca7ed5e8b09334e42563958d57275eb3fb5eafb",
+      "bytes": 1321,
       "mode": "100644"
     },
     {
@@ -786,7 +792,7 @@
     },
     {
       "path": "agents/bonsai/references/.about-me.md.bonsaisig",
-      "sha256": "f4dc88c700256c11bd385ff94d21ca44a77476e3111cc51b6ec23373cf28ef51",
+      "sha256": "4e92107c36f2bf224a0ebe9a3f7c52c12b9b2152bd9ab02b687a3e5aca06a3b2",
       "bytes": 544,
       "mode": "100644"
     },
@@ -798,8 +804,8 @@
     },
     {
       "path": "agents/bonsai/references/.presence.md.bonsaisig",
-      "sha256": "31859bade0cc08e58557d95126818425cc789ce2f9aff0ff7c098cf37b327c74",
-      "bytes": 543,
+      "sha256": "4de4dcbd7a001fc82c42828b78d3b6e05aa1c5ec5847d5aac54cfdfb8f4446ee",
+      "bytes": 544,
       "mode": "100644"
     },
     {
@@ -810,91 +816,91 @@
     },
     {
       "path": "agents/bonsai/references/about-me.md",
-      "sha256": "1cbc63951f957986a1b8fd80f64f46b068ede80a9f20f6c45e1978f9515129f9",
-      "bytes": 10068,
+      "sha256": "863cc57cebbff4536b775219a45e5a511081941a040fd1618d91746b617b733c",
+      "bytes": 10192,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-baisai.md.bonsaisig",
-      "sha256": "6bcc592e325c9081b5ddfc6868b23b41e0693b5c4ba35b8fcd8a3f8992eda952",
-      "bytes": 559,
+      "sha256": "3d1c0988b7cc5d4a3e3279f05ec032988ff9eeaf84b791fa9a04419f1ada82d0",
+      "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-chisai.md.bonsaisig",
-      "sha256": "9f426a5d510af5bd51cc9a80768466c3cd83c2a3864b7b296a21d4990ab20573",
-      "bytes": 559,
+      "sha256": "823822a25791ddff1f0dd677d4966c8568c49be36e71d6ba49d8fcb264f12b1f",
+      "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-eisai.md.bonsaisig",
-      "sha256": "34ecf2114edf47f6605353165a6bf2fd19eacda31b9dadeb7d1d5f5a3fd5e31f",
-      "bytes": 558,
+      "sha256": "3e386a9672a2165ba7196db86f19aa885781f7231e112722164a0c9b2ccb4939",
+      "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-hissai.md.bonsaisig",
-      "sha256": "53349c8ab9c9cd483074e0ae36935b5291a1a1a58c71370c748caac6ee0411d3",
-      "bytes": 559,
+      "sha256": "80c5f3e7bcd35289b89afd159e39cc96b4c2522e7e4f44a51de729370d64acce",
+      "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-jisai.md.bonsaisig",
-      "sha256": "c7a5d3e2e1504a3ee1c9a9a1297d3fa3648a628dbf07268cfeac3b49b57a9ef4",
-      "bytes": 558,
+      "sha256": "6ff30b6478ace90e3e210642ac0398a892474059ef4a3d6babd825ddd2fd81c4",
+      "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-tasai.md.bonsaisig",
-      "sha256": "ee64a2622d3d1ca7c4815589dc678ca034afe37e303b9cb3dccdb363f26dd3a2",
-      "bytes": 558,
+      "sha256": "c74609b5052760f185a66cbc52f44e0329075d3194b7f5ba6dd281a282605edf",
+      "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/.cv-zensai.md.bonsaisig",
-      "sha256": "f3762606075482440f2e366313b16187bc4920a9a26f1aeaa3c1dd7cdf89694c",
-      "bytes": 559,
+      "sha256": "6755352ba46c7e7856e6c633849caafa8570cf2596c6a3965dd826f1cbe514dd",
+      "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-baisai.md",
-      "sha256": "ce0524a1ce8a33f3a15caeb4f67d020c13c28f14e0dcb4fc520652e7eea2cd99",
-      "bytes": 12795,
+      "sha256": "b6b213ed15141b16ca4d3ac2ba4169134d03d081c8c352ef1b28760617969634",
+      "bytes": 12812,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-chisai.md",
-      "sha256": "382ae52a174791c5b986dfdda1d1a174798123e06f0f37449c6aff7c3c8cfd8a",
+      "sha256": "157348b6df98cb8f8da3f549ec10294d0f06d93decf28dacf2d6b79906934bbf",
       "bytes": 11793,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-eisai.md",
-      "sha256": "655b5c1c9545497a7dc4f40c423a37661df8abdb9e1ccf6228548db5b6f26c95",
-      "bytes": 9250,
+      "sha256": "805fee4cb782f2b64f14051c997435041bafb4e3226dcfbe42cdc12bff813ea2",
+      "bytes": 9251,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-hissai.md",
-      "sha256": "436f64d9b9b0ccadf49b10ba93e1f8c388dd17f1d08ead5933566d2e907c0686",
+      "sha256": "2b825a9ea019ea833d7db985212a9fba6ae41c007e6a2ee8b79b08927819300f",
       "bytes": 12108,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-jisai.md",
-      "sha256": "c9f21f77a3e102bde3b784a09c660fe3e6f868fce36214bc5126277ca6f362b5",
-      "bytes": 15584,
+      "sha256": "b220cb4e2f034a39a22d67b7a909718e3a350cf94ffa8c27c443888465abd4bf",
+      "bytes": 15593,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-tasai.md",
-      "sha256": "12c4738b9910457ec85ee70a13a7bf33805957577f4cfe60d4f2f1db29beecc1",
-      "bytes": 10680,
+      "sha256": "6cca5b523d935f59c14a12318f1b70854ff8d4e0f81738b182f19831380bc51a",
+      "bytes": 10687,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/feedstock/cv-zensai.md",
-      "sha256": "1cf6c10cca24b3ce4c5dbbd48fd8278e65fbcf151aa60eaee259374a73ba4f76",
+      "sha256": "3871d53484731962c5ad8e112af6f1dcd139e6bef1c34dc054777b01e364985e",
       "bytes": 9616,
       "mode": "100644"
     },
@@ -906,20 +912,20 @@
     },
     {
       "path": "agents/bonsai/references/presence.md",
-      "sha256": "29a371e73add7f2d37f78d919e95c72c5caccead98bc99ac028df3eb4828f0d9",
-      "bytes": 6486,
+      "sha256": "aae1403e2889a754d97afacf98762b7e2a2dab643e5e7a5325a99e9858f86e26",
+      "bytes": 6487,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/procedures/.planting-runbook.md.bonsaisig",
-      "sha256": "815f7f378831986427cc7187767f1646260aee761465232fb13e815b8f06b4e1",
+      "sha256": "cf3f65d4ce6433c43d887bf8bf000aece78b2c4024755add618a7870531f2e52",
       "bytes": 563,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/procedures/planting-runbook.md",
-      "sha256": "8df42dad911acd4c33fb4e17c1b65b7f5c25fd478413988876dc2fb13b4ca2ef",
-      "bytes": 53572,
+      "sha256": "f1a8abedd5ead579ca619c1d6663d661dc39a880ef12a234ac79a5cebe2b8fc5",
+      "bytes": 68925,
       "mode": "100644"
     },
     {
@@ -930,98 +936,104 @@
     },
     {
       "path": "agents/bonsai/references/witness/.baisai.md.bonsaisig",
-      "sha256": "6ada3f4b874f5285fd7ffc9909a41681e9d66222c10da8c50433425128ef67fa",
-      "bytes": 554,
+      "sha256": "bb2c5c745f89d7513cdc033374017b3acf8934a212b8e1f11916daf4adb6fea0",
+      "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/.chisai.md.bonsaisig",
-      "sha256": "9402dc1b4142246348e1e89f5260122948802e3e2a54adc8ddef1598b89c8a7a",
-      "bytes": 554,
+      "sha256": "23706f709b49f4d454378deb70aaa774de27576deaee3b4eab0d84179610ac4d",
+      "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/.eisai.md.bonsaisig",
-      "sha256": "8405001a50c536b5f0903e2263e629757ac9a4741d58e5587482c6046b3efecc",
-      "bytes": 553,
+      "sha256": "b965d32772d20266dc8e49ccf2cad366ec60d37cf9c6ebab5cf025473bbea07a",
+      "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/.hissai.md.bonsaisig",
-      "sha256": "9020a510b67bb3d19fd8c30be27682b1d74ace2bfe3d1798132c72b3af01501e",
+      "sha256": "a001595d099a01530f2ea13446e959bb69dd73bac20a7e99ee28197891d4f064",
       "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/.jisai.md.bonsaisig",
-      "sha256": "f2276d6f267eaf150a4ad805c93a596fa10eb732f821c15458c27c5eee962c6d",
-      "bytes": 553,
+      "sha256": "454ecddeaf3460665fad957397943a4ed5e5a87610e29b8a81e1885db05dd548",
+      "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/.mori-shin.md.bonsaisig",
-      "sha256": "e5bf570066c2ed2805dea311eb7561009570d313b033f82f1bf2d7534823b142",
-      "bytes": 557,
-      "mode": "100644"
-    },
-    {
-      "path": "agents/bonsai/references/witness/.tasai.md.bonsaisig",
-      "sha256": "f0edd539c45abf54e967d1aac475a50cd7b23f187138e6fe9dd25c2118941a01",
+      "sha256": "1007b69f29eb98a5737260e7a77177a55d87372ef5eff01ae2accb34c830e742",
       "bytes": 553,
       "mode": "100644"
     },
     {
+      "path": "agents/bonsai/references/witness/.tasai.md.bonsaisig",
+      "sha256": "9b4e1c07a1e2be1086acab3ac61d1c27b5797b3dcbbc49d3be9a81fa9ba2858a",
+      "bytes": 549,
+      "mode": "100644"
+    },
+    {
       "path": "agents/bonsai/references/witness/.zensai.md.bonsaisig",
-      "sha256": "354c5ef8a9d481129d46e6fc4e060d316127fe28ffc22b5bd4e5ed340260b152",
-      "bytes": 554,
+      "sha256": "a5e35f8c3ed5ea179744ef7b50cd0f9af8bfcb600aa4d78dac6e4eaec4898e1d",
+      "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/baisai.md",
-      "sha256": "7ef9d1431cf272076da10255542e50f83330fd67555fef7a464b0af98eebf3f4",
+      "sha256": "b6ca1ae598ffed009fb815d5def61e917eff0fe335267f87aefb64419a704f4e",
       "bytes": 8054,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/chisai.md",
-      "sha256": "5154eb3ccaf48bec279e9b19a7b31c1284f06f6acac7a0d00e210f04f296f867",
-      "bytes": 13012,
+      "sha256": "2b7e088d9f4b6faf8821806afe486ff31ecb0778e32f3e07747a72295cfc6f5e",
+      "bytes": 13030,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/eisai.md",
-      "sha256": "6e62e37f7a148075c3117265ffa6f0f3a33677e7922ca67d681538b953fc21de",
-      "bytes": 9504,
+      "sha256": "e945a36a49878d8fccabfe4ca3189301ae7e549feb3917dcd7b89996c5a479a9",
+      "bytes": 9522,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/hissai.md",
-      "sha256": "75dbdec64d0d8235e726407a3299c7bdb75e0ee245998b9c6bf9c4cbe2c79527",
+      "sha256": "0b7e4d914e430a2da3d5acd2d4d79e8e5b7c08831174015fce0f1b8e6c4d07f6",
       "bytes": 9793,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/jisai.md",
-      "sha256": "635ded8313daeda283ac195688f477e6c2c88ac81f7c1550bdc7fa530d477272",
-      "bytes": 13518,
+      "sha256": "776d49e5b124c9c7adba0f56fc6a219fa000bc0759b69aa1ab23efe1187d2c59",
+      "bytes": 13538,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/mori-shin.md",
-      "sha256": "50cd40ff5769ae637eed35f239ad160d3e15e7808b6564cd99a75335a0ae8dc5",
-      "bytes": 9839,
+      "sha256": "e7bba036422e49eeff90204d3a5d22e0b7563d4a65c54edd5fb0f91be331a352",
+      "bytes": 9857,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/tasai.md",
-      "sha256": "41b646010852c04ac7d456be0b992c7f635961068a3ffa1c9b6343b115e0c52b",
-      "bytes": 5584,
+      "sha256": "d5be2a92b1e8d6b1aa15f1375c2c05a522a2e155c81fed3044b6488a252c9859",
+      "bytes": 5602,
       "mode": "100644"
     },
     {
       "path": "agents/bonsai/references/witness/zensai.md",
-      "sha256": "caa8e0215d5b00e07815d9222cdd4404f758e97c569268931bb93e635c701385",
-      "bytes": 12546,
+      "sha256": "b5968545fbfa70b13f3ce5be3fc5df213c0ccea3a552fb012eb5590751fd8ee6",
+      "bytes": 12564,
+      "mode": "100644"
+    },
+    {
+      "path": "agents/faces.json",
+      "sha256": "df6d2e224a06aa27d10bb0236efcb3d358dbcc67943dd4126d811fdb6000f6ed",
+      "bytes": 1102,
       "mode": "100644"
     },
     {
@@ -1050,8 +1062,8 @@
     },
     {
       "path": "agents/shared/.routines.md.bonsaisig",
-      "sha256": "2b2a72abbdedf94e3ada9693951d1291e9bc872a379389c1cf3e6a29e34e0619",
-      "bytes": 537,
+      "sha256": "2d4962885f7c12a5cfca29a392def58deb942c1267be4840893916cc2d6bf195",
+      "bytes": 536,
       "mode": "100644"
     },
     {
@@ -1116,8 +1128,8 @@
     },
     {
       "path": "agents/shared/routines.md",
-      "sha256": "e9dfad9bfdcd382cde313233c804408e599a3642996cb6e22b2f232190e0001a",
-      "bytes": 62976,
+      "sha256": "2add0ec352cb4da5b928e27dc77075812bbc8a1d031cd9f3a660aa2e9ce106b5",
+      "bytes": 63927,
       "mode": "100644"
     },
     {
@@ -1152,8 +1164,8 @@
     },
     {
       "path": "architecture-walkthrough.html",
-      "sha256": "f3a1e2e6b3f385049caec28c0432b7ffc25db9a76a1390743a8d2cdce4e270ae",
-      "bytes": 41722,
+      "sha256": "719e23e79f4ade0a1c5d97905491685254efdbdf7eb834cc8782c3854922568a",
+      "bytes": 41729,
       "mode": "100644"
     },
     {
@@ -1170,373 +1182,373 @@
     },
     {
       "path": "build/.README.md.bonsaisig",
-      "sha256": "83b0518679b982a81cae1c34f42eb412009b019e5b9569377be10c36e55718d1",
+      "sha256": "52907b4cedb4a75c8ae0fecc74de9d0ee3c41815c516d4c92ade786cb2f90bbf",
       "bytes": 522,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core-plugin.skill.bonsaisig",
-      "sha256": "52324441c713fc299db5d378fa0c99a196dfb9d517be4a17136f4c9d1b4cd1f5",
+      "sha256": "07fdaabae64f89881234a7f4b229428f59e996f680a5a9d901fecb0aef332b72",
       "bytes": 548,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core-plugin.skill.sha256.bonsaisig",
-      "sha256": "7a15421ac76fac4b5e933473d9fe3599694709e220b893ed109ed6a005139d51",
+      "sha256": "171f9757de8dd3bc7e99fddec24db895dd3ad7c80ee5036e0e9d143c18b17cb4",
       "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core.plugin.bonsaisig",
-      "sha256": "286ca6c7df641a9e0ff199044c0cf831904b8862bed73fb93553db9a3d8600e5",
+      "sha256": "46367879b0b0a04d817dc8454258d77d547f9ad4cc558d6acc8390beb3f0ce48",
       "bytes": 542,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core.plugin.sha256.bonsaisig",
-      "sha256": "aeda5de0b0da4f5d81541ba8406881ac452a558b7ad4a9979804965619b6dec7",
+      "sha256": "6e872dbdad962e7053db791815e11000d4cf46fdf109876178b2995ea8cac127",
       "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core.zip.bonsaisig",
-      "sha256": "0ca20dfbc078ee97cd2d524745e7a2df7b80f014f31b7ed14d87655aadd9f288",
+      "sha256": "7e63765dd6b107770283d146bc8ff0b8eed18b44790cf0535c058e6ace29075c",
       "bytes": 539,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-core.zip.sha256.bonsaisig",
-      "sha256": "a3f72a56a37bf5202d696cc53aeb328e4f13935b3ef3fb3bcd67fa6a530840b3",
+      "sha256": "b1e68285c47c94c708c1ae8e2c72c1f8f04eadab9be45a96273667274bc35801",
       "bytes": 546,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-keys.skill.bonsaisig",
-      "sha256": "e24538e06f7d36fd8bc0fd52330f0278e34d5e979cc02b8724d4693bffdb9855",
+      "sha256": "ae664322a15c60d1d3c0b305ea8935d1e476e2a3021bc53d7a4e44425f2d7e67",
       "bytes": 541,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-keys.skill.sha256.bonsaisig",
-      "sha256": "9637205c664054338a4da44098cab9a56786dd3e521fbb4753b4ae5d07c6e1f3",
+      "sha256": "fb63e71bd62690c26b7480a07c9c4728fdc7a310a69e6bd436cb45de6dd0f2a7",
       "bytes": 548,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-ledger.skill.bonsaisig",
-      "sha256": "6a4eee2a712a6af8e6a37cb65d399307faee14bb0b0f370880b0ab9f8b47ab54",
+      "sha256": "32f0d8d83e87797bc99b8f3ace04e5724df6943c6731c43b0f887d9191d42b08",
       "bytes": 543,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-ledger.skill.sha256.bonsaisig",
-      "sha256": "98c71c63ce1afbb7fc992f427ef43160fdccf68c679bdd8910f957f72dea5ba1",
+      "sha256": "def4c67d6e79ec0ba9bd773dbb3117826b689c65e86f7d163b79fee575cfd014",
       "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-mark.skill.bonsaisig",
-      "sha256": "b7e1be5e0a6b121c8a990823f2e7d4ab3b684bfd36a4876326ab51ff03a24721",
+      "sha256": "be9dfd1e542aab9397a40e55470bb500ea52eb83dcf6b9580361f4d425de57ed",
       "bytes": 541,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-mark.skill.sha256.bonsaisig",
-      "sha256": "e93a8fb311bce47dd689c3f14bf42e3c1caad28248d9592f9f61f8c103304ca5",
+      "sha256": "a4070c95f6ebf0c8bb2d7abb62b128d4d1e6e74209cb2fa4f32f0edaaebba177",
       "bytes": 548,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-portrait.skill.bonsaisig",
-      "sha256": "a0c1215e0ef83d39bd264816d71732f4dfb2f954a3ba4926714dcf2be995594f",
+      "sha256": "181ad9206b4616539891aeda9f0fcabeca78b934c5ffe15ed98a51e27f746d67",
       "bytes": 545,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-portrait.skill.sha256.bonsaisig",
-      "sha256": "2cbfea6e9689ff36b38ff66707866b07cd1b6734e5760fe8a0cac8f86686e149",
+      "sha256": "0d3c93aced24093aac39e29c2d203915389ae18df3879172bfca07be3cf113ca",
       "bytes": 552,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-sign.skill.bonsaisig",
-      "sha256": "4463220ab7daae8c3f838f1cb95c706f03e1cd54f1b382ed000d5a87d4197385",
+      "sha256": "c482b55b056408af4dc437639ebfcb236af7db11047b4735a84319cd01eca150",
       "bytes": 541,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-sign.skill.sha256.bonsaisig",
-      "sha256": "de0862c56e3125bb65881cc74e5f57af3256c4819d7a272931f6ce656c252daa",
+      "sha256": "4f82fd51704baa32ad91918b016e38045dd5acf19afd37455401120ee073d799",
       "bytes": 548,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-strategic-context.skill.bonsaisig",
-      "sha256": "8631785b341f5c7d270884a301ccc95066c40c5e82072973daf0652972c8acc2",
+      "sha256": "05c538d3b948d94bdbf0914314ca6a26baa898a45fc945bdbe6de44a1e3bdc72",
       "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-strategic-context.skill.sha256.bonsaisig",
-      "sha256": "200eceef5219b8f63296db47e6705b4adc383498d5124783bdab2eb21441c82d",
+      "sha256": "acd948b7372a05eff923021dcdd8443f7e392fa0783576a6434d21a9b5e3b50e",
       "bytes": 561,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-tokens.skill.bonsaisig",
-      "sha256": "08effde9da024533f47bcd623499d0da23b74e91716a61120fd87fdf094ef537",
+      "sha256": "ce63bfd0f9820b3379e5350c83b144de5a9a517c0a34904094bc6d8240f237d2",
       "bytes": 543,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-tokens.skill.sha256.bonsaisig",
-      "sha256": "cfaa9b642127defa207f68878caf56a08246e2c432acc7bb4c39a56a19be2a2e",
+      "sha256": "a4d1d53af7c67b56f490e40087bce75cebdfc2d8aad70239df500a6b87ea7349",
       "bytes": 550,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-transcript.skill.bonsaisig",
-      "sha256": "9b5c3b6817aa5fe9b4b52d75124aa86bb7bade40acd1c65abdb2cd128d86b115",
+      "sha256": "6cb0485075d407aa7c07d2557d2999c627e07ab4152b65e915ebdcaca28847f7",
       "bytes": 547,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-transcript.skill.sha256.bonsaisig",
-      "sha256": "6f5e5d7976d73d6a8212aec36dea02bf1b090daf0c6adf3e822f9c725901f489",
+      "sha256": "1a77f9f119d7457648fd161df75e1161abe8c476bb388f6b44691014688eee9f",
       "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-validate.skill.bonsaisig",
-      "sha256": "1ca0b92ff99ed0b45adc2eeeed935573cf448d051a2edcdb1d5e83d84f0dfa8a",
+      "sha256": "d5398009cf984c76a97ee83eede428974abcc25644535060470d06de9f9ba706",
       "bytes": 545,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-validate.skill.sha256.bonsaisig",
-      "sha256": "59f6d0e796bf8a72c663f7910464f2c3ee8ac1e682168aec2a928ab15def0f27",
+      "sha256": "c3f4f6b297e8b7debd6b62219071c70f28c10f640f8283888c49f5b6171d902d",
       "bytes": 552,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-vcard.skill.bonsaisig",
-      "sha256": "f38a211e1e221ab136942bf966b798b6da8853ba60df82070df8858ab882ebad",
+      "sha256": "1794e41a542027c307a708b4a9b28eee65a4b5b6cb97c0a2f917d9c0bf9be6bb",
       "bytes": 542,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai-garden-vcard.skill.sha256.bonsaisig",
-      "sha256": "5afe41a88b68bcdf0b812c95947cef0f77f6069fb8d69656911f37d33d80f184",
+      "sha256": "3feae06ed41ca58d314f3796622a94e40a3e868ac160f597222da4d0659942fc",
       "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai.skill.bonsaisig",
-      "sha256": "e17b915baed57e284ed089e7a71611a56aedfa6b1a725d3b809200b60cc1f424",
+      "sha256": "d3309b250714783d2a73faa58a7050dcab11d5ef60432b9bebdd298a71912f78",
       "bytes": 529,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai.skill.sha256.bonsaisig",
-      "sha256": "3f5d35b5fd7d582640976ef03ab60565fbbc6c13b15ba78db57f41747c6cea1d",
+      "sha256": "8fffe4e4c2f319b3c63434d5264fbc720a6f6bb053b20b5090f4c7c106a8db50",
       "bytes": 536,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai.zip.bonsaisig",
-      "sha256": "d0779e0cfc10b6e61ac8e29d7d77a0b2610a351e833603da66be9a4afe90d406",
+      "sha256": "fc044689223c7a187af2b3452038f6d6f9d89ebc3c5128fe3b8f78312d165876",
       "bytes": 527,
       "mode": "100644"
     },
     {
       "path": "build/.bonsai.zip.sha256.bonsaisig",
-      "sha256": "067bfca799e9f4ccb0cc1bb2e50b14aba9a14f60d5ded7395040074f7dd38543",
+      "sha256": "75095d2e95e5afcf0976188ccae112d8bc4e82aba7d6e1d7bd0efdc3460f1346",
       "bytes": 534,
       "mode": "100644"
     },
     {
       "path": "build/README.md",
-      "sha256": "0eb5072b0d846f99a797151e15f104ce47f02bec5861e23337e2ce8ea612751e",
-      "bytes": 2877,
+      "sha256": "2f9096c95ef5840f5c9e3ffdd8873e4723d6beb703944b14fd8c09142e0bee9b",
+      "bytes": 3105,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core-plugin.skill",
-      "sha256": "31f2f79b8dedefb38517ae791edd945d3c3b48c4868130cfbc1e00ea16fbce77",
-      "bytes": 196184,
+      "sha256": "662bd43b6d82805f804cbcf99da71a9c37ac747000624b3c3259be124a391be5",
+      "bytes": 210843,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core-plugin.skill.sha256",
-      "sha256": "edbe436ce2da8435899f0e9f4765fe7a3573255ef5c3aeda84f4541b2ef81ed2",
+      "sha256": "2f81f9fff00ae5d117e73e00cfc5c4b247831b28f97db6d18f6b21c5a3590a37",
       "bytes": 98,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core.plugin",
-      "sha256": "76bfeb078745ce67820af9683a53b0906e5cd7ce6ff5084aaf0876aecb5f8302",
-      "bytes": 5973203,
+      "sha256": "fd980b9015a463a0ed31d6cd1dc64b83af42d125a59623395431e6f6ee56a19b",
+      "bytes": 6028804,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core.plugin.sha256",
-      "sha256": "163e82d5ee60ddae9ba8c036e3b79e5296af57443ef2d68b909c95c1c4fc5cc1",
+      "sha256": "961d442b581b496e70a803cb96123dc3db5d053ef0ee13b890a7e719c7d076b3",
       "bytes": 92,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core.zip",
-      "sha256": "76bfeb078745ce67820af9683a53b0906e5cd7ce6ff5084aaf0876aecb5f8302",
-      "bytes": 5973203,
+      "sha256": "fd980b9015a463a0ed31d6cd1dc64b83af42d125a59623395431e6f6ee56a19b",
+      "bytes": 6028804,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-core.zip.sha256",
-      "sha256": "88e8d738ccc4e6f75e84e242238f9db3c6d806aa35b6511c743bdc4f4a664d98",
+      "sha256": "4c1bec8dba10d1439b1904f6f32ea5a387a3f7232e1feb883921c05f03cf48a4",
       "bytes": 89,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-keys.skill",
-      "sha256": "d1b92633477cd1e6b88de7bf1421f4f5208bb99d4f9f695542328104de26e119",
-      "bytes": 218249,
+      "sha256": "aa3eb7094f2d9ad9e49f209c372a827cc73a3b52d045d61b2cb9c1dec1cfd865",
+      "bytes": 230942,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-keys.skill.sha256",
-      "sha256": "7ea88bf02801cf9ccd901311a76256dd194f1b73268dabac63c1cb3d86bd88de",
+      "sha256": "c2e45a2d25a99bd50acc2aa3d65843d1c38b5e0d6eef3530f3f677b2a803915d",
       "bytes": 91,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-ledger.skill",
-      "sha256": "bebaba812a7caabcd27aaba532eb39c5d7d52754b11898734f17a304ac3e88f4",
-      "bytes": 137391,
+      "sha256": "0502e1c85ecf91553d56a4e145c2eb5d240cb5703fd3981dd500a55229aec1c1",
+      "bytes": 137855,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-ledger.skill.sha256",
-      "sha256": "a3fc7b0a972c6ddb04feaf373bb8fd452c088e3764141e7af8289dccbc1e9116",
+      "sha256": "100aa99e50906093fdf159f9c5f218da3ce81e748e6d45e9f51667368ea8947c",
       "bytes": 93,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-mark.skill",
-      "sha256": "7fb71d4c1811a525248a209ed4386a4df606f4fde180e0c4e1d8336cc50e80fd",
-      "bytes": 321501,
+      "sha256": "a587537cde8d71432405b309f80ebad8da94a931d78cfb6c509a90b51823fedd",
+      "bytes": 321636,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-mark.skill.sha256",
-      "sha256": "63c61a5003b74264126d97ebafe509b4018a29cac397fc4b92f27d131fedbc2a",
+      "sha256": "58819415567cd89a68c39f5d76e354d6ab8d1a8a1649367dde1e57a21eaace71",
       "bytes": 91,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-portrait.skill",
-      "sha256": "b03521f1e1924ca7114ae4f08683a8fc515410cd866a5c6f4fcb3f1b2a1539a2",
-      "bytes": 186296,
+      "sha256": "95803a5d8f793a94f4c33ee61b42132d598116197cf8a2b5253b1694a2eb7bba",
+      "bytes": 194970,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-portrait.skill.sha256",
-      "sha256": "38fd439a82a08f5735357942e2c4145be8e341e8dd743fafdeee49965536f20a",
+      "sha256": "c64fbdc334c7672d84434e63bf4bda4a5d350c3d47a992cfc4bec1b67cb40d04",
       "bytes": 95,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-sign.skill",
-      "sha256": "1d31a1cfbb578304256f634d7a486f23459fc3ce1fcf675ca8efea85834da9d1",
-      "bytes": 219711,
+      "sha256": "aba3e8034db0985e950533bb8b1cfdc42e4a45227f42a06c949d9953599d1aa7",
+      "bytes": 219844,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-sign.skill.sha256",
-      "sha256": "557198bf6d6461f79de5ed7062eb74f3db8a82be08a2773a65c506b1950300af",
+      "sha256": "837ff141d124e5b67ca1d1837b9521cb8da6e3a7cea1f3929ea1c8aca864f16c",
       "bytes": 91,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-strategic-context.skill",
-      "sha256": "fddb2fd32e7c563b3c0ae70623c56a5470db625317ba1b5aa51ac89ac463cd9f",
-      "bytes": 123516,
+      "sha256": "de35693c52e19f597cf63fddab3e77bfd45d501a468c1d64eda2552f693dc66c",
+      "bytes": 123648,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-strategic-context.skill.sha256",
-      "sha256": "dde8b89526335112120a7baf86aaab9aec435629a3945dc819d7f5f4793b4bdd",
+      "sha256": "b73a71b81e88cabe6bc262fcf93e311a4151fd57f8fe7ef49f2261013a7ff8e6",
       "bytes": 104,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-tokens.skill",
-      "sha256": "033fb921542db1ddce3df58acbff676888c9436a013f2280ac451f57a3e1d66a",
-      "bytes": 120676,
+      "sha256": "c42d45f77b20fbe3835916ade8d8c64e8ba972dbdedfdc97dec9b5f00792dc5c",
+      "bytes": 120819,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-tokens.skill.sha256",
-      "sha256": "f1639a61de9d4e33e21d94bd6cd5a96fd4fc1b19d13cf1bab3177227663f002c",
+      "sha256": "dddba98d15fc3dc67556345b95256f21ab17ab06789cd844c18d3e0003f698e3",
       "bytes": 93,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-transcript.skill",
-      "sha256": "7c44c3f524fa385f972511872b8adcc0623e1c2d88c78b4a64bdc634adde8560",
-      "bytes": 127224,
+      "sha256": "7d57a29e626f821fb57c5262fe0e9ac849b5645325159ab60b8b0f079f61457c",
+      "bytes": 127660,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-transcript.skill.sha256",
-      "sha256": "87d978ca247d446b6205861e105106e7455ae128331e207766466ba6441ae25e",
+      "sha256": "357262040d0ba5191c5fa7a66cf8f2946cacc4a4030f388650e8902ba2040761",
       "bytes": 97,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-validate.skill",
-      "sha256": "9e88f334027d5967e2dcc319709918decb1371bf494c27837bfaa19e466d9fd3",
-      "bytes": 166017,
+      "sha256": "346c543b9d312020d838ee99b1bc18ae0eabaf03d1dc678934d68f3f159f10cd",
+      "bytes": 166149,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-validate.skill.sha256",
-      "sha256": "e927dd94ff2aef40825f87a7ea560a071abbb5c886ad83172e60fc7b268d1a34",
+      "sha256": "844080cb8a60ceef634b0f56a946b28980cf8bf05b17056677886ba71050ff4d",
       "bytes": 95,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-vcard.skill",
-      "sha256": "8ae3027fcf8781a1789ae1adb45bb7f8826badf975e219e1a8b521fe613392cc",
-      "bytes": 135503,
+      "sha256": "0b611a135a168d0c823750ef45ee10e682d5e522ff5564bbb8fe34f7914203bc",
+      "bytes": 135639,
       "mode": "100644"
     },
     {
       "path": "build/bonsai-garden-vcard.skill.sha256",
-      "sha256": "40ebb85c48d61b0961800f599ff0eacb1047396fd360fe2372a06b72bfdc07a7",
+      "sha256": "33e3ab998fbebba678cdd3ae23bdbb0886ac8b61510d19789a3b47b5086b3c04",
       "bytes": 92,
       "mode": "100644"
     },
     {
       "path": "build/bonsai.skill",
-      "sha256": "228a4a2f304fc4f86f77a06eb7e50c18f03b1eab85178733f4ff5af793874382",
-      "bytes": 3935546,
+      "sha256": "cd726c3652eb79fbf0748697161d9c75310c9606769ead35322fcf8998e50e65",
+      "bytes": 3949410,
       "mode": "100644"
     },
     {
       "path": "build/bonsai.skill.sha256",
-      "sha256": "7c82fc01a785be498cebf8bf7455476217fd238e20ceeeae7b91bcd9b2b24794",
+      "sha256": "4f6be20110b6fc85cbb69c1e00566a281168e3a7f0e7077cb4e3b9e3fad3a557",
       "bytes": 79,
       "mode": "100644"
     },
     {
       "path": "build/bonsai.zip",
-      "sha256": "228a4a2f304fc4f86f77a06eb7e50c18f03b1eab85178733f4ff5af793874382",
-      "bytes": 3935546,
+      "sha256": "cd726c3652eb79fbf0748697161d9c75310c9606769ead35322fcf8998e50e65",
+      "bytes": 3949410,
       "mode": "100644"
     },
     {
       "path": "build/bonsai.zip.sha256",
-      "sha256": "d26d03f0abeecf04fe88653b47ee6e57bb67c310a27199ea2bf9bb7202c7ce4d",
+      "sha256": "edb377c89c2713468bf8b1b0b8e3f6f3fa5a2b6f67aaa6baa232e50e88a4aa83",
       "bytes": 77,
       "mode": "100644"
     },
@@ -1578,7 +1590,7 @@
     },
     {
       "path": "lore/.cosmology.md.bonsaisig",
-      "sha256": "d8c3158144ffa71ec9953cd827aacf8cadcbfea0e89030724ac6da7c9d608893",
+      "sha256": "28f9b10fae47c00d083fb342908afa2f483e337a05e685a8a24a88b9d604b69d",
       "bytes": 525,
       "mode": "100644"
     },
@@ -1608,7 +1620,7 @@
     },
     {
       "path": "lore/.invitation-rite.md.bonsaisig",
-      "sha256": "bcf43779fbcc70204e5f87d607095c40af896377bf68d6f636f518f4deeb6230",
+      "sha256": "1e822f1518e0a4a4d26c579afff450b2d566208f7f21687b455078f02a42617d",
       "bytes": 531,
       "mode": "100644"
     },
@@ -1650,13 +1662,13 @@
     },
     {
       "path": "lore/.shintai.md.bonsaisig",
-      "sha256": "5f1f7cd56531ae6d362f19d558371f3887b354b20143eea2a9dcc83dab927ff8",
+      "sha256": "613598cf941cb34c156440a7ad0854f7c7e0e06da0576105522aa54bd43fa12d",
       "bytes": 523,
       "mode": "100644"
     },
     {
       "path": "lore/.the-codex.md.bonsaisig",
-      "sha256": "895e0367d01a55f1ae0a6e693e64dfebf320fbefd58583fb3a42ee5085e2bff8",
+      "sha256": "08c41da73250cdc4031f962c2b9555335d34c85af1a6408f954bef7daa1410c0",
       "bytes": 524,
       "mode": "100644"
     },
@@ -1668,7 +1680,7 @@
     },
     {
       "path": "lore/.why-we-do-this.md.bonsaisig",
-      "sha256": "2c7cfd6e7916200aabbfa2982714665d3b51c7ce935683a49e1305d02b3bafd8",
+      "sha256": "19146c08617370c2e7525d6f93d3029ae239cc83e467086a662c72791d20e284",
       "bytes": 534,
       "mode": "100644"
     },
@@ -1794,8 +1806,8 @@
     },
     {
       "path": "lore/cosmology.md",
-      "sha256": "c95dec89a1915139b26a25f1a79ae5753562c0074d4e8b2537d3f461d91a143f",
-      "bytes": 27773,
+      "sha256": "647322e9d48edaba6f31175bd0f0cac151599231fe1c59bb71f0f01fbe826706",
+      "bytes": 27766,
       "mode": "100644"
     },
     {
@@ -1848,7 +1860,7 @@
     },
     {
       "path": "lore/html/agents/.baisai.html.bonsaisig",
-      "sha256": "c86ee347dc7528645a27834ef12d84d89b612232fcb06cf9c8bd5a493012f688",
+      "sha256": "ef54b4c2393d9e9abd0330c7fc324338e578219f7627342a7b0809225706a069",
       "bytes": 540,
       "mode": "100644"
     },
@@ -1872,14 +1884,14 @@
     },
     {
       "path": "lore/html/agents/.jisai.html.bonsaisig",
-      "sha256": "13dd754c538e3fa3680c8031bac2be4a7184f32ea6db4638ef0c0e9371164636",
-      "bytes": 539,
+      "sha256": "cb05daa9a563fdcdb72a7e3c901609dd85c0fad0b2dba0869d6c0872049b9019",
+      "bytes": 538,
       "mode": "100644"
     },
     {
       "path": "lore/html/agents/.tasai.html.bonsaisig",
-      "sha256": "c362b6999b235082d3bd4511070e98075eef8b8e6526e46307ed6fa132026da6",
-      "bytes": 539,
+      "sha256": "aada6de98ca1bd252559b0fe360e3db78ad9f360bc3227d99400eb0222adb750",
+      "bytes": 538,
       "mode": "100644"
     },
     {
@@ -1890,8 +1902,8 @@
     },
     {
       "path": "lore/html/agents/baisai.html",
-      "sha256": "ed2189ecf29c7a105fb7948446bb717996a797ecfe04ff52e34cfbfe9ec05ce4",
-      "bytes": 41415,
+      "sha256": "32faba9e77e18697bbe3b15362aed3553841e63d1d2280e4dfd514d3d5988270",
+      "bytes": 41423,
       "mode": "100644"
     },
     {
@@ -1914,14 +1926,14 @@
     },
     {
       "path": "lore/html/agents/jisai.html",
-      "sha256": "443605d5c35262cbfaef4a838d1d7328ce47bd8112360c512733b9c9cd04cc3d",
-      "bytes": 44273,
+      "sha256": "62dcc5fa638a3af83fc3b99b821f4389522dc8a56f364965c717a58ab44f88ce",
+      "bytes": 44275,
       "mode": "100644"
     },
     {
       "path": "lore/html/agents/tasai.html",
-      "sha256": "3cd54971efb5c58491b352324b187dee633b44be842695acabf08c8c0807de44",
-      "bytes": 38788,
+      "sha256": "720cf9e5355fdd1763cdfa15e1df7244eda26a8615310989602ee7057d5ef13c",
+      "bytes": 38794,
       "mode": "100644"
     },
     {
@@ -1956,8 +1968,8 @@
     },
     {
       "path": "lore/invitation-rite.md",
-      "sha256": "b8716c7237c772e636898c51fe6a080314c52ad3ed3d2fea8d46f74fd1cb31fd",
-      "bytes": 32116,
+      "sha256": "06192f7b95002bd5e32bd69c2c9b17eb889d062a2d13f6b47111a421d68e4cac",
+      "bytes": 32129,
       "mode": "100644"
     },
     {
@@ -1998,14 +2010,14 @@
     },
     {
       "path": "lore/shintai.md",
-      "sha256": "c3f59b0b5846d904a8a4705889c04e89b1bbb74fe3032df71e33d4810bfecefe",
-      "bytes": 7850,
+      "sha256": "45669c7394378449fc768de95f96d613495eb8bdf33c490eb752bb57efd7ab99",
+      "bytes": 7852,
       "mode": "100644"
     },
     {
       "path": "lore/the-codex.md",
-      "sha256": "8347cc4918796db41e5c3f9ef9d38ad927ab18c9763e47e3b54688e9cf77b4ab",
-      "bytes": 5794,
+      "sha256": "292f541a212322245d22f41a608ea104ec3ad59b164a0ed432ce0e1e219f20c9",
+      "bytes": 5868,
       "mode": "100644"
     },
     {
@@ -2016,8 +2028,8 @@
     },
     {
       "path": "lore/why-we-do-this.md",
-      "sha256": "2666ec2d896590438765bbc1469ec577c0232be0c1a335d55a71f8678af6e05f",
-      "bytes": 3841,
+      "sha256": "b6411b07f40c0fb99b2c16c9c6e3dfca653adf19e27078983352686c274b9d62",
+      "bytes": 3861,
       "mode": "100644"
     },
     {
@@ -2058,13 +2070,13 @@
     },
     {
       "path": "rituals/specs/.bunshin-rite-spec.md.bonsaisig",
-      "sha256": "b1f75b008bff1f1564099693305f3afed8e1fc87127baf9665fa2a28ba4bc04a",
+      "sha256": "45be22298f2996373fd6ba5c8dc06472a88bd88dc6effd17125e626c608a7897",
       "bytes": 545,
       "mode": "100644"
     },
     {
       "path": "rituals/specs/.metadata-schema.md.bonsaisig",
-      "sha256": "21acc9090b30f30ad2083ffb553b8baa530966f25914069ef6d2348a6c25d2e7",
+      "sha256": "e56a0a55ef31e0cf3b4d7af13b5920c98e37a5515207e7b0f281b5aff3b282c3",
       "bytes": 540,
       "mode": "100644"
     },
@@ -2076,7 +2088,7 @@
     },
     {
       "path": "rituals/specs/.spec-gardeners-keys.md.bonsaisig",
-      "sha256": "5461a4770596710db672b0b5d02d0c0902806e114be788b90845b223b635effe",
+      "sha256": "72794761832427c1fb17e25ddb87df36893bec0894ecbf985c833e339abee672",
       "bytes": 547,
       "mode": "100644"
     },
@@ -2088,14 +2100,14 @@
     },
     {
       "path": "rituals/specs/bunshin-rite-spec.md",
-      "sha256": "8a155d16a9275d5e594cf739446ddd523ce048df8bda69fe51129dcf3085b60b",
-      "bytes": 11269,
+      "sha256": "6c07b09c54906483e7dd845690b4c3086931e9f294a846f5c620fd5b0b3168ce",
+      "bytes": 11287,
       "mode": "100644"
     },
     {
       "path": "rituals/specs/metadata-schema.md",
-      "sha256": "a8d4f84a0ba5a32bc6e0a2aead65ec58a7ea26da6ad1ac67105ccff761fe4ed2",
-      "bytes": 38834,
+      "sha256": "38f20eb25fbd7b3bee4237c7341ab2d62577208b94569bad2d431d74808c5a7b",
+      "bytes": 38838,
       "mode": "100644"
     },
     {
@@ -2106,8 +2118,8 @@
     },
     {
       "path": "rituals/specs/spec-gardeners-keys.md",
-      "sha256": "78c6401281f0c4c8fe420d078404f46d53386c4d100568467581ab441c147fda",
-      "bytes": 94817,
+      "sha256": "ddbc5b91146c03c09eb51f523a5067e5ee1deed003ebd1329dcd5c72d4904d42",
+      "bytes": 94892,
       "mode": "100644"
     },
     {
@@ -2202,14 +2214,14 @@
     },
     {
       "path": "roles/architect/.role.md.bonsaisig",
-      "sha256": "820afed39d3dac899108b1ea3ca9306c2fa3bca3d392329bd420bf09c9fe7213",
+      "sha256": "7f6db3d85a50f93fe6442667a8d488aaec1ed873f257c4ed564a39792d492dda",
       "bytes": 532,
       "mode": "100644"
     },
     {
       "path": "roles/architect/role.md",
-      "sha256": "0edc1a20da58bae9c78d58ae1ce0859e7347eca2745c25b54c29461c4a9cce4d",
-      "bytes": 7890,
+      "sha256": "e6f42106b5f55c1144607ccd47ae51cbaf61c8561766837974bdaa0b94dad037",
+      "bytes": 7915,
       "mode": "100644"
     },
     {
@@ -2226,14 +2238,14 @@
     },
     {
       "path": "roles/chronicler/.role.md.bonsaisig",
-      "sha256": "95604d1556a1c9a4d4fcb3f120ff8e12b7c26f9e8615578d395dfafc666c6896",
+      "sha256": "1615a7329e7803b890bcf6fb7880b4b0885de990d77ead612ccfb1d99d56bd45",
       "bytes": 532,
       "mode": "100644"
     },
     {
       "path": "roles/chronicler/role.md",
-      "sha256": "1d3343fb90e0d7fd83059d7ca37f24f1f3d21af47dcd0c05b63773b2447f279a",
-      "bytes": 4876,
+      "sha256": "bc4f42a6ca1b539d913a53216bbdc49c2689ffdf6523f5109dbac39ccc068b3d",
+      "bytes": 4878,
       "mode": "100644"
     },
     {
@@ -2250,206 +2262,206 @@
     },
     {
       "path": "roles/designer/.role.md.bonsaisig",
-      "sha256": "2908929098b1b56c1f64be9dbbf2fcaee59d6328afa9306982f6fb8d369ee9c3",
-      "bytes": 529,
+      "sha256": "673daf80309e92b6b7bad8a799630853095aeb48e02debecef8ef95cc60d5c1b",
+      "bytes": 533,
       "mode": "100644"
     },
     {
       "path": "roles/designer/role.md",
-      "sha256": "98c1f37aff39c5f3f33a72eaf23b401731d5b13cbbdc6b6136220d5bd7f4bb75",
+      "sha256": "cb837edb64e80e00eda2b80350b96673cbed858be5204a9665d27dbd96a6bcf4",
       "bytes": 5181,
       "mode": "100644"
     },
     {
       "path": "roles/engineer/.role.md.bonsaisig",
-      "sha256": "d2305f089dc7d53925d3b769f50097dbf96da6013434959b8fc97ea339ed7001",
+      "sha256": "2ecfedd5422853bd569e8939c106133d90c72786279a9748fd4a56f382dcdc69",
       "bytes": 530,
       "mode": "100644"
     },
     {
       "path": "roles/engineer/role.md",
-      "sha256": "f95a5f1c32d2a940f79fc601981002caf653be192e1f6ec06774419947b5ec3a",
+      "sha256": "f18dada06f0dcb78d80de7be792929df878da1e12de538a93e6ee1aa9b8fe4b9",
       "bytes": 6602,
       "mode": "100644"
     },
     {
       "path": "roles/executive-companion/.role.md.bonsaisig",
-      "sha256": "dc544188de3ae2358ce7508766180996f32a9e77f79d3807e10b707a4c323b5e",
+      "sha256": "b408ee712cbee33c62fef954652edb6bfab070672766c2a708d71ac3aec085f0",
       "bytes": 536,
       "mode": "100644"
     },
     {
       "path": "roles/executive-companion/role.md",
-      "sha256": "6f39b0e51eba61968d1fba24870d0c8bf297c1c68a84df92df61d2673ce35696",
-      "bytes": 7466,
+      "sha256": "fabdcfcfb31007721ed38d16dfbf1abcd8237c937402a8ca8131330d74a176fc",
+      "bytes": 7730,
       "mode": "100644"
     },
     {
       "path": "roles/guardian/.role.md.bonsaisig",
-      "sha256": "3c8d60e2e60f56042289101000216d7db91c07726c12869db67c2e9da19a758c",
+      "sha256": "c566158ab6f96f414e430325d2e11a8e4812b5472b8b37e64280cda22ae9d4fe",
       "bytes": 530,
       "mode": "100644"
     },
     {
       "path": "roles/guardian/role.md",
-      "sha256": "cc339e869d9e1b3b3d646ff321089c14dcc0113ffdcedc8644c40873c8c9745b",
-      "bytes": 10211,
+      "sha256": "3ade40fdafd2ba14d62c0f82d8e3f26dd443754c28b9d8f60861a3415eba0623",
+      "bytes": 10714,
       "mode": "100644"
     },
     {
       "path": "roles/hardware-maker/.role.md.bonsaisig",
-      "sha256": "f56b849db95d875a33dcebe2355aa8c455e58fdea813513ecf3e5f2fcf16e1d6",
+      "sha256": "603dd60760524764cc4a7f661b4dc1adc6d2965da9939d0cde2aa0bd0905530d",
       "bytes": 538,
       "mode": "100644"
     },
     {
       "path": "roles/hardware-maker/role.md",
-      "sha256": "24f93fa330243effbf6f8c550727a7f3bd7d232473b052bd4d7c1988507ccdc5",
-      "bytes": 11363,
+      "sha256": "51bb8fea9fc076582ffb14791a39ca478a29f6c89bb33bc9fe8c90fa06d4b8f8",
+      "bytes": 11456,
       "mode": "100644"
     },
     {
       "path": "roles/home-keeper/.role.md.bonsaisig",
-      "sha256": "477989c59befa83803837feb27c9360d2f341ebd55a219943c5c721532033b5b",
+      "sha256": "f2e9076c5c49480f31716178a6c34f2f3fb544c1a7703468c08cb6c712c0ffc3",
       "bytes": 536,
       "mode": "100644"
     },
     {
       "path": "roles/home-keeper/role.md",
-      "sha256": "e66e4bd6db507cc45e545b6cc85de817c74f3e553f8ff4f2d313ac2f8415a7a8",
-      "bytes": 8965,
+      "sha256": "022b2971db33dd565e03348f8718aafd5c47d0ec2aa557244507a7a93ff65262",
+      "bytes": 9001,
       "mode": "100644"
     },
     {
       "path": "roles/mentor/.role.md.bonsaisig",
-      "sha256": "360f6b543c018c54030575e81d1c747963ae71ac8891c3436e7ea59207c41aaf",
+      "sha256": "87b7d065ec4f7fee8e22a039ee638a6eaaad379d6adebfdd3dd95849acb29601",
       "bytes": 528,
       "mode": "100644"
     },
     {
       "path": "roles/mentor/role.md",
-      "sha256": "923509696c762fff79a47897430ab96f898da781bfd0cae4db0e2ce7349f99c6",
-      "bytes": 4407,
+      "sha256": "517b5b3f1cd186f0f34c760504d0d1a5546af48d7b875c97a8142c2a7e511c5a",
+      "bytes": 4409,
       "mode": "100644"
     },
     {
       "path": "roles/orchestrator/.role.md.bonsaisig",
-      "sha256": "e7c9f7e6e0ed05d2060149052b3f0a8f04b5b781edda13441ddfbe609f26fa78",
+      "sha256": "8136b9df7a06261c3569aa0b7d7a913b1709f1de57470a4ce83129046188128d",
       "bytes": 533,
       "mode": "100644"
     },
     {
       "path": "roles/orchestrator/role.md",
-      "sha256": "d9371c13e32ec7d81ded9d7a0ea2b74866974359cf72f29e2d0b780b7deacf57",
-      "bytes": 4111,
+      "sha256": "fa9c3fdee8d5b2db170adb783e3e786c718b369cd0b9030da0a48091cf804fbf",
+      "bytes": 4115,
       "mode": "100644"
     },
     {
       "path": "roles/organiser/.role.md.bonsaisig",
-      "sha256": "5b8be0afd5006c5bc2c6902839af9a973c806b3891aa2ef1cee1c3614eb91f6f",
+      "sha256": "c0415dca67288889a55720453f3d0a8a44561e625c2baf41a211bf286f382893",
       "bytes": 531,
       "mode": "100644"
     },
     {
       "path": "roles/organiser/role.md",
-      "sha256": "5aab7cf5ee702fbda1eaeb20305ce462b1f588eaad72d1deed844acf6196a55e",
+      "sha256": "f448756747ef91239f820dc02a375d459d1d9573e44f8b1cbc228f4832b69743",
       "bytes": 4800,
       "mode": "100644"
     },
     {
       "path": "roles/origin/.role.md.bonsaisig",
-      "sha256": "a43330545946b37c9893896da18eee4576220639e533c5d94e46a8dc6e047497",
+      "sha256": "35ef7c2279cd1172095f9551108a6a747172b4ac912f8f05c0022c4e57ff4a37",
       "bytes": 527,
       "mode": "100644"
     },
     {
       "path": "roles/origin/role.md",
-      "sha256": "1d87e125757de676e3cba883dfc8d29ae9f0c5512972abba664c0333a2b0eaa7",
-      "bytes": 4369,
+      "sha256": "c2c38ee96e3a9bf4b8f9885058689f838c636a0d44ea0a99fd681e7dd44226be",
+      "bytes": 4372,
       "mode": "100644"
     },
     {
       "path": "roles/room-voice/.role.md.bonsaisig",
-      "sha256": "f45246b352941274f565dfb466e59217ab5bb4e624146402be93f19ced3372df",
+      "sha256": "6a8924ba298fa83e4f5361f6e6eecdaacac1a2158ec3a49876af8c7d326f8550",
       "bytes": 534,
       "mode": "100644"
     },
     {
       "path": "roles/room-voice/role.md",
-      "sha256": "36488fcfa43eb639be7e4ed78b4bf42ae737a61b5b95ff33c5b1dc2836573d65",
-      "bytes": 8474,
+      "sha256": "69d462cdfb223f00bc932bfe2d8debe13fa70d39f6a78ea6702fa1fd67ae7ae0",
+      "bytes": 8523,
       "mode": "100644"
     },
     {
       "path": "roles/scout/.role.md.bonsaisig",
-      "sha256": "25fb9477a92a55f790cafe53fc0f521fcfa56bf44179161ddf0f71fd241bba9f",
+      "sha256": "e6cdeb3e2262855fc483f0816ee87495308fd1b8459b27c7523026f894c31af7",
       "bytes": 526,
       "mode": "100644"
     },
     {
       "path": "roles/scout/role.md",
-      "sha256": "6eb7b2cb3ff8ba70be27b4be85979f4796d33ef6383fe2025ca946d11ada33c6",
-      "bytes": 6656,
+      "sha256": "0958088ef0c55c56156faa80578e1a5ff708d0ec8e94c9bec30744e7fff4de9b",
+      "bytes": 6691,
       "mode": "100644"
     },
     {
       "path": "roles/study-mate/.role.md.bonsaisig",
-      "sha256": "d59207772d3aa691b76a5dc925d7672f1026b100d994f4edb1ad811441c9ca65",
-      "bytes": 535,
+      "sha256": "23e6f7166c654dc8fd997bf92b7b7c8362d0b75b7c5a331983fdc70f3d52efc3",
+      "bytes": 536,
       "mode": "100644"
     },
     {
       "path": "roles/study-mate/role.md",
-      "sha256": "0e9ab122a5eacdb4fb0342363b267d9b69eb6e01852b0ceaadbb7c707a1f524b",
-      "bytes": 4174,
+      "sha256": "4b13f5471a63995935af05bc962d725d787ef3dbed8d8e68b030d8b5c865d30a",
+      "bytes": 4183,
       "mode": "100644"
     },
     {
       "path": "roles/trust-keeper/.role.md.bonsaisig",
-      "sha256": "b9378f79756d5b8477f94cd1ba03d3947cc7821fa3fc87793ec2ff65d1c6aa9b",
+      "sha256": "e3ac34e57f934fc1f117194a78ad9084db2c89ba94a951d0b0f9b756db722141",
       "bytes": 534,
       "mode": "100644"
     },
     {
       "path": "roles/trust-keeper/role.md",
-      "sha256": "c907538a63253c25e9aa516c31ebeaaeecf238c598cb2456d6b2dcb737a81e41",
-      "bytes": 5644,
+      "sha256": "c7d5c6d80c062503f8bae83205d2f3fe51c8b2d2c07fcb7360956b19bd115b0c",
+      "bytes": 5681,
       "mode": "100644"
     },
     {
       "path": "roles/trust-machinist/.role.md.bonsaisig",
-      "sha256": "03be7763aa2ad563f564a18192f0a2426cd34790ad89615c0cd8ae1d4a6a3f0e",
+      "sha256": "2c4bf32d76beb366aeb80349cdadca6d14514eeabc24f153dd604277f7958c5a",
       "bytes": 540,
       "mode": "100644"
     },
     {
       "path": "roles/trust-machinist/role.md",
-      "sha256": "94f35f46ed114f1c3135ade5c034f531a3df4fbc0433f90e4c3b8086b43ae56d",
-      "bytes": 8115,
+      "sha256": "59abb625becef155a34d1a9ab5a39260d4ef449acef410fe7ea9027714f161dd",
+      "bytes": 8137,
       "mode": "100644"
     },
     {
       "path": "roles/verifier/.role.md.bonsaisig",
-      "sha256": "7fdda19d0f42cb990c5854d4450ceb34eda9cafc63ba76cc44ea870f0e62e832",
+      "sha256": "f99055cb06740bf79aad8cec9ca998d936fc132fce090bc57d0cf5091ce8c99d",
       "bytes": 533,
       "mode": "100644"
     },
     {
       "path": "roles/verifier/role.md",
-      "sha256": "1f1acc524e13e1c4130a1aba23379bf2b3bb8b767f0d3d6c07a0318bf39ac93a",
-      "bytes": 8753,
+      "sha256": "488d025a5b7166e67f757c8c564db9b060d88251877dd30eb9fc86e9eb573a24",
+      "bytes": 8769,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-core-plugin/.SKILL.md.bonsaisig",
-      "sha256": "4c75b740b971b4e191c571eda698da533faf33b8f7f2219f47255ae1c024149f",
+      "sha256": "9a5698d2d4bbc0511d1609de93a06198930f7b26dfc8793cbd4080e11e5cb285",
       "bytes": 549,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-core-plugin/SKILL.md",
-      "sha256": "8354c59376c2d16fcb261d999c184ee8c0b90553cd870f53740aa8f966bda8a2",
-      "bytes": 7955,
+      "sha256": "2612833fa1583e7d6e5bc8bf9cb39c5ac31f9ab13406f5f40d1a5168b3ef5547",
+      "bytes": 9742,
       "mode": "100644"
     },
     {
@@ -2478,13 +2490,13 @@
     },
     {
       "path": "skills/bonsai-garden-core-plugin/references/.identity.md.bonsaisig",
-      "sha256": "21e891ce07516f919b8f8213f8e0f7470a9c11f40d93585504b1916b54ea45e4",
+      "sha256": "2a41584612b75bede12bcadc9b1e6185882f479ab1ea2bbbea1eda7843e6eac9",
       "bytes": 563,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-core-plugin/references/identity.md",
-      "sha256": "1c8ffe5330d7626d4cacc3c63f44f227e963d5cea4ea2b871269194379748034",
+      "sha256": "dd6a21d462abc965b3eb165bbe90192ba64c143ad6a208063cd997f7c9751935",
       "bytes": 1518,
       "mode": "100644"
     },
@@ -2496,7 +2508,7 @@
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/.package.py.bonsaisig",
-      "sha256": "c69f6466f2afff7158932cb419e327c626f348ac4834a49e639c16b7317939f3",
+      "sha256": "ae17bf9d510886d1d246a4187dcdf623562c2829c0ca6564d810e87a4c759264",
       "bytes": 559,
       "mode": "100644"
     },
@@ -2508,13 +2520,13 @@
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/.test_package.py.bonsaisig",
-      "sha256": "5f7f747b7dab1c5378dfcf52f66a7f0a70bb8724dd78189ba2d5642181e06fc1",
+      "sha256": "fde942b4d852f8887d6c6025ce18202a9d395b8bfd696901ca9ddab9f8477cb4",
       "bytes": 564,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/.verify-manifest.mjs.bonsaisig",
-      "sha256": "b5b94495cc411d07d60d46b432c02c67925f2987842d014cfefb11a3edc7f09a",
+      "sha256": "b1e3cca7bf2d4b5ba77e1b9df8c57ef96dff1e8cb2173408e1a4b0823d7d089e",
       "bytes": 568,
       "mode": "100644"
     },
@@ -2526,8 +2538,8 @@
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/package.py",
-      "sha256": "d6d2d793d86fe4870dc9aef82d3c2a24417d5cf3ad9164fccf47c0ee777b9ef2",
-      "bytes": 98988,
+      "sha256": "d69057a540f23c7549cc44d419463a64aa7b612a064019d3ced45f9bee6f29dc",
+      "bytes": 117463,
       "mode": "100644"
     },
     {
@@ -2538,26 +2550,26 @@
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/test_package.py",
-      "sha256": "efd45368271d736cdf853cd71d49599ef8dca4ecf96a8d0d4ec97edc1cb7969f",
-      "bytes": 97757,
+      "sha256": "ea803e4057473dc81c8670cfb130441a147ae8c8b8fd60fffbf73af2d54c2316",
+      "bytes": 129599,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-core-plugin/scripts/verify-manifest.mjs",
-      "sha256": "5445baacc78821c75935415ad156baf7dbb0787bb2cfd05bf42c54ac6076d160",
-      "bytes": 14821,
+      "sha256": "c2e322844d3caa446b6c89ceaaa89f21edb4d62ce1de2143c15ec7e7232f1b4d",
+      "bytes": 15185,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-crew-page/.SKILL.md.bonsaisig",
-      "sha256": "98114dc225a700afac3c51ee643b822b583255b59ab8e5824d5eaa4af2897220",
-      "bytes": 546,
+      "sha256": "fdcc995ed2857a1885e6414d310e2583a7e720f5432c6f992d94d4f0a218a08a",
+      "bytes": 551,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-crew-page/SKILL.md",
-      "sha256": "9adc1c158f60a00004558544d9ce28463a26e72a799086d6c3679e4a9ea48fb7",
-      "bytes": 6934,
+      "sha256": "f7242e94b0f44d11834f801237e0a09057c1b39a097874b018519a032478f686",
+      "bytes": 6950,
       "mode": "100644"
     },
     {
@@ -2580,7 +2592,7 @@
     },
     {
       "path": "skills/bonsai-garden-crew-page/references/.identity.md.bonsaisig",
-      "sha256": "018867868ec6728d6bf1d9afa618678a5315fcc31a195789e7cf2594bd54bba6",
+      "sha256": "2118558623c89a0872f8f358ec2fd6060be46d13080c9cae9403b0c15ead1569",
       "bytes": 560,
       "mode": "100644"
     },
@@ -2598,7 +2610,7 @@
     },
     {
       "path": "skills/bonsai-garden-crew-page/references/identity.md",
-      "sha256": "6b5a6a461f8fe4cba4eb188e01c0f6f26e555b68a4dc71b19fbc89f906f6ee92",
+      "sha256": "dd3d4e0a1b2d9433d505eee636a4e44a0e1c219932d5109fe366186774b5775c",
       "bytes": 990,
       "mode": "100644"
     },
@@ -2610,7 +2622,7 @@
     },
     {
       "path": "skills/bonsai-garden-crew-page/scripts/.build_crew_data.py.bonsaisig",
-      "sha256": "6b565718cb641dad6537935d2b2f73117dbd1894c162836e0ec99c2ec91ceb23",
+      "sha256": "cf95be40c4c89a7cd7b48678ff5b05fb7bae67a13029031c4ea6d3eb13cefe87",
       "bytes": 564,
       "mode": "100644"
     },
@@ -2628,8 +2640,8 @@
     },
     {
       "path": "skills/bonsai-garden-crew-page/scripts/build_crew_data.py",
-      "sha256": "f926fab8e09ca8c081bc8c06d9ca7c64c7f2186259f53c996e5fd34d1658ec88",
-      "bytes": 48414,
+      "sha256": "6e473d95780ceec996b4775bd29cd3f0d69553fd4e6fd361138195a6508c0f09",
+      "bytes": 49110,
       "mode": "100644"
     },
     {
@@ -2766,7 +2778,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.SKILL.md.bonsaisig",
-      "sha256": "58d5733876879162e7ff5ff503e20a0e086ff3173c90deb9b7dd967a6d076d3d",
+      "sha256": "26642685229b1be4a896f8637acc9213e12b9f796e6cdd267014d933a71c2b35",
       "bytes": 542,
       "mode": "100644"
     },
@@ -2784,7 +2796,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/.test-covenant.mjs.bonsaisig",
-      "sha256": "8dcfee2dc4e8c6145b36b0828e8e3178ab924b2f7ddcb2d3e1d0bd4d95742058",
+      "sha256": "e6ac5a0b4ceee17d65e0ff50411ead29707c7d6a584c07a95322aff78c23f609",
       "bytes": 551,
       "mode": "100644"
     },
@@ -2807,15 +2819,27 @@
       "mode": "100644"
     },
     {
+      "path": "skills/bonsai-garden-keys/.test-keys-command.mjs.bonsaisig",
+      "sha256": "8f8d70e602c68c95a22e0cd6fcd07670b6983f1ed8c30207c52b1dd063596281",
+      "bytes": 555,
+      "mode": "100644"
+    },
+    {
       "path": "skills/bonsai-garden-keys/.test-keys-mutants.mjs.bonsaisig",
-      "sha256": "31e46767a193d77b5f8f8f8795b7ee298072db3135eb0e043ff0e778a27441ad",
+      "sha256": "1ae1e262c074e79a6b7b7fbffd93499bd7f026c8ccccf24430d03cbcca267b93",
       "bytes": 555,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-keys/.test-keys.mjs.bonsaisig",
-      "sha256": "7849cb7daef2ff9c1dacdf1a5b12ba7dcbc129e749a91432ed5a549003d54e92",
+      "sha256": "338bdbd5dfa50552b95dcd7b5068cd4e563f72d6161cdd620046ea26069d3150",
       "bytes": 547,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/bonsai-garden-keys/.test-pair.mjs.bonsaisig",
+      "sha256": "a8b7f666ab07bad6ad4ae175304814e871afac471ff53a15c5a65cc451c30e2e",
+      "bytes": 550,
       "mode": "100644"
     },
     {
@@ -2862,13 +2886,19 @@
     },
     {
       "path": "skills/bonsai-garden-keys/SKILL.md",
-      "sha256": "4c23342b63ccf15a2f6368eda49d596a7695b0c730d2178db45d964e0132ad0f",
-      "bytes": 17595,
+      "sha256": "269db0df17105fb18ea8f3014198ecc99dcb0d4e224a6d85db1e32a1ef94a7fe",
+      "bytes": 21148,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/bonsai-garden-keys/bin/.keys-command.mjs.bonsaisig",
+      "sha256": "2559e674aa128126e6adffea6da1edbc6c79282190ef06fb4eabcdc735e9d6ea",
+      "bytes": 554,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-keys/bin/.keys.mjs.bonsaisig",
-      "sha256": "513a64a72d67a7174254bb8d802d1f998967bd5291564ae1181a1ce2cf535d18",
+      "sha256": "001c37764493c95d9663766ffdef04fa1819aa2773551ae47095986099d6a018",
       "bytes": 546,
       "mode": "100644"
     },
@@ -2879,9 +2909,15 @@
       "mode": "100644"
     },
     {
+      "path": "skills/bonsai-garden-keys/bin/keys-command.mjs",
+      "sha256": "b7d398454d3d4874cbf216f3ddcc26757dfbf463363ec5c4c874adbf23c6b6b0",
+      "bytes": 17798,
+      "mode": "100644"
+    },
+    {
       "path": "skills/bonsai-garden-keys/bin/keys.mjs",
-      "sha256": "74f15a0fdd28551f6ecc8f5200c2f5b7c37e67cb841cb35cea93c1cdb92d0c26",
-      "bytes": 78384,
+      "sha256": "cccdb69e6c3170a195d8fcee642d21a78dcb1a22e611eece876beeadb4dd9cc3",
+      "bytes": 82485,
       "mode": "100644"
     },
     {
@@ -2922,7 +2958,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/lib/.fill-bodies.mjs.bonsaisig",
-      "sha256": "71a1c93adc6f1c774bd0f6282da8a2ec3e984fbc54fa305316731d23bdc855cc",
+      "sha256": "5e1faf173eec21703f0330bd9c0f623492ce46cf60fe5119a6e9a9c4e842d7de",
       "bytes": 553,
       "mode": "100644"
     },
@@ -2942,6 +2978,12 @@
       "path": "skills/bonsai-garden-keys/lib/.install-runtime.mjs.bonsaisig",
       "sha256": "ad3a0d08b35400ec7060644cce1969efbd72385dde980d78f4e1e94348ed0529",
       "bytes": 557,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/bonsai-garden-keys/lib/.pair.mjs.bonsaisig",
+      "sha256": "c464c76b25101e07e2ab2ea462eba2d364148448447a893fa5c048df1f659729",
+      "bytes": 549,
       "mode": "100644"
     },
     {
@@ -2994,8 +3036,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/lib/fill-bodies.mjs",
-      "sha256": "c4afbb16e1ae73e85922778231c257a44a3d9af9bd6dae8954525ebded7e0797",
-      "bytes": 36604,
+      "sha256": "70a99aff65c710d9453647687f3081192158cc5d8c8d8e0269a21a291c64b8d8",
+      "bytes": 36619,
       "mode": "100644"
     },
     {
@@ -3014,6 +3056,12 @@
       "path": "skills/bonsai-garden-keys/lib/install-runtime.mjs",
       "sha256": "3107d435b11be5238f70e0602907474fe6ea628667b1d13d0b2688ab557073dc",
       "bytes": 24593,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/bonsai-garden-keys/lib/pair.mjs",
+      "sha256": "62774bb67e3c953ac8ff230271e95a46884d82ebc888d0c491ffac7512f54b9a",
+      "bytes": 5571,
       "mode": "100644"
     },
     {
@@ -3036,7 +3084,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/references/.identity.md.bonsaisig",
-      "sha256": "a4504df1676a85e24afe5c39a5579bcd47cc43446519640bc100184b16610f18",
+      "sha256": "f47afb39f9483f849ed3ff48f62041393f87b1c4deda369d10bf6e72a1677629",
       "bytes": 556,
       "mode": "100644"
     },
@@ -3054,7 +3102,7 @@
     },
     {
       "path": "skills/bonsai-garden-keys/references/identity.md",
-      "sha256": "11159b4f6f227f11599c2d4118f7403c5c98f94eea586741dda693ea8fe97863",
+      "sha256": "07eab32d3d9df5f467a687b65ca396a27648ae2a03e28478aa864ffcae4047d5",
       "bytes": 1325,
       "mode": "100644"
     },
@@ -3084,8 +3132,8 @@
     },
     {
       "path": "skills/bonsai-garden-keys/test-covenant.mjs",
-      "sha256": "c214070ee4aaea8d432e5f4928ef741a4e5327380eee4a7e86ce4ab462008393",
-      "bytes": 16560,
+      "sha256": "a8ed5002e9963b2b9e12046a95c5e48d180cfcd624722cf17d95ea12ff960ef0",
+      "bytes": 16565,
       "mode": "100644"
     },
     {
@@ -3107,15 +3155,27 @@
       "mode": "100644"
     },
     {
+      "path": "skills/bonsai-garden-keys/test-keys-command.mjs",
+      "sha256": "a7fe5b07a97bed522b049993a909e47fc9123ab159942a2fd89dd674363ffa34",
+      "bytes": 25015,
+      "mode": "100644"
+    },
+    {
       "path": "skills/bonsai-garden-keys/test-keys-mutants.mjs",
-      "sha256": "6ec880867123b678cab1aaf5059ab913c690952f4111274be2ed622cd84b6885",
-      "bytes": 44287,
+      "sha256": "45938e706895d80e38c94ea9040b6d6853167e0ad5b05914b31550be65433d51",
+      "bytes": 44462,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-keys/test-keys.mjs",
-      "sha256": "c937e57d3d4783388bee89353d9df117f088a8457dabb7f78aee4bdf478fb467",
-      "bytes": 114339,
+      "sha256": "bdc6e4ddfffc293c1ed34c9090b8637d6dc8703a4afbc30bc63cfb4f829ec328",
+      "bytes": 114341,
+      "mode": "100644"
+    },
+    {
+      "path": "skills/bonsai-garden-keys/test-pair.mjs",
+      "sha256": "04ee886497e4786a2f73245787fbb2758001f270b3d924237e6379ede1679cf1",
+      "bytes": 23638,
       "mode": "100644"
     },
     {
@@ -3162,31 +3222,31 @@
     },
     {
       "path": "skills/bonsai-garden-ledger/.SKILL.md.bonsaisig",
-      "sha256": "2f75a44732d1dcc37c021385e40d0d2974543158dce0fa447e3b9ceaed2028dd",
+      "sha256": "988b553446a9ec3af20318f435517408f7602553b5210c852d8aee8e0179de97",
       "bytes": 543,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-ledger/SKILL.md",
-      "sha256": "dabd8f018b8fff3ef7fd8f78bf1bc76ad42721a107f27c88e1e7cb7d5ed662b5",
-      "bytes": 9902,
+      "sha256": "b1eabcb19226b0d9b2b31effaecef58bddf18ecc17aa469394f57518719fd483",
+      "bytes": 9922,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-ledger/references/.identity.md.bonsaisig",
-      "sha256": "87e3376a35e6ff40e67a9df3625077c20d0189ac9108c9493c674209a7d0fc7c",
+      "sha256": "e704b6d48a4ff4fd94747c2d4831a1b54d19c7dbf81cce8c7660f74722acb8c0",
       "bytes": 557,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-ledger/references/identity.md",
-      "sha256": "3ae7bfa49fc948b7592704c7a55819e351b2bf51a0176b3bdc28dcbe5e2ebffb",
+      "sha256": "99438d8315805d4cd85fff8188a3448aea7666dfbce598d5d64ec656b82e1505",
       "bytes": 1532,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-ledger/scripts/.ledger.py.bonsaisig",
-      "sha256": "36dca83c659a1a01b1ebe9a4908e8b40abc1108b5c5c5169441fd24430e2ada6",
+      "sha256": "bbb9d201aeed9cc898533a6fc8962241f9e653941a2f001a4973033f05568966",
       "bytes": 552,
       "mode": "100644"
     },
@@ -3198,8 +3258,8 @@
     },
     {
       "path": "skills/bonsai-garden-ledger/scripts/ledger.py",
-      "sha256": "53f9e2d321fe184618c3abb3fb25cf6807bc64d265bcfde4031856ee66059721",
-      "bytes": 14186,
+      "sha256": "9c7f59a7497b0f10ea50999ec41ba806703ed5540c5932a8167b126c04fd45d6",
+      "bytes": 14882,
       "mode": "100644"
     },
     {
@@ -3246,26 +3306,26 @@
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/.baisai.lens.json.bonsaisig",
-      "sha256": "a2f84e6af2630169e5ce9635320e56bb262b5743a53de31c23ce9ed662f5e569",
+      "sha256": "11f1f57ac83c7cc80a90a3a545ae9f57b42f90e2dfbc726c4becc3ddfe9046e0",
       "bytes": 566,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/.eisai.lens.json.bonsaisig",
-      "sha256": "e7c6e96bcdfa30b1a1ca1b47b352ea6cf4591928b55faaf2b10d2a8ce274f278",
-      "bytes": 565,
+      "sha256": "84d0235700aa0adb54302a3df8ace531c0ebb0e597df5c2c2a172e14d5af6a8d",
+      "bytes": 564,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/.hissai.lens.json.bonsaisig",
-      "sha256": "49edff3bf585d22a5d73801bae82df9c0ea7bed50699dff3fa5cc6f6d8abc38b",
+      "sha256": "246858b89f749c2ce31a1e7a8984ddfa2faa9b5aa4afbee4ddd87ef5ff0a4d46",
       "bytes": 566,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/.tasai.lens.json.bonsaisig",
-      "sha256": "c8b20b653fb212ac8b7e2a53a194ab375db10814e5aac45f1d14ce5038065c10",
-      "bytes": 565,
+      "sha256": "86d4d91fdcd90d5ee40d2702ac566623c58e3e8bddfde8e015b77a4e6a47b0d7",
+      "bytes": 564,
       "mode": "100644"
     },
     {
@@ -3276,26 +3336,26 @@
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/baisai.lens.json",
-      "sha256": "77c2f1a8f9c17fdbf1ac854b3fb4cf4c0789f3963bd92e8c47b8bbdac5ec6cf5",
-      "bytes": 1609,
+      "sha256": "a8d14d07f3139735e8d097c2c27412ce6ba8fc902bf71bedeba8d48685beb62b",
+      "bytes": 1613,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/eisai.lens.json",
-      "sha256": "a485b4a90122bb8647781c27c560b05785ad3fe9a12f00de154afbc1e565f2e0",
-      "bytes": 2381,
+      "sha256": "52a5ccedb1676e32a2fa2dec6adad13cdb0e3526a79037a800683c268a664513",
+      "bytes": 2385,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/hissai.lens.json",
-      "sha256": "43be4976b38305da4fa3af6e34563aca50ec9ef2cb8240d09071cbfa23b1efab",
-      "bytes": 2420,
+      "sha256": "c8696a4ce91e395c5607e45e18ce9e0efb07536a10d5da048c594c3cbdcdfbee",
+      "bytes": 2434,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-lens-gate/lenses/tasai.lens.json",
-      "sha256": "04033b6fabdeff033cbc87ae751baae4ca687ed8764c43d2aab2e81d124e7f2b",
-      "bytes": 1747,
+      "sha256": "65c6948928ab32e38f7ec72740b72c082ffd2c6f6c6670d38963722fc51f6f26",
+      "bytes": 1759,
       "mode": "100644"
     },
     {
@@ -3318,7 +3378,7 @@
     },
     {
       "path": "skills/bonsai-garden-lens-gate/references/.gate-spec.md.bonsaisig",
-      "sha256": "eb3091c322627bd64e4aec996f19f3f05125a860e36ad6d4f48ae0bc27c6b5ae",
+      "sha256": "d766f4fd530d2400810111a154fb276d0720655f15bd63cbf1f4c363ac99ed9f",
       "bytes": 562,
       "mode": "100644"
     },
@@ -3330,8 +3390,8 @@
     },
     {
       "path": "skills/bonsai-garden-lens-gate/references/gate-spec.md",
-      "sha256": "7733c1ca987aa173990aec383bd4c3f824356e8e7881776dee5b8dc11665596f",
-      "bytes": 7971,
+      "sha256": "2c771ec5fcea864d92396e1ead01f922b36cf4b7c0a16c7ea0e24a6b23e4691a",
+      "bytes": 7977,
       "mode": "100644"
     },
     {
@@ -3396,8 +3456,8 @@
     },
     {
       "path": "skills/bonsai-garden-mark/.kanji-1024-v1.2.json.bonsaisig",
-      "sha256": "5f87a9311b9d19854a5ffe766a291fd84753df96536fef14d2ba3f2ae5ee0810",
-      "bytes": 557,
+      "sha256": "bd965f672ab2953a394c58d721961cbcfad65d37f094030018e1241b46ba2520",
+      "bytes": 558,
       "mode": "100644"
     },
     {
@@ -3570,8 +3630,8 @@
     },
     {
       "path": "skills/bonsai-garden-mark/kanji-1024-v1.2.json",
-      "sha256": "57d3f6028f03cb461ee9e55ab01cfde4c99860773833274385f793e8ce2fee90",
-      "bytes": 120037,
+      "sha256": "fbfee1b775fd42063291a3865b4782d4b14fd7c397d777ef049de02495753b69",
+      "bytes": 120041,
       "mode": "100644"
     },
     {
@@ -3780,7 +3840,7 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/.SKILL.md.bonsaisig",
-      "sha256": "4f18605a4f8bb3439aa735874a59b3b4c8a92c53999f5099aaae3bb09e7d686a",
+      "sha256": "d48fe62ef4125ac83a114451e51764548fcf1c172700c9fe8efcc930ea8a3e71",
       "bytes": 546,
       "mode": "100644"
     },
@@ -3792,31 +3852,31 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/SKILL.md",
-      "sha256": "a6600a069d9d79f12087badf5e5ae98349746cea6659da2de747beda353161c7",
-      "bytes": 12983,
+      "sha256": "95b2955ac5c861e438957ae8119c7b2cae7537b8bd115af2f9829379b1f841cb",
+      "bytes": 13775,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/references/.identity-bundle.md.bonsaisig",
-      "sha256": "d0326dd33b4f2898af82cb09f50552ac0569c78b852360a0bb5eb01908d08612",
-      "bytes": 566,
+      "sha256": "0a12e0d3cbbdd2335417f3fc970f88e4724269201e7f3bde19c37ed7c54d6966",
+      "bytes": 571,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/references/.identity.md.bonsaisig",
-      "sha256": "ebd851fc050b76296e0b599197ac11c310c1428529a78330fa7abca18283da69",
+      "sha256": "b60311fa734fe8d63eec6e91f9dd54beeb3a1c0bdcc73f66eab7ef89722efcbe",
       "bytes": 560,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/references/identity-bundle.md",
-      "sha256": "d623d571c4e200d509b9f198b073a4f61b6944561c513485433d1a1fd99b357b",
-      "bytes": 2149,
+      "sha256": "038fb57d119a96087235cf3000d3d035ff223a77c5aeeb9852d45c4d00eda230",
+      "bytes": 2152,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/references/identity.md",
-      "sha256": "f4bedf67bff0cb154df942db097bcd1c88100e4d142ce0cf290b6210d70a378a",
+      "sha256": "d006d3b517b8b60241ad7849f1e9dead2b388587d10431d39997f33e541db865",
       "bytes": 1446,
       "mode": "100644"
     },
@@ -3828,13 +3888,13 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/.fill-greeting.py.bonsaisig",
-      "sha256": "2ba0fbcc5b0caf00a0b2c32ae1609e3153254307ad3a07d9044bde34dd24f323",
+      "sha256": "f73cdf8a366475fc0e8de5b45f9debb2c0a7be5b7ddd5a9651cb6461636c8cad",
       "bytes": 561,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/.make-canonical-portrait.py.bonsaisig",
-      "sha256": "726c8099aa445037ba90de666602f4de99c8b417cdb82c53e71e27d42a7f6be4",
+      "sha256": "4dc1d25aea8fb8c46fd686e4b25913a557e7e57a35f7ddb5b6ea360d17804f93",
       "bytes": 576,
       "mode": "100644"
     },
@@ -3858,7 +3918,7 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/.test-text-card.py.bonsaisig",
-      "sha256": "fb27ad3787916998ca6cca3392cd8e62fd85ffab59a425a498c5f9e10f311583",
+      "sha256": "099f3c2cbe94039f70b3d81fe3e7007a7e5730967938d64cdafd87e0a5acd6e9",
       "bytes": 562,
       "mode": "100644"
     },
@@ -3870,7 +3930,7 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/.text-card.py.bonsaisig",
-      "sha256": "cb26ac7e4d7ef1e0abcf8390286f9bba13e936a1014fcac22ce2ff76eddb6519",
+      "sha256": "87c07a2f34c43c8af815dddeb5f828022b9cfa697484f771c81fbd9390d53e10",
       "bytes": 557,
       "mode": "100644"
     },
@@ -3882,14 +3942,14 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/fill-greeting.py",
-      "sha256": "c3ac65f9d71ec88194f3eb487c48d649f5712ea3c5543e1a2c483abcf8d09c55",
-      "bytes": 22791,
+      "sha256": "0dbea1d0a70a70938b9de0801b83caaf2284591fd97b1d6723ee6a15e08b0302",
+      "bytes": 32574,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/make-canonical-portrait.py",
-      "sha256": "2e7e102da59263306f06e7916053d04de7b35d82f9b78c8eac7f16e3d6a8d0ee",
-      "bytes": 8271,
+      "sha256": "4c097e5dbeee0eb84a53fc1821b5f20a1c29a867d64490742b62aae9bdf4222d",
+      "bytes": 9019,
       "mode": "100644"
     },
     {
@@ -3912,8 +3972,8 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/test-text-card.py",
-      "sha256": "6866dc5f8665659b8e5f9ba17893049efbec4354803dfb83019152263111562f",
-      "bytes": 19036,
+      "sha256": "66ea2b31751d076e86d762dc68932912eaecb1bbec1766a2b09d1e563676e00f",
+      "bytes": 33468,
       "mode": "100644"
     },
     {
@@ -3924,8 +3984,8 @@
     },
     {
       "path": "skills/bonsai-garden-portrait/scripts/text-card.py",
-      "sha256": "4424136cc44b40d9115a29cf7edc252dd72be61c4bbf81a2aeec24f9084495d5",
-      "bytes": 13751,
+      "sha256": "a98941f2ec7fbeb012f13ed8379c94a892f79c3abf43284d2593bf5b6a2b5ce5",
+      "bytes": 15597,
       "mode": "100644"
     },
     {
@@ -4428,14 +4488,14 @@
     },
     {
       "path": "skills/bonsai-garden-tokens/.SKILL.md.bonsaisig",
-      "sha256": "568bbaf9948bb9c9aa3c6aaffd4660e56423084e2d37feab6b9077b043be6ae1",
+      "sha256": "630e3b3e6bf3f1dc889f172dab225fe8ba2c85d786f4417c31e4ad3ac71fd9eb",
       "bytes": 544,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-tokens/SKILL.md",
-      "sha256": "e60371307341947c2153611371303c567b4acd9c655f4f3e4c1938502ccf41ce",
-      "bytes": 10892,
+      "sha256": "84f41758edfae8a4277ac82c91ee2ad12e0f9e00a2c71277d06cf20bd3c72156",
+      "bytes": 10894,
       "mode": "100644"
     },
     {
@@ -4452,25 +4512,25 @@
     },
     {
       "path": "skills/bonsai-garden-transcript/.SKILL.md.bonsaisig",
-      "sha256": "24bc53b34f0ea83680a3d0033eb16cc604f683dff3ef55d7a4fd026891a5b92d",
+      "sha256": "e5897335d6de5848ca969603cc51fe55609286bd172a4d27a57b0e4eff490953",
       "bytes": 548,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-transcript/SKILL.md",
-      "sha256": "61c848e9d124e7bf62afb50374b729fa35691a7390e2d28e1472c40e790a4b2a",
-      "bytes": 5206,
+      "sha256": "ef26aa2fc7f3a5ce34dbadef273950a9266798822ba63232db3bf40e9738453a",
+      "bytes": 5218,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-transcript/references/.identity.md.bonsaisig",
-      "sha256": "dfdd7bd997ecc6b4b7de68cd8ff425ff99415e7fe474f73dc063d3396dc02679",
-      "bytes": 565,
+      "sha256": "b0f1c610b0e5448156d29c838a1688b48423b5a23c56ba4fbb505b1479b74e55",
+      "bytes": 562,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-transcript/references/identity.md",
-      "sha256": "99878e649703291f9de128984cb4654a520b6956bdecb22865aa7462777da258",
+      "sha256": "53b63c7412d66c5503df0f9bb8116a8962862654b5cbdae737d00e749f6e0aaa",
       "bytes": 1936,
       "mode": "100644"
     },
@@ -4482,7 +4542,7 @@
     },
     {
       "path": "skills/bonsai-garden-transcript/scripts/.shape-jsonl.py.bonsaisig",
-      "sha256": "f6f07f336d3a4c14d53682ffd0709a56a1a5a6240cbc26ef64bd39be20781c5a",
+      "sha256": "5db9eab8bb7ea2730b818be372c4e21c8085d024f66da702b6a9e521c5b09f69",
       "bytes": 562,
       "mode": "100644"
     },
@@ -4494,13 +4554,13 @@
     },
     {
       "path": "skills/bonsai-garden-transcript/scripts/shape-jsonl.py",
-      "sha256": "51a3a22852ff631f976ae3ad9acfbf4cf7000217aa795ca878780103ab0485dd",
-      "bytes": 11878,
+      "sha256": "9ae195160edaf8af6002832e8225cd7f853b31f939bdaea780297f7cce03026e",
+      "bytes": 12558,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-validate/.SKILL.md.bonsaisig",
-      "sha256": "35c60c94f287e459777ee68b3e79600915a39c92d44a962188ebebd12d3e74cc",
+      "sha256": "55908305ae211481f32c0acba29a2cd7936f612f88091a6f2e8947549bc2cdf2",
       "bytes": 549,
       "mode": "100644"
     },
@@ -4518,32 +4578,32 @@
     },
     {
       "path": "skills/bonsai-garden-validate/SKILL.md",
-      "sha256": "39ece19fb92c0d265334f73342512e55dd7112ed6dd5d48005662ea1ce729e92",
-      "bytes": 5990,
+      "sha256": "184f97da7578ef1d32cec1a7c633bb59a91195bd86cf90ec39154e6d1e0149dc",
+      "bytes": 6016,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-validate/references/.identity.md.bonsaisig",
-      "sha256": "4a5c53e8dd5b7c6ebefc378cbc3800a066202b99f25d748f221dd0b10b7d1613",
+      "sha256": "c5bf536c560fc07e630be6942d642198d05d5c0f984406c2038a0be0e28c2f66",
       "bytes": 563,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-validate/references/.metadata-schema.txt.bonsaisig",
-      "sha256": "75a77d71415174144221974ee9ff92356e5e72713bf2f4a8fec2a4649ddd1578",
+      "sha256": "68d79c7637e35e56d2dc42fac713791ea11615bb249ed2c765d4bd3f685493cb",
       "bytes": 572,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-validate/references/identity.md",
-      "sha256": "47f6bda12a8748ef228988a42ab597c8c496ae43bf13b0983a243f3fdf453be7",
+      "sha256": "d30844a35ff8efd97b8cd5f9f49bc47593d7fe2d622ef5f47988259bc4370561",
       "bytes": 2208,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-validate/references/metadata-schema.txt",
-      "sha256": "a8d4f84a0ba5a32bc6e0a2aead65ec58a7ea26da6ad1ac67105ccff761fe4ed2",
-      "bytes": 38834,
+      "sha256": "38f20eb25fbd7b3bee4237c7341ab2d62577208b94569bad2d431d74808c5a7b",
+      "bytes": 38838,
       "mode": "100644"
     },
     {
@@ -4566,7 +4626,7 @@
     },
     {
       "path": "skills/bonsai-garden-validate/scripts/.validate-metadata.py.bonsaisig",
-      "sha256": "86822f608c16bfb30da20b0dadba76e78f4764c4789cdd34fc1c8cb9940d6e57",
+      "sha256": "4651bd0ac8ddb3166838d3535cb029091f791bb95f4c2af537a56520c2b5f754",
       "bytes": 566,
       "mode": "100644"
     },
@@ -4590,8 +4650,8 @@
     },
     {
       "path": "skills/bonsai-garden-validate/scripts/validate-metadata.py",
-      "sha256": "5fd2ef5ec74ee1d4601ffe09602dec5b9b5e63d796269a8e1356f5e4bec27e30",
-      "bytes": 51953,
+      "sha256": "81160b5381c699a075ac28c9133be7140ced84dcfb23c1e2c8bc4ca062e81381",
+      "bytes": 51965,
       "mode": "100644"
     },
     {
@@ -4608,7 +4668,7 @@
     },
     {
       "path": "skills/bonsai-garden-vcard/.SKILL.md.bonsaisig",
-      "sha256": "97207e69e8b0599bcc6758cf3eb9e961b544ec81a0698e1111a78459f912464c",
+      "sha256": "29c693777433ade133984bd2d2e871a94974a8cddea9aae529122fa62e93421e",
       "bytes": 543,
       "mode": "100644"
     },
@@ -4626,19 +4686,19 @@
     },
     {
       "path": "skills/bonsai-garden-vcard/SKILL.md",
-      "sha256": "fce2d9e7a0240135d6727823991bc3ca7e3e186e7c465ad9f2e3c85cfc0b6fc7",
-      "bytes": 7244,
+      "sha256": "149294622a20dc17f27f345876acace5eecefc811108c73eb95b78a2ed46e575",
+      "bytes": 7253,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-vcard/references/.identity.md.bonsaisig",
-      "sha256": "2e75599beec7228a09016f1f762756245645c699eef70d0e6a9caa0d3e12b2b4",
+      "sha256": "983d3b48adb6f17cce12c0c71911f8284a6d7c671302f9b006445dc9c076a4a8",
       "bytes": 557,
       "mode": "100644"
     },
     {
       "path": "skills/bonsai-garden-vcard/references/identity.md",
-      "sha256": "6e47601e92ed036e09ff9d0015a5387db14afbd6b8151709c37078f3a62929d7",
+      "sha256": "4b53b9fea3bccdd1de549f471d4395a3e91803c62e1b8808fa339a4cd6fa7f89",
       "bytes": 1889,
       "mode": "100644"
     },
@@ -4668,14 +4728,14 @@
     },
     {
       "path": "team/.README.md.bonsaisig",
-      "sha256": "594dc15b85a9b75a7910a3856f0e6d10f9d9ba639e11c03a37c83ab7990354c2",
+      "sha256": "89d08fa35e3e17d8c37f4e2e0ce23c3437f3010945fd10d80e3a59eab059c30b",
       "bytes": 521,
       "mode": "100644"
     },
     {
       "path": "team/README.md",
-      "sha256": "ba15977410a053aa4b1c1c9b0dd2285c8df80d753c29ff6e0cd287d325bb3ccd",
-      "bytes": 3984,
+      "sha256": "1319b4d46483b093b003a074f53c939319047dbbbd01182538ebdebc414b1126",
+      "bytes": 3986,
       "mode": "100644"
     },
     {
@@ -4709,6 +4769,12 @@
       "mode": "100644"
     },
     {
+      "path": "tools/.check-prerequisite-versions.py.bonsaisig",
+      "sha256": "9548318689e57790259d55786b939c2041a7e2d0824987b36834e57b788a453c",
+      "bytes": 544,
+      "mode": "100644"
+    },
+    {
       "path": "tools/.check-seed-entry.py.bonsaisig",
       "sha256": "c02812c72b33ce6ac41d6662f1272bc541d52dc08d8969f517aa4a9cb173f695",
       "bytes": 533,
@@ -4716,13 +4782,13 @@
     },
     {
       "path": "tools/.check-shintai-conformance.py.bonsaisig",
-      "sha256": "4ab6da1abba4f16bceb10e446a9e5f506f9652f2ebda833f592b83af4b0f8bd6",
+      "sha256": "4d5bef1a82eefc21fba28ede30c055bdfbaaa95cdd7c730071949bf1518a063e",
       "bytes": 542,
       "mode": "100644"
     },
     {
       "path": "tools/.check-skill-conformance.py.bonsaisig",
-      "sha256": "8c85c527f94d57c8fed3fea143da357f3d43411c050fbf2573385d35b0c5f1d0",
+      "sha256": "4d8d1dced215f4ef7986509947b58357c51ddc4a4af983595560e093f74959de",
       "bytes": 540,
       "mode": "100644"
     },
@@ -4734,7 +4800,7 @@
     },
     {
       "path": "tools/.credit.py.bonsaisig",
-      "sha256": "458dc33191028de502c73e054a9ff7e15502b93c5bf23148eff574028b8a0bff",
+      "sha256": "b3ed8b48caae576530c162aeafee2435f97921ce45301ea32b28200fbbdd482a",
       "bytes": 523,
       "mode": "100644"
     },
@@ -4775,6 +4841,12 @@
       "mode": "100644"
     },
     {
+      "path": "tools/.test-check-prerequisite-versions.py.bonsaisig",
+      "sha256": "bb82875082eef72681a20fad9b76ba550d0c55d4ad19a907e9a9fa69b71d6c34",
+      "bytes": 549,
+      "mode": "100644"
+    },
+    {
       "path": "tools/.test-check-seed-entry.py.bonsaisig",
       "sha256": "d175dafc2d28d23856487208fa73e87a8b6b6a996202962663d913b6bf9dd985",
       "bytes": 538,
@@ -4800,14 +4872,26 @@
     },
     {
       "path": "tools/.test-conformance-integrity-line.py.bonsaisig",
-      "sha256": "6deb1b5ef89cf59e3a046cfb57b7cbdbfd4ec89a143a4b9b91fc1e8095dddd3d",
+      "sha256": "0e7079510704a5ce75460ef4e8c5b53c7757081b74031fac3b6f95b0c6dc3f1a",
       "bytes": 548,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/.test-conformance-owner-seals.py.bonsaisig",
+      "sha256": "19593cc6ae62d15bfc617e226c145499500c052b653823649d21e939d845cb9d",
+      "bytes": 545,
       "mode": "100644"
     },
     {
       "path": "tools/.test-conformance-pot.py.bonsaisig",
       "sha256": "4a852ab39d1367e8901624ebf1299735732c1b5bd222e213e139ae5b1be28e94",
       "bytes": 537,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/.test-conformance-skill-id.py.bonsaisig",
+      "sha256": "237e2c55a826cdd6411e80b88eecece0c389466ad87164e779db05df540a4030",
+      "bytes": 542,
       "mode": "100644"
     },
     {
@@ -4826,6 +4910,12 @@
       "path": "tools/.test-lint.mjs.bonsaisig",
       "sha256": "bf9b4812cbea6385406d51e3c8309096997b2cf3edab61ccdb1451959d23e629",
       "bytes": 527,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/.test-no-planted-bytecode.py.bonsaisig",
+      "sha256": "4cad4613009473ee5e76b7140c863bc2eb0b8931e9b9051d8315a7277831235a",
+      "bytes": 541,
       "mode": "100644"
     },
     {
@@ -4860,7 +4950,7 @@
     },
     {
       "path": "tools/.verify-many.mjs.bonsaisig",
-      "sha256": "1334a5ef5956216b485d6fb8cd56856868cbed048a0994335213f5902195288d",
+      "sha256": "866ef9d6fb6adafdba6edc0d32f7b1d5e89a167201d08911396ea9ede9f97590",
       "bytes": 529,
       "mode": "100644"
     },
@@ -4895,6 +4985,12 @@
       "mode": "100755"
     },
     {
+      "path": "tools/check-prerequisite-versions.py",
+      "sha256": "dbeca62a20df4bb7a09908cfd170d641edc21a9c6a0890d5f95bb4364421af68",
+      "bytes": 14061,
+      "mode": "100644"
+    },
+    {
       "path": "tools/check-seed-entry.py",
       "sha256": "23b368213e79348670623b8a52aa753bab61f7d7e42c1982a17e5c454b1ea66c",
       "bytes": 6868,
@@ -4902,14 +4998,14 @@
     },
     {
       "path": "tools/check-shintai-conformance.py",
-      "sha256": "a46303482697ac43e74745b5a6420e82849d0faf8282564072ccde2c63440f62",
-      "bytes": 56852,
+      "sha256": "5ad833e7a83e05189d9993a2cbbb80087efba77b7b67eec5b48e515c16f0abf9",
+      "bytes": 68431,
       "mode": "100644"
     },
     {
       "path": "tools/check-skill-conformance.py",
-      "sha256": "22dd1d57e98223f2256372d6c90521677f28889d0df844d4c07b9c5ea72d5902",
-      "bytes": 22410,
+      "sha256": "44b57ca55ec9fcb36a98796e0aa7f2f8cd9aa3a9d38f455d9cbdea6891b270ef",
+      "bytes": 22967,
       "mode": "100644"
     },
     {
@@ -4920,8 +5016,8 @@
     },
     {
       "path": "tools/credit.py",
-      "sha256": "465781b64f8fd33fbbc072887ffe49b7a87303b42e82414aee6f1f46f7e94f4d",
-      "bytes": 9706,
+      "sha256": "c82b3ea157a1eaa06c82762e0a88b544eca671b02aeed8d611657276d8e54109",
+      "bytes": 10293,
       "mode": "100644"
     },
     {
@@ -5004,8 +5100,8 @@
     },
     {
       "path": "tools/readiness-gate/fixtures/corpus/n03-role-companion.md",
-      "sha256": "8e3000b436c8773dcf0c495e6a67a50bc4c132f8270a2fcecbcaf5f3b392dd07",
-      "bytes": 278,
+      "sha256": "85d47792131d67853bcd72619e5e6d058ae48d116ef7b28a38b6282a0a4818de",
+      "bytes": 285,
       "mode": "100644"
     },
     {
@@ -5117,6 +5213,12 @@
       "mode": "100644"
     },
     {
+      "path": "tools/test-check-prerequisite-versions.py",
+      "sha256": "9e8c00214f62f1d36b1b4d621898a0a9520bfbe198c7fb92d17887a2e333af9d",
+      "bytes": 16523,
+      "mode": "100644"
+    },
+    {
       "path": "tools/test-check-seed-entry.py",
       "sha256": "6c821bc90db67035c2c572d953fab302ab43095d1608e02357117b5345a014ae",
       "bytes": 8678,
@@ -5142,14 +5244,26 @@
     },
     {
       "path": "tools/test-conformance-integrity-line.py",
-      "sha256": "07336b2d9b81f91728517f1e42019e00483ae5e428e545178670633f1ac3ab9e",
-      "bytes": 3626,
+      "sha256": "c056cb7e93dee75f4b51ce8d41d73cf928dc0f8a19e854c134eb63ccf0d3abc8",
+      "bytes": 3642,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/test-conformance-owner-seals.py",
+      "sha256": "6f54f9ed44787eb20730a722b90c70590808aa6d676596a897e7b0f56c538b39",
+      "bytes": 9289,
       "mode": "100644"
     },
     {
       "path": "tools/test-conformance-pot.py",
       "sha256": "684634cbaf09503b9cad075d4d8a1f3e42f2cece0d922c91e1a04b040762c7a2",
       "bytes": 20084,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/test-conformance-skill-id.py",
+      "sha256": "d571da6dd5e0ee8758ef3a800fee7297f39958f58c2daeee6619160c5640efb9",
+      "bytes": 2946,
       "mode": "100644"
     },
     {
@@ -5168,6 +5282,12 @@
       "path": "tools/test-lint.mjs",
       "sha256": "bc4805cf4f81a0a1a1e89b982b0bead6ab0e66c536017ce876e61bbbd19c2194",
       "bytes": 15637,
+      "mode": "100644"
+    },
+    {
+      "path": "tools/test-no-planted-bytecode.py",
+      "sha256": "5c887a852fc43813b3e4afe7f2c68af99b840f7daf7bdf430295e108d139dbd1",
+      "bytes": 9343,
       "mode": "100644"
     },
     {
@@ -5202,8 +5322,8 @@
     },
     {
       "path": "tools/verify-many.mjs",
-      "sha256": "894609996f05f782de652c0298ab45d3471fd63a5254bed171e3353500f60677",
-      "bytes": 14099,
+      "sha256": "4c81c5b4889250ebdf0d5016a1c5498486b41fe7ac9072ef961cf06d30bb59de",
+      "bytes": 14101,
       "mode": "100755"
     },
     {
@@ -5228,6 +5348,18 @@
       "path": "xp/bonsai-core.css",
       "sha256": "257108ec6630246678f5c3f9a726f7d328b89e2fe7b9d66217400db04c6225e6",
       "bytes": 25536,
+      "mode": "100644"
+    },
+    {
+      "path": "xp/faces/.bonsai-192.webp.bonsaisig",
+      "sha256": "aa70c427882a0ea308e490e50237525d8f33f6123b65e164cdf66ffc8bceff62",
+      "bytes": 531,
+      "mode": "100644"
+    },
+    {
+      "path": "xp/faces/bonsai-192.webp",
+      "sha256": "c1132c03421036e206fe4dff34c1490568f4e41d8773d19ae6deb963af2c9cbe",
+      "bytes": 6714,
       "mode": "100644"
     },
     {

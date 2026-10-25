@@ -6,7 +6,7 @@
  * type: script
  * tended-by: baisai
  * created: 2026-09-24
- * updated: 2026-10-21
+ * updated: 2026-10-24
  * ---
  *
  * The wake-time half of the one builder (package.py, beside this file). Every
@@ -24,7 +24,11 @@
  *      MANIFEST.json at the package root and whose role is owner — and the signer
  *      is the owner the manifest names. By default the PUBLISHED keys decide
  *      (bonsai-garden-sign/references/trust-anchor.md): the site answers, signed,
- *      or the check fails. No key is ever taken from inside the package.
+ *      or the check fails. No key is ever taken from inside the package. The ok
+ *      line prints the signer's FULL fingerprint and the kanji the site answered
+ *      with, so the greeting compares all 32 hex with the registry, not the first
+ *      eight (the gardener, 2026-10-24: "we need a strict check that is binding to
+ *      all kin in a common place that all kin uses at startup").
  *   3. The package's SKILL.md `name:` is the manifest's slug (a manifest lifted
  *      from another package does not vouch for this one).
  *   4. Every file under the package is listed with its exact sha256, and every
@@ -290,7 +294,7 @@ async function main() {
   }
   console.log(
     `ok       integrity: ${m.slug} ${m.build} · ${checked} files match · ` +
-      `sealed by ${m.owner} ${(verdict.meta.fingerprint || '').slice(0, 8)} · keys ${a.keys}` +
+      `sealed by ${m.owner} ${verdict.meta.fingerprint || '?'}${verdict.meta._kanji ? ` ${verdict.meta._kanji}` : ''} · keys ${a.keys}` +
       (retired ? ' · [retired-v1]' : '') +
       (frontmatterRewritten ? ' · SKILL.md frontmatter rewritten by the installer, body intact' : '') +
       (liveStore ? ' · memory: live store' : ''),

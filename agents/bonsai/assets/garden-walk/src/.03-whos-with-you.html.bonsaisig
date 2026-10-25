@@ -2,11 +2,11 @@
   "format": "bonsaisig/2",
   "id": "01M48JWP2P29P6BR5JFM55EBDQ",
   "signer": "bonsai",
-  "role": "custodian",
+  "role": "owner",
   "fingerprint": "028019b7c448884c64b6332f5d7609c0",
-  "timestamp": "2026-10-20T22:03:52Z",
+  "timestamp": "2026-10-24T16:29:31Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/garden-walk/src/03-whos-with-you.html",
   "file-hash": "433b375ff01fd013ed62d42ef585ed619496fc23b256f56730738149becabf0303370022e7a4398031a5057de7be79cce1b5385fffc27c1fc30777463ccf0679",
-  "signature": "RFlXKvaxQ3DSruMRO/oLzTyoZjNJTZAkeGr3mtMjXORJDiQAIULJUZDbdBv5ZlW8yTvxnCVct8ijcHeBc7MzBA=="
+  "signature": "EW4LEM6E8sHNa6acOS0VvCRNaBcOWDgKIDVVlN/4zxo2mXRnK044sMdLx9UMyX/MTEVSGX/h09RqWqsNWANBBg=="
 }

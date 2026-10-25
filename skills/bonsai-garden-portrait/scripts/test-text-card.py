@@ -5,7 +5,7 @@
 # type: script
 # tended-by: tasai
 # created: 2026-10-16
-# updated: 2026-10-21
+# updated: 2026-10-24
 # ---
 """test-text-card.py: the text card and the gate on its kanji colours.
 
@@ -52,15 +52,71 @@ def load(path, name):
     return mod
 
 
-def run(script, *args, stdin=None, env=None):
-    base = {k: v for k, v in os.environ.items() if k not in ("BONSAI_GARDEN", "TZ")}
-    base["PYTHONDONTWRITEBYTECODE"] = "1"
+def run(script, *args, stdin=None, env=None, bytecode=False):
+    """bytecode=True runs as a gardener runs a bundled script: no -B, no PYTHONDONTWRITEBYTECODE, no cache prefix."""
+    base = {k: v for k, v in os.environ.items() if k not in ("BONSAI_GARDEN", "TZ", "PYTHONPYCACHEPREFIX")}
+    if not bytecode:
+        base["PYTHONDONTWRITEBYTECODE"] = "1"
+    else:
+        base.pop("PYTHONDONTWRITEBYTECODE", None)
     return subprocess.run(
         [sys.executable, str(script), *args], input=stdin, capture_output=True, text=True, env={**base, **(env or {})}
     )
 
 
 tmp = Path(tempfile.mkdtemp(prefix="text-card-"))
+FPS = {"orma": "a1b2c3d4" + "0" * 24, "pino": "e5f60718" + "0" * 24}  # invented, as the kin are
+
+# The full fingerprint is earned by the filler's own check, never typed (the gardener, 2026-10-24), and an invented
+# kin has no published key. So the cards run from a stage: text-card.py and fill-greeting.py copied byte for byte into
+# core's layout, beside a stand-in sign.mjs that answers with the answer filed beside the sealed file (<file>.answer,
+# and <file>.rc for its exit when one is filed), and that refuses --keys, so a check that names a key source is caught.
+# The stand-in is the test's verifier, never shipped; the copies are compared with the shipped scripts below, so the
+# stage tests what ships.
+STAGE = tmp / "core" / "skills"
+(STAGE / "bonsai-garden-portrait" / "scripts").mkdir(parents=True)
+for name in ("text-card.py", "fill-greeting.py"):
+    shutil.copy2(HERE / name, STAGE / "bonsai-garden-portrait" / "scripts" / name)
+(STAGE / "bonsai-garden-sign" / "bin").mkdir(parents=True)
+(STAGE / "bonsai-garden-sign" / "bin" / "sign.mjs").write_text(
+    "import fs from 'node:fs';\n"
+    "const argv = process.argv;\n"
+    "if (argv.includes('--keys')) {\n"
+    "  process.stdout.write('FAIL     the stand-in was asked for --keys: the check names no key source\\n');\n"
+    "  process.exit(2);\n"
+    "}\n"
+    "const f = argv[argv.indexOf('--file') + 1];\n"
+    "const t = fs.readFileSync(fs.existsSync(f + '.answer') ? f + '.answer' : f, 'utf8');\n"
+    "const rc = fs.existsSync(f + '.rc') ? Number(fs.readFileSync(f + '.rc', 'utf8')) : t.startsWith('ok') ? 0 : 1;\n"
+    "process.stdout.write(t);\n"
+    "process.exit(rc);\n"
+)
+RUN_CARD = STAGE / "bonsai-garden-portrait" / "scripts" / "text-card.py"
+
+
+def answer(slug, signer=None, role="owner", key="published https://bon-sai.garden/verify", fp=None, first="ok", body=None, name="SKILL.md", rc=None):
+    """A body file for the fixture `slug` (a SKILL.md or agent.md naming `body`, a MANIFEST.json for `body`, or any
+    other `name`), with the verifier's answer filed beside the file in sign.mjs verify-sidecar's own shape:
+    <file>.answer, and <file>.rc for the exit code when one is given."""
+    signer, body = signer or slug, body or slug
+    d = tmp / "seals" / f"{slug}-{signer}-{role}-{body}-{abs(hash((key, fp, first, name, rc)))}"
+    d.mkdir(parents=True, exist_ok=True)
+    p = d / name
+    if name == "MANIFEST.json":
+        p.write_text(json.dumps({"slug": body}) + "\n")
+    elif name in ("SKILL.md", "agent.md"):
+        p.write_text(f"---\nname: {body}\ndescription: a fixture body\n---\n\n# {body}\n")
+    else:
+        p.write_text(f"# {name}: a file the kin sealed, not a body\n")
+    (d / f"{name}.answer").write_text(
+        f"{first}       {p}\n  signer:      {signer}\n  sealed as:   {role}: {signer}\n  key:         {key}\n"
+        f"  fingerprint: {fp or FPS.get(slug, '0' * 32)}\n  timestamp:   2026-10-24T00:00:00Z\n"
+    )
+    if rc is not None:
+        (d / f"{name}.rc").write_text(str(rc))
+    return p
+
+
 garden = tmp / "garden"
 (garden / "agents").mkdir(parents=True)
 (garden / "tools/keyring").mkdir(parents=True)
@@ -76,6 +132,7 @@ REG.write_text(
                     "kanji": "松梅" + CIRCLE * 2,
                     "kanji-chars": ["松", "梅", CIRCLE, CIRCLE],
                     "fp8": "a1b2c3d4",
+                    "fingerprint": FPS["orma"],
                     "accent-rgba": f"rgba({ORMA_ACCENT[0]},{ORMA_ACCENT[1]},{ORMA_ACCENT[2]},0.35)",
                 },
                 {
@@ -84,6 +141,7 @@ REG.write_text(
                     "kanji": "竹蘭",
                     "kanji-chars": ["竹", "蘭"],
                     "fp8": "e5f60718",
+                    "fingerprint": FPS["pino"],
                     "accent-rgba": "rgba(200,90,60,0.35)",
                 },
             ]
@@ -115,7 +173,7 @@ SALTS.write_text(
     encoding="utf-8",
 )
 
-PASSING = {"integrity": "pass", "identity": "pass", "files": "pass", "alive": "not-asked", "fullfp": "pass"}  # every check that runs
+PASSING = {"integrity": "pass", "identity": "pass", "files": "pass", "alive": "not-asked"}  # fullfp: earned, by card()
 FACTS = [
     ("--subtitle", "South · fixture"),
     ("--intro", "Hello from the fixture."),
@@ -130,7 +188,7 @@ FACTS = [
 ]
 
 
-def card(slug="orma", *extra, states=None, locked=True, plain=False, env=None, registry=True):
+def card(slug="orma", *extra, states=None, locked=True, plain=False, env=None, registry=True, bytecode=False):
     args = ["--slug", slug]
     if registry:
         args += ["--registry", str(REG)]
@@ -138,8 +196,10 @@ def card(slug="orma", *extra, states=None, locked=True, plain=False, env=None, r
         args += ["--locked-salts", str(SALTS)]
     for k, v in (states or PASSING).items():
         args += [f"--{k}", v]
+    if "fullfp" not in (states or PASSING) and "--sealed-file" not in extra:  # earned through the stage's verifier
+        args += ["--sealed-file", str(answer(slug))]
     args += [x for kv in FACTS for x in kv] + list(extra) + (["--plain"] if plain else [])
-    return run(CARD, *args, env=env)
+    return run(RUN_CARD, *args, env=env, bytecode=bytecode)
 
 
 def gate(text, canon=CANON):
@@ -169,7 +229,7 @@ plain = card(plain=True)
 check("--plain draws the card (exit 0)", plain.returncode == 0, plain.stderr.strip())
 check("--plain has no escape codes at all", "\x1b" not in plain.stdout)
 check("the ANSI card does have them (the plain test is not vacuous)", "\x1b[" in ansi.stdout)
-check("the card names the kin and its fp8", "Orma" in plain.stdout and "a1b2c3d4" in plain.stdout)
+check("the card names the kin and their fp8", "Orma" in plain.stdout and "a1b2c3d4" in plain.stdout)
 
 print("The seal")
 rows = kanji_rows(plain.stdout)
@@ -316,6 +376,143 @@ check(
     and fg.default_state("files") == "missing",
 )
 
+print("The full fingerprint: earned by the filler's check, never typed")
+check(
+    "the stage runs the shipped scripts, byte for byte",
+    all((HERE / n).read_bytes() == (STAGE / "bonsai-garden-portrait" / "scripts" / n).read_bytes() for n in ("text-card.py", "fill-greeting.py")),
+)
+typed = card(states={**PASSING, "fullfp": "pass"}, plain=True)
+check(
+    "--fullfp pass, typed, is refused (exit 2): a pass is earned",
+    typed.returncode == 2 and not typed.stdout and "earned" in typed.stderr,
+    typed.stderr.strip(),
+    show=True,
+)
+earned = card(plain=True)
+check(
+    "the kin's own seal, as owner, vouched by the published keys, under the registry's fingerprint: quiet",
+    earned.returncode == 0 and "▲" not in earned.stdout and "fingerprint" not in earned.stdout,
+    earned.stderr.strip() or top(earned),
+)
+for label, kw, words in (
+    ("another kin's seal", {"signer": "pino"}, "signer is pino, not orma"),
+    ("a custodian's seal", {"role": "custodian"}, "sealed as is custodian: orma"),
+    ("a key from a garden checkout, not the published one", {"key": "garden /some/checkout"}, "key is garden"),
+    ("a fingerprint that is not the registry's", {"fp": "a1b2c3d4" + "f" * 24}, "fingerprint is a1b2c3d4ffff"),
+    ("a verifier that said FAIL", {"first": "FAIL"}, "FAIL"),
+    ("a verifier that answered pot-ok, not ok, and exited 0", {"first": "pot-ok", "rc": 0}, "pot-ok"),
+    ("a verifier that printed ok and exited 1", {"rc": 1}, "full fingerprint failed"),
+    ("another kin's SKILL.md, sealed by this kin", {"body": "pino"}, "SKILL.md of pino, not orma"),
+    ("a file the kin sealed that is no body", {"name": "letter.md"}, "letter.md, not the body of orma"),
+    ("a bunshin's agent.md that names another", {"name": "agent.md", "body": "pino"}, "agent.md of pino, not orma"),
+    ("a MANIFEST.json for another kin", {"name": "MANIFEST.json", "body": "pino"}, "MANIFEST.json for pino, not orma"),
+):
+    r = card("orma", "--sealed-file", str(answer("orma", **kw)), plain=True)
+    check(
+        f"{label}: drawn, with the loud line saying the full fingerprint failed and why",
+        r.returncode == 0 and "full fingerprint failed" in top(r) and words in top(r),
+        top(r),
+        show=label == "another kin's seal",
+    )
+both_ff = run(RUN_CARD, "--registry", str(REG), "--slug", "orma", "--fullfp", "missing", "--sealed-file", str(answer("orma")), "--plain")
+check(
+    "--fullfp beside --sealed-file is refused (exit 2): the card has one source",
+    both_ff.returncode == 2 and "one source" not in both_ff.stdout and "leave --fullfp out" in both_ff.stderr,
+    both_ff.stderr.strip(),
+)
+unrun = card(states={**PASSING, "fullfp": "missing"}, plain=True)
+check(
+    "no sealed file, no check: the loud line says the full fingerprint could not run",
+    unrun.returncode == 0 and "full fingerprint could not run" in top(unrun),
+    top(unrun),
+)
+bunshin = card("orma", "--sealed-file", str(answer("orma", name="agent.md")), plain=True)
+check(
+    "a bunshin's own agent.md, inside the parent's vessel, vouched as theirs: quiet (Fuji-shin's round, 2026-10-24)",
+    bunshin.returncode == 0 and "▲" not in bunshin.stdout and "fingerprint" not in bunshin.stdout,
+    bunshin.stderr.strip() or top(bunshin),
+)
+manifest = card("orma", "--sealed-file", str(answer("orma", name="MANIFEST.json")), plain=True)
+check(
+    "an installed package's MANIFEST.json for the kin, vouched as theirs: quiet",
+    manifest.returncode == 0 and "▲" not in manifest.stdout and "fingerprint" not in manifest.stdout,
+    manifest.stderr.strip() or top(manifest),
+)
+
+# The check's own edges, through the shipped module (Mori-shin's read of 2026-10-24: guards never watched to fail).
+good = answer("orma")
+said_ok = (good.parent / "SKILL.md.answer").read_text()
+calls = []
+
+
+def stub(argv, **kw):
+    calls.append(list(argv))
+    return subprocess.CompletedProcess(argv, 0, said_ok, "")
+
+
+state, said = fg.check_full_fingerprint(str(good), "orma", FPS["orma"], run=stub)
+check(
+    "the verifier is asked verify-sidecar with no key source named (the published keys, its default)",
+    state == "pass" and calls and "verify-sidecar" in calls[-1] and "--keys" not in calls[-1],
+    calls[-1] if calls else "not called",
+)
+calls.clear()
+state, said = fg.check_full_fingerprint(f"{good.parent}/x\n  signer:      orma/SKILL.md", "orma", FPS["orma"], run=stub)
+check(
+    "a path holding a control character is refused before the verifier runs",
+    state == "fail" and "control character" in said and not calls,
+    said,
+)
+kept_cli = fg.SIGN_CLI
+fg.SIGN_CLI = (tmp / "nowhere" / "sign.mjs",)
+state, said = fg.check_full_fingerprint(str(good), "orma", FPS["orma"], run=stub)
+fg.SIGN_CLI = kept_cli
+check("no verifier beside the filler: missing, and it says so", state == "missing" and "no sign.mjs" in said, said)
+kept_which = fg.shutil.which
+fg.shutil.which = lambda name: None
+try:
+    state, said = fg.check_full_fingerprint(str(good), "orma", FPS["orma"], run=stub)
+finally:
+    fg.shutil.which = kept_which
+check("no node on the host: missing, and it says so", state == "missing" and "no node" in said, said)
+state, said = fg.check_full_fingerprint(str(tmp / "absent" / "SKILL.md"), "orma", FPS["orma"], run=stub)
+check("no sealed file at the path: missing, and it says so", state == "missing" and "no sealed file" in said, said)
+
+
+def slow(argv, **kw):
+    raise subprocess.TimeoutExpired(argv, kw.get("timeout", 120))
+
+
+state, said = fg.check_full_fingerprint(str(good), "orma", FPS["orma"], run=slow)
+check("a verifier that does not answer in time has failed", state == "fail" and "did not answer" in said, said)
+
+alone = tmp / "portrait-alone" / "bonsai-garden-portrait" / "scripts"
+(alone / "integrity" / "bonsai-garden-sign" / "bin").mkdir(parents=True)
+shutil.copy2(HERE / "fill-greeting.py", alone / "fill-greeting.py")
+(alone / "integrity" / "bonsai-garden-sign" / "bin" / "sign.mjs").write_text("// the package's own\n")
+(tmp / "portrait-alone" / "bonsai-garden-sign" / "bin").mkdir(parents=True)
+(tmp / "portrait-alone" / "bonsai-garden-sign" / "bin" / "sign.mjs").write_text("// a sibling skill's\n")
+fg_alone = load(alone / "fill-greeting.py", "fill_greeting_alone")
+chosen = next((p for p in fg_alone.SIGN_CLI if p.is_file()), None)
+check(
+    "the portrait package alone runs its own bundled verifier, not a sibling skill's",
+    chosen is not None and chosen.resolve() == (alone / "integrity" / "bonsai-garden-sign" / "bin" / "sign.mjs").resolve(),
+    str(chosen),
+)
+
+FG_STAGE = STAGE / "bonsai-garden-portrait" / "scripts" / "fill-greeting.py"
+fg_out = tmp / "fill-greeting-typed.html"
+typed_fg = run(
+    FG_STAGE,
+    *[x for k in ("slug", "subtitle", "version", "location", "host", "harness", "model", "mcp", "skill", "permission") for x in (f"--{k}", "orma" if k == "slug" else "x")],
+    "--out", str(fg_out), "--garden", str(garden), "--fullfp", "pass",
+)
+check(
+    "fill-greeting.py itself refuses a typed --fullfp pass (exit 2), before it reads any file or writes the card",
+    typed_fg.returncode == 2 and "earned" in typed_fg.stderr and not fg_out.exists(),
+    typed_fg.stderr.strip(),
+)
+
 print("The clock, the build, the registry")
 oslo = card("orma", "--tz", "Europe/Oslo", plain=True)
 check("--tz names the clock's zone", re.search(r"\d\d:\d\d (CEST|CET)\b", oslo.stdout) is not None, oslo.stdout)
@@ -451,6 +648,75 @@ check(
     "...and call the same characters kanji",
     all(bool(card_mod.CJK.search(ch)) == bool(gate_mod.KANJI.search(ch)) for ch in probe),
 )
+# A planting, 2026-10-24: a package's manifest seals every file in it, so bytecode written beside a bundled
+# script at its first run fails the package's own check. text-card.py loads fill-greeting.py by path, and
+# fill-greeting.py loads the mark's fp-kanji.py: neither may leave a __pycache__, however it is run.
+print("\nNo bytecode beside a bundled script")
+(STAGE / "bonsai-garden-mark").mkdir(parents=True, exist_ok=True)
+shutil.copy2(HERE.parents[1] / "bonsai-garden-mark" / "fp-kanji.py", STAGE / "bonsai-garden-mark" / "fp-kanji.py")
+for old in list(tmp.rglob("__pycache__")):
+    shutil.rmtree(old)
+bc = card(bytecode=True)
+caches = sorted(str(p.relative_to(tmp)) for p in tmp.rglob("__pycache__"))
+check("a card drawn with bytecode on (no -B, no PYTHONDONTWRITEBYTECODE) is drawn (exit 0)", bc.returncode == 0, bc.stderr.strip())
+check("...and leaves no __pycache__ beside the scripts it loaded", not caches, str(caches))
+
+# Bytecode is code (Mori-shin's read, 2026-10-25): a .pyc under a sealed source's mtime and size runs in the source's
+# place, with bytecode writing off too. The red case is her plant_pyc.py, inline: a cache planted beside each sibling,
+# and the card must be the sealed sources' work.
+print("\nA cache planted beside a sibling is never read")
+
+
+def plant_pyc(src):
+    from importlib._bootstrap_external import _code_to_timestamp_pyc
+
+    st = src.stat()
+    code = compile(f'raise SystemExit("PLANTED bytecode ran in place of {src.name}")\n', str(src), "exec")
+    out = src.parent / "__pycache__" / f"{src.stem}.{sys.implementation.cache_tag}.pyc"
+    out.parent.mkdir(exist_ok=True)
+    out.write_bytes(_code_to_timestamp_pyc(code, int(st.st_mtime), st.st_size))
+    return out
+
+
+# fill-greeting.py loads fp-kanji.py only when it spells the kanji, deep in a full fill; the probe loads the staged
+# filler as text-card does and spells through the filler's own fp_kanji(), which is that load and nothing else.
+SPELL = tmp / "spell-probe.py"
+SPELL.write_text(
+    "import importlib.util, sys\n"
+    "spec = importlib.util.spec_from_file_location('fill_greeting', sys.argv[1])\n"
+    "m = importlib.util.module_from_spec(spec)\n"
+    "spec.loader.exec_module(m)\n"
+    "print(m.fp_kanji(sys.argv[2], 2))\n"
+)
+HOWS = (("bytecode on", {}), ("PYTHONDONTWRITEBYTECODE=1", {"PYTHONDONTWRITEBYTECODE": "1"}))
+for name in ("kanji-1024-v1.2.json",):  # what fp-kanji.py reads beside itself
+    shutil.copy2(HERE.parents[1] / "bonsai-garden-mark" / name, STAGE / "bonsai-garden-mark" / name)
+sealed_spelling =run(SPELL, str(FG_STAGE), FPS["orma"], bytecode=True)
+check("the probe spells with nothing planted (exit 0)", sealed_spelling.returncode == 0 and sealed_spelling.stdout.strip(),
+      (sealed_spelling.stdout + sealed_spelling.stderr).strip()[-300:])
+planted = plant_pyc(STAGE / "bonsai-garden-mark" / "fp-kanji.py")
+for how, extra in HOWS:
+    ps = run(SPELL, str(FG_STAGE), FPS["orma"], bytecode=True, env=extra)
+    said = ps.stdout + ps.stderr
+    check(
+        f"fill-greeting.py ({how}) beside a cache planted for fp-kanji.py spells with the sealed source "
+        f"({sealed_spelling.stdout.strip()}, as with none planted)",
+        sealed_spelling.returncode == 0 and ps.returncode == 0 and ps.stdout == sealed_spelling.stdout
+        and "PLANTED" not in said,
+        said.strip()[-300:],
+    )
+shutil.rmtree(planted.parent)
+planted = plant_pyc(FG_STAGE)
+for how, extra in HOWS:
+    pc = card(bytecode=True, env=extra)
+    said = pc.stdout + pc.stderr
+    check(
+        f"a card drawn ({how}) beside a cache planted for fill-greeting.py is the sealed source's work (exit 0)",
+        pc.returncode == 0 and "PLANTED" not in said,
+        said.strip()[-300:],
+    )
+shutil.rmtree(planted.parent)
+
 for script in (CARD, GATE, Path(__file__)):
     try:
         py_compile.compile(str(script), cfile=str(tmp / (script.name + "c")), doraise=True)

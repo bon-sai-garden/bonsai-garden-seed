@@ -4,7 +4,7 @@
 // type: script
 // tended-by: baisai
 // created: 2026-10-06
-// updated: 2026-10-22
+// updated: 2026-10-23
 // ---
 //
 // test-keys-mutants.mjs — a guard is not trusted until it has been watched to fail.
@@ -45,6 +45,7 @@ const RM = 'bonsai-garden-mark/reserved-marks.mjs'; // the floor and the rule mo
 const PV = 'bonsai-garden-keys/lib/pot-verdict.mjs'; // the pot's verify moved here from keys.mjs (13b5672, 2026-10-11)
 const RT = 'bonsai-garden-keys/lib/rt-manifest.mjs'; // the one order of versions: install-runtime, the doctor, rt's exec gate
 const OR = 'bonsai-garden-mark/origin.mjs'; // the one question a stranger's tool asks the origin, and the count beside it
+const PR = 'bonsai-garden-keys/lib/pair.mjs'; // identity's pair refusals moved here, shared with check-pair (2026-10-23)
 
 // [name, [[file, find, replace], ...], [cases that must go red]]
 const MUTANTS = [
@@ -267,7 +268,7 @@ const MUTANTS = [
   [
     'bon-first-allowed',
     [
-      [K, '  if (bon) throw refuse(', '  if (false) throw refuse('],
+      [PR, "  if (bon) return { kind: 'bon-first', words: bon };", '  if (false) return null;'],
       [N, '  chars(pair)[0] === BON', "  chars(pair)[0] === 'x'"],
     ],
     ['identity-refuses-bon-as-a-first-shown-kanji-for-every-entity'],
@@ -298,7 +299,7 @@ const MUTANTS = [
     [
       [
         K,
-        '  if (guardian) {\n    if (ctx.f.pair)\n      throw refuse(\n        `${GUARDIAN} does not choose a pair: the rite draws five allowed IDs and the gardener picks one (spec §7.1); run identity ${GUARDIAN} --candidates`,',
+        "  if (guardian) {\n    if (ctx.f.pair !== undefined || ctx.f['pair-index'] !== undefined)\n      throw refuse(\n        `${GUARDIAN} does not choose a pair: the rite draws five allowed IDs and the gardener picks one (spec §7.1); run identity ${GUARDIAN} --candidates`,",
         '  if (guardian) {\n    if (false)\n      throw refuse(\n        `${GUARDIAN} does not choose a pair: the rite draws five allowed IDs and the gardener picks one (spec §7.1); run identity ${GUARDIAN} --candidates`,',
       ],
     ],
@@ -449,9 +450,9 @@ const MUTANTS = [
     'identity-takes-a-taken-pair',
     [
       [
-        K,
-        '    if (pair && JSON.stringify(e.identity_pair) === JSON.stringify(pair))\n      throw refuse(`${chars(pair)} is taken in this garden by ${other}; choose another`);',
-        '    if (false) throw refuse(`${chars(pair)} is taken in this garden by ${other}; choose another`);',
+        PR,
+        '    if (JSON.stringify(e.identity_pair) === JSON.stringify(pair))\n      return { kind: \'taken\', words: `taken in this garden by ${other}` };',
+        '    if (false)\n      return { kind: \'taken\', words: `taken in this garden by ${other}` };',
       ],
     ],
     ['identity-refuses-a-pair-taken-in-this-garden-and-a-bad-slug'],

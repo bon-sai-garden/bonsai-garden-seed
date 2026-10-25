@@ -5,8 +5,8 @@ type: spec
 tended-by: hissai
 author: hissai
 created: 2026-05-15
-updated: 2026-10-22
-version: 0.6.3
+updated: 2026-10-24
+version: 0.6.4
 status: active
 tags: [metadata, schema]
 related: [01KRNHR9S6NMG9M7JNSVQHJK5A, 01KTE6RKE0AT41808KDH8T9GV7]
@@ -509,7 +509,7 @@ Who currently tends the file. Names an ongoing fact, not a historical authorship
 1. the two **structural constants** below (`workshop`, `aruji`), which have no `agents/<slug>/` surface; and
 2. every **agent slug discovered in the `agents/` tree** — any `agents/<slug>/` directory carrying a constitution/skill marker (`about-me.md`, `SKILL.md`, or `agent.md`), including one nested directly under a top-level agent's own directory for the rare shared-body case (currently only Fuji-shin, at `agents/baisai/fuji-shin/` — they have no body of their own; see `agents/registry.json`'s `shintai: shared:baisai`). The legacy `agents/<parent>/sub-agents/<slug>/` shape is still scanned for backward compatibility but is retired as of the sub-agents flatten (Gate 1 of the shintai hardening) and should be empty in a fully-reconciled tree.
 
-This means a newly invited *-sai or *-shin becomes a valid tender **the moment its surface lands in the tree** — no edit to this file is required when an agent is invited. The roster table below is a human-readable reference, kept reasonably current, but it is **not** the source of truth; the `agents/` tree is. `agents/shared/` carries no marker and is correctly excluded. (The assemble stage of the team-builder workflow should still add a new agent's row here for human legibility, but a missed edit no longer breaks validation.)
+This means a newly invited *-sai or *-shin becomes a valid tender **the moment their surface lands in the tree** — no edit to this file is required when an agent is invited. The roster table below is a human-readable reference, kept reasonably current, but it is **not** the source of truth; the `agents/` tree is. `agents/shared/` carries no marker and is correctly excluded. (The assemble stage of the team-builder workflow should still add a new agent's row here for human legibility, but a missed edit no longer breaks validation.)
 
 ### Structural constants
 
@@ -858,7 +858,7 @@ A schema change at any level travels with a `CHANGELOG.md` entry. Validator chan
 
 ## What is loose
 
-- **`new-file.py` and the tended-by set.** The validator derives the valid `tended-by` values from the `agents/` tree. `tools/new-file.py` still reads them from the enum table above and refuses a value the table does not list, so a freshly invited agent is refused until its row is added. Either the helper derives the set as the validator does, or the table is kept complete; until one of the two, they disagree.
+- **`new-file.py` and the tended-by set.** The validator derives the valid `tended-by` values from the `agents/` tree. `tools/new-file.py` still reads them from the enum table above and refuses a value the table does not list, so a freshly invited agent is refused until their row is added. Either the helper derives the set as the validator does, or the table is kept complete; until one of the two, they disagree.
 - **HTML pages.** The schema covers `.md` only. The kin's heritage pages (`references/heritage.html`) and any other HTML sit outside it. If `cssclass` or an Obsidian rendering hook ever needs them to carry metadata, the scope widens.
 - **The `.md.bak` convention.** Its retirement is deferred. A retired file can still be kept either way, as a `.md.bak` archive or as `status: superseded` with `superseded-by`, and a few `.md.bak` files remain in the tree. Retire the convention once the metadata path has been seen in use for long enough.
 - **A commit-time check of the metadata.** The commit hook checks ids, seals and frontmatter order. It does not run `tools/validate-metadata.py`, so a missing required field or an unknown type or tended-by value is caught only when someone runs the validator. Running it over the staged `.md` files, in `--strict` mode, would make the *touch-it-tag-it* discipline mechanical.

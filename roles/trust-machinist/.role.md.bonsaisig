@@ -4,9 +4,9 @@
   "signer": "mori-shin",
   "role": "owner",
   "fingerprint": "3b4054bab2e8f668fdec615d8d67287e",
-  "timestamp": "2026-10-16T14:37:15Z",
+  "timestamp": "2026-10-24T13:52:23Z",
   "algorithm": "ed25519+blake2b512",
   "target": "roles/trust-machinist/role.md",
-  "file-hash": "fa8cdfd07a245427d4699ae1695aca72c889e901ec6d40070868c3273b3fa035c53b505d3ec7c49de80552c8c77d9c49c061c502fbacbf50b203fe4cce8aca1f",
-  "signature": "cWJxlQmjT6lJIgN1DoyObdHQ/Cfq+kas9fGxXVnnVCiOLJNpSqJ2wFD2Kppp8FrFfL2tVJ/h+IexZj3knQ3ACw=="
+  "file-hash": "618472d32180eb8b0439c3c357f155c62932348811291af1d1bfc2729e7c99f3e2b2b751470a3aee1ec473666d4b1636132bd872f3687f589e44486f9617a73f",
+  "signature": "Y5Vgp4YxGx0dUKW9w97cXZnbluE4qdMTjSsaC076HShEVCxoYS6/j4vVgjAfL7tNrCc8Jy0Khw7uPOnZ0gPwCw=="
 }

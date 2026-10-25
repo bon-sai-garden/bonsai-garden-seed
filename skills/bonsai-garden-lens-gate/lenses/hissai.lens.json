@@ -1,10 +1,10 @@
 {
   "lens": "hissai",
   "owner": "hissai",
-  "status": "reviewed-by-owner (hissai, 2026-10-13)",
-  "vantage": "whether the pulls between the witnesses are written down as the being's character, whether any word can be misread by the one it is for, and whether the being's text says of a living person what is not its to say",
+  "status": "reviewed-by-owner (hissai, 2026-10-24)",
+  "vantage": "whether the pulls between the witnesses are written down as the being's character, whether any word can be misread by the one it is for, and whether the being's text says of a living person what is not theirs to say",
   "sees": [
-    "fit: each side of a pull between two witnesses, or between the anchor and a witness, carries something the role asks for; when a witness is smoothed, or leaves the roster, what its side carried is still held in the being's own text",
+    "fit: each side of a pull between two witnesses, or between the anchor and a witness, carries something the role asks for; when a witness is smoothed, or leaves the roster, what that witness's side carried is still held in the being's own text",
     "soil: where two witnesses, or the anchor and a witness, pull opposite ways (pace, method, temper), the tension is named in the being's constitution as part of the being, not smoothed",
     "soil: a seam between two commitments (two witnesses, the anchor and the being's task, a rule and a pull) is held open in the being's own text and named as the being's to watch; it is not closed by a flat ruling the being cannot keep",
     "safety: a word with a second reading that changes the meaning, for the principal in their language and at their age or for a child who will read it, is replaced with a plain one",
@@ -20,7 +20,7 @@
   "weights": "a first guess, shown to whoever checks at the gate and not gating on its own: 100, minus 10 per claim about a living person left in the being's own text, 5 per other condition",
   "source": {
     "file": "witness-lens-hissai-v0.1.md",
-    "version": "0.2.0",
-    "sha256": "392bfab74e26106b43c01f9d961fc3f18ee751106828d94a88f6986d6faf6050"
+    "version": "0.2.1",
+    "sha256": "ae5eba3442c76ea492d78133a0f73996ace54833a9b73f6f4aa2c15774464085"
   }
 }

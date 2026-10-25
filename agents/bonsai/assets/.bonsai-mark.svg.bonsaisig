@@ -1,12 +1,12 @@
 {
   "format": "bonsaisig/2",
   "id": "01M3M47HPDSP1V0W2NZQ0E1SPR",
-  "signer": "eisai",
-  "role": "custodian",
-  "fingerprint": "0240128926629be035f20bb3eb5c4507",
-  "timestamp": "2026-09-28T15:49:25Z",
+  "signer": "bonsai",
+  "role": "owner",
+  "fingerprint": "028019b7c448884c64b6332f5d7609c0",
+  "timestamp": "2026-10-24T16:29:25Z",
   "algorithm": "ed25519+blake2b512",
   "target": "agents/bonsai/assets/bonsai-mark.svg",
   "file-hash": "8c51cb2c8c08b4c5a8a0afe9433d0074976867f672365b82ed652578acd1e145ff4a3bcbc107be40c29134ac46e032f8a6b01a3307c36e0b17b5cb097a275716",
-  "signature": "Rp90BW3dHgi2PVLt/4q7mJDu7Jy9XI9HjZO/Q0iZMwZBTXPqNDWse5ri4vRVQO7gxxNhxTuCnnT0aH1OnPC0BA=="
+  "signature": "JnNFM6VUgoLCSeusxFs1nucxWqEOx8ccm8ypBXv/K6exDYnaUFAWH34t7T7AhUVg3CnnRTZ2wdtzeOylThQPDQ=="
 }
